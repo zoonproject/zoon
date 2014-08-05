@@ -16,7 +16,7 @@ Zoon is just starting to be developed. Feel free to clone and use the code, open
 install.packages("devtools")
 library("devtools")
 
-install_github("timcdlucas/zoon")
+install_github("zoonproject/zoon")
 library("zoon")
 ```
 
