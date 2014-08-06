@@ -3,7 +3,8 @@
 \alias{workflow}
 \title{workflow wrapper function}
 \usage{
-workflow(ext, occurrenceFn, covariateFn, processFn, modelFn, mapFn)
+workflow(ext, occurrenceModule, covariateModule, processModule, modelModule,
+  mapModule)
 }
 \arguments{
 \item{ext}{A numeric vector of length 4 giving the coordinates of the
