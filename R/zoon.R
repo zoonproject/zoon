@@ -29,7 +29,36 @@ NULL
 #'       ultimate aim would be a much nicer way of enhancing reproducibility).
 #'@export
 #'@name workflow
-#'@examples x <- 2+2
+#'@examples 
+#'# define the extent in lat and long
+#'UKextent <- c(xmin = -10,
+#'              xmax = 10,
+#'              ymin = 45,
+#'              ymax = 65)
+#'
+#'# run a workflow, using the logistic regression model
+#'\dontrun{ans1 <- workflow(ext = UKextent,
+#'                 occurrenceModule = 'anophelesPlumbeus',
+#'                 covariateModule = 'airNCEP',
+#'                 processModule = 'oneHundredBackground',
+#'                 modelModule = 'logisticRegression',
+#'                 mapModule = 'sameTimePlaceMap')
+#'
+#'str(ans1, 1)
+#'
+#'
+#'# plot the resulting maps
+#'
+#'plot(ans1$map,
+#'     zlim = c(0,1),
+#'     main = 'LR')
+#'
+#'
+#'points(ans1$occ[, 1:2],
+#'       pch = 16,
+#'       cex = 0.3)
+#'}
+#'
 
 workflow <- function(ext,
                      occurrenceModule,
