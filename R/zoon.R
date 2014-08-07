@@ -14,14 +14,14 @@ NULL
 
 #' workflow wrapper function
 #'
-#'@param ext A numeric vector of length 4 giving the coordinates of the 
+#'@param extent A numeric vector of length 4 giving the coordinates of the 
 #'      rectangular region within which to carry out the analysis, in the 
 #'      order: xmin, xmax, ymin, ymax.
-#'@param occurrenceFn The name of the function (module) to be used to get occurence data
-#'@param covariateFn  The name of the function (module) to be used to get covariate data
-#'@param processFn The name of the function (module) to be used to process the data
-#'@param modelFn The name of the SDM model function (module) to be used 
-#'@param mapFn The name of the function (module) to be used to map output
+#'@param occurrence.module The name of the function (module) to be used to get occurence data
+#'@param covariate.module  The name of the function (module) to be used to get covariate data
+#'@param process.module The name of the function (module) to be used to process the data
+#'@param model.module The name of the SDM model function (module) to be used 
+#'@param map.module The name of the function (module) to be used to map output
 #'
 #'@return A list with the extent, the results of each module and a copy of the
 #'       code used to execute the workflow (what's there now should be source-able
@@ -31,18 +31,18 @@ NULL
 #'@name workflow
 #'@examples 
 #'# define the extent in lat and long
-#'UKextent <- c(xmin = -10,
+#'uk.extent <- c(xmin = -10,
 #'              xmax = 10,
 #'              ymin = 45,
 #'              ymax = 65)
 #'
 #'# run a workflow, using the logistic regression model
-#'\dontrun{ans1 <- workflow(ext = UKextent,
-#'                 occurrenceModule = 'anophelesPlumbeus',
-#'                 covariateModule = 'airNCEP',
-#'                 processModule = 'oneHundredBackground',
-#'                 modelModule = 'logisticRegression',
-#'                 mapModule = 'sameTimePlaceMap')
+#'\dontrun{ans1 <- workflow(extent = uk.extent,
+#'                 occurrence.module = 'anophelesPlumbeus',
+#'                 covariate.module = 'airNCEP',
+#'                 process.module = 'oneHundredBackground',
+#'                 model.module = 'logisticRegression',
+#'                 map.module = 'sameTimePlaceMap')
 #'
 #'str(ans1, 1)
 #'
@@ -50,7 +50,7 @@ NULL
 #'# plot the resulting maps
 #'
 #'plot(ans1$map,
-#'     zlim = c(0,1),
+#'     zlim = c(0, 1),
 #'     main = 'LR')
 #'
 #'
@@ -60,27 +60,27 @@ NULL
 #'}
 #'
 
-workflow <- function(ext,
-                     occurrenceModule,
-                     covariateModule,
-                     processModule,
-                     modelModule,
-                     mapModule) {
+workflow <- function(extent,
+                     occurrence.module,
+                     covariate.module,
+                     process.module,
+                     model.module,
+                     map.module) {
   
   # Get the modules (functions) from github. 
   # Save name of functions as well as load functions into global namespace.
   # Will probably want to make this so it checks namespace first.
-  occurrence <- getModule(occurrenceModule)
-  covariate <- getModule(covariateModule)
-  process <- getModule(processModule)
-  model <- getModule(modelModule)
-  mapMod <- getModule(mapModule)
+  occurrence <- GetModule(occurrence.module)
+  covariate <- GetModule(covariate.module)
+  process <- GetModule(process.module)
+  model <- GetModule(model.module)
+  map.module <- GetModule(map.module)
 
-  occ <- do.call(occurrence, list(ext))
-  cov <- do.call(covariate, list(ext))
-  df <- do.call(process, list(occ, cov))
-  m <- do.call(model, list(df))
-  map <- do.call(mapMod, list(m, cov))
+  occurrence.output <- do.call(occurrence, list(extent))
+  covariate.output <- do.call(covariate, list(extent))
+  process.output <- do.call(process, list(occurrence.output, covariate.output))
+  model.output <- do.call(model, list(process.output))
+  map.output <- do.call(map.module, list(model.output, covariate.output))
  
   # get the command used to call this function
   bits <- sys.call()
@@ -92,29 +92,29 @@ workflow <- function(ext,
   
   # sorry about this spaghetti...
   workflow <- paste0(paste(bits[-2], 
-                           c(getSource(workflow),
-                             getSource(eval(parse(text = occurrence))),
-                             getSource(eval(parse(text = covariate))),
-                             getSource(eval(parse(text = process))),
-                             getSource(eval(parse(text = model))),
-                             getSource(eval(parse(text = mapMod)))),
+                           c(GetSource(workflow),
+                             GetSource(eval(parse(text = occurrence))),
+                             GetSource(eval(parse(text = covariate))),
+                             GetSource(eval(parse(text = process))),
+                             GetSource(eval(parse(text = model))),
+                             GetSource(eval(parse(text = map.module)))),
                            sep = ' <- ',
                            collapse = '\n\n'),
                      paste0('\n\n',
                             bits[2],
                             ' <- c(',
-                            paste(ext, collapse = ', '),
+                            paste(extent, collapse = ', '),
                             ')\n'),
                      '\nans <- ',
                      call,
                      collapse = '\n\n\n')
   
   return(list(extent = extent,
-              occ = occ,
-              cov = cov,
-              df = df,
-              m = m,
-              map = map,
+              occurrence.output = occurrence.output,
+              covariate.output = covariate.output,
+              process.output = process.output,
+              model.output = model.output,
+              map.output = map.output,
               workflow = workflow))
 }
 
@@ -129,23 +129,23 @@ workflow <- function(ext,
 #'      given.
 #'
 #'@return Name of the function. Adds function to global namespace.
-#'@name getModule
+#'@name GetModule
 
 
-getModule <- function(module){
+GetModule <- function(module){
   require(RCurl)
-  zoonURL <- paste0('https://raw.githubusercontent.com/zoonproject/modules/master/R/',module,'.R')
-  if(url.exists(zoonURL)){
+  zoonURL <- paste0('https://raw.githubusercontent.com/zoonproject/modules/master/R/', module, '.R')
+  if (url.exists(zoonURL)){
     txt <- parse(text = getURL(zoonURL, ssl.verifypeer=FALSE))
-  } else if(url.exists(module)){
+  } else if (url.exists(module)){
     txt <- parse( text = getURL(module, ssl.verifypeer=FALSE))
-  } else{
+  } else {
     stop('Cannot find the module. Check the URL or check that the module is at github.com/zoonproject')
   }
   eval(txt, envir = .GlobalEnv)
   eval(txt)
-  newFunc <- ls()[!ls() %in% c('module', 'txt', 'zoonURL')]
-  return(newFunc)
+  new.func.name <- ls()[!ls() %in% c('module', 'txt', 'zoonURL')]
+  return(new.func.name)
 }
 
 
@@ -154,10 +154,10 @@ getModule <- function(module){
 #'@param object A function whose source code will be outputted as a string.
 #'
 #'@return Text string of the function
-#'@name getSource
+#'@name GetSource
 #'
 
-getSource <- function (object) {
+GetSource <- function(object) {
   paste(deparse(object), collapse = '\n')
 }
 
@@ -173,26 +173,26 @@ getSource <- function (object) {
 #'      are occurence, covariate, process, model, diagnostic and output.
 #'
 #'@return NULL. Outputs a file
-#'@name buildModule
+#'@name BuildModule
 #'
 #'@export
 #'@examples # Define some module function
-#' newModule <- function(ext){ 
-#' covs <- as.data.frame(df[, 5:ncol(df)])
-#' names(covs) <- names(df)[5:ncol(df)]
-#' m <- glm(df$value ~ .,
+#' NewModule <- function(extent){ 
+#'   covs <- as.data.frame(df[, 5:ncol(df)])
+#'   names(covs) <- names(df)[5:ncol(df)]
+#'   m <- glm(df$value ~ .,
 #'         data = covs,
 #'         family = binomial)
 #'  
-#' return (m)
+#'   return (m)
 #' }
 #' 
 #' # Then build it into a module file.
-#' buildModule(newModule, type = 'process', dir='~/Desktop')
+#' BuildModule(NewModule, type = 'process', dir='~/Desktop')
 #'
 #'
 
-buildModule <- function (object, type, dir='.') {
+BuildModule <- function(object, type, dir='.'){
   assert_that(is(object, 'function'))
   is.writeable(dir)
   type <- tolower(type)
@@ -200,8 +200,8 @@ buildModule <- function (object, type, dir='.') {
 
   obj <- deparse(substitute(object))
           
-  write(paste0('# A zoon module\n #@', type), file = paste0(dir, '/',obj, '.R'))
-  dump(c(obj), file = paste0(dir, '/',obj, '.R'), append=TRUE)
+  write(paste0('# A zoon module\n #@', type), file = paste0(dir, '/', obj, '.R'))
+  dump(c(obj), file = paste0(dir, '/', obj, '.R'), append=TRUE)
 }
   
 

@@ -3,23 +3,23 @@
 \alias{workflow}
 \title{workflow wrapper function}
 \usage{
-workflow(ext, occurrenceModule, covariateModule, processModule, modelModule,
-  mapModule)
+workflow(extent, occurrence.module, covariate.module, process.module,
+  model.module, map.module)
 }
 \arguments{
-\item{ext}{A numeric vector of length 4 giving the coordinates of the
+\item{extent}{A numeric vector of length 4 giving the coordinates of the
 rectangular region within which to carry out the analysis, in the
 order: xmin, xmax, ymin, ymax.}
 
-\item{occurrenceFn}{The name of the function (module) to be used to get occurence data}
+\item{occurrence.module}{The name of the function (module) to be used to get occurence data}
 
-\item{covariateFn}{The name of the function (module) to be used to get covariate data}
+\item{covariate.module}{The name of the function (module) to be used to get covariate data}
 
-\item{processFn}{The name of the function (module) to be used to process the data}
+\item{process.module}{The name of the function (module) to be used to process the data}
 
-\item{modelFn}{The name of the SDM model function (module) to be used}
+\item{model.module}{The name of the SDM model function (module) to be used}
 
-\item{mapFn}{The name of the function (module) to be used to map output}
+\item{map.module}{The name of the function (module) to be used to map output}
 }
 \value{
 A list with the extent, the results of each module and a copy of the
@@ -32,18 +32,18 @@ workflow wrapper function
 }
 \examples{
 # define the extent in lat and long
-UKextent <- c(xmin = -10,
+uk.extent <- c(xmin = -10,
              xmax = 10,
              ymin = 45,
              ymax = 65)
 
 # run a workflow, using the logistic regression model
-\dontrun{ans1 <- workflow(ext = UKextent,
-                occurrenceModule = 'anophelesPlumbeus',
-                covariateModule = 'airNCEP',
-                processModule = 'oneHundredBackground',
-                modelModule = 'logisticRegression',
-                mapModule = 'sameTimePlaceMap')
+\dontrun{ans1 <- workflow(extent = uk.extent,
+                occurrence.module = 'anophelesPlumbeus',
+                covariate.module = 'airNCEP',
+                process.module = 'oneHundredBackground',
+                model.module = 'logisticRegression',
+                map.module = 'sameTimePlaceMap')
 
 str(ans1, 1)
 
@@ -51,7 +51,7 @@ str(ans1, 1)
 # plot the resulting maps
 
 plot(ans1$map,
-    zlim = c(0,1),
+    zlim = c(0, 1),
     main = 'LR')
 
 
