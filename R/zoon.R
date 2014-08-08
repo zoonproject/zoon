@@ -38,11 +38,11 @@ NULL
 #'
 #'# run a workflow, using the logistic regression model
 #'\dontrun{ans1 <- workflow(extent = uk.extent,
-#'                 occurrence.module = 'anophelesPlumbeus',
-#'                 covariate.module = 'airNCEP',
-#'                 process.module = 'oneHundredBackground',
-#'                 model.module = 'logisticRegression',
-#'                 map.module = 'sameTimePlaceMap')
+#'                 occurrence.module = 'AnophelesPlumbeus',
+#'                 covariate.module = 'AirNCEP',
+#'                 process.module = 'OneHundredBackground',
+#'                 model.module = 'LogisticRegression',
+#'                 map.module = 'SameTimePlaceMap')
 #'
 #'str(ans1, 1)
 #'
