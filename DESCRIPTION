@@ -4,7 +4,7 @@ Title: A prototype for reproducible, accessible & shareable scientific outputs
     in R.
 Version: 0.1
 Date: 2014-08-04
-Author: Tim Lucas, Nick Golding
+Author: Tim Lucas, Nick Golding, Greg McInerny, Emiel van Loon
 Maintainer: Tim Lucas <timcdlucas@gmail.com>
 Description: This is a *really* rough sketch of a modular structure for the
     ZOON workflow. In this version, a workflow consists of 5 types of modules,
@@ -25,3 +25,6 @@ Description: This is a *really* rough sketch of a modular structure for the
 License: BSD 3-clause
 Imports:
     assertthat
+Suggests:
+    knitr
+VignetteBuilder: knitr

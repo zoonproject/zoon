@@ -1,3 +1,17 @@
+
+# _____________     ____________       ____________         ___________________
+#  \  ______   \__ _\   ______  \     _\   ______  \       _\      ___  \______
+#   \       /   \  \ \  \     \  \__ _\ \  \     \  \     _\ \  \/    \  \_____
+#    \     /     \  \ \  \     \  \  \ \ \  \     \  \__ _\ \ \  \     \  \____
+#     \   /______ \  \ \  \_____\  \  \ \ \  \_____\  \  \ \ \ \  \     \  \___
+#      \___________\__\_\___________\__\_\_\___________\__\_\_\_\___________\__
+#                      \____________\___\_\____________\___\_\_\____________\__
+#                                        \____________\_____\_\____________\___
+# SPECIES DISTRIBUTION MODELLING                             \____________\____
+#
+# A PROTOTYPE FOR REPRODUCIBLE, ACCESSIBLE & SHAREABLE SCIENTIFIC OUTPUTS IN R
+
+
 #'Zoon: A package for comparing multple SDM models, good model diagnostics
 #'      and better reproducibility
 #'@name zoon
@@ -90,32 +104,14 @@ workflow <- function(extent,
                        collapse = ', '),
                  ')')
   
-  # sorry about this spaghetti...
-  workflow <- paste0(paste(bits[-2], 
-                           c(GetSource(workflow),
-                             GetSource(eval(parse(text = occurrence))),
-                             GetSource(eval(parse(text = covariate))),
-                             GetSource(eval(parse(text = process))),
-                             GetSource(eval(parse(text = model))),
-                             GetSource(eval(parse(text = map.module)))),
-                           sep = ' <- ',
-                           collapse = '\n\n'),
-                     paste0('\n\n',
-                            bits[2],
-                            ' <- c(',
-                            paste(extent, collapse = ', '),
-                            ')\n'),
-                     '\nans <- ',
-                     call,
-                     collapse = '\n\n\n')
+
   
   return(list(extent = extent,
               occurrence.output = occurrence.output,
               covariate.output = covariate.output,
               process.output = process.output,
               model.output = model.output,
-              map.output = map.output,
-              workflow = workflow))
+              map.output = map.output))
 }
 
 
@@ -149,17 +145,6 @@ GetModule <- function(module){
 }
 
 
-#'small helper function to dump the code for a function to a text string
-#'
-#'@param object A function whose source code will be outputted as a string.
-#'
-#'@return Text string of the function
-#'@name GetSource
-#'
-
-GetSource <- function(object) {
-  paste(deparse(object), collapse = '\n')
-}
 
 
 #'Turn a function in the namespace into a module.
