@@ -1,0 +1,97 @@
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{An Introduction to the zoon package}
+-->
+
+An Introduction to the **zoon** package
+=======================================
+
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(out.extra='style="display:block; margin: auto"', fig.align="center")
+```
+
+
+Introduction
+------------
+
+
+**Zoon** is a package to aid reproducibility and between model comparisons in species distribution modelling. The aim is for each step in an analysis to be a 'module'. These modules will include: 
++ Data collection of occurrence and environmental covariate data from online databases. 
++ Preprocessing steps such as removal of spatial autocorrelation in the data or generation of background pseudoabsences.
++ The fitting of models.
++ Model diagnostics.
++ Model output and vizualisation.
+
+We aim for the creation of these modules to be as simple as possible.
+
+
+Basic usage
+----------------------------
+
+
+```{r methods}
+library(devtools)
+install_github('zoonproject/zoon')
+
+library(zoon)
+
+# define the extent in lat and long
+uk.extent <- c(xmin = -10,
+              xmax = 10,
+              ymin = 45,
+              ymax = 65)
+```
+
+
+
+```{r main analysis, eval=FALSE}
+# run a workflow, using the logistic regression model
+ans1 <- workflow(extent = uk.extent,
+                 occurrence.module = 'AnophelesPlumbeus',
+                 covariate.module = 'AirNCEP',
+                 process.module = 'OneHundredBackground',
+                 model.module = 'LogisticRegression',
+                 map.module = 'SameTimePlaceMap')
+
+# switch the model to a RandomForest
+ans2 <- workflow(extent = uk.extent,
+                 occurrence.module = 'AnophelesPlumbeus',
+                 covariate.module = 'AirNCEP',
+                 process.module = 'OneHundredBackground',
+                 model.module = 'RandomForest',
+                 map.module = 'SameTimePlaceMap')
+
+```
+Then we can have a look at our results
+
+
+```{r output, eval=FALSE}
+# look at the contents of these lists
+str(ans1, 1)
+str(ans2, 1)
+
+# plot the resulting maps
+par(mfrow = c(1, 2))
+
+plot(ans1$map,
+     zlim = c(0,1),
+     main = 'LR')
+
+points(ans1$occ[, 1:2],
+       pch = 16,
+       cex = 0.3)
+
+plot(ans2$map,
+     zlim = c(0,1),
+     main = 'RF')
+
+points(ans2$occ[, 1:2],
+       pch = 16,
+       cex = 0.3)
+```
+
+
+
+
