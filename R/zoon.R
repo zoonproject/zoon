@@ -87,7 +87,9 @@ workflow <- function(extent,
   occurrence <- GetModule(occurrence.module)
   covariate <- GetModule(covariate.module)
   process <- GetModule(process.module)
+  # Check for val type lon lat covs
   model <- GetModule(model.module)
+  # Test for predict method
   map.module <- GetModule(map.module)
 
   occurrence.output <- do.call(occurrence, list(extent))
@@ -185,8 +187,40 @@ BuildModule <- function(object, type, dir='.'){
 
   obj <- deparse(substitute(object))
           
-  write(paste0('# A zoon module\n #@', type), file = paste0(dir, '/', obj, '.R'))
+  write(paste0('# A zoon module\n# @', type), file = paste0(dir, '/', obj, '.R'))
   dump(c(obj), file = paste0(dir, '/', obj, '.R'), append=TRUE)
 }
   
+
+
+
+
+#'Turns named options into list ready to be used by workflow()
+#'
+#'@param module The module name or URL.
+#'@param ... Any other parameters or options needed by that  module.
+#'           All extra options must be named i.e. ModuleOptions('x', x=1)
+#'           Not ModuleOptions('x', 1).
+#'
+#'
+#'@return A list with all module options and the module name/URL in.
+#'@name ModuleOptions
+#'
+#'@export
+#'@examples print('No examples yet')
+
+ModuleOptions <- function(module, ...){
+  is.string(module)
+  options <- list(module=module, ...)
+  if('' %in% names(options)){
+    stop(paste0('Unnamed options in module ', module, ': All options must be named'))
+  }
+  
+  return(list(module=module, ...))
+}
+
+
+
+
+
 

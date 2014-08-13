@@ -30,7 +30,7 @@ We aim for the creation of these modules to be as simple as possible.
 Basic usage
 ----------------------------
 
-
+First install from github and set the geographic extent we are interested in.
 ```{r methods}
 library(devtools)
 install_github('zoonproject/zoon')
@@ -45,8 +45,10 @@ uk.extent <- c(xmin = -10,
 ```
 
 
+Then run two workflows. Both workflows use the module 'AnophelesPlumbeus' to get \emph{Anopheles plumbeus} records from GBIF. 'AirNCEP' then collects air temperature records from NCEP. The module 'OneHundredBackground' uses 100 random bakground points as our pseudoabsense data. 
 
-```{r main analysis, eval=FALSE}
+The two workflows run different SDMs. The first runs a logistic regression while the second runs a random forest. Finally, we use the module 'SomeTimePlaceMap' to predict occurence across the extent we already defined and for the present time.
+```{r main analysis, eval=TRUE}
 # run a workflow, using the logistic regression model
 ans1 <- workflow(extent = uk.extent,
                  occurrence.module = 'AnophelesPlumbeus',
@@ -64,10 +66,10 @@ ans2 <- workflow(extent = uk.extent,
                  map.module = 'SameTimePlaceMap')
 
 ```
-Then we can have a look at our results
+Then we can have a look at our results.
 
 
-```{r output, eval=FALSE}
+```{r output, eval=TRUE}
 # look at the contents of these lists
 str(ans1, 1)
 str(ans2, 1)
@@ -75,23 +77,28 @@ str(ans2, 1)
 # plot the resulting maps
 par(mfrow = c(1, 2))
 
-plot(ans1$map,
+plot(ans1$map.output,
      zlim = c(0,1),
      main = 'LR')
 
-points(ans1$occ[, 1:2],
+points(ans1$occurrence.output[, 1:2],
        pch = 16,
        cex = 0.3)
 
-plot(ans2$map,
+plot(ans2$map.output,
      zlim = c(0,1),
      main = 'RF')
 
-points(ans2$occ[, 1:2],
+points(ans2$occurrence.output[, 1:2],
        pch = 16,
        cex = 0.3)
 ```
 
+Some points to note about reproducibility. The whole output object should contain all the information needed to reproduce the analysis. So for example, the data is saved. Therefore, even if GBIF gets new data, the exact data used in this analysis is stored. 
+
+```{r storedData}
+head(ans1$occurrence.output)
+```
 
 
 

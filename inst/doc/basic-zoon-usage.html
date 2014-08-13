@@ -45,9 +45,6 @@ var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/<
 hljs.initHighlightingOnLoad();
 </script>
 
-<!-- MathJax scripts -->
-<script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
 
 
 <style type="text/css">
@@ -213,21 +210,20 @@ hr {
 
 <h2>Basic usage</h2>
 
+<p>First install from github and set the geographic extent we are interested in.</p>
+
 <pre><code class="r">library(devtools)
 install_github(&#39;zoonproject/zoon&#39;)
 </code></pre>
 
 <pre><code>## Installing github repo zoon/master from zoonproject
 ## Downloading master.zip from https://github.com/zoonproject/zoon/archive/master.zip
-## Installing package from /tmp/Rtmpm4LsIu/master.zip
+## Installing package from /tmp/RtmpaCg9fY/master.zip
 ## arguments &#39;minimized&#39; and &#39;invisible&#39; are for Windows only
 ## Installing zoon
 ## &#39;/usr/lib/R/bin/R&#39; --vanilla CMD INSTALL  \
-##   &#39;/tmp/Rtmpm4LsIu/devtools2702582bdb23/zoon-master&#39;  \
-##   --library=&#39;/home/tim/R/x86_64-pc-linux-gnu-library/3.1&#39;  \
-##   --install-tests 
-## 
-## Reloading installed zoon
+##   &#39;/tmp/RtmpaCg9fY/devtools111e7f33d4e8/zoon-master&#39;  \
+##   --library=&#39;/home/tim/R/i686-pc-linux-gnu-library/3.1&#39; --install-tests
 </code></pre>
 
 <pre><code class="r">library(zoon)
@@ -239,6 +235,10 @@ uk.extent &lt;- c(xmin = -10,
               ymax = 65)
 </code></pre>
 
+<p>Then run two workflows. Both workflows use the module &#39;AnophelesPlumbeus&#39; to get \emph{Anopheles plumbeus} records from GBIF. &#39;AirNCEP&#39; then collects air temperature records from NCEP. The module &#39;OneHundredBackground&#39; uses 100 random bakground points as our pseudoabsense data. </p>
+
+<p>The two workflows run different SDMs. The first runs a logistic regression while the second runs a random forest. Finally, we use the module &#39;SomeTimePlaceMap&#39; to predict occurence across the extent we already defined and for the present time.</p>
+
 <pre><code class="r"># run a workflow, using the logistic regression model
 ans1 &lt;- workflow(extent = uk.extent,
                  occurrence.module = &#39;AnophelesPlumbeus&#39;,
@@ -246,8 +246,61 @@ ans1 &lt;- workflow(extent = uk.extent,
                  process.module = &#39;OneHundredBackground&#39;,
                  model.module = &#39;LogisticRegression&#39;,
                  map.module = &#39;SameTimePlaceMap&#39;)
+</code></pre>
 
-# switch the model to a RandomForest
+<pre><code>## Loading required package: RCurl
+## Loading required package: bitops
+## Loading required package: dismo
+## Loading required package: raster
+## Loading required package: sp
+## Loading required package: XML
+</code></pre>
+
+<pre><code>## Anopheles plumbeus : 188 occurrences found
+## 1-188
+</code></pre>
+
+<pre><code>## Loading required package: RNCEP
+## Loading required package: abind
+## Loading required package: maps
+## Loading required package: fields
+## Loading required package: spam
+## Loading required package: grid
+## Spam version 0.41-0 (2014-02-26) is loaded.
+## Type &#39;help( Spam)&#39; or &#39;demo( spam)&#39; for a short introduction 
+## and overview of this package.
+## Help for individual functions is also obtained by adding the
+## suffix &#39;.spam&#39; to the function name, e.g. &#39;help( chol.spam)&#39;.
+## 
+## Attaching package: &#39;spam&#39;
+## 
+## The following objects are masked from &#39;package:base&#39;:
+## 
+##     backsolve, forwardsolve
+## 
+## Loading required package: tgp
+## Loading required package: fossil
+## Loading required package: shapefiles
+## Loading required package: foreign
+## 
+## Attaching package: &#39;shapefiles&#39;
+## 
+## The following objects are masked from &#39;package:foreign&#39;:
+## 
+##     read.dbf, write.dbf
+## 
+## Loading required package: tcltk
+## Loading required package: RColorBrewer
+</code></pre>
+
+<pre><code>## [1] Units of variable &#39;air&#39; are degK
+## [1] Units of variable &#39;air&#39; are degK
+</code></pre>
+
+<pre><code>## Warning: changed n to ncell of the mask (extent)
+</code></pre>
+
+<pre><code class="r"># switch the model to a RandomForest
 ans2 &lt;- workflow(extent = uk.extent,
                  occurrence.module = &#39;AnophelesPlumbeus&#39;,
                  covariate.module = &#39;AirNCEP&#39;,
@@ -256,30 +309,89 @@ ans2 &lt;- workflow(extent = uk.extent,
                  map.module = &#39;SameTimePlaceMap&#39;)
 </code></pre>
 
-<p>Then we can have a look at our results</p>
+<pre><code>## Anopheles plumbeus : 188 occurrences found
+## 1-188
+## [1] Units of variable &#39;air&#39; are degK
+## [1] Units of variable &#39;air&#39; are degK
+</code></pre>
+
+<pre><code>## Warning: changed n to ncell of the mask (extent)
+</code></pre>
+
+<pre><code>## Loading required package: randomForest
+## randomForest 4.6-10
+## Type rfNews() to see new features/changes/bug fixes.
+</code></pre>
+
+<pre><code>## Warning: The response has five or fewer unique values.  Are you sure you
+## want to do regression?
+</code></pre>
+
+<p>Then we can have a look at our results.</p>
 
 <pre><code class="r"># look at the contents of these lists
 str(ans1, 1)
-str(ans2, 1)
+</code></pre>
 
-# plot the resulting maps
+<pre><code>## List of 6
+##  $ extent           : Named num [1:4] -10 10 45 65
+##   ..- attr(*, &quot;names&quot;)= chr [1:4] &quot;xmin&quot; &quot;xmax&quot; &quot;ymin&quot; &quot;ymax&quot;
+##  $ occurrence.output:&#39;data.frame&#39;:   188 obs. of  4 variables:
+##  $ covariate.output :Formal class &#39;RasterLayer&#39; [package &quot;raster&quot;] with 12 slots
+##  $ process.output   :&#39;data.frame&#39;:   269 obs. of  5 variables:
+##  $ model.output     :List of 30
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;glm&quot; &quot;lm&quot;
+##  $ map.output       :Formal class &#39;RasterLayer&#39; [package &quot;raster&quot;] with 12 slots
+</code></pre>
+
+<pre><code class="r">str(ans2, 1)
+</code></pre>
+
+<pre><code>## List of 6
+##  $ extent           : Named num [1:4] -10 10 45 65
+##   ..- attr(*, &quot;names&quot;)= chr [1:4] &quot;xmin&quot; &quot;xmax&quot; &quot;ymin&quot; &quot;ymax&quot;
+##  $ occurrence.output:&#39;data.frame&#39;:   188 obs. of  4 variables:
+##  $ covariate.output :Formal class &#39;RasterLayer&#39; [package &quot;raster&quot;] with 12 slots
+##  $ process.output   :&#39;data.frame&#39;:   269 obs. of  5 variables:
+##  $ model.output     :List of 18
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;randomForest.formula&quot; &quot;randomForest&quot;
+##  $ map.output       :Formal class &#39;RasterLayer&#39; [package &quot;raster&quot;] with 12 slots
+</code></pre>
+
+<pre><code class="r"># plot the resulting maps
 par(mfrow = c(1, 2))
 
-plot(ans1$map,
+plot(ans1$map.output,
      zlim = c(0,1),
      main = &#39;LR&#39;)
 
-points(ans1$occ[, 1:2],
+points(ans1$occurrence.output[, 1:2],
        pch = 16,
        cex = 0.3)
 
-plot(ans2$map,
+plot(ans2$map.output,
      zlim = c(0,1),
      main = &#39;RF&#39;)
 
-points(ans2$occ[, 1:2],
+points(ans2$occurrence.output[, 1:2],
        pch = 16,
        cex = 0.3)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" title="plot of chunk output" alt="plot of chunk output" style="display:block; margin: auto" style="display: block; margin: auto;" /></p>
+
+<p>Some points to note about reproducibility. The whole output object should contain all the information needed to reproduce the analysis. So for example, the data is saved. Therefore, even if GBIF gets new data, the exact data used in this analysis is stored. </p>
+
+<pre><code class="r">head(ans1$occurrence.output)
+</code></pre>
+
+<pre><code>##      lon   lat value     type
+## 1 -6.282 53.32     1 presence
+## 2 -9.101 52.95     1 presence
+## 3 -6.282 53.32     1 presence
+## 4 -6.279 53.32     1 presence
+## 5 -5.835 54.64     1 presence
+## 6 -7.029 52.20     1 presence
 </code></pre>
 
 </body>
