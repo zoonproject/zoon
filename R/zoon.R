@@ -16,43 +16,30 @@
 #'      and better reproducibility
 #'@name zoon
 #'@docType package
-#'@import assertthat
+#'@import assertthat raster
 
 
 NULL
 
 
-# ~~~~~~~~~~~~
-# workflow wrapper function
-
-
-#' workflow wrapper function
+#' workhorse
 #'
-#'@param extent A numeric vector of length 4 giving the coordinates of the 
-#'      rectangular region within which to carry out the analysis, in the 
-#'      order: xmin, xmax, ymin, ymax.
 #'@param occurrence.module The name of the function (module) to be used to get occurence data
 #'@param covariate.module  The name of the function (module) to be used to get covariate data
 #'@param process.module The name of the function (module) to be used to process the data
 #'@param model.module The name of the SDM model function (module) to be used 
 #'@param map.module The name of the function (module) to be used to map output
 #'
-#'@return A list with the extent, the results of each module and a copy of the
+#'@return A list with the results of each module and a copy of the
 #'       code used to execute the workflow (what's there now should be source-able
 #'       though I'm sure there is a much neater approach than the one I took - the
 #'       ultimate aim would be a much nicer way of enhancing reproducibility).
 #'@export
 #'@name workflow
 #'@examples 
-#'# define the extent in lat and long
-#'uk.extent <- c(xmin = -10,
-#'              xmax = 10,
-#'              ymin = 45,
-#'              ymax = 65)
-#'
+
 #'# run a workflow, using the logistic regression model
-#'\dontrun{ans1 <- workflow(extent = uk.extent,
-#'                 occurrence.module = 'AnophelesPlumbeus',
+#'\dontrun{ans1 <- workflow(occurrence.module = 'AnophelesPlumbeus',
 #'                 covariate.module = 'AirNCEP',
 #'                 process.module = 'OneHundredBackground',
 #'                 model.module = 'LogisticRegression',
@@ -74,29 +61,36 @@ NULL
 #'}
 #'
 
-workflow <- function(extent,
-                     occurrence.module,
+workflow <- function(occurrence.module,
                      covariate.module,
                      process.module,
                      model.module,
-                     map.module) {
+                     output.module) {
   
+  # Check all modules are of same list structure
+  occurrence.module <- CheckModStructure(occurrence.module)
+  covariate.module <- CheckModStructure(covariate.module)
+  process.module <- CheckModStructure(process.module)
+  model.module <- CheckModStructure(model.module)
+  output.module <- CheckModStructure(output.module)
+  
+
   # Get the modules (functions) from github. 
   # Save name of functions as well as load functions into global namespace.
   # Will probably want to make this so it checks namespace first.
-  occurrence <- GetModule(occurrence.module)
-  covariate <- GetModule(covariate.module)
-  process <- GetModule(process.module)
+  occurrence <- GetModule(occurrence.module$module)
+  covariate <- GetModule(covariate.module$module)
+  process <- GetModule(process.module$module)
   # Check for val type lon lat covs
-  model <- GetModule(model.module)
+  model <- GetModule(model.module$module)
   # Test for predict method
-  map.module <- GetModule(map.module)
+  output.module <- GetModule(output.module$module)
 
-  occurrence.output <- do.call(occurrence, list(extent))
-  covariate.output <- do.call(covariate, list(extent))
-  process.output <- do.call(process, list(occurrence.output, covariate.output))
-  model.output <- do.call(model, list(process.output))
-  map.output <- do.call(map.module, list(model.output, covariate.output))
+  occurrence.output <- do.call(occurrence, occurrence.module[-1])
+  covariate.output <- do.call(covariate, covariate.module[-1])
+  process.output <- do.call(process, c(list(occurrence = occurrence.output, ras = covariate.output), process.module[-1]))
+  model.output <- do.call(model, c(list(process.output), model.module[-1]))
+  output <- do.call(output.module, c(list(model.output, covariate.output), output.module[-1]))
  
   # get the command used to call this function
   bits <- sys.call()
@@ -108,12 +102,11 @@ workflow <- function(extent,
   
 
   
-  return(list(extent = extent,
-              occurrence.output = occurrence.output,
+  return(list(occurrence.output = occurrence.output,
               covariate.output = covariate.output,
               process.output = process.output,
               model.output = model.output,
-              map.output = map.output))
+              output = output))
 }
 
 
@@ -149,49 +142,6 @@ GetModule <- function(module){
 
 
 
-#'Turn a function in the namespace into a module.
-#'Will later add functions to upload module to figshare etc.
-#'And add testing that the module name is unique.
-#'
-#'@param object A function that will be made into a module file.
-#'@param dir The directory to put the module into (defaults to the
-#'      working directory.
-#'@param type A string that defines the type of module. Possible module types
-#'      are occurence, covariate, process, model, diagnostic and output.
-#'
-#'@return NULL. Outputs a file
-#'@name BuildModule
-#'
-#'@export
-#'@examples # Define some module function
-#' NewModule <- function(extent){ 
-#'   covs <- as.data.frame(df[, 5:ncol(df)])
-#'   names(covs) <- names(df)[5:ncol(df)]
-#'   m <- glm(df$value ~ .,
-#'         data = covs,
-#'         family = binomial)
-#'  
-#'   return (m)
-#' }
-#' 
-#' # Then build it into a module file.
-#' BuildModule(NewModule, type = 'process', dir='~/Desktop')
-#'
-#'
-
-BuildModule <- function(object, type, dir='.'){
-  assert_that(is(object, 'function'))
-  is.writeable(dir)
-  type <- tolower(type)
-  assert_that(type %in% c('occurrence', 'covariate', 'process', 'model', 'diagnostic', 'output'))
-
-  obj <- deparse(substitute(object))
-          
-  write(paste0('# A zoon module\n# @', type), file = paste0(dir, '/', obj, '.R'))
-  dump(c(obj), file = paste0(dir, '/', obj, '.R'), append=TRUE)
-}
-  
-
 
 
 
@@ -221,6 +171,15 @@ ModuleOptions <- function(module, ...){
 
 
 
+# Helper to check if module is in structure of ModuleOptions() list
+# And convert otherwise.
+
+CheckModStructure <- function(x){
+  if(is.string(x)){
+      x <- ModuleOptions(x)
+  }
+  return(x)
+}
 
 
 
