@@ -28,7 +28,7 @@ NULL
 #'@param covariate.module  The name of the function (module) to be used to get covariate data
 #'@param process.module The name of the function (module) to be used to process the data
 #'@param model.module The name of the SDM model function (module) to be used 
-#'@param map.module The name of the function (module) to be used to map output
+#'@param output.module The name of the function (module) to be used to map output
 #'
 #'@return A list with the results of each module and a copy of the
 #'       code used to execute the workflow (what's there now should be source-able

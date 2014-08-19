@@ -3,36 +3,34 @@ library(knitr)
 opts_chunk$set(out.extra='style="display:block; margin: auto"', fig.align="center")
 
 ## ----methods-------------------------------------------------------------
-library(devtools)
-install_github('zoonproject/zoon')
+#library(devtools)
+#install_github('zoonproject/zoon')
 
 library(zoon)
 
-# define the extent in lat and long
-uk.extent <- c(xmin = -10,
-              xmax = 10,
-              ymin = 45,
-              ymax = 65)
-
-## ----main analysis, eval=TRUE--------------------------------------------
+## ----main analysis, eval=TRUE, cache=FALSE-------------------------------
 # run a workflow, using the logistic regression model
-ans1 <- workflow(extent = uk.extent,
-                 occurrence.module = 'AnophelesPlumbeus',
-                 covariate.module = 'AirNCEP',
+ans1 <- workflow(occurrence.module = 'UKAnophelesPlumbeus',
+                 covariate.module = 'UKAir',
                  process.module = 'OneHundredBackground',
                  model.module = 'LogisticRegression',
-                 map.module = 'SameTimePlaceMap')
+                 output.module = 'SameTimePlaceMap')
 
 # switch the model to a RandomForest
-ans2 <- workflow(extent = uk.extent,
-                 occurrence.module = 'AnophelesPlumbeus',
-                 covariate.module = 'AirNCEP',
+ans2 <- workflow(occurrence.module = 'UKAnophelesPlumbeus',
+                 covariate.module = 'UKAir',
                  process.module = 'OneHundredBackground',
                  model.module = 'RandomForest',
-                 map.module = 'SameTimePlaceMap')
+                 output.module = 'SameTimePlaceMap')
+
+#ans2 <- workflow(occurrence.module = ModuleOptions('SpOcc', species = 'Anopheles plumbeus', extent = c(-10, 10, 45, 65)),
+#                 covariate.module = 'UKAir',
+#                 process.module = 'OneHundredBackground',
+#                 model.module = 'RandomForest',
+#                 output.module = 'SameTimePlaceMap')
 
 
-## ----output, eval=TRUE---------------------------------------------------
+## ----output, eval=TRUE, cache=TRUE---------------------------------------
 # look at the contents of these lists
 str(ans1, 1)
 str(ans2, 1)
@@ -40,7 +38,7 @@ str(ans2, 1)
 # plot the resulting maps
 par(mfrow = c(1, 2))
 
-plot(ans1$map.output,
+plot(ans1$output,
      zlim = c(0,1),
      main = 'LR')
 
@@ -48,7 +46,7 @@ points(ans1$occurrence.output[, 1:2],
        pch = 16,
        cex = 0.3)
 
-plot(ans2$map.output,
+plot(ans2$output,
      zlim = c(0,1),
      main = 'RF')
 

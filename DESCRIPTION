@@ -25,6 +25,10 @@ Description: This is a *really* rough sketch of a modular structure for the
 License: BSD 3-clause
 Imports:
     assertthat
+Depends:
+    raster
 Suggests:
     knitr
 VignetteBuilder: knitr
+LazyData: true
+URL: https://github.com/zoonproject/zoon

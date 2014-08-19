@@ -15,7 +15,7 @@ workflow(occurrence.module, covariate.module, process.module, model.module,
 
 \item{model.module}{The name of the SDM model function (module) to be used}
 
-\item{map.module}{The name of the function (module) to be used to map output}
+\item{output.module}{The name of the function (module) to be used to map output}
 }
 \value{
 A list with the results of each module and a copy of the
