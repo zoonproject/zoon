@@ -28,7 +28,8 @@ Imports:
 Depends:
     raster
 Suggests:
-    knitr
+    knitr,
+    testthat
 VignetteBuilder: knitr
 LazyData: true
 URL: https://github.com/zoonproject/zoon
