@@ -10,24 +10,24 @@ library(zoon)
 
 ## ----main analysis, eval=TRUE, cache=FALSE-------------------------------
 # run a workflow, using the logistic regression model
-ans1 <- workflow(occurrence.module = 'UKAnophelesPlumbeus',
-                 covariate.module = 'UKAir',
-                 process.module = 'OneHundredBackground',
-                 model.module = 'LogisticRegression',
-                 output.module = 'SameTimePlaceMap')
+ans1 <- workflow(occurMod = 'UKAnophelesPlumbeus',
+                 covarMod = 'UKAir',
+                 procMod = 'OneHundredBackground',
+                 modelMod = 'LogisticRegression',
+                 outMod = 'SameTimePlaceMap')
 
 # switch the model to a RandomForest
-ans2 <- workflow(occurrence.module = 'UKAnophelesPlumbeus',
-                 covariate.module = 'UKAir',
-                 process.module = 'OneHundredBackground',
-                 model.module = 'RandomForest',
-                 output.module = 'SameTimePlaceMap')
+ans2 <- workflow(occurMod = 'UKAnophelesPlumbeus',
+                 covarMod = 'UKAir',
+                 procMod = 'OneHundredBackground',
+                 modelMod = 'RandomForest',
+                 outMod = 'SameTimePlaceMap')
 
-#ans2 <- workflow(occurrence.module = ModuleOptions('SpOcc', species = 'Anopheles plumbeus', extent = c(-10, 10, 45, 65)),
-#                 covariate.module = 'UKAir',
-#                 process.module = 'OneHundredBackground',
-#                 model.module = 'RandomForest',
-#                 output.module = 'SameTimePlaceMap')
+#ans2 <- workflow(occurMod = ModuleOptions('SpOcc', species = 'Anopheles plumbeus', extent = c(-10, 10, 45, 65)),
+#                 covarMod = 'UKAir',
+#                 procMod = 'OneHundredBackground',
+#                 modelMod = 'RandomForest',
+#                 outMod = 'SameTimePlaceMap')
 
 
 ## ----output, eval=TRUE, cache=TRUE---------------------------------------

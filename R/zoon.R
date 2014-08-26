@@ -24,7 +24,7 @@ NULL
 
 #' workhorse
 #'
-#'@param occurrence.module The name of the function (module) to be used to get occurence data
+#'@param occurMod The name of the function (module) to be used to get occurence data
 #'@param covariate.module  The name of the function (module) to be used to get covariate data
 #'@param process.module The name of the function (module) to be used to process the data
 #'@param model.module The name of the SDM model function (module) to be used 
@@ -39,11 +39,11 @@ NULL
 #'@examples 
 
 #'# run a workflow, using the logistic regression model
-#'\dontrun{ans1 <- workflow(occurrence.module = 'AnophelesPlumbeus',
-#'                 covariate.module = 'AirNCEP',
-#'                 process.module = 'OneHundredBackground',
-#'                 model.module = 'LogisticRegression',
-#'                 map.module = 'SameTimePlaceMap')
+#'\dontrun{ans1 <- workflow(occurMod = 'AnophelesPlumbeus',
+#'                 covarMod = 'AirNCEP',
+#'                 procMod = 'OneHundredBackground',
+#'                 modelMod = 'LogisticRegression',
+#'                 outMod = 'SameTimePlaceMap')
 #'
 #'str(ans1, 1)
 #'
@@ -61,18 +61,25 @@ NULL
 #'}
 #'
 
-workflow <- function(occurrence.module,
-                     covariate.module,
-                     process.module,
-                     model.module,
-                     output.module) {
+#install.packages('devtools')
+#library(devtools)
+
+#install_github('zoonproject/zoon')
+#library(zoon)
+
+
+workflow <- function(occurMod,
+                     covarMod,
+                     procMod,
+                     modelMod,
+                     outMod) {
   
   # Check all modules are of same list structure
-  occurrence.module <- CheckModStructure(occurrence.module)
-  covariate.module <- CheckModStructure(covariate.module)
-  process.module <- CheckModStructure(process.module)
-  model.module <- CheckModStructure(model.module)
-  output.module <- CheckModStructure(output.module)
+  occurrence.module <- CheckModStructure(occurMod)
+  covariate.module <- CheckModStructure(covarMod)
+  process.module <- CheckModStructure(procMod)
+  model.module <- CheckModStructure(modelMod)
+  output.module <- CheckModStructure(outMod)
   
 
   # Get the modules (functions) from github. 
@@ -133,6 +140,7 @@ GetModule <- function(module){
   } else {
     stop('Cannot find the module. Check the URL or check that the module is at github.com/zoonproject')
   }
+  # Probably do one environment up (i.e. in workflow environment) parent
   eval(txt, envir = .GlobalEnv)
   eval(txt)
   new.func.name <- ls()[!ls() %in% c('module', 'txt', 'zoonURL')]
