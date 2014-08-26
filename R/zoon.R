@@ -24,11 +24,11 @@ NULL
 
 #' This is the main function in zoon. A full SDM workflow can be called with this function. 
 #'
-#'@param occurrence.module The name of the function (module) to be used to get occurence data
-#'@param covariate.module  The name of the function (module) to be used to get covariate data
-#'@param process.module The name of the function (module) to be used to process the data
-#'@param model.module The name of the SDM model function (module) to be used 
-#'@param output.module The name of the function (module) to be used to map output
+#'@param occurMod The name of the function (module) to be used to get occurence data
+#'@param covarMod  The name of the function (module) to be used to get covariate data
+#'@param procMod The name of the function (module) to be used to process the data
+#'@param modelMod The name of the SDM model function (module) to be used 
+#'@param outMod The name of the function (module) to be used to map output
 #'
 #'@return A list with the results of each module and a copy of the
 #'       code used to execute the workflow (what's there now should be source-able
@@ -39,11 +39,11 @@ NULL
 #'@examples 
 
 #'# run a workflow, using the logistic regression model
-#'\dontrun{ans1 <- workflow(occurrence.module = 'AnophelesPlumbeus',
-#'                 covariate.module = 'AirNCEP',
-#'                 process.module = 'OneHundredBackground',
-#'                 model.module = 'LogisticRegression',
-#'                 map.module = 'SameTimePlaceMap')
+#'\dontrun{ans1 <- workflow(occurMod = 'AnophelesPlumbeus',
+#'                 covarMod = 'AirNCEP',
+#'                 procMod = 'OneHundredBackground',
+#'                 modelMod = 'LogisticRegression',
+#'                 outMod = 'SameTimePlaceMap')
 #'
 #'str(ans1, 1)
 #'
@@ -61,18 +61,18 @@ NULL
 #'}
 #'
 
-workflow <- function(occurrence.module,
-                     covariate.module,
-                     process.module,
-                     model.module,
-                     output.module) {
+workflow <- function(occurMod,
+                     covarMod,
+                     procMod,
+                     modelMod,
+                     outMod) {
   
   # Check all modules are of same list structure
-  occurrence.module <- CheckModStructure(occurrence.module)
-  covariate.module <- CheckModStructure(covariate.module)
-  process.module <- CheckModStructure(process.module)
-  model.module <- CheckModStructure(model.module)
-  output.module <- CheckModStructure(output.module)
+  occurrence.module <- CheckModStructure(occurMod)
+  covariate.module <- CheckModStructure(covarMod)
+  process.module <- CheckModStructure(procMod)
+  model.module <- CheckModStructure(modelMod)
+  output.module <- CheckModStructure(outMod)
   
 
   # Get the modules (functions) from github. 
@@ -176,10 +176,23 @@ ModuleOptions <- function(module, ...){
 
 CheckModStructure <- function(x){
   if(is.string(x)){
-      x <- ModuleOptions(x)
+    x <- list(ModuleOptions(x))
+  } else if(is.list(x) & !is.null(names(x[1]))){
+           if(names(x[1]) == 'module') {
+             x <- list(x)
+           }         
+  } else {
+    for(i in 1:length(x)){
+      if(is.character(x[[i]])){
+        x[[i]] <- ModuleOptions(x[[i]])
+      } else if(names(x[[i]][1]) == 'module'){
+        x[[i]] <- x[[i]]
+      } else {
+        stop('Unexpected format of module information')
+      }
+    }
   }
   return(x)
 }
-
 
 
