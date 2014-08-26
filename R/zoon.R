@@ -22,7 +22,7 @@
 NULL
 
 
-#' workhorse
+#' This is the main function in zoon. A full SDM workflow can be called with this function. 
 #'
 #'@param occurrence.module The name of the function (module) to be used to get occurence data
 #'@param covariate.module  The name of the function (module) to be used to get covariate data
@@ -89,7 +89,7 @@ workflow <- function(occurrence.module,
   occurrence.output <- do.call(occurrence, occurrence.module[-1])
   covariate.output <- do.call(covariate, covariate.module[-1])
   process.output <- do.call(process, c(list(occurrence = occurrence.output, ras = covariate.output), process.module[-1]))
-  model.output <- do.call(model, c(list(process.output), model.module[-1]))
+  model.output <- do.call(model, c(df = list(process.output), model.module[-1]))
   output <- do.call(output.module, c(list(model.output, covariate.output), output.module[-1]))
  
   # get the command used to call this function

@@ -1,17 +1,13 @@
 
-#'Turns named options into list ready to be used by workflow()
-#'
-#'@param module The module name or URL.
-#'@param ... Any other parameters or options needed by that  module.
-#'           All extra options must be named i.e. ModuleOptions('x', x=1)
-#'           Not ModuleOptions('x', 1).
+#'Get a list of all the modules available on the github repo.
 #'
 #'
-#'@return A list with all module options and the module name/URL in.
-#'@name ModuleOptions
+#'
+#'@return A list with all module names.
+#'@name GetModuleList
 #'
 #'@export
-#'@examples print('No examples yet')
+#'@examples GetModuleList()
 
 GetModuleList <- function(){
 
@@ -41,8 +37,9 @@ make_url <- function(owner, repo, sha) {
   sprintf("https://api.github.com/repos/%s/%s/git/trees/%s?recursive=1", owner, repo, sha)
 }
 
+#probably should keep the secret in here, but can't work out how to fix it right now.
 gh_list_files <- function(owner, repo, ...) {
-  token <- github_auth(appname = "zoonproject", key = "945195231bd7edd336c9")
+  token <- github_auth(appname = "zoonproject", key = "945195231bd7edd336c9", secret = 'd43d121439b081db59e5f0852e25712294128e2f')
 
   sha <- FindNewestCommit(owner, rep, token)
   

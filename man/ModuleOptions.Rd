@@ -4,7 +4,7 @@
 \alias{ModuleOptions}
 \title{Turns named options into list ready to be used by workflow()}
 \usage{
-GetModuleList(type = "NULL")
+GetModuleList()
 
 ModuleOptions(module, ...)
 }
