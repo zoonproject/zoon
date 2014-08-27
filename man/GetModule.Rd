@@ -3,15 +3,14 @@
 \alias{GetModule}
 \title{A function to get a module function.
 It assumes the module is in github.com/zoonproject unless it is a full url
-or a half url when it assumes the module is in another github repo.
 Assigns the function to the global environment.}
 \usage{
 GetModule(module)
 }
 \arguments{
-\item{module}{A string that describes the location of the R file.
-     Assumed to be in the zoonproject/modules repo unless name/repo/module.r
-     given.}
+\item{module}{A string that describes the location of the R file. Can be a
+     module name assuming the module is in github.com/zoonproject/modules.
+     Otherwise can be a full URL or a local file.}
 }
 \value{
 Name of the function. Adds function to global namespace.
@@ -19,7 +18,6 @@ Name of the function. Adds function to global namespace.
 \description{
 A function to get a module function.
 It assumes the module is in github.com/zoonproject unless it is a full url
-or a half url when it assumes the module is in another github repo.
 Assigns the function to the global environment.
 }
 

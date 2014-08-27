@@ -7,7 +7,7 @@
 #'@name GetModuleList
 #'
 #'@export
-#'@examples GetModuleList()
+#'@examples \dontrun{GetModuleList()}
 
 GetModuleList <- function(){
 
