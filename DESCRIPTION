@@ -22,7 +22,7 @@ Description: This is a *really* rough sketch of a modular structure for the
     Clearly this is very simplistic, obvious next steps include modules for
     validation statistics and plots, the ability to predict to different
     covariate rasters than are used to train the model, etc.
-License: BSD 3-clause
+License: BSD_3_clause + file LICENSE.md
 Imports:
     assertthat
 Depends:
