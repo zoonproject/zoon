@@ -81,7 +81,6 @@ workflow <- function(occurMod,
   model.module <- CheckModStructure(modelMod)
   output.module <- CheckModStructure(outMod)
   
-
   # Get the modules (functions) from github. 
   # Save name of functions as well as load functions into global namespace.
   # Will probably want to make this so it checks namespace first.
@@ -119,12 +118,11 @@ workflow <- function(occurMod,
 
 #'A function to get a module function.
 #'It assumes the module is in github.com/zoonproject unless it is a full url
-#'or a half url when it assumes the module is in another github repo.
 #'Assigns the function to the global environment.
 #'
-#'@param module A string that describes the location of the R file. 
-#'      Assumed to be in the zoonproject/modules repo unless name/repo/module.r 
-#'      given.
+#'@param module A string that describes the location of the R file. Can be a
+#'      module name assuming the module is in github.com/zoonproject/modules.
+#'      Otherwise can be a full URL or a local file.
 #'
 #'@return Name of the function. Adds function to global namespace.
 #'@name GetModule
@@ -133,7 +131,9 @@ workflow <- function(occurMod,
 GetModule <- function(module){
   require(RCurl)
   zoonURL <- paste0('https://raw.githubusercontent.com/zoonproject/modules/master/R/', module, '.R')
-  if (url.exists(zoonURL)){
+  if(file.exists(module)){
+    txt <- parse(text = paste(readLines(module), collapse="\n"))
+  } else if (url.exists(zoonURL)){
     txt <- parse(text = getURL(zoonURL, ssl.verifypeer=FALSE))
   } else if (url.exists(module)){
     txt <- parse( text = getURL(module, ssl.verifypeer=FALSE))
