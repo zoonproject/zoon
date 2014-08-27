@@ -141,13 +141,11 @@ GetModule <- function(module){
     stop('Cannot find the module. Check the URL or check that the module is at github.com/zoonproject')
   }
   # Probably do one environment up (i.e. in workflow environment) parent
-  eval(txt, envir = .GlobalEnv)
+  eval(txt, envir = parent.frame(1))
   eval(txt)
   new.func.name <- ls()[!ls() %in% c('module', 'txt', 'zoonURL')]
   return(new.func.name)
 }
-
-
 
 
 
