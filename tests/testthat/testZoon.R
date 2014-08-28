@@ -30,7 +30,7 @@ test_that('GetModule tests', {
     return(class(NoProcess))
   }
 
-  expect_error(GetModule('xxx'), 'Cannot find the module. Check the URL or check that the module is at github.com/zoonproject')
+  expect_error(GetModule('xxx'))
   expect_that(GetModule(file), equals('TestModule'))
   expect_that(TestWorkflow(), equals('function'))
   expect_that(GetModule('NoProcess'), equals('NoProcess'))
@@ -44,4 +44,15 @@ test_that('GetModule tests', {
 })
 
 
-
+test_that('Module Options tests', {
+  
+  options <- ModuleOptions('ANamedModule', para1 = 2, para2 = 'AValue')
+  optList <- list(module = 'ANamedModule', para1 = 2, para2 = 'AValue')
+  AModule <- function(){ x <- 2 }
+  
+  expect_identical(ModuleOptions('ANamedModule'), list(module='ANamedModule'))
+  expect_identical(options, optList)
+  expect_error(ModuleOptions('ANamedModule', 2, 'AValue'))
+  expect_error(ModuleOptions(234))
+  expect_error(ModuleOptions(AModule))
+})
