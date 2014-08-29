@@ -10,6 +10,7 @@ test_that('CheckModStructure test', {
 
 
 test_that('GetModule tests', {
+  # Create local module in working directory to test load.
   write('#test file for zoon package\n TestModule <- function(){z <- 2}', file = 'TestModule.R')
   file <- paste0(getwd(), '/TestModule.R')
 
