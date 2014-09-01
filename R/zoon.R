@@ -192,19 +192,17 @@ CheckModStructure <- function(x){
 # Helper to sort modules into lists.
 
 CheckModList <- function(x){
-	if (!is.list(x)){
-		ModuleList <- list(CheckModStructure(x))
-	} else if (length(names(x[1])) == 1){
-		if (names(x[1]) == 'module'){
-			ModuleList <- list(x)
-		}
-	} else {
-		ModuleList <- lapply(x, CheckModStructure)
-	}
+  if (!is.list(x)){
+    ModuleList <- list(CheckModStructure(x))
+  } else if (identical(names(x[1], 'module'))){
+    ModuleList <- list(x)
+  } else {
+    ModuleList <- lapply(x, CheckModStructure)
+  }
 
-	return(ModuleList)
+  return(ModuleList)
 }
-	
+  
 
 
 
