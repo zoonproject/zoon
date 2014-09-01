@@ -131,7 +131,7 @@ workflow <- function(occurMod,
 GetModule <- function(module){
   require(RCurl)
   zoonURL <- paste0('https://raw.githubusercontent.com/zoonproject/modules/master/R/', module, '.R')
-  if(file.exists(module)){
+  if (file.exists(module)){
     txt <- parse(text = paste(readLines(module), collapse="\n"))
   } else if (url.exists(zoonURL)){
     txt <- parse(text = getURL(zoonURL, ssl.verifypeer=FALSE))
@@ -168,7 +168,7 @@ GetModule <- function(module){
 ModuleOptions <- function(module, ...){
   is.string(module)
   options <- list(module=module, ...)
-  if('' %in% names(options)){
+  if ('' %in% names(options)){
     stop(paste0('Unnamed options in module ', module, ': All options must be named'))
   }
   
@@ -181,11 +181,30 @@ ModuleOptions <- function(module, ...){
 # And convert otherwise.
 
 CheckModStructure <- function(x){
-  if(is.string(x)){
+  if (is.string(x)){
       x <- ModuleOptions(x)
   }
   return(x)
 }
+
+
+
+# Helper to sort modules into lists.
+
+CheckModList <- function(x){
+	if (!is.list(x)){
+		ModuleList <- list(CheckModStructure(x))
+	} else if (length(names(x[1])) == 1){
+		if (names(x[1]) == 'module'){
+			ModuleList <- list(x)
+		}
+	} else {
+		ModuleList <- lapply(x, CheckModStructure)
+	}
+
+	return(ModuleList)
+}
+	
 
 
 
