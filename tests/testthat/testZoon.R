@@ -2,10 +2,36 @@ context('Most functions NOT including main workflow function.')
 
 # CheckModStructure tests
 
-test_that('CheckModStructure test', {
+test_that('CheckModStructure works', {
   expect_that(CheckModStructure('XXXX'), equals(list(module='XXXX')))
   expect_that(CheckModStructure(CheckModStructure('XXX')), equals(CheckModStructure('XXX')))
 })
+
+
+# CheckModList tests
+
+test_that('CheckModList works.', {
+	a <- 'mod'
+	b <- ModuleOptions('mod', para='pm')
+  c <- list('mod1', 'mod2')
+	d <- list(ModuleOptions('mod', para='pm'), 'mod2')
+	e <- list(ModuleOptions('mod1', para='pm'), ModuleOptions('mod2', para='pm'))
+
+	expect_true(all(sapply(CheckModList(a), function(l) names(l[1]) == 'module')))
+	expect_true(all(sapply(CheckModList(b), function(l) names(l[1]) == 'module')))
+	expect_true(all(sapply(CheckModList(c), function(l) names(l[1]) == 'module')))
+	expect_true(all(sapply(CheckModList(d), function(l) names(l[1]) == 'module')))
+	expect_true(all(sapply(CheckModList(e), function(l) names(l[1]) == 'module')))
+
+	expect_equal(length(CheckModList(a)), 1)
+	expect_equal(length(CheckModList(b)), 1)
+	expect_equal(length(CheckModList(c)), 2)
+	expect_equal(length(CheckModList(d)), 2)
+	expect_equal(length(CheckModList(e)), 2)
+
+
+})
+
 
 
 

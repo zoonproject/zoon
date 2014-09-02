@@ -73,30 +73,79 @@ workflow <- function(occurMod,
                      procMod,
                      modelMod,
                      outMod) {
-  
+ 
   # Check all modules are of same list structure
-  occurrence.module <- CheckModStructure(occurMod)
-  covariate.module <- CheckModStructure(covarMod)
-  process.module <- CheckModStructure(procMod)
-  model.module <- CheckModStructure(modelMod)
-  output.module <- CheckModStructure(outMod)
+
+  # Check all modules are of same list structure
+  occurrence.module <- CheckModList(occurMod)
+  covariate.module <- CheckModList(covarMod)
+  process.module <- CheckModList(procMod)
+  model.module <- CheckModList(modelMod)
+  output.module <- CheckModList(outMod)
   
+  # Only one of occurrence, covariate, process and model can be a list of mulitple modules.
+  NoOfModules <- sapply(list(occurrence.module, covariate.module, process.module, model.module, output.module), length)
+  if(sum(NoOfModules > 1) > 1){
+    stop('Only one of occurrence, process and model modules can be a list of mulitple modules.')
+  }
+  
+
   # Get the modules (functions) from github. 
   # Save name of functions as well as load functions into global namespace.
   # Will probably want to make this so it checks namespace first.
-  occurrence <- GetModule(occurrence.module$module)
-  covariate <- GetModule(covariate.module$module)
-  process <- GetModule(process.module$module)
+  occurrence <- lapply(occurrence.module, function(x) GetModule(x$module))
+  covariate <- lapply(covariate.module, function(x) GetModule(x$module))
+  process <- lapply(process.module, function(x) GetModule(x$module))
   # Check for val type lon lat covs
-  model <- GetModule(model.module$module)
+  model <- lapply(model.module, function(x) GetModule(x$module))
   # Test for predict method
-  output.module <- GetModule(output.module$module)
+  output <-  lapply(output.module, function(x) GetModule(x$module)) 
 
-  occurrence.output <- do.call(occurrence, occurrence.module[-1])
-  covariate.output <- do.call(covariate, covariate.module[-1])
-  process.output <- do.call(process, c(list(occurrence = occurrence.output, ras = covariate.output), process.module[-1]))
-  model.output <- do.call(model, c(df = list(process.output), model.module[-1]))
-  output <- do.call(output.module, c(list(model.output, covariate.output), output.module[-1]))
+
+  # stack(lapply(covariate.module, function(x) do.call(x[[1]], x[-1]))) Not needed
+  # now but is basis for CovarDaisyChain()
+
+  # Run the modules.
+  # First the data collection modules
+  occurrence.output <- lapply(occurrence.module, function(x) do.call(x[[1]], x[-1]))
+  covariate.output <- lapply(covariate.module, function(x) do.call(x[[1]], x[-1]))
+  
+  # We have to use lapply over a different list depending on whether occurrence,
+  # covariate or process has multiple modules
+
+  if (length(process.module) > 1){
+    process.output <- lapply(process.module, function(x) do.call(x[[1]], 
+      c(list(occurrence = occurrence.output[[1]], ras = covariate.output[[1]]), x[-1])))
+  } else if (length(covariate.module) > 1){
+    process.output <- lapply(covariate.output, function(x) do.call(process[[1]], 
+      c(list(occurrence = occurrence.output[[1]], ras = x), process.module[[1]][-1])))
+  } else {
+    process.output <- lapply(occurrence.output, function(x) do.call(process[[1]], 
+      c(list(occurrence = x, ras = covariate.output[[1]]), process.module[[1]][-1])))
+  }
+  
+  # Model module
+
+  if (length(model.module) > 1){
+    model.output <- lapply(model.module, function(x) do.call(x[[1]], 
+       c(df = list(process.output[[1]]), x[-1])))
+  } else {
+    model.output <- lapply(process.output, function(x) do.call(model[[1]], 
+       c(df = list(x), model.module[[1]][-1])))
+  }
+
+  #output module
+  if (length(output.module) > 1){
+    output.output <- lapply(output.module, function(x) do.call(x[[1]], 
+       c(list(model.output[[1]], covariate.output[[1]]), x[-1])))
+  } else if (length(covariate.module) > 1){
+    output.output <- lapply(covariate.output, function(x) do.call(output[[1]], 
+       c(list(model.output[[1]], x), output.module[[1]][-1])))    
+  } else {
+    output.output <- lapply(model.output, function(x) do.call(output[[1]], 
+       c(list(x, covariate.output[[1]]), output.module[[1]][-1])))
+  }
+
  
   # get the command used to call this function
   bits <- sys.call()
@@ -112,7 +161,7 @@ workflow <- function(occurMod,
               covariate.output = covariate.output,
               process.output = process.output,
               model.output = model.output,
-              output = output))
+              output.output = output.output))
 }
 
 
@@ -147,7 +196,7 @@ GetModule <- function(module){
   return(new.func.name)
 }
 
-
+s
 
 
 
@@ -194,7 +243,7 @@ CheckModStructure <- function(x){
 CheckModList <- function(x){
   if (!is.list(x)){
     ModuleList <- list(CheckModStructure(x))
-  } else if (identical(names(x[1], 'module'))){
+  } else if (identical(names(x[1]), 'module')){
     ModuleList <- list(x)
   } else {
     ModuleList <- lapply(x, CheckModStructure)
