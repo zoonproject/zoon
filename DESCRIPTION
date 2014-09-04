@@ -24,7 +24,8 @@ Description: This is a *really* rough sketch of a modular structure for the
     covariate rasters than are used to train the model, etc.
 License: BSD_3_clause + file LICENSE.md
 Imports:
-    assertthat
+    assertthat,
+    rlist
 Depends:
     raster
 Suggests:

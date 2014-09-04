@@ -1,7 +1,7 @@
 
 context('Test workflow function.')
 
-test_that('simple, local data workflow works.', {
+test_that('simple, package data workflow works.', {
   work1 <- workflow(occurMod = 'UKAnophelesPlumbeus',
                  covarMod = 'UKAir',
                  procMod = 'OneHundredBackground',
@@ -34,9 +34,9 @@ test_that('modules downloading data work', {
   expect_is(work2$occurrence.output[[1]], 'data.frame')
   expect_equal(names(work2$occurrence.output[[1]]), c('longitude', 'latitude', 'value', 'type'))
   expect_true(all(work2$occurrence.output[[1]][,'longitude'] < 20))
-  expect_true(all(all(work2$occurrence.output[[1]][,'longitude'] > -20))
+  expect_true(all(work2$occurrence.output[[1]][,'longitude'] > -20))
   expect_true(all(work2$occurrence.output[[1]][,'latitude'] < 65))
-  expect_true(all(all(work2$occurrence.output[[1]][,'latitude'] > 45)))
+  expect_true(all(work2$occurrence.output[[1]][,'latitude'] > 45))
   expect_true(all(work2$occurrence.output[[1]][,'type']=='presence'))
   expect_is(work2$covariate.output[[1]], 'RasterStack')
   expect_is(work2$model.output[[1]], 'randomForest')
@@ -59,7 +59,7 @@ test_that('collecting modules with names and urls is equivelent.', {
 
 expect_equal(workNames, workURLs)
 
-}
+})
 
 
 

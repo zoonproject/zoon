@@ -16,7 +16,7 @@
 #'      and better reproducibility
 #'@name zoon
 #'@docType package
-#'@import assertthat raster
+#'@import assertthat raster rlist
 
 
 NULL
@@ -61,13 +61,6 @@ NULL
 #'}
 #'
 
-#install.packages('devtools')
-#library(devtools)
-
-#install_github('zoonproject/zoon')
-#library(zoon)
-
-
 workflow <- function(occurMod,
                      covarMod,
                      procMod,
@@ -93,13 +86,13 @@ workflow <- function(occurMod,
   # Get the modules (functions) from github. 
   # Save name of functions as well as load functions into global namespace.
   # Will probably want to make this so it checks namespace first.
-  occurrence <- lapply(occurrence.module, function(x) GetModule(x$module))
-  covariate <- lapply(covariate.module, function(x) GetModule(x$module))
-  process <- lapply(process.module, function(x) GetModule(x$module))
+  occurrence <- GetModules(occurrence.module) 
+  covariate <- GetModules(covariate.module) 
+  process <- GetModules(process.module) 
   # Check for val type lon lat covs
-  model <- lapply(model.module, function(x) GetModule(x$module))
+  model <- GetModules(model.module) 
   # Test for predict method
-  output <-  lapply(output.module, function(x) GetModule(x$module)) 
+  output <- GetModules(output.module) 
 
 
   # stack(lapply(covariate.module, function(x) do.call(x[[1]], x[-1]))) Not needed
@@ -107,43 +100,43 @@ workflow <- function(occurMod,
 
   # Run the modules.
   # First the data collection modules
-  occurrence.output <- lapply(occurrence.module, function(x) do.call(x[[1]], x[-1]))
-  covariate.output <- lapply(covariate.module, function(x) do.call(x[[1]], x[-1]))
+  occurrence.output <- lapply(occurrence, function(x) do.call(x$func, x$paras))
+  covariate.output <- lapply(covariate, function(x) do.call(x$func, x$paras))
   
   # We have to use lapply over a different list depending on whether occurrence,
   # covariate or process has multiple modules
 
-  if (length(process.module) > 1){
-    process.output <- lapply(process.module, function(x) do.call(x[[1]], 
-      c(list(occurrence = occurrence.output[[1]], ras = covariate.output[[1]]), x[-1])))
+  if (length(process) > 1){
+    process.output <- lapply(process, function(x) do.call(x$func, 
+      c(list(occurrence = occurrence.output[[1]], ras = covariate.output[[1]]), x$paras)))
   } else if (length(covariate.module) > 1){
-    process.output <- lapply(covariate.output, function(x) do.call(process[[1]], 
-      c(list(occurrence = occurrence.output[[1]], ras = x), process.module[[1]][-1])))
+    process.output <- lapply(covariate.output, function(x) do.call(process[[1]]$func, 
+      c(list(occurrence = occurrence.output[[1]], ras = x), process[[1]]$paras)))
   } else {
-    process.output <- lapply(occurrence.output, function(x) do.call(process[[1]], 
-      c(list(occurrence = x, ras = covariate.output[[1]]), process.module[[1]][-1])))
+    process.output <- lapply(occurrence.output, function(x) do.call(process[[1]]$func, 
+      c(list(occurrence = x, ras = covariate.output[[1]]), process[[1]]$paras)))
   }
   
   # Model module
 
   if (length(model.module) > 1){
-    model.output <- lapply(model.module, function(x) do.call(x[[1]], 
-       c(df = list(process.output[[1]]), x[-1])))
+    model.output <- lapply(model, function(x) do.call(x$func, 
+       c(df = list(process.output[[1]]), x$paras)))
   } else {
-    model.output <- lapply(process.output, function(x) do.call(model[[1]], 
-       c(df = list(x), model.module[[1]][-1])))
+    model.output <- lapply(process.output, function(x) do.call(model[[1]]$func, 
+       c(df = list(x), model[[1]]$paras)))
   }
 
   #output module
   if (length(output.module) > 1){
-    output.output <- lapply(output.module, function(x) do.call(x[[1]], 
-       c(list(model.output[[1]], covariate.output[[1]]), x[-1])))
+    output.output <- lapply(output, function(x) do.call(x$func, 
+       c(list(model.output[[1]], covariate.output[[1]]), x$paras)))
   } else if (length(covariate.module) > 1){
-    output.output <- lapply(covariate.output, function(x) do.call(output[[1]], 
-       c(list(model.output[[1]], x), output.module[[1]][-1])))    
+    output.output <- lapply(covariate.output, function(x) do.call(output[[1]]$func, 
+       c(list(model.output[[1]], x), output[[1]]$paras)))    
   } else {
-    output.output <- lapply(model.output, function(x) do.call(output[[1]], 
-       c(list(x, covariate.output[[1]]), output.module[[1]][-1])))
+    output.output <- lapply(model.output, function(x) do.call(output[[1]]$func, 
+       c(list(x, covariate.output[[1]]), output[[1]]$paras)))
   }
 
  
@@ -190,13 +183,24 @@ GetModule <- function(module){
     stop('Cannot find the module. Check the URL or check that the module is at github.com/zoonproject')
   }
   # Probably do one environment up (i.e. in workflow environment) parent
-  eval(txt, envir = parent.frame(1))
+  eval(txt, envir = parent.frame(4))
+  #eval(txt, envir = globalenv())
   eval(txt)
   new.func.name <- ls()[!ls() %in% c('module', 'txt', 'zoonURL')]
   return(new.func.name)
 }
 
-s
+
+#' A function to apply GetModule to a list correctly.
+#'@param modules A list from CheckModList() given details for 
+#'  one or more modules.
+#'@name GetModules
+
+GetModules <- function(modules){
+  return(lapply(modules, function(x) list.append(func = GetModule(x$module), x)))
+}
+
+
 
 
 
@@ -204,8 +208,8 @@ s
 #'
 #'@param module The module name or URL.
 #'@param ... Any other parameters or options needed by that  module.
-#'           All extra options must be named i.e. ModuleOptions('x', x=1)
-#'           Not ModuleOptions('x', 1).
+#'           All extra options must be named i.e. ModuleOptions('Name', x=1)
+#'           Not ModuleOptions('Name', 1).
 #'
 #'
 #'@return A list with all module options and the module name/URL in.
@@ -215,13 +219,17 @@ s
 #'@examples print('No examples yet')
 
 ModuleOptions <- function(module, ...){
-  is.string(module)
+  assert_that(is.string(module))
   options <- list(module=module, ...)
   if ('' %in% names(options)){
     stop(paste0('Unnamed options in module ', module, ': All options must be named'))
   }
+  options <- vector("list", 2)
+  names(options) <- c('module', 'paras')
+  options$module <- module
+  options$paras <- list(...)
   
-  return(list(module=module, ...))
+  return(options)
 }
 
 
@@ -243,7 +251,7 @@ CheckModStructure <- function(x){
 CheckModList <- function(x){
   if (!is.list(x)){
     ModuleList <- list(CheckModStructure(x))
-  } else if (identical(names(x[1]), 'module')){
+  } else if (identical(names(x), c('module', 'paras'))){
     ModuleList <- list(x)
   } else {
     ModuleList <- lapply(x, CheckModStructure)
