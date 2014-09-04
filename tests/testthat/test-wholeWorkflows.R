@@ -61,5 +61,96 @@ expect_equal(workNames, workURLs)
 
 })
 
+test_that('Workflows with lists of modules work.', {
+  # Would like to remove some of the slow online database modules from here.
+  workOccurList <- workflow(occurMod = list('UKAnophelesPlumbeus', 
+                        ModuleOptions('SpOcc', species = 'Anopheles plumbeus', 
+                          extent = c(-20, 20, 45, 65))),
+                       covarMod = 'UKAir',
+                       procMod = 'OneHundredBackground',
+                       modelMod = 'LogisticRegression',
+                       outMod = 'SameTimePlaceMap')
+
+  workCovarList <- workflow(occurMod = 'UKAnophelesPlumbeus',
+                     covarMod = list('UKAir', 'UKAir'),
+                     procMod = 'OneHundredBackground',
+                     modelMod = 'LogisticRegression',
+                     outMod = 'SameTimePlaceMap')
+
+  # There's only 1 appropriate process module at the moment!
+  workProcessList <- workflow(occurMod = 'UKAnophelesPlumbeus',
+                       covarMod = 'UKAir',
+                       procMod = list('OneHundredBackground','OneHundredBackground'),
+                       modelMod = 'LogisticRegression',
+                       outMod = 'SameTimePlaceMap')
+
+  workModelList <- workflow(occurMod = 'UKAnophelesPlumbeus',
+                     covarMod = 'UKAir',
+                     procMod = 'OneHundredBackground',
+                     modelMod = list('LogisticRegression', 'RandomForest'),
+                     outMod = 'SameTimePlaceMap')
+
+  workOutputList <- workflow(occurMod = 'UKAnophelesPlumbeus',
+                     covarMod = 'UKAir',
+                     procMod = 'OneHundredBackground',
+                     modelMod = 'LogisticRegression',
+                     outMod = list('SameTimePlaceMap', 'SameTimePlaceMap'))
+
+  expect_equivalent(sapply(workOccurList, length), c(2,1,2,2,2))
+  expect_equivalent(sapply(workCovarList, length), c(1,2,2,2,2))
+  expect_equivalent(sapply(workProcessList, length), c(1,1,2,2,2))
+  expect_equivalent(sapply(workModelList, length), c(1,1,1,2,2))
+  expect_equivalent(sapply(workOutputList, length), c(1,1,1,1,2))
+
+  occurClasses <- unlist(lapply(workOccurList, function(x) sapply(x, class)))
+  covarClasses <- unlist(lapply(workCovarList, function(x) sapply(x, class)))
+  processClasses <- unlist(lapply(workProcessList, function(x) sapply(x, class)))
+  modelClasses <- unlist(lapply(workModelList, function(x) sapply(x, class)))
+  outputClasses <- unlist(lapply(workOutputList, function(x) sapply(x, class)))
+
+  expect_equivalent(occurClasses, c('data.frame','data.frame','RasterLayer','data.frame',
+    'data.frame','glm','lm','glm','lm','RasterLayer','RasterLayer'))
+  expect_equivalent(covarClasses, c('data.frame','RasterLayer','RasterLayer','data.frame',
+    'data.frame','glm','lm','glm','lm','RasterLayer','RasterLayer'))
+  expect_equivalent(processClasses, c('data.frame','RasterLayer','data.frame',
+    'data.frame','glm','lm','glm','lm','RasterLayer','RasterLayer'))
+  expect_equivalent(modelClasses, c('data.frame','RasterLayer','data.frame',
+    'glm','lm','randomForest.formula','randomForest','RasterLayer','RasterLayer'))
+  expect_equivalent(outputClasses, c('data.frame','RasterLayer','data.frame',
+    'glm','lm','RasterLayer','RasterLayer'))
+
+})
+
+test_that('only one set of multiple lists allowed.', {
+  fnc1 <- function(){
+    x <- workflow(occurMod = list('UKAnophelesPlumbeus',
+                    'UKAnophelesPlumbeus'),
+           covarMod = list('UKAir', 'UKAir'),
+           procMod = 'OneHundredBackground',
+           modelMod = 'LogisticRegression',
+           outMod = 'SameTimePlaceMap')
+  }
+
+fnc2 <- function(){
+    x <- workflow(occurMod = 'UKAnophelesPlumbeus',
+           covarMod = list('UKAir', 'UKAir'),
+           procMod = list('OneHundredBackground','OneHundredBackground'),
+           modelMod = 'LogisticRegression',
+           outMod = 'SameTimePlaceMap')
+  }
+
+fnc3 <- function(){
+    x <- workflow(occurMod = 'UKAnophelesPlumbeus',
+           covarMod = 'UKAir',
+           procMod = 'OneHundredBackground',
+           modelMod = list('LogisticRegression','LogisticRegression'),
+           outMod = list('SameTimePlaceMap', 'SameTimePlaceMap'))
+  }
+
+  expect_error(fnc1())
+  expect_error(fnc2())
+  expect_error(fnc3())
+  
+})
 
 
