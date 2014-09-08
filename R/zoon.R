@@ -16,7 +16,7 @@
 #'      and better reproducibility
 #'@name zoon
 #'@docType package
-#'@import assertthat raster rlist
+#'@import assertthat raster rlist httr
 
 
 NULL

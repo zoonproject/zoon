@@ -11,7 +11,7 @@
 
 GetModuleList <- function(){
 
-  library("httr")
+  #library("httr")
 
   files <- gh_list_files('zoonproject', 'modules')
   mods <- files[grep('^R/', files)]
