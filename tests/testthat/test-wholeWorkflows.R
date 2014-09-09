@@ -51,11 +51,11 @@ test_that('collecting modules with names and urls is equivelent.', {
                  modelMod = 'LogisticRegression',
                  outMod = 'SameTimePlaceMap')
   set.seed(1)
-  workURLs <- workflow(occurMod = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/UKAnophelesPlumbeus.R',
-                 covarMod = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/UKAir.R',
-                 procMod = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/OneHundredBackground.R',
-                 modelMod = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/LogisticRegression.R',
-                 outMod = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/SameTimePlaceMap.R')
+  workURLs <- workflow(occurMod = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/Occurrence/UKAnophelesPlumbeus.R',
+                 covarMod = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/Covariate/UKAir.R',
+                 procMod = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/Process/OneHundredBackground.R',
+                 modelMod = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/Model/LogisticRegression.R',
+                 outMod = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/Output/SameTimePlaceMap.R')
 
 expect_equal(workNames, workURLs)
 

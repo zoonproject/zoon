@@ -86,13 +86,13 @@ workflow <- function(occurMod,
   # Get the modules (functions) from github. 
   # Save name of functions as well as load functions into global namespace.
   # Will probably want to make this so it checks namespace first.
-  occurrence <- GetModules(occurrence.module) 
-  covariate <- GetModules(covariate.module) 
-  process <- GetModules(process.module) 
+  occurrence <- GetModules(occurrence.module, 'Occurrence') 
+  covariate <- GetModules(covariate.module, 'Covariate') 
+  process <- GetModules(process.module, 'Process') 
   # Check for val type lon lat covs
-  model <- GetModules(model.module) 
+  model <- GetModules(model.module, 'Model') 
   # Test for predict method
-  output <- GetModules(output.module) 
+  output <- GetModules(output.module, 'Output') 
 
 
   # stack(lapply(covariate.module, function(x) do.call(x[[1]], x[-1]))) Not needed
@@ -136,7 +136,7 @@ workflow <- function(occurMod,
        c(list(model.output[[1]], x), output[[1]]$paras)))    
   } else {
     output.output <- lapply(model.output, function(x) do.call(output[[1]]$func, 
-       c(list(x, covariate.output[[1]]), output[[1]]$paras)))
+       c(list(x,  covariate.output[[1]]), output[[1]]$paras)))
   }
 
  
@@ -165,13 +165,15 @@ workflow <- function(occurMod,
 #'@param module A string that describes the location of the R file. Can be a
 #'      module name assuming the module is in github.com/zoonproject/modules.
 #'      Otherwise can be a full URL or a local file.
+#'@param type String describing the type of module. Only needed if getting from
+#'  zoon github.
 #'
 #'@return Name of the function. Adds function to global namespace.
 #'@name GetModule
 
 
-GetModule <- function(module){
-  zoonURL <- paste0('https://raw.githubusercontent.com/zoonproject/modules/master/R/', module, '.R')
+GetModule <- function(module, type=''){
+  zoonURL <- paste0('https://raw.githubusercontent.com/zoonproject/modules/master/R/', type, '/', module, '.R')
   if (file.exists(module)){
     txt <- parse(text = paste(readLines(module), collapse="\n"))
   } else if (url.exists(zoonURL)){
@@ -185,7 +187,7 @@ GetModule <- function(module){
   eval(txt, envir = parent.frame(4))
   #eval(txt, envir = globalenv())
   eval(txt)
-  new.func.name <- ls()[!ls() %in% c('module', 'txt', 'zoonURL')]
+  new.func.name <- ls()[!ls() %in% c('module', 'txt', 'zoonURL', 'type')]
   return(new.func.name)
 }
 
@@ -193,10 +195,12 @@ GetModule <- function(module){
 #' A function to apply GetModule to a list correctly.
 #'@param modules A list from CheckModList() given details for 
 #'  one or more modules.
+#'@param type String describing the type of module. Only needed if getting from
+#'  zoon github.
 #'@name GetModules
 
-GetModules <- function(modules){
-  return(lapply(modules, function(x) list.append(func = GetModule(x$module), x)))
+GetModules <- function(modules, type=''){
+  return(lapply(modules, function(x) list.append(func = GetModule(x$module, type), x)))
 }
 
 
