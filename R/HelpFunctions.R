@@ -1,3 +1,5 @@
+#'ModuleHelp
+#'
 #'Returns the help file for a zoon module
 #'Currently only text help is implemented.
 #'
@@ -18,6 +20,7 @@ ModuleHelp <- function(module){
   writeLines(txt, helpFile)
   tools::Rd2txt(tools:::parse_Rd(helpFile))
 }
+
 
 
 
