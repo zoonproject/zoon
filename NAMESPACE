@@ -2,8 +2,11 @@
 
 export(BuildModule)
 export(GetModuleList)
+export(ModuleHelp)
 export(ModuleOptions)
 export(workflow)
+import(RCurl)
 import(assertthat)
+import(httr)
 import(raster)
 import(rlist)

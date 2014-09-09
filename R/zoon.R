@@ -16,7 +16,7 @@
 #'      and better reproducibility
 #'@name zoon
 #'@docType package
-#'@import assertthat raster rlist httr RCurl
+#'@import assertthat raster rlist RCurl httr
 
 
 NULL
@@ -171,7 +171,6 @@ workflow <- function(occurMod,
 
 
 GetModule <- function(module){
-  require(RCurl)
   zoonURL <- paste0('https://raw.githubusercontent.com/zoonproject/modules/master/R/', module, '.R')
   if (file.exists(module)){
     txt <- parse(text = paste(readLines(module), collapse="\n"))

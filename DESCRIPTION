@@ -25,7 +25,9 @@ Description: This is a *really* rough sketch of a modular structure for the
 License: BSD_3_clause + file LICENSE.md
 Imports:
     assertthat,
-    rlist
+    rlist,
+    RCurl,
+    httr
 Depends:
     raster
 Suggests:
