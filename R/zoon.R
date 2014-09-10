@@ -176,9 +176,9 @@ GetModule <- function(module, type=''){
   zoonURL <- paste0('https://raw.githubusercontent.com/zoonproject/modules/master/R/', module, '.R')
   if (file.exists(module)){
     txt <- parse(text = paste(readLines(module), collapse="\n"))
-  } else if (url.exists(zoonURL)){
+  } else if (url.exists(zoonURL, .opts=list(ssl.verifypeer=FALSE))){
     txt <- parse(text = getURL(zoonURL, ssl.verifypeer=FALSE))
-  } else if (url.exists(module)){
+  } else if (url.exists(module, .opts=list(ssl.verifypeer=FALSE))){
     txt <- parse( text = getURL(module, ssl.verifypeer=FALSE))
   } else {
     stop('Cannot find the module. Check the URL or check that the module is at github.com/zoonproject')
