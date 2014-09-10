@@ -5,10 +5,6 @@
 \usage{
 GetModuleList(moduleType = "all")
 }
-\arguments{
-\item{moduleType}{The type of modules (character vector) to be listed out of
-occurrence, covariate, process, model and output.}
-}
 \value{
 A list with all module names.
 }

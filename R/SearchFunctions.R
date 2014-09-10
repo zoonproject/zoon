@@ -2,8 +2,6 @@
 #'
 #'Get a list of all the modules available on the github repo.
 #'
-#'@param moduleType The type of modules (character vector) to be listed out of 
-#'  occurrence, covariate, process, model and output.
 #'@return A list with all module names.
 #'@name GetModuleList
 #'
@@ -11,23 +9,10 @@
 #'@examples \dontrun{GetModuleList()}
 
 GetModuleList <- function(moduleType='all'){
-
-  if (identical(moduleType, 'all')){
-    type <- c(1:5)
-  } else {
-    type <- tolower(moduleType)
-  }
-
   files <- gh_list_files('zoonproject', 'modules')
   mods <- files[grep('^R/', files)]
-  sortedMods <- list( occurrence = gsub('^R/Occurrence/|.R$', '', files[grep('^R/Occurrence/', files)]),
-                      covariate = gsub('^R/Covariate/|.R$', '', files[grep('^R/Covariate/', files)]),
-                      process = gsub('^R/Process/|.R$', '', files[grep('^R/Process/', files)]),
-                      model = gsub('^R/Model/|.R$', '', files[grep('^R/Model/', files)]),
-                      output = gsub('^R/Output/|.R$', '', files[grep('^R/Output/', files)])
-                     )
-  
-  return(sortedMods[type])
+  names <- gsub('^R/|.R$', '', mods)
+  return(names)
 }
 
 # Code largely taken from 
