@@ -86,13 +86,13 @@ workflow <- function(occurMod,
   # Get the modules (functions) from github. 
   # Save name of functions as well as load functions into global namespace.
   # Will probably want to make this so it checks namespace first.
-  occurrence <- GetModules(occurrence.module, 'Occurrence') 
-  covariate <- GetModules(covariate.module, 'Covariate') 
-  process <- GetModules(process.module, 'Process') 
+  occurrence <- GetModules(occurrence.module) 
+  covariate <- GetModules(covariate.module) 
+  process <- GetModules(process.module) 
   # Check for val type lon lat covs
-  model <- GetModules(model.module, 'Model') 
+  model <- GetModules(model.module) 
   # Test for predict method
-  output <- GetModules(output.module, 'Output') 
+  output <- GetModules(output.module) 
 
 
   # stack(lapply(covariate.module, function(x) do.call(x[[1]], x[-1]))) Not needed
