@@ -44,18 +44,18 @@ Then run two workflows. Both workflows use the module 'AnophelesPlumbeus' to get
 The two workflows run different SDMs. The first runs a logistic regression while the second runs a random forest. Finally, we use the module 'SameTimePlaceMap' to predict occurence across the current extent we already defined and for the present time.
 ```{r main analysis, eval=TRUE, cache=FALSE}
 # run a workflow, using the logistic regression model
-ans1 <- workflow(occurMod = 'UKAnophelesPlumbeus',
-                 covarMod = 'UKAir',
-                 procMod = 'OneHundredBackground',
-                 modelMod = 'LogisticRegression',
-                 outMod = 'SameTimePlaceMap')
+#ans1 <- workflow(occurMod = 'UKAnophelesPlumbeus',
+ #                covarMod = 'UKAir',
+ #                procMod = 'OneHundredBackground',
+ #                modelMod = 'LogisticRegression',
+ #                outMod = 'SameTimePlaceMap')
 
 # switch the model to a RandomForest
-ans2 <- workflow(occurMod = 'UKAnophelesPlumbeus',
-                 covarMod = 'UKAir',
-                 procMod = 'OneHundredBackground',
-                 modelMod = 'RandomForest',
-                 outMod = 'SameTimePlaceMap')
+#ans2 <- workflow(occurMod = 'UKAnophelesPlumbeus',
+#                 covarMod = 'UKAir',
+#                 procMod = 'OneHundredBackground',
+#                 modelMod = 'RandomForest',
+#                 outMod = 'SameTimePlaceMap')
 
 
 
