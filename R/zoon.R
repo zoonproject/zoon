@@ -173,7 +173,7 @@ workflow <- function(occurMod,
 
 
 GetModule <- function(module, type=''){
-  zoonURL <- paste0('https://raw.githubusercontent.com/zoonproject/modules/master/R/', type, '/', module, '.R')
+  zoonURL <- paste0('https://raw.githubusercontent.com/zoonproject/modules/master/R/', module, '.R')
   if (file.exists(module)){
     txt <- parse(text = paste(readLines(module), collapse="\n"))
   } else if (url.exists(zoonURL)){
