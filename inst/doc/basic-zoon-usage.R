@@ -10,18 +10,18 @@ library(zoon)
 
 ## ----main analysis, eval=TRUE, cache=FALSE-------------------------------
 # run a workflow, using the logistic regression model
-ans1 <- workflow(occurMod = 'UKAnophelesPlumbeus',
-                 covarMod = 'UKAir',
-                 procMod = 'OneHundredBackground',
-                 modelMod = 'LogisticRegression',
-                 outMod = 'SameTimePlaceMap')
+#ans1 <- workflow(occurMod = 'UKAnophelesPlumbeus',
+#                 covarMod = 'UKAir',
+#                 procMod = 'OneHundredBackground',
+#                 modelMod = 'LogisticRegression',
+#                 outMod = 'SameTimePlaceMap')
 
 # switch the model to a RandomForest
-ans2 <- workflow(occurMod = 'UKAnophelesPlumbeus',
-                 covarMod = 'UKAir',
-                 procMod = 'OneHundredBackground',
-                 modelMod = 'RandomForest',
-                 outMod = 'SameTimePlaceMap')
+#ans2 <- workflow(occurMod = 'UKAnophelesPlumbeus',
+#                 covarMod = 'UKAir',
+#                 procMod = 'OneHundredBackground',
+#                 modelMod = 'RandomForest',
+#                 outMod = 'SameTimePlaceMap')
 
 
 
