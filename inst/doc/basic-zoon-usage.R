@@ -51,5 +51,5 @@ library(zoon)
 #       cex = 0.3)
 
 ## ----storedData----------------------------------------------------------
-head(ans1$occurrence.output)
+#head(ans1$occurrence.output)
 

@@ -91,7 +91,7 @@ Then we can have a look at our results.
 Some points to note about reproducibility. The whole output object should contain all the information needed to reproduce the analysis. So for example, the data is saved. Therefore, even if GBIF gets new data, the exact data used in this analysis is stored. 
 
 ```{r storedData}
-head(ans1$occurrence.output)
+#head(ans1$occurrence.output)
 ```
 
 
