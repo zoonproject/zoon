@@ -27,7 +27,8 @@ Imports:
     assertthat,
     rlist,
     RCurl,
-    httr
+    httr,
+    httpuv
 Depends:
     raster
 Suggests:

@@ -5,12 +5,15 @@
 It assumes the module is in github.com/zoonproject unless it is a full url
 Assigns the function to the global environment.}
 \usage{
-GetModule(module)
+GetModule(module, type = "")
 }
 \arguments{
 \item{module}{A string that describes the location of the R file. Can be a
-     module name assuming the module is in github.com/zoonproject/modules.
-     Otherwise can be a full URL or a local file.}
+module name assuming the module is in github.com/zoonproject/modules.
+Otherwise can be a full URL or a local file.}
+
+\item{type}{String describing the type of module. Only needed if getting from
+ zoon github.}
 }
 \value{
 Name of the function. Adds function to global namespace.

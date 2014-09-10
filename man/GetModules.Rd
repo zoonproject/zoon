@@ -3,11 +3,14 @@
 \alias{GetModules}
 \title{A function to apply GetModule to a list correctly.}
 \usage{
-GetModules(modules)
+GetModules(modules, type = "")
 }
 \arguments{
 \item{modules}{A list from CheckModList() given details for
 one or more modules.}
+
+\item{type}{String describing the type of module. Only needed if getting from
+zoon github.}
 }
 \description{
 A function to apply GetModule to a list correctly.
