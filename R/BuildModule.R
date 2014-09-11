@@ -1,4 +1,5 @@
-
+#'BuildModule
+#'
 #'Turn a function in the namespace into a module.
 #'Will later add functions to upload module to figshare etc.
 #'And add testing that the module name is unique.
@@ -29,15 +30,27 @@
 #'
 #'
 
-BuildModule <- function(object, type, dir='.'){
+BuildModule <- function(object, type, dir='.', description='', paras=NULL){
   assert_that(is(object, 'function'))
   is.writeable(dir)
+  
   type <- tolower(type)
   assert_that(type %in% c('occurrence', 'covariate', 'process', 'model', 'diagnostic', 'output'))
 
   obj <- deparse(substitute(object))
-          
-  write(paste0('# A zoon module\n# @', type), file = paste0(dir, '/', obj, '.R'))
+  
+  if(is.null(paras)){
+    paras <- formals(object)
+  }
+
+  paraNames <- names(paras)
+  paraDocs <- paste(sapply(paraNames, function(x) paste("#'@param", x, paras[x], "\n")), collapse="#'\n")
+
+        
+  docs <- paste0("#'", toupper(substring(type, 1,1)), substring(type, 2), 
+            " module: ", obj, "\n#'\n#'", description, "\n#'\n", paraDocs, "\n#'@name ", obj)
+
+  write(docs, file = paste0(dir, '/', obj, '.R'))
   dump(c(obj), file = paste0(dir, '/', obj, '.R'), append=TRUE)
 }
   

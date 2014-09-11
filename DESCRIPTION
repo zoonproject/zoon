@@ -2,7 +2,7 @@ Package: zoon
 Type: Package
 Title: A prototype for reproducible, accessible & shareable scientific outputs
     in R.
-Version: 0.1
+Version: 0.2
 Date: 2014-08-04
 Author: Tim Lucas, Nick Golding, Greg McInerny, Emiel van Loon
 Maintainer: Tim Lucas <timcdlucas@gmail.com>
@@ -22,9 +22,13 @@ Description: This is a *really* rough sketch of a modular structure for the
     Clearly this is very simplistic, obvious next steps include modules for
     validation statistics and plots, the ability to predict to different
     covariate rasters than are used to train the model, etc.
-License: BSD 3-clause
+License: BSD_3_clause + file LICENSE.md
 Imports:
-    assertthat
+    assertthat,
+    rlist,
+    RCurl,
+    httr,
+    httpuv
 Depends:
     raster
 Suggests:

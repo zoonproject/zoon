@@ -1,18 +1,14 @@
-
+#'GetModuleList
+#'
 #'Get a list of all the modules available on the github repo.
-#'
-#'
 #'
 #'@return A list with all module names.
 #'@name GetModuleList
 #'
 #'@export
-#'@examples GetModuleList()
+#'@examples \dontrun{GetModuleList()}
 
-GetModuleList <- function(){
-
-  library("httr")
-
+GetModuleList <- function(moduleType='all'){
   files <- gh_list_files('zoonproject', 'modules')
   mods <- files[grep('^R/', files)]
   names <- gsub('^R/|.R$', '', mods)
