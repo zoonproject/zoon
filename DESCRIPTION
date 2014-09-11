@@ -2,7 +2,7 @@ Package: zoon
 Type: Package
 Title: A prototype for reproducible, accessible & shareable scientific outputs
     in R.
-Version: 0.2
+Version: 0.3
 Date: 2014-08-04
 Author: Tim Lucas, Nick Golding, Greg McInerny, Emiel van Loon
 Maintainer: Tim Lucas <timcdlucas@gmail.com>
