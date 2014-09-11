@@ -66,98 +66,11 @@ workflow <- function(occurMod,
                      procMod,
                      modelMod,
                      outMod) {
- 
-  # Check all modules are of same list structure
-
-  # Check all modules are of same list structure
-  occurrence.module <- CheckModList(occurMod)
-  covariate.module <- CheckModList(covarMod)
-  process.module <- CheckModList(procMod)
-  model.module <- CheckModList(modelMod)
-  output.module <- CheckModList(outMod)
   
-  # Only one of occurrence, covariate, process and model can be a list of mulitple modules.
-  NoOfModules <- sapply(list(occurrence.module, covariate.module, process.module, model.module, output.module), length)
-  if(sum(NoOfModules > 1) > 1){
-    stop('Only one of occurrence, process and model modules can be a list of mulitple modules.')
-  }
+  # Before start workflow, need to define this function.
+  # It's here as a hack to get it defined in right environment.
+  # Will fix it another day.
   
-
-  # Get the modules (functions) from github. 
-  # Save name of functions as well as load functions into global namespace.
-  # Will probably want to make this so it checks namespace first.
-  occurrence <- GetModules(occurrence.module) 
-  covariate <- GetModules(covariate.module) 
-  process <- GetModules(process.module) 
-  # Check for val type lon lat covs
-  model <- GetModules(model.module) 
-  # Test for predict method
-  output <- GetModules(output.module) 
-
-
-  # stack(lapply(covariate.module, function(x) do.call(x[[1]], x[-1]))) Not needed
-  # now but is basis for CovarDaisyChain()
-
-  # Run the modules.
-  # First the data collection modules
-  occurrence.output <- lapply(occurrence, function(x) do.call(x$func, x$paras))
-  covariate.output <- lapply(covariate, function(x) do.call(x$func, x$paras))
-  
-  # We have to use lapply over a different list depending on whether occurrence,
-  # covariate or process has multiple modules
-
-  if (length(process) > 1){
-    process.output <- lapply(process, function(x) do.call(x$func, 
-      c(list(occurrence = occurrence.output[[1]], ras = covariate.output[[1]]), x$paras)))
-  } else if (length(covariate.module) > 1){
-    process.output <- lapply(covariate.output, function(x) do.call(process[[1]]$func, 
-      c(list(occurrence = occurrence.output[[1]], ras = x), process[[1]]$paras)))
-  } else {
-    process.output <- lapply(occurrence.output, function(x) do.call(process[[1]]$func, 
-      c(list(occurrence = x, ras = covariate.output[[1]]), process[[1]]$paras)))
-  }
-  
-  # Model module
-
-  if (length(model.module) > 1){
-    model.output <- lapply(model, function(x) do.call(RunModels, 
-       list(df = process.output[[1]], modelFunction = x$func,  paras = x$paras)))
-  } else {
-    model.output <- lapply(process.output, function(x) do.call(RunModels, 
-       list(df = x, modelFunction = model[[1]]$func, paras = model[[1]]$paras)))
-  }
-
-  #output module
-  if (length(output.module) > 1){
-    output.output <- lapply(output, function(x) do.call(x$func, 
-       c(list(model.output[[1]], covariate.output[[1]]), x$paras)))
-  } else if (length(covariate.module) > 1){
-    output.output <- lapply(covariate.output, function(x) do.call(output[[1]]$func, 
-       c(list(model.output[[1]], x), output[[1]]$paras)))    
-  } else {
-    output.output <- lapply(model.output, function(x) do.call(output[[1]]$func, 
-       c(list(x,  covariate.output[[1]]), output[[1]]$paras)))
-  }
-
- 
-  # get the command used to call this function
-  bits <- sys.call()
-  call <- paste0(bits[1],
-                 '(', 
-                 paste(bits[-1],
-                       collapse = ', '),
-                 ')')
-  
-
-  
-  return(list(occurrence.output = occurrence.output,
-              covariate.output = covariate.output,
-              process.output = process.output,
-              model.output = model.output,
-              output.output = output.output))
-}
-
-
 #'RunModels
 #'
 #' A function to train and predict crossvalidation folds
@@ -215,6 +128,102 @@ RunModels <- function(df, modelFunction, paras){
   out <- list(model = m, data = dfOut)
   return(out)
 }
+ 
+
+
+
+  # Check all modules are of same list structure
+
+  # Check all modules are of same list structure
+  occurrence.module <- CheckModList(occurMod)
+  covariate.module <- CheckModList(covarMod)
+  process.module <- CheckModList(procMod)
+  model.module <- CheckModList(modelMod)
+  output.module <- CheckModList(outMod)
+  
+  # Only one of occurrence, covariate, process and model can be a list of mulitple modules.
+  NoOfModules <- sapply(list(occurrence.module, covariate.module, process.module, model.module, output.module), length)
+  if(sum(NoOfModules > 1) > 1){
+    stop('Only one of occurrence, process and model modules can be a list of mulitple modules.')
+  }
+  
+
+  # Get the modules (functions) from github. 
+  # Save name of functions as well as load functions into global namespace.
+  # Will probably want to make this so it checks namespace first.
+  occurrence <- GetModules(occurrence.module) 
+  covariate <- GetModules(covariate.module) 
+  process <- GetModules(process.module) 
+  # Check for val type lon lat covs
+  model <- GetModules(model.module) 
+  # Test for predict method
+  output <- GetModules(output.module) 
+
+
+  # stack(lapply(covariate.module, function(x) do.call(x[[1]], x[-1]))) Not needed
+  # now but is basis for CovarDaisyChain()
+
+  # Run the modules.
+  # First the data collection modules
+  occurrence.output <- lapply(occurrence, function(x) do.call(x$func, x$paras))
+  covariate.output <- lapply(covariate, function(x) do.call(x$func, x$paras))
+  
+  # We have to use lapply over a different list depending on whether occurrence,
+  # covariate or process has multiple modules
+
+  if (length(process) > 1){
+    process.output <- lapply(process, function(x) do.call(x$func, 
+      c(list(occurrence = occurrence.output[[1]], ras = covariate.output[[1]]), x$paras)))
+  } else if (length(covariate.module) > 1){
+    process.output <- lapply(covariate.output, function(x) do.call(process[[1]]$func, 
+      c(list(occurrence = occurrence.output[[1]], ras = x), process[[1]]$paras)))
+  } else {
+    process.output <- lapply(occurrence.output, function(x) do.call(process[[1]]$func, 
+      c(list(occurrence = x, ras = covariate.output[[1]]), process[[1]]$paras)))
+  }
+  
+
+
+
+  # Model module
+  if (length(model.module) > 1){
+    model.output <- lapply(model, function(x) do.call(RunModels, 
+       list(df = process.output[[1]], modelFunction = x$func,  paras = x$paras)))
+  } else {
+    model.output <- lapply(process.output, function(x) do.call(RunModels, 
+       list(df = x, modelFunction = model[[1]]$func, paras = model[[1]]$paras)))
+  }
+
+  #output module
+  if (length(output.module) > 1){
+    output.output <- lapply(output, function(x) do.call(x$func, 
+       c(list(model.output[[1]], covariate.output[[1]]), x$paras)))
+  } else if (length(covariate.module) > 1){
+    output.output <- lapply(covariate.output, function(x) do.call(output[[1]]$func, 
+       c(list(model.output[[1]], x), output[[1]]$paras)))    
+  } else {
+    output.output <- lapply(model.output, function(x) do.call(output[[1]]$func, 
+       c(list(x,  covariate.output[[1]]), output[[1]]$paras)))
+  }
+
+ 
+  # get the command used to call this function
+  bits <- sys.call()
+  call <- paste0(bits[1],
+                 '(', 
+                 paste(bits[-1],
+                       collapse = ', '),
+                 ')')
+  
+
+  
+  return(list(occurrence.output = occurrence.output,
+              covariate.output = covariate.output,
+              process.output = process.output,
+              model.output = model.output,
+              output.output = output.output))
+}
+
 
 
 #'A function to get a module function.
@@ -242,7 +251,7 @@ GetModule <- function(module, type=''){
   } else {
     stop(paste('Cannot find "', module, '". Check the URL or check that the module is at github.com/zoonproject'))
   }
-  # Probably do one environment up (i.e. in workflow environment) parent
+  # Probably do one environment up (i.e. in workflow environment)
   eval(txt, envir = parent.frame(4))
   #eval(txt, envir = globalenv())
   eval(txt)
