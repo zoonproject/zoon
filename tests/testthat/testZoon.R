@@ -20,7 +20,7 @@ test_that('CheckModList works.', {
 	expect_true(all(sapply(CheckModList(a), function(l) names(l) == c('module', 'paras'))))
 	expect_true(all(sapply(CheckModList(b), function(l) names(l) == c('module', 'paras'))))
 	expect_true(all(sapply(CheckModList(c), function(l) names(l) == c('module', 'paras'))))
-	expect_true(all(sapply(CheckModList(d), function(l) names(l) == c('module', 'paras'))))
+	expect_true(all(sapply(CheckModList(d), function(l) names(l) == c('module', 'paras'))))     
 	expect_true(all(sapply(CheckModList(e), function(l) names(l) == c('module', 'paras'))))
 
 	expect_equal(length(CheckModList(a)), 1)

@@ -18,7 +18,6 @@
 #'@docType package
 #'@import assertthat raster rlist RCurl httr httpuv
 
-
 NULL
 
 

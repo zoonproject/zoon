@@ -10,12 +10,13 @@ test_that('simple, package data workflow works.', {
 
   expect_true(exists('work1'))
   expect_equal(names(work1), c('occurrence.output', 'covariate.output', 'process.output', 'model.output', 'output.output'))
-  expect_equal(dim(work1$occurrence.output[[1]]), c(199, 4))
+  expect_equal(dim(work1$occurrence.output[[1]]), c(188,5))
   expect_is(work1$covariate.output[[1]], 'RasterLayer')
   expect_equal(dim(work1$covariate.output[[1]]), c(9,9,1))
-  expect_equal(names(work1$process.output[[1]]), c('value', 'type',  'lon',   'lat',   'layer'))
-  expect_equal(dim(work1$process.output[[1]]),  c(280, 5))
-  expect_is(work1$model.output[[1]], c('glm', 'lm'))
+  expect_equal(names(work1$process.output[[1]]), c('value', 'type', 'fold', 'lon',   'lat',   'layer'))
+  expect_equal(dim(work1$process.output[[1]]),  c(269, 6))
+  expect_is((work1$model.output[[1]])$model, c('glm', 'lm'))
+  expect_is((work1$model.output[[1]])$data, c('data.frame'))
   expect_is(work1$output[[1]], 'RasterLayer')
   
 
@@ -32,14 +33,14 @@ test_that('modules downloading data work', {
   expect_true(exists('work2'))
   expect_equal(names(work2), c('occurrence.output', 'covariate.output', 'process.output', 'model.output', 'output.output'))
   expect_is(work2$occurrence.output[[1]], 'data.frame')
-  expect_equal(names(work2$occurrence.output[[1]]), c('longitude', 'latitude', 'value', 'type'))
+  expect_equal(names(work2$occurrence.output[[1]]), c('longitude', 'latitude', 'value', 'type', 'fold'))
   expect_true(all(work2$occurrence.output[[1]][,'longitude'] < 20))
   expect_true(all(work2$occurrence.output[[1]][,'longitude'] > -20))
   expect_true(all(work2$occurrence.output[[1]][,'latitude'] < 65))
   expect_true(all(work2$occurrence.output[[1]][,'latitude'] > 45))
   expect_true(all(work2$occurrence.output[[1]][,'type']=='presence'))
   expect_is(work2$covariate.output[[1]], 'RasterStack')
-  expect_is(work2$model.output[[1]], 'randomForest')
+  expect_is((work2$model.output[[1]])$model, 'randomForest')
   expect_is(work2$output[[1]], 'RasterLayer')
 })
 
@@ -109,15 +110,15 @@ test_that('Workflows with lists of modules work.', {
   outputClasses <- unlist(lapply(workOutputList, function(x) sapply(x, class)))
 
   expect_equivalent(occurClasses, c('data.frame','data.frame','RasterLayer','data.frame',
-    'data.frame','glm','lm','glm','lm','RasterLayer','RasterLayer'))
+    'data.frame','list','list','RasterLayer','RasterLayer'))
   expect_equivalent(covarClasses, c('data.frame','RasterLayer','RasterLayer','data.frame',
-    'data.frame','glm','lm','glm','lm','RasterLayer','RasterLayer'))
+    'data.frame','list','list','RasterLayer','RasterLayer'))
   expect_equivalent(processClasses, c('data.frame','RasterLayer','data.frame',
-    'data.frame','glm','lm','glm','lm','RasterLayer','RasterLayer'))
+    'data.frame','list','list','RasterLayer','RasterLayer'))
   expect_equivalent(modelClasses, c('data.frame','RasterLayer','data.frame',
-    'glm','lm','randomForest.formula','randomForest','RasterLayer','RasterLayer'))
+    'list','list','RasterLayer','RasterLayer'))
   expect_equivalent(outputClasses, c('data.frame','RasterLayer','data.frame',
-    'glm','lm','RasterLayer','RasterLayer'))
+    'list','RasterLayer','RasterLayer'))
 
 })
 
@@ -152,5 +153,30 @@ fnc3 <- function(){
   expect_error(fnc3())
   
 })
+
+
+
+test_that('simple, crossvalidation workflow works.', {
+
+  workCross <- workflow(occurMod = 'UKAnophelesPlumbeus',
+                 covarMod = 'UKAir',
+                 procMod = 'BackgroundAndCrossvalid',
+                 modelMod = 'LogisticRegression',
+                 outMod = 'SameTimePlaceMap')
+
+  expect_true(exists('workCross'))
+  expect_equal(names(workCross), c('occurrence.output', 'covariate.output', 'process.output',
+    'model.output', 'output.output'))
+  expect_equal(dim(workCross$occurrence.output[[1]]), c(188, 5))
+  expect_is(workCross$covariate.output[[1]], 'RasterLayer')
+  expect_equal(dim(workCross$covariate.output[[1]]), c(9,9,1))
+  expect_equal(names(workCross$process.output[[1]]), 
+    c('value', 'type', 'fold', 'lon', 'lat', 'layer'))
+  expect_equal(dim(workCross$process.output[[1]]),  c(269, 6))
+  expect_is((workCross$model.output[[1]])$model, c('glm', 'lm'))
+  expect_is(workCross$output[[1]], 'RasterLayer')  
+
+})
+
 
 
