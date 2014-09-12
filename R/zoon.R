@@ -141,8 +141,11 @@ workflow <- function(occurMod,
     output.module <- CheckModList(outMod)
     
     # Only one of occurrence, covariate, process and model can be a list of mulitple modules.
-    NoOfModules <- sapply(list(occurrence.module, covariate.module, process.module, model.module, output.module), length)
-    if(sum(NoOfModules > 1) > 1){
+    isChain <- sapply(list(occurMod, covarMod, 
+      procMod, modelMod, outMod), function(x) (attr(x, 'chain'), TRUE))
+    NoOfModules <- sapply(list(occurrence.module, covariate.module, 
+      process.module, model.module, output.module), length)
+    if(sum(NoOfModules[!isChain] > 1) > 1){
       stop('Only one of occurrence, process and model modules can be a list of mulitple modules.')
     }
     
@@ -159,13 +162,23 @@ workflow <- function(occurMod,
     output <- GetModules(output.module) 
     
     
-    # stack(lapply(covariate.module, function(x) do.call(x[[1]], x[-1]))) Not needed
-    # now but is basis for CovarDaisyChain()
     
     # Run the modules.
+    # But we have to check for chained modules and deal with them
+    # And work out which module has been given as a list, and lapply over that.
+
+
     # First the data collection modules
     occurrence.output <- lapply(occurrence, function(x) do.call(x$func, x$paras))
+    # Then bind together if the occurrence modules were chained
+    if (identical(attr(occurMod, 'chain'), TRUE)){
+      occurrence.output <- do.call(rbind, occurrence.output)
+    }
+
     covariate.output <- lapply(covariate, function(x) do.call(x$func, x$paras))
+    if (identical(attr(covarMod, 'chain'), TRUE)){
+      covariate.output <- do.call(raster::stack, occurrence.output)
+    }
     
     # We have to use lapply over a different list depending on whether occurrence,
     # covariate or process has multiple modules
@@ -377,4 +390,24 @@ CheckModList <- function(x){
   }
   
   return(ModuleList)
+}
+
+
+
+#'Chain
+#'
+#'Turns named options into list that are chained together rather than run in separate 
+#'  analyses.
+#'
+#'@param ... List of modules to be chained.
+#'
+#'@name Chain
+#'
+#'@export
+
+
+Chain <- function(...){
+  chain <- list(...)
+  attr(chain, 'chain') <- TRUE
+  return(chain)
 }
