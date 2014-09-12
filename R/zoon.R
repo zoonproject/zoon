@@ -18,7 +18,6 @@
 #'@docType package
 #'@import assertthat raster rlist RCurl httr httpuv
 
-
 NULL
 
 
@@ -66,7 +65,72 @@ workflow <- function(occurMod,
                      procMod,
                      modelMod,
                      outMod) {
+  
+  # Before start workflow, need to define this function.
+  # It's here as a hack to get it defined in right environment.
+  # Will fix it another day.
+  
+#'RunModels
+#'
+#' A function to train and predict crossvalidation folds
+#' and train one full model and predict any external validation data.
+#'
+#'@param df Dataframe from process module. Should contain columns 
+#'  value, type, lon, lat
+#'  and fold, a number indicating which cross validation set a datapoint is in.
+#'  If fold is 0 then this is considered external validation data
+#'  If all data is 0 or 1, then no cross validation is run.
+#'    
+#'@param modelFunction String giving the name of the model function which is in turn the
+#'  name of the module.
+#'
+#'@param paras All other parameters that should be passed to the model function. 
+#'  i.e. model[[1]]$paras
+#'
+#'@return A list of length 2 containing the model trained on all data and a data.frame
+#'  which contains value, type, fold, lon, lat, predictions and then all environmental
+#'  variables.
+#'
+#'@name RunModels
+
+RunModels <- function(df, modelFunction, paras){
+  # Count non zero folds
+  # 0 are for external validation only. 
+  k <- length(unique(df$fold)[unique(df$fold) != 0])
+
+  # Init. output dataframe with predictions column
+  dfOut <- cbind(df[, 1:5], predictions = NA, df[,6:NCOL(df)])
+  names(dfOut)[7:ncol(dfOut)] <- names(df)[6:ncol(df)]
+
+  # We don't know that they want cross validation.
+  # If they do, k>1, then run model k times and predict out of bag
+  # Skip otherwise
+  if(k > 1){
+    for(i in 1:k){
+      modelFold <- do.call(modelFunction, c(df = list(df[df$fold != i, ]), paras))
+      dfOut$predictions[df$fold == i] <- 
+        predict(modelFold, newdata = df[df$fold == i, ], type = 'response') 
+    }
+  }
+
+  # Run model on all data.
+  m <- do.call(modelFunction, c(df = list(df), paras))
+
+  # If external validation dataset exists, predict that;.
+  if(0 %in% df$fold){
+    dfOut$predictions[df$fold == 0] <- 
+      predict(m, newdata = df[df$fold == 0, ], type = 'response')
+  }
+  
+  # Return list of crossvalid and external validation predictions 
+  # This list is then the one list that has everything in it.
+  out <- list(model = m, data = dfOut)
+  return(out)
+}
  
+
+
+
   # Check all modules are of same list structure
 
   # Check all modules are of same list structure
@@ -117,14 +181,16 @@ workflow <- function(occurMod,
       c(list(occurrence = x, ras = covariate.output[[1]]), process[[1]]$paras)))
   }
   
-  # Model module
 
+
+
+  # Model module
   if (length(model.module) > 1){
-    model.output <- lapply(model, function(x) do.call(x$func, 
-       c(df = list(process.output[[1]]), x$paras)))
+    model.output <- lapply(model, function(x) do.call(RunModels, 
+       list(df = process.output[[1]], modelFunction = x$func,  paras = x$paras)))
   } else {
-    model.output <- lapply(process.output, function(x) do.call(model[[1]]$func, 
-       c(df = list(x), model[[1]]$paras)))
+    model.output <- lapply(process.output, function(x) do.call(RunModels, 
+       list(df = x, modelFunction = model[[1]]$func, paras = model[[1]]$paras)))
   }
 
   #output module
@@ -158,6 +224,7 @@ workflow <- function(occurMod,
 }
 
 
+
 #'A function to get a module function.
 #'It assumes the module is in github.com/zoonproject unless it is a full url
 #'Assigns the function to the global environment.
@@ -181,9 +248,9 @@ GetModule <- function(module, type=''){
   } else if (url.exists(module, .opts=list(ssl.verifypeer=FALSE))){
     txt <- parse( text = getURL(module, ssl.verifypeer=FALSE))
   } else {
-    stop('Cannot find the module. Check the URL or check that the module is at github.com/zoonproject')
+    stop(paste('Cannot find "', module, '". Check the URL or check that the module is at github.com/zoonproject'))
   }
-  # Probably do one environment up (i.e. in workflow environment) parent
+  # Probably do one environment up (i.e. in workflow environment)
   eval(txt, envir = parent.frame(4))
   #eval(txt, envir = globalenv())
   eval(txt)

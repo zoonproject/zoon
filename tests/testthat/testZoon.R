@@ -20,7 +20,7 @@ test_that('CheckModList works.', {
 	expect_true(all(sapply(CheckModList(a), function(l) names(l) == c('module', 'paras'))))
 	expect_true(all(sapply(CheckModList(b), function(l) names(l) == c('module', 'paras'))))
 	expect_true(all(sapply(CheckModList(c), function(l) names(l) == c('module', 'paras'))))
-	expect_true(all(sapply(CheckModList(d), function(l) names(l) == c('module', 'paras'))))
+	expect_true(all(sapply(CheckModList(d), function(l) names(l) == c('module', 'paras'))))     
 	expect_true(all(sapply(CheckModList(e), function(l) names(l) == c('module', 'paras'))))
 
 	expect_equal(length(CheckModList(a)), 1)
@@ -52,14 +52,14 @@ test_that('GetModule works', {
 
 
   TestURL <- function(){
-    GetModule('https://raw.githubusercontent.com/zoonproject/modules/master/R/Process/NoProcess.R')
+    GetModule('https://raw.githubusercontent.com/zoonproject/modules/master/R/NoProcess.R')
     return(class(NoProcess))
   }
 
   expect_error(GetModule('xxx'))
   expect_that(GetModule(file), equals('TestModule'))
   expect_that(GetModule('NoProcess', 'Process'), equals('NoProcess'))
-  expect_that(GetModule('https://raw.githubusercontent.com/zoonproject/modules/master/R/Process/NoProcess.R'), equals('NoProcess'))
+  expect_that(GetModule('https://raw.githubusercontent.com/zoonproject/modules/master/R/NoProcess.R'), equals('NoProcess'))
   
    #It's difficult to test that the environments are working correctly without running full workflow
   work1 <- workflow(occurMod = 'UKAnophelesPlumbeus',
