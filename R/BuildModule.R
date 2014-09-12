@@ -48,7 +48,7 @@ BuildModule <- function(object, type, dir='.', description='', paras=NULL){
 
         
   docs <- paste0("#'", toupper(substring(type, 1,1)), substring(type, 2), 
-            " module: ", obj, "\n#'\n#'", description, "\n#'\n", paraDocs, "\n#'@name ", obj)
+            " module: ", obj, "\n#'\n#'", description, "\n#'\n", paraDocs, "#'\n#'@name ", obj)
 
   write(docs, file = paste0(dir, '/', obj, '.R'))
   dump(c(obj), file = paste0(dir, '/', obj, '.R'), append=TRUE)
