@@ -142,7 +142,7 @@ workflow <- function(occurMod,
     
     # Only one of occurrence, covariate, process and model can be a list of mulitple modules.
     isChain <- sapply(list(occurMod, covarMod, 
-      procMod, modelMod, outMod), function(x) (attr(x, 'chain'), TRUE))
+      procMod, modelMod, outMod), function(x) identical(attr(x, 'chain'), TRUE))
     NoOfModules <- sapply(list(occurrence.module, covariate.module, 
       process.module, model.module, output.module), length)
     if(sum(NoOfModules[!isChain] > 1) > 1){
@@ -172,12 +172,12 @@ workflow <- function(occurMod,
     occurrence.output <- lapply(occurrence, function(x) do.call(x$func, x$paras))
     # Then bind together if the occurrence modules were chained
     if (identical(attr(occurMod, 'chain'), TRUE)){
-      occurrence.output <- do.call(rbind, occurrence.output)
+      occurrence.output <- list(do.call(rbind, occurrence.output))
     }
 
     covariate.output <- lapply(covariate, function(x) do.call(x$func, x$paras))
     if (identical(attr(covarMod, 'chain'), TRUE)){
-      covariate.output <- do.call(raster::stack, occurrence.output)
+      covariate.output <- list(do.call(raster::stack, occurrence.output))
     }
     
     # We have to use lapply over a different list depending on whether occurrence,
@@ -252,7 +252,7 @@ workflow <- function(occurMod,
 #'@name GetModule
 
 
-GetModule <- function(module, type=''){
+GetModule <- function(module){
   zoonURL <- paste0('https://raw.githubusercontent.com/zoonproject/modules/master/R/', module, '.R')
   if (file.exists(module)){
     txt <- parse(text = paste(readLines(module), collapse="\n"))
@@ -267,7 +267,7 @@ GetModule <- function(module, type=''){
   eval(txt, envir = parent.frame(4))
   #eval(txt, envir = globalenv())
   eval(txt)
-  new.func.name <- ls()[!ls() %in% c('module', 'txt', 'zoonURL', 'type')]
+  new.func.name <- ls()[!ls() %in% c('module', 'txt', 'zoonURL')]
   return(new.func.name)
 }
 
@@ -279,8 +279,8 @@ GetModule <- function(module, type=''){
 #'  zoon github.
 #'@name GetModules
 
-GetModules <- function(modules, type=''){
-  return(lapply(modules, function(x) list.append(func = GetModule(x$module, type), x)))
+GetModules <- function(modules){
+  return(lapply(modules, function(x) list.append(func = GetModule(x$module), x)))
 }
 
 
