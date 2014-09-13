@@ -5,7 +5,7 @@
 It assumes the module is in github.com/zoonproject unless it is a full url
 Assigns the function to the global environment.}
 \usage{
-GetModule(module, type = "")
+GetModule(module)
 }
 \arguments{
 \item{module}{A string that describes the location of the R file. Can be a

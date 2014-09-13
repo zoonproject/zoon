@@ -180,30 +180,52 @@ workflow <- function(occurMod,
       covariate.output <- list(do.call(raster::stack, occurrence.output))
     }
     
+
+    # Simply combine data into basic df shape
+    # This shape is then input and output of all process modules.
+    # Also makes it easy to implement a NULL process
+    if(length(covariate) > 1){    
+      data <- lapply(covariate.output, ExtractAndCombData(occurrence.output[[1]], x))
+    } else {
+      data <- lapply(occurrence.output, function(x) ExtractAndCombData(x, covariate.output[[1]]))
+    }
+
     # We have to use lapply over a different list depending on whether occurrence,
     # covariate or process has multiple modules
-    
-    if (length(process) > 1){
-      process.output <- lapply(process, function(x) do.call(x$func, 
-                                                            c(list(occurrence = occurrence.output[[1]], ras = covariate.output[[1]]), x$paras)))
-    } else if (length(covariate.module) > 1){
-      process.output <- lapply(covariate.output, function(x) do.call(process[[1]]$func, 
-                                                                     c(list(occurrence = occurrence.output[[1]], ras = x), process[[1]]$paras)))
-    } else {
-      process.output <- lapply(occurrence.output, function(x) do.call(process[[1]]$func, 
-                                                                      c(list(occurrence = x, ras = covariate.output[[1]]), process[[1]]$paras)))
-    }
-    
+    if (!identical(attr(procMod, 'Chain'), TRUE)){
+      if (length(process) > 1){
+        process.output <- lapply(process, 
+          function(x) do.call(x$func, 
+                        c(list(data = data[[1]], x$paras)))
+      } else {
+        process.output <- lapply(data,
+          function(x) do.call(process[[1]]$func, 
+                        c(list(data = x), process[[1]]$paras)))
+      }
+    } else { 
+      # If procMod was chained, we must loop through the process modules applying them to
+      # the output of the previous one.
+      process.output <- data
+      for(p in 1:length(process)){      
+        process.output <- lapply(process.output,
+          function(x) do.call(process[[p]]$func, 
+                        c(list(data = x), process[[p]]$paras)))
+      }
+    }      
     
     
     
     # Model module
     if (length(model.module) > 1){
       model.output <- lapply(model, function(x) do.call(RunModels, 
-                                                        list(df = process.output[[1]], modelFunction = x$func,  paras = x$paras)))
+                                                        list(df = process.output[[1]]$df, 
+                                                          modelFunction = x$func, 
+                                                          paras = x$paras)))
     } else {
       model.output <- lapply(process.output, function(x) do.call(RunModels, 
-                                                                 list(df = x, modelFunction = model[[1]]$func, paras = model[[1]]$paras)))
+                                                                 list(df = x$df, 
+                                                                   modelFunction = model[[1]]$func, 
+                                                                    paras = model[[1]]$paras)))
     }
     
     #output module
@@ -393,11 +415,29 @@ CheckModList <- function(x){
 }
 
 
+# Simply extract covariates from rasters and combine with occurrence.
+ExtractAndCombData <- function(occurrence, ras){
+
+  noccurrence <- nrow(occurrence)
+  
+  # extract covariates
+  occ_covs <- as.matrix(raster::extract(ras, occurrence[, c('longitude', 'latitude')]))
+  
+  # combine with the occurrence data
+  df <- cbind(occurrence,
+                   occ_covs)
+  
+  names(df)[6:ncol(df)] <- names(ras)
+  
+  return(list(df=df, ras=ras))
+  
+}
+
 
 #'Chain
 #'
 #'Turns named options into list that are chained together rather than run in separate 
-#'  analyses.
+#'  analyses. Data modules the datasets are joined. Processes are run sequentially.
 #'
 #'@param ... List of modules to be chained.
 #'

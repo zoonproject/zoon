@@ -3,7 +3,7 @@
 \alias{GetModules}
 \title{A function to apply GetModule to a list correctly.}
 \usage{
-GetModules(modules, type = "")
+GetModules(modules)
 }
 \arguments{
 \item{modules}{A list from CheckModList() given details for
