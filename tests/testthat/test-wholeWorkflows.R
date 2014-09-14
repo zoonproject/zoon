@@ -180,3 +180,29 @@ test_that('simple, crossvalidation workflow works.', {
 
 
 
+
+test_that('chains work.', {
+  chain1 <- workflow(occurMod = Chain('UKAnophelesPlumbeus','UKAnophelesPlumbeus'),
+                 covarMod = 'UKAir',
+                 procMod = 'OneHundredBackground',
+                 modelMod = 'LogisticRegression',
+                 outMod = 'SameTimePlaceMap')
+  chain2 <- workflow(occurMod = 'UKAnophelesPlumbeus',
+                 covarMod = Chain('UKAir','UKAir'),
+                 procMod = 'OneHundredBackground',
+                 modelMod = 'LogisticRegression',
+                 outMod = 'SameTimePlaceMap')
+
+
+  chain4 <- workflow(occurMod = 'UKAnophelesPlumbeus',
+                 covarMod = 'UKAir',
+                 procMod = 'OneHundredBackground',
+                 modelMod = 'LogisticRegression',
+                 outMod = Chain('SameTimePlaceMap', 'SameTimePlaceMap'))
+
+  
+
+})
+
+
+
