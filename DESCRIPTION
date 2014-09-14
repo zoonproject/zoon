@@ -28,7 +28,8 @@ Imports:
     rlist,
     RCurl,
     httr,
-    httpuv
+    httpuv,
+    dismo
 Depends:
     raster
 Suggests:

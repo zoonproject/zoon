@@ -4,7 +4,7 @@ context('Test workflow function.')
 test_that('simple, package data workflow works.', {
   work1 <- workflow(occurMod = 'UKAnophelesPlumbeus',
                  covarMod = 'UKAir',
-                 procMod = 'OneHundredBackground',
+                     procMod = 'OneHundredBackground',
                  modelMod = 'LogisticRegression',
                  outMod = 'SameTimePlaceMap')
 
@@ -13,8 +13,8 @@ test_that('simple, package data workflow works.', {
   expect_equal(dim(work1$occurrence.output[[1]]), c(188,5))
   expect_is(work1$covariate.output[[1]], 'RasterLayer')
   expect_equal(dim(work1$covariate.output[[1]]), c(9,9,1))
-  expect_equal(names(work1$process.output[[1]]), c('value', 'type', 'fold', 'lon',   'lat',   'layer'))
-  expect_equal(dim(work1$process.output[[1]]),  c(269, 6))
+  expect_equal(names(work1$process.output[[1]]$df), c('value', 'type', 'fold', 'longitude',   'latitude',   'layer'))
+  expect_equal(dim(work1$process.output[[1]][[1]]),  c(269, 6))
   expect_is((work1$model.output[[1]])$model, c('glm', 'lm'))
   expect_is((work1$model.output[[1]])$data, c('data.frame'))
   expect_is(work1$output[[1]], 'RasterLayer')
@@ -26,7 +26,7 @@ test_that('modules downloading data work', {
 
   work2 <- workflow(occurMod = ModuleOptions('SpOcc', species = 'Anopheles plumbeus', extent = c(-20, 20, 45, 65)),
                    covarMod = ModuleOptions('NCEP', variables = c('air', 'rhum'), extent = c(-20,20,45,65)),
-                   procMod = 'OneHundredBackground',
+                     procMod = 'OneHundredBackground',
                    modelMod = 'RandomForest',
                    outMod = 'SameTimePlaceMap')
   
@@ -48,7 +48,7 @@ test_that('collecting modules with names and urls is equivelent.', {
   set.seed(1)
   workNames <- workflow(occurMod = 'UKAnophelesPlumbeus',
                  covarMod = 'UKAir',
-                 procMod = 'OneHundredBackground',
+                     procMod = 'OneHundredBackground',
                  modelMod = 'LogisticRegression',
                  outMod = 'SameTimePlaceMap')
   set.seed(1)
@@ -68,7 +68,7 @@ test_that('Workflows with lists of modules work.', {
                         ModuleOptions('SpOcc', species = 'Anopheles plumbeus', 
                           extent = c(-20, 20, 45, 65))),
                        covarMod = 'UKAir',
-                       procMod = 'OneHundredBackground',
+                     procMod = 'OneHundredBackground',
                        modelMod = 'LogisticRegression',
                        outMod = 'SameTimePlaceMap')
 
@@ -109,15 +109,15 @@ test_that('Workflows with lists of modules work.', {
   modelClasses <- unlist(lapply(workModelList, function(x) sapply(x, class)))
   outputClasses <- unlist(lapply(workOutputList, function(x) sapply(x, class)))
 
-  expect_equivalent(occurClasses, c('data.frame','data.frame','RasterLayer','data.frame',
-    'data.frame','list','list','RasterLayer','RasterLayer'))
-  expect_equivalent(covarClasses, c('data.frame','RasterLayer','RasterLayer','data.frame',
-    'data.frame','list','list','RasterLayer','RasterLayer'))
-  expect_equivalent(processClasses, c('data.frame','RasterLayer','data.frame',
-    'data.frame','list','list','RasterLayer','RasterLayer'))
-  expect_equivalent(modelClasses, c('data.frame','RasterLayer','data.frame',
+  expect_equivalent(occurClasses, c('data.frame','data.frame','RasterLayer','list',
+    'list','list','list','RasterLayer','RasterLayer'))
+  expect_equivalent(covarClasses, c('data.frame','RasterLayer','RasterLayer','list',
+    'list','list','list','RasterLayer','RasterLayer'))
+  expect_equivalent(processClasses, c('data.frame','RasterLayer','list',
+    'list','list','list','RasterLayer','RasterLayer'))
+  expect_equivalent(modelClasses, c('data.frame','RasterLayer','list',
     'list','list','RasterLayer','RasterLayer'))
-  expect_equivalent(outputClasses, c('data.frame','RasterLayer','data.frame',
+  expect_equivalent(outputClasses, c('data.frame','RasterLayer','list',
     'list','RasterLayer','RasterLayer'))
 
 })
@@ -170,9 +170,9 @@ test_that('simple, crossvalidation workflow works.', {
   expect_equal(dim(workCross$occurrence.output[[1]]), c(188, 5))
   expect_is(workCross$covariate.output[[1]], 'RasterLayer')
   expect_equal(dim(workCross$covariate.output[[1]]), c(9,9,1))
-  expect_equal(names(workCross$process.output[[1]]), 
+  expect_equal(names(workCross$process.output[[1]]$df), 
     c('value', 'type', 'fold', 'lon', 'lat', 'layer'))
-  expect_equal(dim(workCross$process.output[[1]]),  c(269, 6))
+  expect_equal(dim(workCross$process.output[[1]]$df),  c(269, 6))
   expect_is((workCross$model.output[[1]])$model, c('glm', 'lm'))
   expect_is(workCross$output[[1]], 'RasterLayer')  
 

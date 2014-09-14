@@ -16,7 +16,7 @@
 #'      and better reproducibility
 #'@name zoon
 #'@docType package
-#'@import assertthat raster rlist RCurl httr httpuv
+#'@import assertthat raster rlist RCurl httr httpuv dismo
 
 NULL
 
@@ -185,18 +185,18 @@ workflow <- function(occurMod,
     # This shape is then input and output of all process modules.
     # Also makes it easy to implement a NULL process
     if(length(covariate) > 1){    
-      data <- lapply(covariate.output, ExtractAndCombData(occurrence.output[[1]], x))
+      data <- lapply(covariate.output, function(x) ExtractAndCombData(occurrence.output[[1]], x))
     } else {
       data <- lapply(occurrence.output, function(x) ExtractAndCombData(x, covariate.output[[1]]))
     }
 
     # We have to use lapply over a different list depending on whether occurrence,
     # covariate or process has multiple modules
-    if (!identical(attr(procMod, 'Chain'), TRUE)){
+    if (!identical(attr(procMod, 'chain'), TRUE)){
       if (length(process) > 1){
         process.output <- lapply(process, 
           function(x) do.call(x$func, 
-                        c(list(data = data[[1]], x$paras)))
+                        c(list(data = data[[1]]), x$paras)))
       } else {
         process.output <- lapply(data,
           function(x) do.call(process[[1]]$func, 
@@ -229,18 +229,38 @@ workflow <- function(occurMod,
     }
     
     #output module
-    if (length(output.module) > 1){
-      output.output <- lapply(output, function(x) do.call(x$func, 
-                                                          c(list(model.output[[1]], covariate.output[[1]]), x$paras)))
-    } else if (length(covariate.module) > 1){
-      output.output <- lapply(covariate.output, function(x) do.call(output[[1]]$func, 
-                                                                    c(list(model.output[[1]], x), output[[1]]$paras)))    
+    # If outMod isn't chained, might have to lapply over outputmod, covarmod or procmod
+    # If outMod is chained, either covarmod or procmod only. Within this need to chain outmod
+
+    if(!identical(attr(outMod, 'chain'), TRUE)){
+      if (length(output.module) > 1){
+        output.output <- lapply(output, 
+                           function(x) do.call(x$func, 
+                           c(list(model.output[[1]], covariate.output[[1]]), x$paras)))
+      } else if (length(covariate.module) > 1){
+        output.output <- lapply(covariate.output, 
+                           function(x) do.call(output[[1]]$func, 
+                           c(list(model.output[[1]], x), output[[1]]$paras)))    
+      } else {
+        output.output <- lapply(model.output, 
+                           function(x) do.call(output[[1]]$func, 
+                           c(list(x,  covariate.output[[1]]), output[[1]]$paras)))
+      }
     } else {
-      output.output <- lapply(model.output, function(x) do.call(output[[1]]$func, 
-                                                                c(list(x,  covariate.output[[1]]), output[[1]]$paras)))
+      if (length(covariate.module) > 1){
+        output.output <- lapply(covariate.output, 
+                           function(y) lapply(output, 
+                             function(x) do.call(x$func, 
+                             c(list(model.output[[1]], y), x$paras))))    
+      } else {
+        output.output <- lapply(model.output, 
+                           function(y) lapply(output, 
+                             function(x) do.call(x$func, 
+                             c(list(y, covariate.output[[1]]), x$paras))))    
+      }
     }
-    
-    
+
+
     # get the command used to call this function
     bits <- sys.call()
     call <- paste0(bits[1],

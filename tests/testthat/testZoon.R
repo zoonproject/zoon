@@ -58,13 +58,13 @@ test_that('GetModule works', {
 
   expect_error(GetModule('xxx'))
   expect_that(GetModule(file), equals('TestModule'))
-  expect_that(GetModule('NoProcess', 'Process'), equals('NoProcess'))
+  expect_that(GetModule('NoProcess'), equals('NoProcess'))
   expect_that(GetModule('https://raw.githubusercontent.com/zoonproject/modules/master/R/NoProcess.R'), equals('NoProcess'))
   
    #It's difficult to test that the environments are working correctly without running full workflow
   work1 <- workflow(occurMod = 'UKAnophelesPlumbeus',
                  covarMod = 'UKAir',
-                 procMod = 'OneHundredBackground',
+                 procMod = '~/Dropbox/zoon/modules/R/OneHundredBackground.R',
                  modelMod = 'LogisticRegression',
                  outMod = 'SameTimePlaceMap')
   expect_false(exists('OneHundredBackground', env = globalenv()))
