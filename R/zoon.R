@@ -109,7 +109,7 @@ workflow <- function(occurMod,
         for(i in 1:k){
           modelFold <- do.call(modelFunction, c(df = list(df[df$fold != i, ]), paras))
           dfOut$predictions[df$fold == i] <- 
-            predict(modelFold, newdata = df[df$fold == i, ], type = 'response') 
+            predict(modelFold, newdata = df[df$fold == i, 6:NCOL(df)], type = 'response') 
         }
       }
       
