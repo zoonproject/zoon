@@ -1,3 +1,6 @@
+
+
+
 # Simplest example
 
 library(zoon)
@@ -9,6 +12,8 @@ work1 <- workflow(occurMod = 'UKAnophelesPlumbeus',
                   outMod   = 'PrintMap')
 
 str(work1, 1)
+
+
 
 
 
@@ -35,6 +40,9 @@ ModuleHelp('UKBioclim')
 
 
 
+
+
+
 # Modules with arguments
 
 ModuleHelp('SpOcc')
@@ -43,11 +51,15 @@ ModuleHelp('SpOcc')
 
 
 
-work2 <- workflow(occurMod = ModuleOptions('SpOcc', species = 'Loxia scotica', extent=c(-10, 10, 45, 65)),
+work2 <- workflow(occurMod = ModuleOptions('SpOcc', species = 'Loxia scotica', 
+                                           extent=c(-10, 10, 45, 65)),
                   covarMod = 'UKBioclim',
                   procMod  = 'OneHundredBackground',
                   modelMod = 'LogisticRegression',
                   outMod   = 'PrintMap')
+
+
+
 
 
 
@@ -139,8 +151,7 @@ work6 <- workflow(occurMod = Chain(ModuleOptions('SpOcc', species = 'Eresus koll
 
                   procMod  = ModuleOptions('BackgroundAndCrossvalid', k=2),
 
-                  modelMod = list('LogisticRegression', 'RandomForest',
-                                  'QuickGRaF'),
+                  modelMod = list('LogisticRegression', 'RandomForest'),
 
                   outMod   = Chain('SameTimePlaceMap', 'PerformanceMeasures')
                   )
@@ -148,13 +159,13 @@ work6 <- workflow(occurMod = Chain(ModuleOptions('SpOcc', species = 'Eresus koll
 str(work6, 1)
 
 
-par(mfrow=c(1,3))
+par(mfrow=c(1,2))
 plot(work6$output.output[[1]][[1]], 
-  main=paste('Logistic Regression: AUC = ', round(work6$output.output[[1]][[2]]$auc, 2)))
+  main=paste('Logistic Regression: AUC = ', 
+             round(work6$output.output[[1]][[2]]$auc, 2)))
 plot(work6$output.output[[2]][[1]],
-  main=paste('Random forest: AUC = ', round(work6$output.output[[2]][[2]]$auc, 2)))
-plot(work6$output.output[[1]][[1]],
-  main=paste('Bioclim: AUC = ', round(work6$output.output[[3]][[2]]$auc, 2)))
+  main=paste('Random forest: AUC = ', 
+             round(work6$output.output[[2]][[2]]$auc, 2)))
 
 
 
@@ -177,6 +188,31 @@ plot(work6$output.output[[1]][[1]],
 
 
 
+# Building modules
+
+NewModule <- function(df){
+
+  zoon:::GetPackage("gam")
+  
+  covs <- as.data.frame(df[, 6:ncol(df)])
+  names(covs) <- names(df)[6:ncol(df)]
+  m <- gam::gam(formula = df$value ~ .,
+         data = covs,
+         family = binomial)
+
+  return (m)
+}
+
+
+BuildModule(NewModule, type = "Model", dir = "C:\\Users\\Tim\\Documents\\zoonworkshop",
+            description = "My cool new module")
+
+
+work1 <- workflow(occurMod = "UKAnophelesPlumbeus",
+                  covarMod = 'UKBioclim',
+                  procMod  = 'OneHundredBackground',
+                  modelMod = 'C:\\Users\\Tim\\Documents\\zoonworkshop\\NewModule.R',
+                  outMod   = 'PrintMap')
 
 
 
