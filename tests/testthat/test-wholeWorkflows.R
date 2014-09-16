@@ -171,7 +171,7 @@ test_that('simple, crossvalidation workflow works.', {
   expect_is(workCross$covariate.output[[1]], 'RasterLayer')
   expect_equal(dim(workCross$covariate.output[[1]]), c(9,9,1))
   expect_equal(names(workCross$process.output[[1]]$df), 
-    c('value', 'type', 'fold', 'lon', 'lat', 'layer'))
+    c('value', 'type', 'fold', 'longitude', 'latitude', 'layer'))
   expect_equal(dim(workCross$process.output[[1]]$df),  c(269, 6))
   expect_is((workCross$model.output[[1]])$model, c('glm', 'lm'))
   expect_is(workCross$output[[1]], 'RasterLayer')  
@@ -187,6 +187,7 @@ test_that('chains work.', {
                  procMod = 'OneHundredBackground',
                  modelMod = 'LogisticRegression',
                  outMod = 'SameTimePlaceMap')
+
   chain2 <- workflow(occurMod = 'UKAnophelesPlumbeus',
                  covarMod = Chain('UKAir','UKAir'),
                  procMod = 'OneHundredBackground',
