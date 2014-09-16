@@ -409,7 +409,8 @@ GetPackage <- function (package,
     } else {
       
       # otherwise use install.packages
-      install.packages(package)
+      install.packages(package,
+                       repos = "http://cran.ma.imperial.ac.uk/")
       
     }
     
