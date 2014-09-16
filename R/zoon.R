@@ -177,7 +177,7 @@ workflow <- function(occurMod,
 
     covariate.output <- lapply(covariate, function(x) do.call(x$func, x$paras))
     if (identical(attr(covarMod, 'chain'), TRUE)){
-      covariate.output <- list(do.call(raster::stack, occurrence.output))
+      covariate.output <- list(do.call(raster::stack, covariate.output))
     }
     
 
