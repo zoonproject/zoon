@@ -189,7 +189,9 @@ plot(work6$output.output[[2]][[1]],
 
 
 # Building modules
-
+# A model module
+# Input is a dataframe with columns value, type, fold, longitude, latitude then 6:ncol(df) covar columns
+# Can have other arguments
 NewModule <- function(df){
 
   zoon:::GetPackage("gam")
@@ -200,8 +202,12 @@ NewModule <- function(df){
          data = covs,
          family = binomial)
 
+# Output a model object. The object class must have a predict method available.
+# If it doesn't, define one here (see BiomodModel at link below for example)
+# https://github.com/zoonproject/modules/blob/master/R/BiomodModel.R
   return (m)
 }
+
 
 
 BuildModule(NewModule, type = "Model", dir = "C:\\Users\\Tim\\Documents\\zoonworkshop",
@@ -216,6 +222,96 @@ work1 <- workflow(occurMod = "UKAnophelesPlumbeus",
 
 
 
+
+################################################################################################################
+
+# What follows is a simple example of each module type.
+# If you wish to build a module you can use these as an outline
+# The names and structure of input arguments are important
+# And must match these, even if some arguments aren't used
+# Class, strucuter and column names of return value is also constrained.
+
+# Structure of an occurrence module
+
+# Input can be anything
+SpOcc <- function(species, extent, databases = 'gbif'){
+
+  zoon:::GetPackage(spocc)
+
+  raw <- occ2df(occ(query = species, geometry = extent, from = databases, limit=10e5))
+  occurrence <- raw[,c('longitude', 'latitude')]
+  occurrence$value <- 1
+  occurrence$type <- 'presence'
+  occurrence$fold <- 1
+
+  # Must return a dataframe with columns longitude, latitude, value, type and fold
+  # Value can be 1/0 for presence absence or numbers for abundance etc.
+  # type is mostly presence, presence/absence or abundance string. Not settled yet.
+  # Fold is just a column of 1s. It is currently needed (though I imagine it might be moved out of modules).
+  # No other columns. Exact names please.
+  return(occurrence) 
+}
+
+# Then run BuildModule to create the module file properly.
+BuildModule(SpOcc, type = "Occurrence", dir = "C:\\Users\\Tim\\Documents\\zoonworkshop",
+            # Be a good citizen! Describe your module well including parameters
+            # These are autobuilt into documentation. 
+            # Note: required arguments such as df in the model module above should not be documented.
+            description = "My cool new module species occurrence module",
+            paras = list(species = 'The species name',
+                          extent = 'latitudinal, longitudinal extent as numeric vector',
+                          databases = 'Character vector of databases to use from gbif, inat, ebird. Defaults to just gbif.'))
+
+
+
+# Structure of a covariate module
+
+# Any input
+LocalRaster <- function(filenames){
+
+  if(is.string(filenames)){
+    raster <- raster(filenames)
+  } else if(is.list(filenames)) {
+    rasterList <- lapply(filenames, raster)
+    raster <- stack(rasterList)
+  }
+
+# Must return a raster object. Layer, stack or brick.
+  return(raster)
+}
+
+
+# Structure of process module
+
+# Input and output are the same
+# Must accept/return a list. Input list must be called data.
+#   First element is a df w/ value, type, fold, longitude, latitude + covs
+#   Second element is a raster layer, stack or brick.
+#   Other input arguments is ok
+
+NoProcess <- function (data) {
+  
+
+  occurrence <- data$df
+  ras <- data$ras
+
+  noccurrence <- nrow(occurrence)
+  
+  df <- occurrence
+  names(df)[6:ncol(df)] <- names(ras)
+  
+  return(list(df=df, ras=ras))
+}
+
+
+# Structure of an output module
+
+# Input args are a model object called model and a raster object called ras
+# + Any other arguments
+# I imagine this will change so it expects the occurrence data as well
+SameTimePlaceMap <- function (model, ras) {
+  
+# Output can be anything. Go nuts.
 
 
 
