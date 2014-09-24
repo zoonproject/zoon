@@ -21,18 +21,22 @@
 NULL
 
 
-#' workhorse
+#' Run a full workflow.
 #'
-#'@param occurMod The name of the function (module) to be used to get occurence data
-#'@param covariate.module  The name of the function (module) to be used to get covariate data
-#'@param process.module The name of the function (module) to be used to process the data
-#'@param model.module The name of the SDM model function (module) to be used 
-#'@param output.module The name of the function (module) to be used to map output
+#' This is the main function of zoon. The arguments should specify at least five
+#'    modules, at least one of each type.
+#'
+#'@param occurMod The name of the module to be used to get occurence data
+#'@param covariate.module  The name of the module to be used to get covariate 
+#'  data.
+#'@param process.module The name of the module to be used to process the data
+#'@param model.module The name of the SDM model module to be used 
+#'@param output.module The name of the module to be used to map output
 #'
 #'@return A list with the results of each module and a copy of the
-#'       code used to execute the workflow (what's there now should be source-able
-#'       though I'm sure there is a much neater approach than the one I took - the
-#'       ultimate aim would be a much nicer way of enhancing reproducibility).
+#'  code used to execute the workflow (what's there now should be source-able
+#'  though I'm sure there is a much neater approach than the one I took - the
+#'  ultimate aim would be a much nicer way of enhancing reproducibility).
 #'@export
 #'@name workflow
 #'@examples 
@@ -81,15 +85,16 @@ workflow <- function(occurMod,
     #'  If fold is 0 then this is considered external validation data
     #'  If all data is 0 or 1, then no cross validation is run.
     #'    
-    #'@param modelFunction String giving the name of the model function which is in turn the
+    #'@param modelFunction String giving the name of the model function which is 
+    #'  in turn the
     #'  name of the module.
     #'
     #'@param paras All other parameters that should be passed to the model function. 
     #'  i.e. model[[1]]$paras
     #'
-    #'@return A list of length 2 containing the model trained on all data and a data.frame
-    #'  which contains value, type, fold, lon, lat, predictions and then all environmental
-    #'  variables.
+    #'@return A list of length 2 containing the model trained on all data and a
+    #'  data.frame which contains value, type, fold, lon, lat, predictions and 
+    #'  then all environmental variables.
     #'
     #'@name RunModels
     
@@ -275,7 +280,8 @@ workflow <- function(occurMod,
                 covariate.output = covariate.output,
                 process.output = process.output,
                 model.output = model.output,
-                output.output = output.output))
+                report = output.output,
+                call = call))
 }
 
 
