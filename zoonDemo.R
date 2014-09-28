@@ -15,11 +15,35 @@ str(work1, 1)
 
 
 
+set.seed(1)
+
+work1 <- workflow(occurMod =  ModuleOptions('LocalOccurrenceData', filename="~/Desktop/ZOON/longipalpis_test.csv",
+                    occurrenceType = 'presence'),
+                  covarMod = ModuleOptions('Bioclim', extent=c(-130,10,10,60)),
+                  procMod  = Chain('~/Dropbox/zoon/scripts/DropEmptyColumns.R','OneHundredBackground'),
+                  modelMod = 'LogisticRegression',
+                  outMod   = 'PrintMap')
 
 
+set.seed(1)
+
+work2 <- workflow(occurMod =  ModuleOptions('LocalOccurrenceData', filename="~/Desktop/ZOON/longipalpis_test.csv",
+                    occurrenceType = 'presence'),
+                  covarMod = ModuleOptions('Bioclim', extent=c(-130,10,10,60)),
+                  procMod  = 'OneHundredBackground',
+                  modelMod = 'LogisticRegression',
+                  outMod   = 'PrintMap')
 
 
+work2 <- workflow(occurMod =  ModuleOptions('LocalOccurrenceData', filename="~/Desktop/ZOON/longipalpis_test.csv",
+                    occurrenceType = 'presence'),
+                  covarMod = ModuleOptions('Bioclim', extent=c(-130,10,10,60)),
+                  procMod  = 'OneHundredBackground',
+                  modelMod = ModuleOptions('BiomodModel', modelType='GLM'),
+                  outMod   = 'PrintMap')
 
+
+identical(work1$process.output, work2$process.output)
 
 
 # Help

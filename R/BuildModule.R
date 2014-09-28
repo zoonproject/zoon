@@ -9,6 +9,10 @@
 #'      working directory.
 #'@param type A string that defines the type of module. Possible module types
 #'      are occurence, covariate, process, model, diagnostic and output.
+#'@param description A single string giving a description of the model.
+#'@param paras A list of the form 
+#'  list(parameterName = 'Parameter description.',
+#'    anotherParameter = 'Another descriptions.')
 #'
 #'@return NULL. Outputs a file
 #'@name BuildModule

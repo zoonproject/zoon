@@ -162,7 +162,7 @@ workflow <- function(occurMod, covarMod, procMod, modelMod, outMod) {
                        list(df = process.output[[1]]$df, 
                             modelFunction = x$func, 
                             paras = x$paras,
-                            workEnv = environment(eval(parse(text = model[[1]]$module)))
+                            workEnv = environment(eval(parse(text = model[[1]]$func)))
                            )
                       )
             )
@@ -174,7 +174,7 @@ workflow <- function(occurMod, covarMod, procMod, modelMod, outMod) {
                        list(df = x$df, 
                             modelFunction = model[[1]]$func, 
                             paras = model[[1]]$paras,
-                            workEnv = environment(eval(parse(text = model[[1]]$module)))
+                            workEnv = environment(eval(parse(text = model[[1]]$func)))
                            )
                       )
             )
