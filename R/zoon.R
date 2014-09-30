@@ -42,16 +42,16 @@ NULL
 #'@examples 
 
 #'# run a workflow, using the logistic regression model
-#'work1 <- workflow(occurMod = 'UKAnophelesPlumbeus',
-#'                 covarMod = 'UKAir',
-#'                 procMod = 'OneHundredBackground',
-#'                 modelMod = 'LogisticRegression',
-#'                 outMod = 'SameTimePlaceMap')
+#'#work1 <- workflow(occurrence = 'UKAnophelesPlumbeus',
+#'#                 covariate = 'UKAir',
+#'#                 process = 'OneHundredBackground',
+#'#                 model = 'LogisticRegression',
+#'#                 output = 'SameTimePlaceMap')
 #'
-#'str(work1, 1)
+#'#str(work1, 1)
 #'
-#'work2 <- workflow('UKAnophelesPlumbeus', 'UKAir', 'OneHundredBackground', 
-#'           'RandomForest', 'PrintMap')
+#'#work2 <- workflow('UKAnophelesPlumbeus', 'UKAir', 'OneHundredBackground', 
+#'#           'RandomForest', 'PrintMap')
 #'
 #'
 #'
