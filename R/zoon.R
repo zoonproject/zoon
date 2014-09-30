@@ -26,12 +26,12 @@ NULL
 #' This is the main function of zoon. The arguments should specify at least five
 #'    modules, at least one of each type.
 #'
-#'@param occurMod The name of the module to be used to get occurence data
-#'@param covariate.module  The name of the module to be used to get covariate 
+#'@param occurrence The name of the module to be used to get occurence data
+#'@param covariate  The name of the module to be used to get covariate 
 #'  data.
-#'@param process.module The name of the module to be used to process the data
-#'@param model.module The name of the SDM model module to be used 
-#'@param output.module The name of the module to be used to map output
+#'@param process The name of the module to be used to process the data
+#'@param model The name of the SDM model module to be used 
+#'@param output The name of the module to be used to map output
 #'
 #'@return A list with the results of each module and a copy of the
 #'  code used to execute the workflow (what's there now should be source-able
@@ -56,7 +56,7 @@ NULL
 #'
 #'
 
-workflow <- function(occurMod, covarMod, procMod, modelMod, outMod) {
+workflow <- function(occurrence, covariate, process, model, output) {
   
   # Before start workflow, need to define this function.
   # It's here as a hack to get it defined in right environment.
@@ -69,16 +69,16 @@ workflow <- function(occurMod, covarMod, procMod, modelMod, outMod) {
   # Check all modules are of same list structure
   
   # Check all modules are of same list structure
-  occurrence.module <- CheckModList(occurMod)
-  covariate.module <- CheckModList(covarMod)
-  process.module <- CheckModList(procMod)
-  model.module <- CheckModList(modelMod)
-  output.module <- CheckModList(outMod)
+  occurrence.module <- CheckModList(occurrence)
+  covariate.module <- CheckModList(covariate)
+  process.module <- CheckModList(process)
+  model.module <- CheckModList(model)
+  output.module <- CheckModList(output)
   
   # Only one of occurrence, covariate, process and model can be a list of 
   #   mulitple modules.
-  isChain <- sapply(list(occurMod, covarMod, 
-    procMod, modelMod, outMod), function(x) identical(attr(x, 'chain'), TRUE))
+  isChain <- sapply(list(occurrence, covariate, 
+    process, model, output), function(x) identical(attr(x, 'chain'), TRUE))
   NoOfModules <- sapply(list(occurrence.module, covariate.module, 
     process.module, model.module, output.module), length)
   if(sum(NoOfModules[!isChain] > 1) > 1){
@@ -89,13 +89,13 @@ workflow <- function(occurMod, covarMod, procMod, modelMod, outMod) {
   # Get the modules (functions) from github. 
   # Save name of functions as well as load functions into global namespace.
   # Will probably want to make this so it checks namespace first.
-  occurrence <- GetModules(occurrence.module) 
-  covariate <- GetModules(covariate.module) 
-  process <- GetModules(process.module) 
+  occurrenceName <- GetModules(occurrence.module) 
+  covariateName <- GetModules(covariate.module) 
+  processName <- GetModules(process.module) 
   # Check for val type lon lat covs
-  model <- GetModules(model.module) 
+  modelName <- GetModules(model.module) 
   # Test for predict method
-  output <- GetModules(output.module) 
+  outputName <- GetModules(output.module) 
   
   
   
@@ -105,14 +105,14 @@ workflow <- function(occurMod, covarMod, procMod, modelMod, outMod) {
 
 
   # First the data collection modules
-  occurrence.output <- lapply(occurrence, function(x) do.call(x$func, x$paras))
+  occurrence.output <- lapply(occurrenceName, function(x) do.call(x$func, x$paras))
   # Then bind together if the occurrence modules were chained
-  if (identical(attr(occurMod, 'chain'), TRUE)){
+  if (identical(attr(occurrence, 'chain'), TRUE)){
     occurrence.output <- list(do.call(rbind, occurrence.output))
   }
 
-  covariate.output <- lapply(covariate, function(x) do.call(x$func, x$paras))
-  if (identical(attr(covarMod, 'chain'), TRUE)){
+  covariate.output <- lapply(covariateName, function(x) do.call(x$func, x$paras))
+  if (identical(attr(covariate, 'chain'), TRUE)){
     covariate.output <- list(do.call(raster::stack, covariate.output))
   }
   
@@ -120,7 +120,7 @@ workflow <- function(occurMod, covarMod, procMod, modelMod, outMod) {
   # Simply combine data into basic df shape
   # This shape is then input and output of all process modules.
   # Also makes it easy to implement a NULL process
-  if(length(covariate) > 1){    
+  if(length(covariateName) > 1){    
     data <- lapply(covariate.output, 
                    function(x) ExtractAndCombData(occurrence.output[[1]], x))
   } else {
@@ -130,24 +130,24 @@ workflow <- function(occurMod, covarMod, procMod, modelMod, outMod) {
 
   # Have to use lapply over a different list depending on whether occurrence,
   # covariate or process has multiple modules
-  if (!identical(attr(procMod, 'chain'), TRUE)){
-    if (length(process) > 1){
-      process.output <- lapply(process, 
+  if (!identical(attr(process, 'chain'), TRUE)){
+    if (length(processName) > 1){
+      process.output <- lapply(processName, 
         function(x) do.call(x$func, 
                       c(list(data = data[[1]]), x$paras)))
     } else {
       process.output <- lapply(data,
-        function(x) do.call(process[[1]]$func, 
-                      c(list(data = x), process[[1]]$paras)))
+        function(x) do.call(processName[[1]]$func, 
+                      c(list(data = x), processName[[1]]$paras)))
     }
   } else { 
-    # If procMod was chained, we must loop through the process modules 
+    # If process was chained, we must loop through the process modules 
     #   applying them to the output of the previous one.
     process.output <- data
-    for(p in 1:length(process)){      
+    for(p in 1:length(processName)){      
       process.output <- lapply(process.output,
-        function(x) do.call(process[[p]]$func, 
-                      c(list(data = x), process[[p]]$paras)))
+        function(x) do.call(processName[[p]]$func, 
+                      c(list(data = x), processName[[p]]$paras)))
     }
   }      
   
@@ -156,13 +156,13 @@ workflow <- function(occurMod, covarMod, procMod, modelMod, outMod) {
   # Model module
   if (length(model.module) > 1){
     model.output <- 
-      lapply(model, 
+      lapply(modelName, 
              function(x) 
                do.call(RunModels,
                        list(df = process.output[[1]]$df, 
                             modelFunction = x$func, 
                             paras = x$paras,
-                            workEnv = environment(eval(parse(text = model[[1]]$func)))
+                            workEnv = environment(eval(parse(text = modelName[[1]]$func)))
                            )
                       )
             )
@@ -172,46 +172,46 @@ workflow <- function(occurMod, covarMod, procMod, modelMod, outMod) {
              function(x) 
                do.call(RunModels, 
                        list(df = x$df, 
-                            modelFunction = model[[1]]$func, 
-                            paras = model[[1]]$paras,
-                            workEnv = environment(eval(parse(text = model[[1]]$func)))
+                            modelFunction = modelName[[1]]$func, 
+                            paras = modelName[[1]]$paras,
+                            workEnv = environment(eval(parse(text = modelName[[1]]$func)))
                            )
                       )
             )
   }
   
   #output module
-  # If outMod isn't chained, might have to lapply over 
-  #   outputmod, covarmod or procmod
-  # If outMod is chained, either covarmod or procmod only. 
-  #  Within this need to chain outmod
+  # If output isn't chained, might have to lapply over 
+  #   output, covariate or process
+  # If output is chained, either covariate or process only. 
+  #  Within this need to chain output
 
-  if(!identical(attr(outMod, 'chain'), TRUE)){
+  if(!identical(attr(output, 'chain'), TRUE)){
     if (length(output.module) > 1){
-      output.output <- lapply(output, 
+      output.output <- lapply(outputName, 
                          function(x) do.call(x$func, 
                          c(list(model.output[[1]], 
                                 covariate.output[[1]]),
                            x$paras)))
     } else if (length(covariate.module) > 1){
       output.output <- lapply(covariate.output, 
-                         function(x) do.call(output[[1]]$func, 
+                         function(x) do.call(outputName[[1]]$func, 
                          c(list(model.output[[1]], x),
-                           output[[1]]$paras)))    
+                           outputName[[1]]$paras)))    
     } else {
       output.output <- lapply(model.output, 
-                         function(x) do.call(output[[1]]$func, 
-                         c(list(x, covariate.output[[1]]), output[[1]]$paras)))
+                         function(x) do.call(outputName[[1]]$func, 
+                         c(list(x, covariate.output[[1]]), outputName[[1]]$paras)))
     }
   } else {
     if (length(covariate.module) > 1){
       output.output <- lapply(covariate.output, 
-                         function(y) lapply(output, 
+                         function(y) lapply(outputName, 
                            function(x) do.call(x$func, 
                            c(list(model.output[[1]], y), x$paras))))    
     } else {
       output.output <- lapply(model.output, 
-                         function(y) lapply(output, 
+                         function(y) lapply(outputName, 
                            function(x) do.call(x$func, 
                            c(list(y, covariate.output[[1]]), x$paras))))    
     }
@@ -497,3 +497,7 @@ Chain <- function(...){
   attr(chain, 'chain') <- TRUE
   return(chain)
 }
+
+
+
+
