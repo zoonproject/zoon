@@ -58,16 +58,6 @@ NULL
 
 workflow <- function(occurrence, covariate, process, model, output) {
   
-  # Before start workflow, need to define this function.
-  # It's here as a hack to get it defined in right environment.
-  # Will fix it another day.
-  
-    
-    
-    
-  
-  # Check all modules are of same list structure
-  
   # Check all modules are of same list structure
   occurrence.module <- CheckModList(occurrence)
   covariate.module <- CheckModList(covariate)
@@ -130,6 +120,8 @@ workflow <- function(occurrence, covariate, process, model, output) {
 
   # Have to use lapply over a different list depending on whether occurrence,
   # covariate or process has multiple modules
+
+  #process.output <- RunProcessModules(data, process, processName)
   if (!identical(attr(process, 'chain'), TRUE)){
     if (length(processName) > 1){
       process.output <- lapply(processName, 
@@ -304,6 +296,8 @@ GetModules <- function(modules){
 #'
 #'@param paras All other parameters that should be passed to the model function. 
 #'  i.e. model[[1]]$paras
+#'
+#'@param workEnv The environment name of the workflow call environment.
 #'
 #'@return A list of length 2 containing the model trained on all data and a
 #'  data.frame which contains value, type, fold, lon, lat, predictions and 

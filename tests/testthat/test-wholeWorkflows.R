@@ -2,11 +2,11 @@
 context('Test workflow function.')
 
 test_that('simple, package data workflow works.', {
-  work1 <- workflow(occurMod = 'UKAnophelesPlumbeus',
-                 covarMod = 'UKAir',
-                     procMod = 'OneHundredBackground',
-                 modelMod = 'LogisticRegression',
-                 outMod = 'SameTimePlaceMap')
+  work1 <- workflow(occurrence = 'UKAnophelesPlumbeus',
+                 covariate = 'UKAir',
+                     process = 'OneHundredBackground',
+                 model = 'LogisticRegression',
+                 output = 'SameTimePlaceMap')
 
   expect_true(exists('work1'))
   expect_equal(names(work1), 
@@ -27,12 +27,12 @@ test_that('simple, package data workflow works.', {
 
 test_that('modules downloading data work', {
 
-  work2 <- workflow(occurMod = ModuleOptions('SpOcc', species = 'Anopheles plumbeus', extent = c(-20, 20, 45, 65)),
-                   #covarMod = ModuleOptions('NCEP', variables = c('air', 'rhum'), extent = c(-20,20,45,65)),
-                    covarMod = 'UKAir',
-                    procMod = 'OneHundredBackground',
-                    modelMod = 'RandomForest',
-                    outMod = 'SameTimePlaceMap')
+  work2 <- workflow(occurrence = ModuleOptions('SpOcc', species = 'Anopheles plumbeus', extent = c(-20, 20, 45, 65)),
+                   #covariate = ModuleOptions('NCEP', variables = c('air', 'rhum'), extent = c(-20,20,45,65)),
+                    covariate = 'UKAir',
+                    process = 'OneHundredBackground',
+                    model = 'RandomForest',
+                    output = 'SameTimePlaceMap')
   
   expect_true(exists('work2'))
   expect_equal(names(work2), 
@@ -52,17 +52,17 @@ test_that('modules downloading data work', {
 
 test_that('collecting modules with names and urls is equivelent.', {
   set.seed(1)
-  workNames <- workflow(occurMod = 'UKAnophelesPlumbeus',
-                         covarMod = 'UKAir',
-                         procMod = 'OneHundredBackground',
-                         modelMod = 'LogisticRegression',
-                         outMod = 'SameTimePlaceMap')
+  workNames <- workflow(occurrence = 'UKAnophelesPlumbeus',
+                         covariate = 'UKAir',
+                         process = 'OneHundredBackground',
+                         model = 'LogisticRegression',
+                         output = 'SameTimePlaceMap')
   set.seed(1)
-  workURLs <- workflow(occurMod = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/UKAnophelesPlumbeus.R',
-                 covarMod = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/UKAir.R',
-                 procMod = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/OneHundredBackground.R',
-                 modelMod = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/LogisticRegression.R',
-                 outMod = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/SameTimePlaceMap.R')
+  workURLs <- workflow(occurrence = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/UKAnophelesPlumbeus.R',
+                 covariate = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/UKAir.R',
+                 process = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/OneHundredBackground.R',
+                 model = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/LogisticRegression.R',
+                 output = 'https://raw.githubusercontent.com/zoonproject/modules/master/R/SameTimePlaceMap.R')
 
 expect_equal(workNames[[1]], workURLs[[1]])
 expect_equal(workNames[[2]], workURLs[[2]])
@@ -76,38 +76,38 @@ test_that('Workflows with lists of modules work.', {
   
   # Would like to remove some of the slow online database modules from here.
   # In fact I don't think the would pass cran.
-  workOccurList <- workflow(occurMod = list('UKAnophelesPlumbeus', 
+  workOccurList <- workflow(occurrence = list('UKAnophelesPlumbeus', 
                         ModuleOptions('SpOcc', species = 'Anopheles plumbeus', 
                           extent = c(-20, 20, 45, 65))),
-                        covarMod = 'UKAir',
-                        procMod = 'OneHundredBackground',
-                        modelMod = 'LogisticRegression',
-                        outMod = 'SameTimePlaceMap')
+                        covariate = 'UKAir',
+                        process = 'OneHundredBackground',
+                        model = 'LogisticRegression',
+                        output = 'SameTimePlaceMap')
 
-  workCovarList <- workflow(occurMod = 'UKAnophelesPlumbeus',
-                     covarMod = list('UKAir', 'UKAir'),
-                     procMod = 'OneHundredBackground',
-                     modelMod = 'LogisticRegression',
-                     outMod = 'SameTimePlaceMap')
+  workCovarList <- workflow(occurrence = 'UKAnophelesPlumbeus',
+                     covariate = list('UKAir', 'UKAir'),
+                     process = 'OneHundredBackground',
+                     model = 'LogisticRegression',
+                     output = 'SameTimePlaceMap')
 
   # There's only 1 appropriate process module at the moment!
-  workProcessList <- workflow(occurMod = 'UKAnophelesPlumbeus',
-                       covarMod = 'UKAir',
-                       procMod = list('OneHundredBackground','OneHundredBackground'),
-                       modelMod = 'LogisticRegression',
-                       outMod = 'SameTimePlaceMap')
+  workProcessList <- workflow(occurrence = 'UKAnophelesPlumbeus',
+                       covariate = 'UKAir',
+                       process = list('OneHundredBackground','OneHundredBackground'),
+                       model = 'LogisticRegression',
+                       output = 'SameTimePlaceMap')
 
-  workModelList <- workflow(occurMod = 'UKAnophelesPlumbeus',
-                     covarMod = 'UKAir',
-                     procMod = 'OneHundredBackground',
-                     modelMod = list('LogisticRegression', 'RandomForest'),
-                     outMod = 'SameTimePlaceMap')
+  workModelList <- workflow(occurrence = 'UKAnophelesPlumbeus',
+                     covariate = 'UKAir',
+                     process = 'OneHundredBackground',
+                     model = list('LogisticRegression', 'RandomForest'),
+                     output = 'SameTimePlaceMap')
 
-  workOutputList <- workflow(occurMod = 'UKAnophelesPlumbeus',
-                     covarMod = 'UKAir',
-                     procMod = 'OneHundredBackground',
-                     modelMod = 'LogisticRegression',
-                     outMod = list('SameTimePlaceMap', 'SameTimePlaceMap'))
+  workOutputList <- workflow(occurrence = 'UKAnophelesPlumbeus',
+                     covariate = 'UKAir',
+                     process = 'OneHundredBackground',
+                     model = 'LogisticRegression',
+                     output = list('SameTimePlaceMap', 'SameTimePlaceMap'))
 
   expect_equivalent(sapply(workOccurList, length), c(2, 1, 2, 2, 2, 1))
   expect_equivalent(sapply(workCovarList, length), c(1, 2, 2, 2, 2, 1))
@@ -136,28 +136,28 @@ test_that('Workflows with lists of modules work.', {
 
 test_that('only one set of multiple lists allowed.', {
   fnc1 <- function(){
-    x <- workflow(occurMod = list('UKAnophelesPlumbeus',
+    x <- workflow(occurrence = list('UKAnophelesPlumbeus',
                     'UKAnophelesPlumbeus'),
-           covarMod = list('UKAir', 'UKAir'),
-           procMod = 'OneHundredBackground',
-           modelMod = 'LogisticRegression',
-           outMod = 'SameTimePlaceMap')
+           covariate = list('UKAir', 'UKAir'),
+           process = 'OneHundredBackground',
+           model = 'LogisticRegression',
+           output = 'SameTimePlaceMap')
   }
 
 fnc2 <- function(){
-    x <- workflow(occurMod = 'UKAnophelesPlumbeus',
-           covarMod = list('UKAir', 'UKAir'),
-           procMod = list('OneHundredBackground','OneHundredBackground'),
-           modelMod = 'LogisticRegression',
-           outMod = 'SameTimePlaceMap')
+    x <- workflow(occurrence = 'UKAnophelesPlumbeus',
+           covariate = list('UKAir', 'UKAir'),
+           process = list('OneHundredBackground','OneHundredBackground'),
+           model = 'LogisticRegression',
+           output = 'SameTimePlaceMap')
   }
 
 fnc3 <- function(){
-    x <- workflow(occurMod = 'UKAnophelesPlumbeus',
-           covarMod = 'UKAir',
-           procMod = 'OneHundredBackground',
-           modelMod = list('LogisticRegression','LogisticRegression'),
-           outMod = list('SameTimePlaceMap', 'SameTimePlaceMap'))
+    x <- workflow(occurrence = 'UKAnophelesPlumbeus',
+           covariate = 'UKAir',
+           process = 'OneHundredBackground',
+           model = list('LogisticRegression','LogisticRegression'),
+           output = list('SameTimePlaceMap', 'SameTimePlaceMap'))
   }
 
   expect_error(fnc1())
@@ -170,11 +170,11 @@ fnc3 <- function(){
 
 test_that('simple, crossvalidation workflow works.', {
 
-  workCross <- workflow(occurMod = 'UKAnophelesPlumbeus',
-                 covarMod = 'UKAir',
-                 procMod = 'BackgroundAndCrossvalid',
-                 modelMod = 'LogisticRegression',
-                 outMod = 'SameTimePlaceMap')
+  workCross <- workflow(occurrence = 'UKAnophelesPlumbeus',
+                 covariate = 'UKAir',
+                 process = 'BackgroundAndCrossvalid',
+                 model = 'LogisticRegression',
+                 output = 'SameTimePlaceMap')
 
   expect_true(exists('workCross'))
   expect_equal(names(workCross), c('occurrence.output', 'covariate.output',
@@ -194,24 +194,24 @@ test_that('simple, crossvalidation workflow works.', {
 
 
 test_that('chains work.', {
-  chain1 <- workflow(occurMod = Chain('UKAnophelesPlumbeus','UKAnophelesPlumbeus'),
-                 covarMod = 'UKAir',
-                 procMod = 'OneHundredBackground',
-                 modelMod = 'LogisticRegression',
-                 outMod = 'SameTimePlaceMap')
+  chain1 <- workflow(occurrence = Chain('UKAnophelesPlumbeus','UKAnophelesPlumbeus'),
+                 covariate = 'UKAir',
+                 process = 'OneHundredBackground',
+                 model = 'LogisticRegression',
+                 output = 'SameTimePlaceMap')
 
-  chain2 <- workflow(occurMod = 'UKAnophelesPlumbeus',
-                 covarMod = Chain('UKAir','UKAir'),
-                 procMod = 'OneHundredBackground',
-                 modelMod = 'LogisticRegression',
-                 outMod = 'SameTimePlaceMap')
+  chain2 <- workflow(occurrence = 'UKAnophelesPlumbeus',
+                 covariate = Chain('UKAir','UKAir'),
+                 process = 'OneHundredBackground',
+                 model = 'LogisticRegression',
+                 output = 'SameTimePlaceMap')
 
 
-  chain4 <- workflow(occurMod = 'UKAnophelesPlumbeus',
-                 covarMod = 'UKAir',
-                 procMod = 'OneHundredBackground',
-                 modelMod = 'LogisticRegression',
-                 outMod = Chain('SameTimePlaceMap', 'SameTimePlaceMap'))
+  chain4 <- workflow(occurrence = 'UKAnophelesPlumbeus',
+                 covariate = 'UKAir',
+                 process = 'OneHundredBackground',
+                 model = 'LogisticRegression',
+                 output = Chain('SameTimePlaceMap', 'SameTimePlaceMap'))
 
   
 
