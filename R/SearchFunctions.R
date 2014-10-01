@@ -9,10 +9,25 @@
 #'@examples \dontrun{GetModuleList()}
 
 GetModuleList <- function(moduleType='all'){
-  files <- gh_list_files('zoonproject', 'modules')
-  mods <- files[grep('^R/', files)]
-  names <- gsub('^R/|.R$', '', mods)
-  return(names)
+
+  # Check if we've made an environment called zoonHidden yet
+  # If not make one.
+  if(!exists('zoonHidden', mode = 'environment')){
+    zoonHidden <- new.env(parent = .GlobalEnv)
+  }
+  
+  # If we've already downloaded a module list, print that.
+  # Otherwise download a list from github
+  if(exists('moduleList', envir = zoonHidden)){
+    moduleNames <- local(moduleList, envir = zoonHidden)
+    return(moduleNames)
+  } else {
+    files <- gh_list_files('zoonproject', 'modules')
+    mods <- files[grep('^R/', files)]
+    moduleNames <- gsub('^R/|.R$', '', mods)
+    local(moduleList <- moduleNames, envir = zoonHidden)
+    return(moduleNames)
+  }
 }
 
 # Code largely taken from 
