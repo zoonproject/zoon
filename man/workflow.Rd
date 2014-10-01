@@ -6,16 +6,15 @@
 workflow(occurrence, covariate, process, model, output)
 }
 \arguments{
-\item{occurrence}{The name of the module to be used to get occurence data}
+\item{occurrence}{Occurrence module to be used.}
 
-\item{covariate}{The name of the module to be used to get covariate
-data.}
+\item{covariate}{Covariate module to be used.}
 
-\item{process}{The name of the module to be used to process the data}
+\item{process}{Process module to be used.}
 
-\item{model}{The name of the SDM model module to be used}
+\item{model}{SDM model module to be used.}
 
-\item{output}{The name of the module to be used to map output}
+\item{output}{Output module to be used.}
 }
 \value{
 A list with the results of each module and a copy of the
@@ -25,19 +24,23 @@ A list with the results of each module and a copy of the
 }
 \description{
 This is the main function of zoon. The arguments should specify at least five
-   modules, at least one of each type.
+  modules, at least one of each type.
+  If modules do not have any arguments to be specific (or defaults are being
+  used then simply give the names of the module. If arguments are needed
+  give the modules in the form of a function
+  e.g. occurrence = AModule(para1 = 2, para2 = 'detail')
 }
 \examples{
 # run a workflow, using the logistic regression model
-work1 <- workflow(occurMod = 'UKAnophelesPlumbeus',
-                covarMod = 'UKAir',
-                procMod = 'OneHundredBackground',
-                modelMod = 'LogisticRegression',
-                outMod = 'SameTimePlaceMap')
+#work1 <- workflow(occurrence = 'UKAnophelesPlumbeus',
+#                 covariate = 'UKAir',
+#                 process = 'OneHundredBackground',
+#                 model = 'LogisticRegression',
+#                 output = 'SameTimePlaceMap')
 
-str(work1, 1)
+#str(work1, 1)
 
-work2 <- workflow('UKAnophelesPlumbeus', 'UKAir', 'OneHundredBackground',
-          'RandomForest', 'PrintMap')
+#work2 <- workflow('UKAnophelesPlumbeus', 'UKAir', 'OneHundredBackground',
+#           'RandomForest', 'PrintMap')
 }
 
