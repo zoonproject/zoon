@@ -84,17 +84,3 @@ test_that('GetModule works', {
 
 
 
-
-test_that('Module Options tests', {
-  
-  options <- ModuleOptions('ANamedModule', para1 = 2, para2 = 'AValue')
-  optList <- list(module = 'ANamedModule', paras=list(para1 = 2, para2 = 'AValue'))
-  
-  AModule <- function(){ x <- 2 }
-  
-  expect_identical(ModuleOptions('ANamedModule'), list(module='ANamedModule', paras=list()))
-  expect_identical(options, optList)
-  expect_error(ModuleOptions('ANamedModule', 2, 'AValue'))
-  expect_error(ModuleOptions(234))
-  expect_error(ModuleOptions(AModule))
-})
