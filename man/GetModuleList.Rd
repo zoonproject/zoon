@@ -3,7 +3,10 @@
 \alias{GetModuleList}
 \title{GetModuleList}
 \usage{
-GetModuleList(moduleType = "all")
+GetModuleList(renew = FALSE)
+}
+\arguments{
+\item{renew}{Download from github even if we already have a module list.}
 }
 \value{
 A list with all module names.

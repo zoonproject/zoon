@@ -4,11 +4,12 @@
 #'
 #'@return A list with all module names.
 #'@name GetModuleList
+#'@param renew Download from github even if we already have a module list.
 #'
 #'@export
 #'@examples \dontrun{GetModuleList()}
 
-GetModuleList <- function(moduleType='all'){
+GetModuleList <- function(renew = FALSE){
 
   # Check if we've made an environment called zoonHidden yet
   # If not make one.
@@ -18,7 +19,7 @@ GetModuleList <- function(moduleType='all'){
   
   # If we've already downloaded a module list, print that.
   # Otherwise download a list from github
-  if(exists('moduleList', envir = zoonHidden)){
+  if(exists('moduleList', envir = zoonHidden) & !renew){
     moduleNames <- local(moduleList, envir = zoonHidden)
     return(moduleNames)
   } else {
