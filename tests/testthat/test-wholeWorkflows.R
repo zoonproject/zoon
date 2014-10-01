@@ -239,7 +239,10 @@ test_that('chains work.', {
                  model = LogisticRegression,
                  output = Chain(SameTimePlaceMap, SameTimePlaceMap))
 
-  
+  expect_true(exists('chain1'))
+  expect_true(exists('chain2'))
+  expect_true(exists('chain4'))
+
 
 })
 
