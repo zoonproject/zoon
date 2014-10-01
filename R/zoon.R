@@ -24,14 +24,17 @@ NULL
 #' Run a full workflow.
 #'
 #' This is the main function of zoon. The arguments should specify at least five
-#'    modules, at least one of each type.
+#'   modules, at least one of each type.
+#'   If modules do not have any arguments to be specific (or defaults are being
+#'   used then simply give the names of the module. If arguments are needed 
+#'   give the modules in the form of a function 
+#'   e.g. occurrence = AModule(para1 = 2, para2 = 'detail')
 #'
-#'@param occurrence The name of the module to be used to get occurence data
-#'@param covariate  The name of the module to be used to get covariate 
-#'  data.
-#'@param process The name of the module to be used to process the data
-#'@param model The name of the SDM model module to be used 
-#'@param output The name of the module to be used to map output
+#'@param occurrence Occurrence module to be used.
+#'@param covariate  Covariate module to be used.
+#'@param process Process module to be used.
+#'@param model SDM model module to be used. 
+#'@param output Output module to be used.
 #'
 #'@return A list with the results of each module and a copy of the
 #'  code used to execute the workflow (what's there now should be source-able
@@ -58,17 +61,24 @@ NULL
 
 workflow <- function(occurrence, covariate, process, model, output) {
   
+  occSub <- substitute(occurrence)
+  covSub <- substitute(covariate)
+  proSub <- substitute(process)
+  modSub <- substitute(model)
+  outSub <- substitute(output)
+
   # Check all modules are of same list structure
-  occurrence.module <- CheckModList(occurrence)
-  covariate.module <- CheckModList(covariate)
-  process.module <- CheckModList(process)
-  model.module <- CheckModList(model)
-  output.module <- CheckModList(output)
+  occurrence.module <- CheckModList(occSub)
+  covariate.module <- CheckModList(covSub)
+  process.module <- CheckModList(proSub)
+  model.module <- CheckModList(modSub)
+  output.module <- CheckModList(outSub)
   
   # Only one of occurrence, covariate, process and model can be a list of 
-  #   mulitple modules.
-  isChain <- sapply(list(occurrence, covariate, 
-    process, model, output), function(x) identical(attr(x, 'chain'), TRUE))
+  #   multiple modules.
+  isChain <- sapply(list(occurrence.module, covariate.module, 
+                         process.module, model.module, output.module), 
+                    function(x) identical(attr(x, 'chain'), TRUE))
   NoOfModules <- sapply(list(occurrence.module, covariate.module, 
     process.module, model.module, output.module), length)
   if(sum(NoOfModules[!isChain] > 1) > 1){
@@ -97,12 +107,12 @@ workflow <- function(occurrence, covariate, process, model, output) {
   # First the data collection modules
   occurrence.output <- lapply(occurrenceName, function(x) do.call(x$func, x$paras))
   # Then bind together if the occurrence modules were chained
-  if (identical(attr(occurrence, 'chain'), TRUE)){
+  if (identical(attr(occurrence.module, 'chain'), TRUE)){
     occurrence.output <- list(do.call(rbind, occurrence.output))
   }
 
   covariate.output <- lapply(covariateName, function(x) do.call(x$func, x$paras))
-  if (identical(attr(covariate, 'chain'), TRUE)){
+  if (identical(attr(covariate.module, 'chain'), TRUE)){
     covariate.output <- list(do.call(raster::stack, covariate.output))
   }
   
@@ -122,7 +132,7 @@ workflow <- function(occurrence, covariate, process, model, output) {
   # covariate or process has multiple modules
 
   #process.output <- RunProcessModules(data, process, processName)
-  if (!identical(attr(process, 'chain'), TRUE)){
+  if (!identical(attr(process.module, 'chain'), TRUE)){
     if (length(processName) > 1){
       process.output <- lapply(processName, 
         function(x) do.call(x$func, 
@@ -178,7 +188,7 @@ workflow <- function(occurrence, covariate, process, model, output) {
   # If output is chained, either covariate or process only. 
   #  Within this need to chain output
 
-  if(!identical(attr(output, 'chain'), TRUE)){
+  if(!identical(attr(output.module, 'chain'), TRUE)){
     if (length(output.module) > 1){
       output.output <- lapply(outputName, 
                          function(x) do.call(x$func, 
@@ -275,7 +285,7 @@ GetModule <- function(module){
 #'@name GetModules
 
 GetModules <- function(modules){
-  return(lapply(modules, function(x) list.append(func = GetModule(x$module), x)))
+  return(lapply(modules, function(x) list.append(func = GetModule(as.character(x$module)), x)))
 }
 
 
@@ -346,112 +356,43 @@ RunModels <- function(df, modelFunction, paras, workEnv){
 
 
 
-#'Turns named options into list ready to be used by workflow()
-#'
-#'@param module The module name or URL.
-#'@param ... Any other parameters or options needed by that  module.
-#'           All extra options must be named i.e. ModuleOptions('Name', x=1)
-#'           Not ModuleOptions('Name', 1).
-#'
-#'
-#'@return A list with all module options and the module name/URL in.
-#'@name ModuleOptions
-#'
-#'@export
-#'@examples print('No examples yet')
 
-ModuleOptions <- function(module, ...){
-  assert_that(is.string(module))
-  options <- list(module=module, ...)
-  if ('' %in% names(options)){
-    stop(paste0('Unnamed options in module ', module, 
-                ': All options must be named'))
-  }
-  options <- vector("list", 2)
-  names(options) <- c('module', 'paras')
-  options$module <- module
-  options$paras <- list(...)
-  
-  return(options)
-}
-
-
-
-# Helper to check if module is in structure of ModuleOptions() list
-# And convert otherwise.
-
-CheckModStructure <- function(x){
-  if (is.string(x)){
-    x <- ModuleOptions(x)
-  }
-  return(x)
-}
-
-# Helper to install (if needed) and load a package.
-# if `github == TRUE` then package must be a string like:
-# 'zoonproject/zoon'. Otherwise it's just the package name,
-# either as a string or object.
-
-GetPackage <- function (package,
-                        github = FALSE) {
-  
-  # convert to string if it isn't already
-  package <- as.character(substitute(package))
-  
-  # get devtools and chop up the path if it's on github
-  if (github) {
-    
-    # get the whole path
-    package_path <- package
-    
-    # now strip to after the slash so that `library` works
-    package <- strsplit(package_path,
-                              '/')[[1]][2]
-    
-  }
-    
-
-  # try loading and install and load if that doesn't work
-  if (!require(package,
-               character.only = TRUE)) {
-    
-    # if it's a github package
-    if (github) {
-      
-      # load devtools (recursively calling GetPackage)
-      GetPackage('devtools',
-                 github = FALSE)
-      
-      install_github(package_path)
-            
-    } else {
-      
-      # otherwise use install.packages
-      install.packages(package,
-                       repos = "http://cran.ma.imperial.ac.uk/")
-      
-    }
-    
-    # now load the package
-    library(package,
-            character.only = TRUE)
-  }
-}
 
 
 # Helper to sort modules into lists.
 
 CheckModList <- function(x){
-  if (!is.list(x)){
-    ModuleList <- list(CheckModStructure(x))
-  } else if (identical(names(x), c('module', 'paras'))){
-    ModuleList <- list(x)
+  if (class(x) == 'name'){
+    ModuleList <- list(list(module = as.character(x), paras = list()))
+  } else if (x[[1]] == 'list') {
+    listCall <- as.list(x)
+    listCall[[1]] <- NULL
+    ModuleList <- lapply(listCall, FormatModuleList)
+  } else if (x[[1]] == 'Chain'){
+    listCall <- as.list(x)
+    listCall[[1]] <- NULL
+    ModuleList <- lapply(listCall, FormatModuleList) 
+    attr(ModuleList, 'chain') <- TRUE
   } else {
-    ModuleList <- lapply(x, CheckModStructure)
+    paras <- as.list(x)
+    paras[[1]] <- NULL
+    ModuleList <- list(list(module = as.character(x[[1]]), paras = paras))
   }
   
   return(ModuleList)
 }
+
+# Little helper to format module lists
+FormatModuleList <- function(x){
+  listx <- as.list(x)
+  newList <- list()
+  newList$module <- listx[[1]]
+  listx[[1]] <- NULL
+  newList$paras <- listx
+  return(newList)
+}
+
+
 
 
 # Simply extract covariates from rasters and combine with occurrence.
