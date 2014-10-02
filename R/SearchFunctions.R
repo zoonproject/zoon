@@ -19,6 +19,7 @@ GetModuleList <- function(renew = FALSE){
   
   # If we've already downloaded a module list, print that.
   # Otherwise download a list from github
+  # If renew is TRUE download from github even if we have a list already.
   if(exists('moduleList', envir = zoonHidden) & !renew){
     moduleNames <- local(moduleList, envir = zoonHidden)
     return(moduleNames)
