@@ -240,11 +240,126 @@ test_that('chains work.', {
                  output = Chain(SameTimePlaceMap, SameTimePlaceMap))
 
   expect_true(exists('chain1'))
+  expect_equal(dim(chain1$occurrence.output[[1]]), c(376, 5))
+  expect_is(chain1$covariate.output[[1]], 'RasterLayer')
+  expect_equal(dim(chain1$covariate.output[[1]]), c(9,9,1))
+  expect_equal(names(chain1$process.output[[1]]$df), 
+    c('value', 'type', 'fold', 'longitude', 'latitude', 'layer'))
+  expect_equal(dim(chain1$process.output[[1]]$df),  c(457, 6))
+  expect_is((chain1$model.output[[1]])$model, c('glm', 'lm'))
+  expect_is(chain1$report[[1]], 'RasterLayer')  
+
   expect_true(exists('chain2'))
+  expect_equal(dim(chain2$occurrence.output[[1]]), c(188, 5))
+  expect_is(chain2$covariate.output[[1]], 'RasterStack')
+  expect_equal(dim(chain2$covariate.output[[1]]), c(9,9,2))
+  expect_equal(names(chain2$process.output[[1]]$df), 
+    c('value', 'type', 'fold', 'longitude', 'latitude', 'layer.1', 'layer.2'))
+  expect_equal(dim(chain2$process.output[[1]]$df),  c(269, 7))
+  expect_is((chain2$model.output[[1]])$model, c('glm', 'lm'))
+  expect_is(chain2$report[[1]], 'RasterLayer')  
+
   expect_true(exists('chain4'))
+  expect_equal(dim(chain4$occurrence.output[[1]]), c(188, 5))
+  expect_is(chain4$covariate.output[[1]], 'RasterLayer')
+  expect_equal(dim(chain4$covariate.output[[1]]), c(9,9,1))
+  expect_equal(names(chain4$process.output[[1]]$df), 
+    c('value', 'type', 'fold', 'longitude', 'latitude', 'layer'))
+  expect_equal(dim(chain4$process.output[[1]]$df),  c(269, 6))
+  expect_is((chain4$model.output[[1]])$model, c('glm', 'lm'))
+  expect_is(chain4$report[[1]], 'list')  
 
 
 })
 
+test_that('Local path module works.',{
+
+  # This test will only work on unix OS.
+  write(paste('#test file for zoon package\n',
+              'TestModule <- function(){',
+              'return(AplumbeusOcc)}'), 
+        file = '~/PassingTestModule.R')
+
+  
+  
+  fail1 <- workflow(occurrence = '~/PassingTestModule.R',
+                    covariate = UKAir,
+                    process = OneHundredBackground,
+                    model = LogisticRegression,
+                    output = SameTimePlaceMap)
+
+  file.remove('~/PassingTestModule.R')
+})
+
+
+test_that('workflows that fail part way through, save workflow.', {
+
+  # Only works on unix. Not sure how to fix because substitute problems.
+  write(paste('#test file for zoon package\n',
+              'TestModule <- function(){',
+              'stop("Forced error to test error handling")}'), 
+        file = '~/FailingTestModule.R')
+
+  
+  
+  fail1 <- workflow(occurrence = '~/FailingTestModule.R',
+                    covariate = UKAir,
+                    process = OneHundredBackground,
+                    model = LogisticRegression,
+                    output = SameTimePlaceMap)
+
+  expect_true(exists('tmpZoonWorkflow'))
+  expect_true(all(sapply(tmpZoonWorkflow, is.null) == c(rep(TRUE, 5), FALSE)))
+
+
+  rm(tmpZoonWorkflow)
+  fail1 <- workflow(occurrence = UKAnophelesPlumbeus,
+                    covariate = '~/FailingTestModule.R',
+                    process = OneHundredBackground,
+                    model = LogisticRegression,
+                    output = SameTimePlaceMap)
+
+  expect_true(exists('tmpZoonWorkflow'))
+  expect_true(all(sapply(tmpZoonWorkflow, is.null) == c(FALSE, rep(TRUE, 4), FALSE)))
+
+
+
+  rm(tmpZoonWorkflow)
+  fail1 <- workflow(occurrence = UKAnophelesPlumbeus,
+                    covariate = UKAir,
+                    process = '~/FailingTestModule.R',
+                    model = LogisticRegression,
+                    output = SameTimePlaceMap)
+
+  expect_true(exists('tmpZoonWorkflow'))
+  expect_true(all(sapply(tmpZoonWorkflow, is.null) == c(FALSE, FALSE, rep(TRUE, 3), FALSE)))
+
+
+
+  rm(tmpZoonWorkflow)
+  fail1 <- workflow(occurrence = UKAnophelesPlumbeus,
+                    covariate = UKAir,
+                    process = OneHundredBackground,
+                    model = '~/FailingTestModule.R',
+                    output = SameTimePlaceMap)
+
+  expect_true(exists('tmpZoonWorkflow'))
+  expect_true(all(sapply(tmpZoonWorkflow, is.null) == c(rep(FALSE, 3), rep(TRUE, 2), FALSE)))
+
+
+
+  rm(tmpZoonWorkflow)
+  fail1 <- workflow(occurrence = UKAnophelesPlumbeus,
+                    covariate = UKAir,
+                    process = OneHundredBackground,
+                    model = LogisticRegression,
+                    output = '~/FailingTestModule.R')
+
+  expect_true(exists('tmpZoonWorkflow'))
+  expect_true(all(sapply(tmpZoonWorkflow, is.null) == c(rep(FALSE, 4), TRUE, FALSE)))
+
+  file.remove('~/FailingTestModule.R')
+
+})
 
 
