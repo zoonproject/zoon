@@ -64,8 +64,12 @@ workflow <- function(occurrence, covariate, process, model, output) {
 
   
   # get the command used to call this function
-  call <- sys.call()
-
+  bits <- sys.call()
+  call <- paste0(bits[1],
+                 '(', 
+                 paste(bits[-1],
+                       collapse = ', '),
+                 ')')
   
   occSub <- substitute(occurrence)
   covSub <- substitute(covariate)
@@ -325,14 +329,16 @@ workflow <- function(occurrence, covariate, process, model, output) {
     }
   )
 
-  
-  
-  return(list(occurrence.output = occurrence.output,
+  output <- list(occurrence.output = occurrence.output,
               covariate.output = covariate.output,
               process.output = process.output,
               model.output = model.output,
               report = output.output,
-              call = call))
+              call = call)
+
+  class(output) <- 'zoonWorkflow'
+  
+  return(output)
 }
 
 
