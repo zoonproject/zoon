@@ -176,22 +176,22 @@ ExtractAndCombData <- function(occurrence, ras){
 
 #'Chain
 #'
-#'Turns named options into list that are chained together rather than  
-#'  run in separate analyses. Data modules the datasets are joined. 
+#'This function does nothing. However using Chain(modules... ) in a call
+#'  to workflow will chain the modules together rather than  
+#'  run in separate analyses. For occurrence or covariate modules the datasets are joined. 
 #'  Processes are run sequentially.
-#'
 #'@param ... List of modules to be chained.
 #'
 #'@name Chain
-#'
 #'@export
 
 
+
 Chain <- function(...){
-  chain <- list(...)
-  attr(chain, 'chain') <- TRUE
-  return(chain)
+  NULL
 }
+
+
 
 
 

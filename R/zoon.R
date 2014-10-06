@@ -85,17 +85,14 @@ NULL
 #'
 
 workflow <- function(occurrence, covariate, process, model, output) {
-  
 
-  
-  # get the command used to call this function
-  bits <- sys.call()
-  
   occSub <- substitute(occurrence)
   covSub <- substitute(covariate)
   proSub <- substitute(process)
   modSub <- substitute(model)
   outSub <- substitute(output)
+
+
 
   # Check all modules are of same list structure
   occurrence.module <- CheckModList(occSub)
