@@ -29,6 +29,31 @@ NULL
 #'   used then simply give the names of the module. If arguments are needed 
 #'   give the modules in the form of a function 
 #'   e.g. occurrence = AModule(para1 = 2, para2 = 'detail')
+#'   ___________________       ______________________________
+#'   |                 |       |                            |
+#'   | Occurrence data |       |  Environmental Covariates  |
+#'   |_________________|       |____________________________|
+#'            |                                |
+#'            |________________________________|
+#'                            |
+#'                           \_/
+#'                     _______________   
+#'                     |             |
+#'                     |  Processes  |
+#'                     |_____________|
+#'                            |
+#'                           \_/
+#'                     _______________   
+#'                     |             |
+#'                     |    Models   |
+#'                     |_____________|
+#'                            |
+#'                           \_/
+#'                     _______________   
+#'                     |             |
+#'                     |    Output   |
+#'                     |_____________|
+#'
 #'
 #'@param occurrence Occurrence module to be used.
 #'@param covariate  Covariate module to be used.
@@ -65,11 +90,6 @@ workflow <- function(occurrence, covariate, process, model, output) {
   
   # get the command used to call this function
   bits <- sys.call()
-  call <- paste0(bits[1],
-                 '(', 
-                 paste(bits[-1],
-                       collapse = ', '),
-                 ')')
   
   occSub <- substitute(occurrence)
   covSub <- substitute(covariate)
