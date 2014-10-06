@@ -363,3 +363,13 @@ test_that('workflows that fail part way through, save workflow.', {
 })
 
 
+
+
+
+  fail1 <- workflow(occurrence = UKAnophelesPlumbeus,
+                    covariate = UKAir,
+                    process = OneHundredBackground,
+                    model = LogisticRegression,
+                    output = PrintMap)
+
+

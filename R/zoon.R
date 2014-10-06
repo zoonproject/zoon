@@ -64,12 +64,8 @@ workflow <- function(occurrence, covariate, process, model, output) {
 
   
   # get the command used to call this function
-  bits <- sys.call()
-  call <- paste0(bits[1],
-                 '(', 
-                 paste(bits[-1],
-                       collapse = ', '),
-                 ')')
+  call <- sys.call()
+
   
   occSub <- substitute(occurrence)
   covSub <- substitute(covariate)
