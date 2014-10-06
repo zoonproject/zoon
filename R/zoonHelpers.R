@@ -192,6 +192,18 @@ Chain <- function(...){
 }
 
 
+# Helper to take substituted args from workflow call and paste them into 
+# a runeable workflow function.
+
+sortArgs <- function(occSub, covSub, proSub, modSub, outSub){
+  call <- paste0("workflow(", 
+                 "occurrence = ", occSub,
+               ", covariate = ", covSub,
+               ", process = ", proSub,
+               ", model = ", modSub,
+               ", output = ", outSub, ")")
+}    
+
 
 
 

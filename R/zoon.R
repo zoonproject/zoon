@@ -92,7 +92,8 @@ workflow <- function(occurrence, covariate, process, model, output) {
   modSub <- substitute(model)
   outSub <- substitute(output)
 
-
+  call <- sortArgs(deparse(occSub), deparse(covSub), deparse(proSub), 
+                   deparse(modSub), deparse(outSub))
 
   # Check all modules are of same list structure
   occurrence.module <- CheckModList(occSub)
