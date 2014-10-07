@@ -14,20 +14,20 @@ GetModuleList <- function(renew = FALSE){
   # Check if we've made an environment called zoonHidden yet
   # If not make one.
   if(!exists('zoonHidden', mode = 'environment')){
-    zoonHidden <- new.env(parent = .GlobalEnv)
+    .zoonHidden <- new.env(parent = .GlobalEnv)
   }
   
   # If we've already downloaded a module list, print that.
   # Otherwise download a list from github
   # If renew is TRUE download from github even if we have a list already.
-  if(exists('moduleList', envir = zoonHidden) & !renew){
-    moduleNames <- local(moduleList, envir = zoonHidden)
+  if(exists('moduleList', envir = .zoonHidden) & !renew){
+    moduleNames <- .zoonHidden$moduleList
     return(moduleNames)
   } else {
     files <- gh_list_files('zoonproject', 'modules')
     mods <- files[grep('^R/', files)]
     moduleNames <- gsub('^R/|.R$', '', mods)
-    local(moduleList <- moduleNames, envir = zoonHidden)
+    .zoonHidden$moduleList <- moduleNames
     return(moduleNames)
   }
 }
