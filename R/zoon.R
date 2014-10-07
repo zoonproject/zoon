@@ -29,31 +29,6 @@ NULL
 #'   used then simply give the names of the module. If arguments are needed 
 #'   give the modules in the form of a function 
 #'   e.g. occurrence = AModule(para1 = 2, para2 = 'detail')
-#'   ___________________       ______________________________
-#'   |                 |       |                            |
-#'   | Occurrence data |       |  Environmental Covariates  |
-#'   |_________________|       |____________________________|
-#'            |                                |
-#'            |________________________________|
-#'                            |
-#'                           \_/
-#'                     _______________   
-#'                     |             |
-#'                     |  Processes  |
-#'                     |_____________|
-#'                            |
-#'                           \_/
-#'                     _______________   
-#'                     |             |
-#'                     |    Models   |
-#'                     |_____________|
-#'                            |
-#'                           \_/
-#'                     _______________   
-#'                     |             |
-#'                     |    Output   |
-#'                     |_____________|
-#'
 #'
 #'@param occurrence Occurrence module to be used.
 #'@param covariate  Covariate module to be used.
@@ -68,7 +43,6 @@ NULL
 #'@export
 #'@name workflow
 #'@examples 
-
 #'# run a workflow, using the logistic regression model
 #'#work1 <- workflow(occurrence = 'UKAnophelesPlumbeus',
 #'#                 covariate = 'UKAir',

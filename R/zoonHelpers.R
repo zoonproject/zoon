@@ -206,4 +206,15 @@ sortArgs <- function(occSub, covSub, proSub, modSub, outSub){
 
 
 
+# Helper to split a character string of a workflow call, as inherited from zoonWorkflow
+#   into it's constituent modules
+
+splitCall <- function(call){
+  occurrence <- gsub('(.*occurrence = )(.*)(, covariate.*$)', '\\2', call)
+  covariate <- gsub('(.*covariate = )(.*)(, process.*$)', '\\2', call)
+  process <- gsub('(.*process = )(.*)(, model.*$)', '\\2', call)
+  model <- gsub('(.*model = )(.*)(, output.*$)', '\\2', call)
+  output <- gsub('(.*output = )(.*)())', '\\2', call)
+}
+
 
