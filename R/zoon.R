@@ -69,6 +69,9 @@ workflow <- function(occurrence, covariate, process, model, output) {
   call <- sortArgs(deparse(occSub), deparse(covSub), deparse(proSub), 
                    deparse(modSub), deparse(outSub))
 
+  # save the local environment as it needs to be passed to various functions.
+  e <- environment() 
+
   # Check all modules are of same list structure
   occurrence.module <- CheckModList(occSub)
   covariate.module <- CheckModList(covSub)
@@ -119,21 +122,7 @@ workflow <- function(occurrence, covariate, process, model, output) {
     }
   },  
     error = function(cond){
-      
-      w <- list(occurrence.output = NULL,
-             covariate.output = NULL,
-             process.output = NULL,
-             model.output = NULL,
-             report = NULL,
-             call = call)
-      assign('tmpZoonWorkflow', w,  env = .GlobalEnv)
-
-      message('Caught errors:\n',  cond)
-      message()
-      message("Workflow progress stored in object 'tmpZoonWorkflow'.")
-      x <- paste("Stopping workflow as error in Occurrence module.\n", 
-                 "Workflow progress stored in object 'tmpZoonWorkflow'.")
-      stop(x, call. = FALSE)
+      ErrorAndSave(cond, 1)
     }
   )
 
@@ -144,21 +133,7 @@ workflow <- function(occurrence, covariate, process, model, output) {
     }
   },  
     error = function(cond){
-      
-      w <- list(occurrence.output = occurrence.output,
-             covariate.output = NULL,
-             process.output = NULL,
-             model.output = NULL,
-             report = NULL,
-             call = call)
-      assign('tmpZoonWorkflow', w,  env = .GlobalEnv)
-
-      message('Caught errors:\n',  cond)
-      message()
-      message("Workflow progress stored in object 'tmpZoonWorkflow'.")
-      x <- paste("Stopping workflow as error in Covariate module.\n", 
-                 "Workflow progress stored in object 'tmpZoonWorkflow'.")
-      stop(x, call. = FALSE)
+      ErrorAndSave(cond, 2)
     }
   )
 
@@ -200,69 +175,17 @@ workflow <- function(occurrence, covariate, process, model, output) {
     }      
   },  
     error = function(cond){
-      
-      w <- list(occurrence.output = occurrence.output,
-             covariate.output = covariate.output,
-             process.output = NULL,
-             model.output = NULL,
-             report = NULL,
-             call = call)
-      assign('tmpZoonWorkflow', w,  env = .GlobalEnv)
-
-      message('Caught errors:\n',  cond)
-      message()
-      message("Workflow progress stored in object 'tmpZoonWorkflow'.")
-      x <- paste("Stopping workflow as error in Proces module.\n", 
-                 "Workflow progress stored in object 'tmpZoonWorkflow'.")
-      stop(x, call. = FALSE)
+      ErrorAndSave(cond, 3)
     }
   )
   
   
   # Model module
   tryCatch({
-    if (length(model.module) > 1){
-      model.output <- 
-        lapply(modelName, 
-               function(x) 
-                 do.call(RunModels,
-                         list(df = process.output[[1]]$df, 
-                              modelFunction = x$func, 
-                              paras = x$paras,
-                              workEnv = environment(eval(parse(text = modelName[[1]]$func)))
-                             )
-                        )
-              )
-    } else {
-      model.output <- 
-        lapply(process.output,
-               function(x) 
-                 do.call(RunModels, 
-                         list(df = x$df, 
-                              modelFunction = modelName[[1]]$func, 
-                              paras = modelName[[1]]$paras,
-                              workEnv = environment(eval(parse(text = modelName[[1]]$func)))
-                             )
-                        )
-              )
-    }
+    model.output <- DoModelModules(model.module, modelName, process.output, e)
   },  
     error = function(cond){
-      
-      w <- list(occurrence.output = occurrence.output,
-             covariate.output = covariate.output,
-             process.output = process.output,
-             model.output = NULL,
-             report = NULL,
-             call = call)
-      assign('tmpZoonWorkflow', w,  env = .GlobalEnv)
-
-      message('Caught errors:\n',  cond)
-      message()
-      message("Workflow progress stored in object 'tmpZoonWorkflow'.")
-      x <- paste("Stopping workflow as error in Model module.\n", 
-                 "Workflow progress stored in object 'tmpZoonWorkflow'.")
-      stop(x, call. = FALSE)
+      ErrorAndSave(cond, 4, e)
     }
   )    
   #output module
@@ -303,21 +226,7 @@ workflow <- function(occurrence, covariate, process, model, output) {
     }
   },  
     error = function(cond){
-      
-      w <- list(occurrence.output = occurrence.output,
-             covariate.output = covariate.output,
-             process.output = process.output,
-             model.output = model.output,
-             report = NULL,
-             call = call)
-      assign('tmpZoonWorkflow', w,  env = .GlobalEnv)
-
-      message('Caught errors:\n',  cond)
-      message()
-      message("Workflow progress stored in object 'tmpZoonWorkflow'.")
-      x <- paste("Stopping workflow as error in Output module.\n", 
-                 "Workflow progress stored in object 'tmpZoonWorkflow'.")
-      stop(x, call. = FALSE)
+      ErrorAndSave(cond, 5)
     }
   )
 

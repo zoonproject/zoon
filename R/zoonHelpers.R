@@ -260,7 +260,7 @@ splitCall <- function(call){
 # cond is the error messages passed by try catch.
 # mod is the modules number (1:5) to give NULLS to the correct modules.
 
-ErrorAndSave <- function(cond, mod = 1){
+ErrorAndSave <- function(cond, mod = 1, e){
 
   w <- list(occurrence.output = NULL,
        covariate.output = NULL,
@@ -270,16 +270,16 @@ ErrorAndSave <- function(cond, mod = 1){
        call = call)
   
   if(mod > 1){
-    w$occurrence.output <- occurrence.output
+    w$occurrence.output <- e$occurrence.output
   }
   if(mod > 2){
-    w$covariate.output <- covariate.output
+    w$covariate.output <- e$covariate.output
   }
   if(mod > 3){
-    w$process.output <- process.output
+    w$process.output <- e$process.output
   }  
   if(mod > 4){
-    w$model.output <- model.output
+    w$model.output <- e$model.output
   }
 
   module <- c('occurrence', 'covariate', 'process', 'model', 'output')[mod]
@@ -288,8 +288,46 @@ ErrorAndSave <- function(cond, mod = 1){
 
   message('Caught errors:\n',  cond)
   message()
-  x <- paste("Stopping workflow as error in", module, "module.\n", 
+  x <- paste("Stopping workflow due to error in", module, "module.\n", 
              "Workflow progress stored in object 'tmpZoonWorkflow'.")
   stop(x, call. = FALSE)
 }
+
+
+# Do all model modules
+
+DoModelModules <- function(model.module, modelName, process.output, e){
+
+  if (length(model.module) > 1){
+      model.output <- 
+        lapply(modelName, 
+               function(x) 
+                 do.call(RunModels,
+                         list(df = process.output[[1]]$df, 
+                              modelFunction = x$func, 
+                              paras = x$paras, 
+                              workEnv = e
+                             ),
+                          envir = e
+                        )
+              )
+    } else {
+      model.output <- 
+        lapply(process.output,
+               function(x) 
+                 do.call(RunModels, 
+                         list(df = x$df, 
+                              modelFunction = modelName[[1]]$func, 
+                              paras = modelName[[1]]$paras, 
+                              workEnv = e
+                             ),
+                         envir = e
+                        )
+              )
+    }
+  return(model.output)
+}
+
+
+
 
