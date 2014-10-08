@@ -1,20 +1,19 @@
 
-
-#'A function to get a module function.
-#'It assumes the module is in github.com/zoonproject unless it is a full url
-#'Assigns the function to the global environment.
+#'A function to load a module function from url or disk.
+#'
+#'Loads a module function into the global environment ready to be used in a 
+#'  zoon workflow. This function is mostly for use while developing modules.
+#'  Workflows run with modules defined locally are no longer reproducible and
+#'  so are discouraged and will be tagged as 'unreproducible'. 
 #'
 #'@param module A string that describes the location of the R file. Can be a
-#'      module name assuming the module is in github.com/zoonproject/modules.
-#'      Otherwise can be a full URL or a local file.
-#'@param type String describing the type of module. Only needed if getting from
-#'  zoon github.
+#'  a full URL or a path to a local file.
 #'
 #'@return Name of the function. Adds function to global namespace.
-#'@name GetModule
+#'@name LoadModule
+#'@export
 
-
-GetModule <- function(module){
+LoadModule <- function(module){
   zoonURL <- 
     paste0('https://raw.githubusercontent.com/zoonproject/modules/master/R/',
            module, '.R')
@@ -28,9 +27,40 @@ GetModule <- function(module){
     stop(paste('Cannot find "', module, 
       '". Check the URL or check that the module is at github.com/zoonproject'))
   }
+  # Load to global environment
+  eval(txt, envir = globalenv())
+  eval(txt)
+  new.func.name <- ls()[!ls() %in% c('module', 'txt', 'zoonURL')]
+  return(new.func.name)
+}
+
+#'A function to get a module function.
+#'
+#'Checks for the module in the global namespace, then the zoon repo, then 
+#'
+#'@param module A string that describes the location of the R file. Can be a
+#'      module name assuming the module is in global namespace or github.com/zoonproject/modules.
+#'      Otherwise can be a full URL or a local file.
+#'
+#'@return Name of the function. Function is run with workflow and new module
+#'  function is added to workflow environment.
+#'@name GetModule
+
+GetModule <- function(module){
+  zoonURL <- 
+    paste0('https://raw.githubusercontent.com/zoonproject/modules/master/R/',
+           module, '.R')
+  if (exists(module)){
+    assign(module, eval(parse(text = module)),  envir = parent.frame(4))
+    return(module)
+  } else if (url.exists(zoonURL, .opts=list(ssl.verifypeer=FALSE))){
+    txt <- parse(text = getURL(zoonURL, ssl.verifypeer=FALSE))
+  } else {
+    stop(paste('Cannot find "', module, 
+      '". Check that the module is on the zoon repository or in the global namespace.'))
+  }
   # Probably do one environment up (i.e. in workflow environment)
   eval(txt, envir = parent.frame(4))
-  #eval(txt, envir = globalenv())
   eval(txt)
   new.func.name <- ls()[!ls() %in% c('module', 'txt', 'zoonURL')]
   return(new.func.name)

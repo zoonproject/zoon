@@ -45,9 +45,10 @@ test_that('CheckModList works.', {
 
 test_that('GetModule works', {
   # Create local module in working directory to test load.
-  write('#test file for zoon package\n TestModule <- function(){z <- 2}', file = 'TestModule.R')
-  file <- paste0(getwd(), '/TestModule.R')
 
+  NamespaceModule <- function(){
+      return(UKAirRas)
+    }
 
   TestWorkflow <- function(){
     GetModule(file)
@@ -55,20 +56,18 @@ test_that('GetModule works', {
   }
 
   TestModuleName <- function(){
-    GetModule('NoProcess', 'Process')
+    GetModule('NoProcess')
     return(class(NoProcess))
   }
 
 
   TestURL <- function(){
-    GetModule('https://raw.githubusercontent.com/zoonproject/modules/master/R/NoProcess.R')
     return(class(NoProcess))
   }
 
   expect_error(GetModule('xxx'))
-  expect_that(GetModule(file), equals('TestModule'))
   expect_that(GetModule('NoProcess'), equals('NoProcess'))
-  expect_that(GetModule('https://raw.githubusercontent.com/zoonproject/modules/master/R/NoProcess.R'), equals('NoProcess'))
+  expect_that(GetModule('NamespaceModule'), equals('NamespaceModule'))
   
    #It's difficult to test that the environments are working correctly without running full workflow
   work1 <- workflow(occurrence = 'UKAnophelesPlumbeus',
@@ -82,5 +81,29 @@ test_that('GetModule works', {
 })
 
 
+
+test_that('LoadModule works', {
+  # Create local module in working directory to test load.
+  write('#test file for zoon package\n TestModule <- function(){z <- 2}', file = 'TestModule.R')
+  file <- paste0(getwd(), '/TestModule.R')
+
+
+  TestWorkflow <- function(){
+    LoadModule(file)
+    return(class(TestModule))
+  }
+
+  TestURL <- function(){
+    LoadModule('https://raw.githubusercontent.com/zoonproject/modules/master/R/NoProcess.R')
+    return(class(NoProcess))
+  }
+
+  expect_error(GetModule('xxx'))
+  expect_that(LoadModule(file), equals('TestModule'))
+  expect_that(LoadModule('NoProcess'), equals('NoProcess'))
+  expect_that(LoadModule('https://raw.githubusercontent.com/zoonproject/modules/master/R/NoProcess.R'), equals('NoProcess'))
+  
+  file.remove('TestModule.R')
+})
 
 

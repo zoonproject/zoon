@@ -3,6 +3,7 @@
 export(BuildModule)
 export(Chain)
 export(GetModuleList)
+export(LoadModule)
 export(ModuleHelp)
 export(RerunWorkflow)
 export(workflow)
