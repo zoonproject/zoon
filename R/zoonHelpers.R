@@ -245,6 +245,12 @@ splitCall <- function(call){
   process <- gsub('(.*process = )(.*)(, model.*$)', '\\2', call)
   model <- gsub('(.*model = )(.*)(, output.*$)', '\\2', call)
   output <- gsub('(.*output = )(.*)())', '\\2', call)
+
+  split <- c(occurrence, covariate, process, model, output)
+  names(split) <- c('occurrence', 'covariate', 'process', 'model', 'output')
+  
+  return(split)
+
 }
 
 

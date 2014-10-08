@@ -107,3 +107,8 @@ test_that('LoadModule works', {
 })
 
 
+test_that('SplitCall works correctly', {
+
+})
+
+
