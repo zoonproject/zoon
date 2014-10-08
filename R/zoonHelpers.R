@@ -254,3 +254,42 @@ splitCall <- function(call){
 }
 
 
+# Function used in tryCatch calls in workflow.
+# If an error is caught, save the workflow to tmpZoonWorkflow.
+# And return some useful messages. Then stop().
+# cond is the error messages passed by try catch.
+# mod is the modules number (1:5) to give NULLS to the correct modules.
+
+ErrorAndSave <- function(cond, mod = 1){
+
+  w <- list(occurrence.output = NULL,
+       covariate.output = NULL,
+       process.output = NULL,
+       model.output = NULL,
+       report = NULL,
+       call = call)
+  
+  if(mod > 1){
+    w$occurrence.output <- occurrence.output
+  }
+  if(mod > 2){
+    w$covariate.output <- covariate.output
+  }
+  if(mod > 3){
+    w$process.output <- process.output
+  }  
+  if(mod > 4){
+    w$model.output <- model.output
+  }
+
+  module <- c('occurrence', 'covariate', 'process', 'model', 'output')[mod]
+
+  assign('tmpZoonWorkflow', w,  env = .GlobalEnv)
+
+  message('Caught errors:\n',  cond)
+  message()
+  x <- paste("Stopping workflow as error in", module, "module.\n", 
+             "Workflow progress stored in object 'tmpZoonWorkflow'.")
+  stop(x, call. = FALSE)
+}
+
