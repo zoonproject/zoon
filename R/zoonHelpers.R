@@ -265,7 +265,7 @@ ErrorAndSave <- function(cond, mod = 1, e){
        process.output = NULL,
        model.output = NULL,
        report = NULL,
-       call = call)
+       call = e$call)
   
   if(mod > 1){
     w$occurrence.output <- e$occurrence.output

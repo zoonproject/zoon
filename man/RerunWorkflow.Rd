@@ -3,7 +3,9 @@
 \alias{RerunWorkflow}
 \title{Rerun a workflow object.}
 \usage{
-RerunWorkflow(workflow, from = 1)
+RerunWorkflow(workflow, from = NULL)
+
+RerunWorkflow(workflow, from = NULL)
 }
 \arguments{
 \item{workflow}{A zoonWorkflow object from a previous zoon analysis}
@@ -13,15 +15,34 @@ RerunWorkflow(workflow, from = 1)
  (i.e. process is the third module). Typically this might be used to run
  an analysis using the data in the workflow with from=3 if the data
  collection modules are for reading in local data.}
+
+\item{workflow}{A zoonWorkflow object from a previous zoon analysis}
+
+\item{from}{Which modules should be run. If NULL (default), run from the
+ first NULL output (i.e. where the workflow broke). Otherwise takes an
+ integer and runs from that module.}
 }
 \value{
 A list with the results of each module and a copy of the
  call used to execute the workflow (
+
+A list with the results of each module and a copy of the
+ call used to execute the workflow.
 }
 \description{
 Takes a workflow object and reruns it.
+
+Takes a workflow object and reruns it.
 }
 \examples{
+\dontrun{
+w <- workflow(UKAnophelesPlumbeus, UKAir,
+              OneHundredBackground,
+              LogisticRegression,
+              SameTimePlaceMap)
+
+RerunWorkflow(w)
+}
 \dontrun{
 w <- workflow(UKAnophelesPlumbeus, UKAir,
               OneHundredBackground,

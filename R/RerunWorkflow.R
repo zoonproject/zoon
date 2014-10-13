@@ -3,14 +3,12 @@
 #' Takes a workflow object and reruns it.
 #'
 #'@param workflow A zoonWorkflow object from a previous zoon analysis
-#'@param from Which modules should be run. Takes an integer and then
-#'  starts from that module with the order being the argument order
-#'  (i.e. process is the third module). Typically this might be used to run
-#'  an analysis using the data in the workflow with from=3 if the data
-#'  collection modules are for reading in local data.
+#'@param from Which modules should be run. If NULL (default), run from the
+#'  first NULL output (i.e. where the workflow broke). Otherwise takes an
+#'  integer and runs from that module.
 #'
 #'@return A list with the results of each module and a copy of the
-#'  call used to execute the workflow (
+#'  call used to execute the workflow.
 #'
 #'@export
 #'@name RerunWorkflow
@@ -25,10 +23,24 @@
 
 
 
-RerunWorkflow <- function(workflow, from = 1) {
+RerunWorkflow <- function(workflow, from = NULL) {
   
   assert_that(inherits(workflow, 'zoonWorkflow'))
-  assert_that(from %in% c(1:5))
+
+  # If from isn't NULL, it should be an integer 1:5
+  if (!is.null(from)){
+    assert_that(from %in% c(1:5) )
+  }
+
+  # Find first NULL modules and run from there.
+  if (is.null(from)) {
+    NullModules <- sapply(list.subset(workflow, c(1:5)), is.null)
+    if (!sum(NullModules) == 0){
+      from <- which.max(NullModules)
+    } else {
+      from <- 1
+    }
+  }
   
   # get the arguments from the call used to run this workflow
   callArgs <- splitCall(workflow$call)
