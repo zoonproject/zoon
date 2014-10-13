@@ -70,8 +70,6 @@ GetModule <- function(module){
 #' A function to apply GetModule to a list correctly.
 #'@param modules A list from CheckModList() given details for 
 #'  one or more modules.
-#'@param type String describing the type of module. Only needed if getting from
-#'  zoon github.
 #'@name GetModules
 
 GetModules <- function(modules){
@@ -284,7 +282,7 @@ ErrorAndSave <- function(cond, mod = 1, e){
 
   module <- c('occurrence', 'covariate', 'process', 'model', 'output')[mod]
 
-  assign('tmpZoonWorkflow', w,  env = .GlobalEnv)
+  assign('tmpZoonWorkflow', w,  envir = .GlobalEnv)
 
   message('Caught errors:\n',  cond)
   message()
@@ -294,39 +292,6 @@ ErrorAndSave <- function(cond, mod = 1, e){
 }
 
 
-# Do all model modules
-
-DoModelModules <- function(model.module, modelName, process.output, e){
-
-  if (length(model.module) > 1){
-      model.output <- 
-        lapply(modelName, 
-               function(x) 
-                 do.call(RunModels,
-                         list(df = process.output[[1]]$df, 
-                              modelFunction = x$func, 
-                              paras = x$paras, 
-                              workEnv = e
-                             ),
-                          envir = e
-                        )
-              )
-    } else {
-      model.output <- 
-        lapply(process.output,
-               function(x) 
-                 do.call(RunModels, 
-                         list(df = x$df, 
-                              modelFunction = modelName[[1]]$func, 
-                              paras = modelName[[1]]$paras, 
-                              workEnv = e
-                             ),
-                         envir = e
-                        )
-              )
-    }
-  return(model.output)
-}
 
 
 

@@ -1,28 +1,15 @@
 Package: zoon
 Type: Package
-Title: A prototype for reproducible, accessible & shareable scientific outputs
+Title: Reproducible, accessible & shareable species distribution modelling
     in R.
 Version: 0.3
 Date: 2014-08-04
 Author: Tim Lucas, Nick Golding, Greg McInerny, Emiel van Loon
 Maintainer: Tim Lucas <timcdlucas@gmail.com>
-Description: This is a *really* rough sketch of a modular structure for the
-    ZOON workflow. In this version, a workflow consists of 5 types of modules,
-    representing the key steps in an SDM workflow: occurrence module covariate
-    module process module model module map module The user must select one
-    module for each of these module types. These are then passed to the
-    workflow wrapper function which runs through each step. Every module type
-    should have a protocol determining what it takes as input and what it gives
-    as output. Different modules for each module type could be stored in a
-    community repositories, enabling users to quickly drop in a newly developed
-    model or processing step and run it with their data. The structure also
-    makes it very easy to compare different models against a standard dataset.
-    These modules are just functions and wherever possible they should be self-
-    contained, taking no arguments other than those used in the workflow.
-    Clearly this is very simplistic, obvious next steps include modules for
-    validation statistics and plots, the ability to predict to different
-    covariate rasters than are used to train the model, etc.
-License: BSD_3_clause + file LICENSE.md
+Description: A package for reproducible species distribution modelling. The
+    package reads user submitted modules from an online repository, runs full
+    SDM workflows and returns output that is fully reproducible.
+License: BSD_3_clause
 Imports:
     assertthat,
     rlist,

@@ -66,8 +66,11 @@ workflow <- function(occurrence, covariate, process, model, output) {
   modSub <- substitute(model)
   outSub <- substitute(output)
 
-  call <- sortArgs(deparse(occSub), deparse(covSub), deparse(proSub), 
-                   deparse(modSub), deparse(outSub))
+  call <- sortArgs(paste(deparse(occSub), collapse = ' '),
+                   paste(deparse(covSub), collapse = ' '),
+                   paste(deparse(proSub), collapse = ' '),
+                   paste(deparse(modSub), collapse = ' '),
+                   paste(deparse(outSub), collapse = ' '))
 
   # save the local environment as it needs to be passed to various functions.
   e <- environment() 
@@ -104,7 +107,7 @@ workflow <- function(occurrence, covariate, process, model, output) {
   
   
   
-  # Run the modules.
+  # Run the modules. (these functions are in DoModuleFunctions.R)
   # But we have to check for chained modules and deal with them
   # And work out which module has been given as a list, and lapply over that.
 
@@ -122,7 +125,7 @@ workflow <- function(occurrence, covariate, process, model, output) {
     }
   },  
     error = function(cond){
-      ErrorAndSave(cond, 1)
+      ErrorAndSave(cond, 1, e)
     }
   )
 
@@ -133,7 +136,7 @@ workflow <- function(occurrence, covariate, process, model, output) {
     }
   },  
     error = function(cond){
-      ErrorAndSave(cond, 2)
+      ErrorAndSave(cond, 2, e)
     }
   )
 
@@ -148,34 +151,14 @@ workflow <- function(occurrence, covariate, process, model, output) {
                    function(x) ExtractAndCombData(x, covariate.output[[1]]))
   }
 
-  # Have to use lapply over a different list depending on whether occurrence,
-  # covariate or process has multiple modules
 
-  #process.output <- RunProcessModules(data, process, processName)
-  tryCatch({
-    if (!identical(attr(process.module, 'chain'), TRUE)){
-      if (length(processName) > 1){
-        process.output <- lapply(processName, 
-          function(x) do.call(x$func, 
-                        c(list(data = data[[1]]), x$paras)))
-      } else {
-        process.output <- lapply(data,
-          function(x) do.call(processName[[1]]$func, 
-                        c(list(data = x), processName[[1]]$paras)))
-      }
-    } else { 
-      # If process was chained, we must loop through the process modules 
-      #   applying them to the output of the previous one.
-      process.output <- data
-      for(p in 1:length(processName)){      
-        process.output <- lapply(process.output,
-          function(x) do.call(processName[[p]]$func, 
-                        c(list(data = x), processName[[p]]$paras)))
-      }
-    }      
+
+  
+  tryCatch({  
+    process.output <-  DoProcessModules(process.module, processName, data, e)
   },  
     error = function(cond){
-      ErrorAndSave(cond, 3)
+      ErrorAndSave(cond, 3, e)
     }
   )
   
@@ -194,39 +177,11 @@ workflow <- function(occurrence, covariate, process, model, output) {
   # If output is chained, either covariate or process only. 
   #  Within this need to chain output
   tryCatch({
-    if(!identical(attr(output.module, 'chain'), TRUE)){
-      if (length(output.module) > 1){
-        output.output <- lapply(outputName, 
-                           function(x) do.call(x$func, 
-                           c(list(model.output[[1]], 
-                                  covariate.output[[1]]),
-                             x$paras)))
-      } else if (length(covariate.module) > 1){
-        output.output <- lapply(covariate.output, 
-                           function(x) do.call(outputName[[1]]$func, 
-                           c(list(model.output[[1]], x),
-                             outputName[[1]]$paras)))    
-      } else {
-        output.output <- lapply(model.output, 
-                           function(x) do.call(outputName[[1]]$func, 
-                           c(list(x, covariate.output[[1]]), outputName[[1]]$paras)))
-      }
-    } else {
-      if (length(covariate.module) > 1){
-        output.output <- lapply(covariate.output, 
-                           function(y) lapply(outputName, 
-                             function(x) do.call(x$func, 
-                             c(list(model.output[[1]], y), x$paras))))    
-      } else {
-        output.output <- lapply(model.output, 
-                           function(y) lapply(outputName, 
-                             function(x) do.call(x$func, 
-                             c(list(y, covariate.output[[1]]), x$paras))))    
-      }
-    }
+    output.output <- DoOutputModules(output.module, outputName, 
+                       covariate.module, covariate.output, model.output, e)
   },  
     error = function(cond){
-      ErrorAndSave(cond, 5)
+      ErrorAndSave(cond, 5, e)
     }
   )
 

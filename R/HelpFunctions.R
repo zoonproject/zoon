@@ -21,7 +21,7 @@ ModuleHelp <- function(module){
     txt <- getURL(helpURL, ssl.verifypeer=FALSE)
     helpFile <- paste0(tempdir(), '/',  module, '.Rd')
     writeLines(txt, helpFile)
-    tools::Rd2txt(tools:::parse_Rd(helpFile))
+    tools::Rd2txt(tools::parse_Rd(helpFile))
   } else {
     modList <- GetModuleList()
     closeMatches <- modList[agrep(module, modList, max.distance = 0.3)]

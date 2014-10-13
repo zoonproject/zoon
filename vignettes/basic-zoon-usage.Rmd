@@ -1,7 +1,3 @@
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{An Introduction to the zoon package}
--->
 
 An Introduction to the **zoon** package
 =======================================
