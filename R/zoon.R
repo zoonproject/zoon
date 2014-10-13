@@ -66,11 +66,10 @@ workflow <- function(occurrence, covariate, process, model, output) {
   modSub <- substitute(model)
   outSub <- substitute(output)
 
-  call <- sortArgs(paste(deparse(occSub), collapse = ' '),
-                   paste(deparse(covSub), collapse = ' '),
-                   paste(deparse(proSub), collapse = ' '),
-                   paste(deparse(modSub), collapse = ' '),
-                   paste(deparse(outSub), collapse = ' '))
+  call <- sortArgs(PasteAndDep(occSub), PasteAndDep(covSub), PasteAndDep(proSub), 
+            PasteAndDep(modSub), PasteAndDep(outSub))
+ 
+
 
   # save the local environment as it needs to be passed to various functions.
   e <- environment() 
