@@ -293,6 +293,11 @@ ErrorAndSave <- function(cond, mod = 1, e){
 
 
 
+# Helper to format substituted args ie modules
+
+PasteAndDep <- function(x){
+  paste(deparse(x), collapse = ' ')
+}
 
 
 

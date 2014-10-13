@@ -82,7 +82,7 @@ workflow <- function(occurrence, covariate, process, model, output) {
   output.module <- CheckModList(outSub)
   
   # Only one of occurrence, covariate, process and model can be a list of 
-  #   multiple modules.
+  #   multiple modules. But ignore chained modules.
   isChain <- sapply(list(occurrence.module, covariate.module, 
                          process.module, model.module, output.module), 
                     function(x) identical(attr(x, 'chain'), TRUE))
