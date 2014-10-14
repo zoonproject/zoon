@@ -223,7 +223,7 @@ Chain <- function(...){
 # Helper to take substituted args from workflow call and paste them into 
 # a runeable workflow function.
 
-sortArgs <- function(occSub, covSub, proSub, modSub, outSub){
+SortArgs <- function(occSub, covSub, proSub, modSub, outSub){
   call <- paste0("workflow(", 
                  "occurrence = ", occSub,
                ", covariate = ", covSub,
@@ -237,7 +237,7 @@ sortArgs <- function(occSub, covSub, proSub, modSub, outSub){
 # Helper to split a character string of a workflow call, as inherited from zoonWorkflow
 #   into it's constituent modules
 
-splitCall <- function(call){
+SplitCall <- function(call){
   occurrence <- gsub('(.*occurrence = )(.*)(, covariate.*$)', '\\2', call)
   covariate <- gsub('(.*covariate = )(.*)(, process.*$)', '\\2', call)
   process <- gsub('(.*process = )(.*)(, model.*$)', '\\2', call)

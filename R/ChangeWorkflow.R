@@ -1,55 +1,75 @@
-#' Rerun a workflow object.
+#' Change a workflow and rerun.
 #'
-#' Takes a workflow object and reruns it.
+#' Takes a workflow object and reruns it with changes. 
 #'
 #'@param workflow A zoonWorkflow object from a previous zoon analysis
-#'@param from Which modules should be run. If NULL (default), run from the
-#'  first NULL output (i.e. where the workflow broke). Otherwise takes an
-#'  integer and runs from that module.
 #'
 #'@return A list with the results of each module and a copy of the
-#'  call used to execute the workflow.
+#'  call used to execute the workflow (
 #'
 #'@export
-#'@name RerunWorkflow
+#'@name ChangeWorkflow
 #'@examples \dontrun{
 #' w <- workflow(UKAnophelesPlumbeus, UKAir,
 #'               OneHundredBackground, 
 #'               LogisticRegression,
 #'               SameTimePlaceMap)
 #'
-#' RerunWorkflow(w)
+#' ChangeWorkflow(w)
 #'}
 
 
 
-RerunWorkflow <- function(workflow, from = NULL) {
-  
+ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, process = NULL, 
+                    model = NULL, output = NULL) {
+
+  # Sub all inputs
+  occSub <- substitute(occurrence)
+  covSub <- substitute(covariate)
+  proSub <- substitute(process)
+  modSub <- substitute(model)
+  outSub <- substitute(output)
+
+  # Some checks. At least one new module. 'workflow' is from zoon workflow call.
+  if(sum(sapply(list(occSub, covSub, proSub, modSub, outSub), is.null)) == 5){
+    stop('At least one module type must be changed.')
+  }
   assert_that(inherits(workflow, 'zoonWorkflow'))
 
-  # If from isn't NULL, it should be an integer 1:5
-  if (!is.null(from)){
-    assert_that(from %in% c(1:5) )
+  # Separate the original work flow.
+  oldCallArgs <- SplitCall(workflow$call)
+
+  # Replace any arguments that have been specified.
+  if(!is.null(occSub)){
+    oldCallArgs$occurrence <- occSub
   }
 
-  # Find first NULL modules and run from there.
-  if (is.null(from)) {
-    NullModules <- sapply(list.subset(workflow, c(1:5)), is.null)
-    if (!sum(NullModules) == 0){
-      from <- which.max(NullModules)
-    } else {
-      from <- 1
-    }
+  if(!is.null(covSub)){
+    oldCallArgs$covariate <- covSub
   }
-  
-  # get the arguments from the call used to run this workflow
-  callArgs <- SplitCall(workflow$call)
 
-  occSub <- callArgs['occurrence']
-  covSub <- callArgs['covariate']
-  proSub <- callArgs['process']
-  modSub <- callArgs['model']
-  outSub <- callArgs['output']
+  if(!is.null(proSub)){
+    oldCallArgs$process <- proSub
+  }
+
+  if(!is.null(modSub)){
+    oldCallArgs$model <- modSub
+  }
+
+  if(!is.null(outSub)){
+    oldCallArgs$output <- outSub
+  }
+
+  # Work out where to run the workflow from.
+  from <- which.max(!sapply(list(occSub, covSub, proSub, modSub, outSub), is.null))
+
+
+  # Give new arg names to *Sub objects so we can continue with workflow source code.
+  occSub <- oldCallArgs['occurrence']
+  covSub <- oldCallArgs['covariate']
+  proSub <- oldCallArgs['process']
+  modSub <- oldCallArgs['model']
+  outSub <- oldCallArgs['output']
 
   # save the local environment as it needs to be passed to various functions.
   e <- environment() 
@@ -189,6 +209,7 @@ RerunWorkflow <- function(workflow, from = NULL) {
     output.output <- workflow$output.output
   }
 
+  call <- SortArgs(occSub, covSub, proSub, modSub, outSub)
 
   # Collate output
   output <- list(occurrence.output = occurrence.output,

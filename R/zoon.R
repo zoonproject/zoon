@@ -66,7 +66,7 @@ workflow <- function(occurrence, covariate, process, model, output) {
   modSub <- substitute(model)
   outSub <- substitute(output)
 
-  call <- sortArgs(PasteAndDep(occSub), PasteAndDep(covSub), PasteAndDep(proSub), 
+  call <- SortArgs(PasteAndDep(occSub), PasteAndDep(covSub), PasteAndDep(proSub), 
             PasteAndDep(modSub), PasteAndDep(outSub))
  
 
