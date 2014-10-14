@@ -37,17 +37,48 @@
 
 BuildModule <- function(object, type, dir='.', title = '',  description = '', author = '', email = '', paras=NULL){
   assert_that(is(object, 'function'))
-  is.writeable(dir)
-  
-  type <- tolower(type)
   assert_that(type %in% c('occurrence', 'covariate', 'process', 'model', 'diagnostic', 'output'))
+  is.writeable(dir)
 
-  obj <- deparse(substitute(object))
   
-  if(is.null(paras)){
-    paras <- formals(object)
+  
+  # Is all meta information provided.
+  if(title == '' | description == '' | author == '' | email == '') {
+    complete <- FALSE
+  } else {
+    complete <- TRUE
   }
 
+  # What are the default arguments for each module type
+  defArgs <- list(occurrence = NULL, covariate = NULL, process = c('data'),
+                    model = c('df'), output = c('model', 'ras'))
+
+
+  missingParas <- names(formals(object))[!names(formals(object)) %in% names(paras)]
+
+  # Are all parameters documented (excluding defualt, zoon internal parameters).
+  #   If not give a warning.
+  if(any(!missingParas %in% defArgs[[type]])){
+    complete <- FALSE
+  }
+  if(!complete){
+    warning(paste('Information not complete. All arguments must be filled and',
+      'all parameters documented before uploading module to Zoon repository.'))
+  }
+
+
+  # Test that model has correct inputs.
+  if(any(!defArgs[[type]] %in% names(formals(object)))){
+    stop(paste0(type, " modules must contain arguments '", 
+      paste(defArgs[[type]], collapse = "' and '"), "'."))
+  }
+    
+
+  type <- tolower(type)
+  obj <- deparse(substitute(object))
+  
+
+  # Sort out parameter formating.
   paraNames <- names(paras)
   paraDocs <- paste(sapply(paraNames, function(x) paste("#'@param", x, paras[x], "\n")), collapse="#'\n")
 
