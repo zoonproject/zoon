@@ -3,7 +3,8 @@
 \alias{BuildModule}
 \title{BuildModule}
 \usage{
-BuildModule(object, type, dir = ".", description = "", paras = NULL)
+BuildModule(object, type, dir = ".", title = "", description = "",
+  author = "", email = "", paras = NULL)
 }
 \arguments{
 \item{object}{A function that will be made into a module file.}
@@ -14,7 +15,9 @@ are occurence, covariate, process, model, diagnostic and output.}
 \item{dir}{The directory to put the module into (defaults to the
 working directory.}
 
-\item{description}{A single string giving a description of the model.}
+\item{title}{A short description of the module.}
+
+\item{description}{A single string giving a full description of the model.}
 
 \item{paras}{A list of the form
  list(parameterName = 'Parameter description.',

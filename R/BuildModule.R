@@ -9,7 +9,8 @@
 #'      working directory.
 #'@param type A string that defines the type of module. Possible module types
 #'      are occurence, covariate, process, model, diagnostic and output.
-#'@param description A single string giving a description of the model.
+#'@param title A short description of the module.
+#'@param description A single string giving a full description of the model.
 #'@param paras A list of the form 
 #'  list(parameterName = 'Parameter description.',
 #'    anotherParameter = 'Another descriptions.')
@@ -34,7 +35,7 @@
 #'
 #'
 
-BuildModule <- function(object, type, dir='.', description='', paras=NULL){
+BuildModule <- function(object, type, dir='.', title = '',  description = '', author = '', email = '', paras=NULL){
   assert_that(is(object, 'function'))
   is.writeable(dir)
   
@@ -50,9 +51,13 @@ BuildModule <- function(object, type, dir='.', description='', paras=NULL){
   paraNames <- names(paras)
   paraDocs <- paste(sapply(paraNames, function(x) paste("#'@param", x, paras[x], "\n")), collapse="#'\n")
 
+  # Roxygen2 uses @ as a tag. So have to double it.
+  email <- gsub('@', '@@', email)
         
-  docs <- paste0("#'", toupper(substring(type, 1,1)), substring(type, 2), 
-            " module: ", obj, "\n#'\n#'", description, "\n#'\n", paraDocs, "#'\n#'@name ", obj)
+  docs <- paste0("#'", obj, ": ", title, "\n#'\n#'", description, "\n#'\n#'", 
+            "Module type: ", toupper(substring(type, 1,1)), substring(type, 2), 
+            "\n#'\n", paraDocs, "#'\n#'@author ", author, 
+            "'\n#'@author ", email, "'\n#'@name ", obj)
 
   write(docs, file = paste0(dir, '/', obj, '.R'))
   dump(c(obj), file = paste0(dir, '/', obj, '.R'), append=TRUE)

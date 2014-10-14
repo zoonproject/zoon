@@ -64,12 +64,15 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
   from <- which.max(!sapply(list(occSub, covSub, proSub, modSub, outSub), is.null))
 
 
-  # Give new arg names to *Sub objects so we can continue with workflow source code.
+  # Give new arg names to *Sub objects so we can continue with RerunWorkflow source code.
   occSub <- oldCallArgs['occurrence']
   covSub <- oldCallArgs['covariate']
   proSub <- oldCallArgs['process']
   modSub <- oldCallArgs['model']
   outSub <- oldCallArgs['output']
+
+  #####
+  # From here is the same as RerunWorkflow.
 
   # save the local environment as it needs to be passed to various functions.
   e <- environment() 
