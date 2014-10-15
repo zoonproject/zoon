@@ -14,25 +14,43 @@
 #'@export
 
 LoadModule <- function(module){
+  # Sub and deparse argument, then remove extra quote marks.
+  module <- deparse(substitute(module))
+  module <- gsub('"', '', module)
+
+  # Create url that matches zoon repo
   zoonURL <- 
     paste0('https://raw.githubusercontent.com/zoonproject/modules/master/R/',
            module, '.R')
+
+  # If module is a path, load module
   if (file.exists(module)){
     txt <- parse(text = paste(readLines(module), collapse="\n"))
+  # If zoonURL is a zoon repo url, load module
+  #   Could probably do same thing as GetModule here to avoid repeated web call
   } else if (url.exists(zoonURL, .opts=list(ssl.verifypeer=FALSE))){
     txt <- parse(text = getURL(zoonURL, ssl.verifypeer=FALSE))
+  # If module on its own is a url, load module
   } else if (url.exists(module, .opts=list(ssl.verifypeer=FALSE))){
     txt <- parse( text = getURL(module, ssl.verifypeer=FALSE))
+  # Otherwise throw error.
   } else {
     stop(paste('Cannot find "', module, 
       '". Check the URL or check that the module is at github.com/zoonproject'))
   }
   # Load to global environment
   eval(txt, envir = globalenv())
+  # Return the actual name of the module that has been loaded.
+  #   Don't just return module argument as that can be url/path
+  #   which isn't useful.
+  # Cruddy code. But module name is the only other object in this
+  #   call environment.
   eval(txt)
   new.func.name <- ls()[!ls() %in% c('module', 'txt', 'zoonURL')]
   return(new.func.name)
 }
+
+
 
 #'A function to get a module function.
 #'
@@ -43,6 +61,8 @@ LoadModule <- function(module){
 #'      module name assuming the module is in global namespace or 
 #'      github.com/zoonproject/modules. Otherwise can be a full URL or a local
 #'      file.
+#'@param forceReproducible Do we want to force the function to get modules from
+#'      the zoon repo, even if they exist in the global namespace.
 #'
 #'@return Name of the function. Function is run with workflow and new module
 #'  function is added to workflow environment.
@@ -52,6 +72,11 @@ GetModule <- function(module, forceReproducible){
   zoonURL <- 
     paste0('https://raw.githubusercontent.com/zoonproject/modules/master/R/',
            module, '.R')
+
+  # If the module is in global namespace, use that function
+  #   unless forceReproduce is TRUE, in which case we want to get from repo.
+  #   
+  # Get module from zoonURL otherwise.
   if (exists(module) & !forceReproducible){
     assign(module, eval(parse(text = module)),  envir = parent.frame(4))
     return(module)
@@ -59,17 +84,19 @@ GetModule <- function(module, forceReproducible){
     rawText <- getURL(zoonURL, ssl.verifypeer=FALSE)
   } 
 
+  # getURL returns "Not Found" if no webpage found.
+  #   Use this to avoid two web call.s
   if(rawText == "Not Found") {
     stop(paste('Cannot find "', module, 
       '". Check that the module is on the zoon repository or in the global namespace.'))
   }
+
+  # Parse text from webpage.
   txt <- parse(text = rawText)
   
-  # Probably do one environment up (i.e. in workflow environment)
+  # Evaluate text in the workflow call environment
   eval(txt, envir = parent.frame(4))
 
-  # don't think this is neededanymore.
-  eval(txt)
   return(module)
 }
 
@@ -155,8 +182,6 @@ RunModels <- function(df, modelFunction, paras, workEnv){
 
 
 
-
-
 # Helper to sort modules into lists.
 # Check passing as quoted.
 
@@ -181,7 +206,13 @@ CheckModList <- function(x){
   return(ModuleList)
 }
 
-# Little helper to format module lists
+#'FormatModuleList
+#'
+#' Little helper to format module lists. Want to return a list
+#'   newList$module is the module name and newList$paras is a list
+#'   of the parameters given for the module.
+#'@name FormatModuleList
+
 FormatModuleList <- function(x){
   listx <- as.list(x)
   newList <- list()
@@ -224,9 +255,6 @@ ExtractAndCombData <- function(occurrence, ras){
 #'@param ... List of modules to be chained.
 #'
 #'@name Chain
-#'@export
-
-
 
 Chain <- function(...){
   NULL

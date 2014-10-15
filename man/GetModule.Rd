@@ -7,9 +7,12 @@ GetModule(module, forceReproducible)
 }
 \arguments{
 \item{module}{A string that describes the location of the R file. Can be a
-     module name assuming the module is in global namespace or
-     github.com/zoonproject/modules. Otherwise can be a full URL or a local
-     file.}
+module name assuming the module is in global namespace or
+github.com/zoonproject/modules. Otherwise can be a full URL or a local
+file.}
+
+\item{forceReproducible}{Do we want to force the function to get modules from
+     the zoon repo, even if they exist in the global namespace.}
 }
 \value{
 Name of the function. Function is run with workflow and new module
