@@ -3,7 +3,8 @@
 \alias{workflow}
 \title{Run a full workflow.}
 \usage{
-workflow(occurrence, covariate, process, model, output)
+workflow(occurrence, covariate, process, model, output,
+  forceReproducible = FALSE)
 }
 \arguments{
 \item{occurrence}{Occurrence module to be used.}

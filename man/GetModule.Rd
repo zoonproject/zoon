@@ -3,18 +3,20 @@
 \alias{GetModule}
 \title{A function to get a module function.}
 \usage{
-GetModule(module)
+GetModule(module, forceReproducible)
 }
 \arguments{
 \item{module}{A string that describes the location of the R file. Can be a
-     module name assuming the module is in global namespace or github.com/zoonproject/modules.
-     Otherwise can be a full URL or a local file.}
+     module name assuming the module is in global namespace or
+     github.com/zoonproject/modules. Otherwise can be a full URL or a local
+     file.}
 }
 \value{
 Name of the function. Function is run with workflow and new module
  function is added to workflow environment.
 }
 \description{
-Checks for the module in the global namespace, then the zoon repo, then
+Checks for the module in the global namespace, then the zoon repo. Then reads
+ the module source and loads the function.
 }
 

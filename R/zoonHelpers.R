@@ -193,21 +193,23 @@ FormatModuleList <- function(x){
 
 
 
-
-# Simply extract covariates from rasters and combine with occurrence.
+#' ExtractAndCombData
+#'
+#' Simply extract covariates from rasters and combine with occurrence data.
+#'
+#'@param occurrence A data frame from an occurrence module
+#'@param ras Environmental raster layer, stack or brick.
 ExtractAndCombData <- function(occurrence, ras){
+  
+  # extract covariates from lat long values in df.
+  occurrenceCovariates <- as.matrix(raster::extract(ras, occurrence[, c('longitude', 'latitude')]))
+  names(occurrenceCovariates) <- names(ras)  
 
-  noccurrence <- nrow(occurrence)
-  
-  # extract covariates
-  occ_covs <- as.matrix(raster::extract(ras, occurrence[, c('longitude', 'latitude')]))
-  
   # combine with the occurrence data
-  df <- cbind(occurrence,
-                   occ_covs)
+  df <- cbind(occurrence, occurrenceCovariates)
+
   
-  names(df)[6:ncol(df)] <- names(ras)
-  
+  # Return as list of df and ras as required by process modules
   return(list(df=df, ras=ras))
   
 }
@@ -231,8 +233,12 @@ Chain <- function(...){
 }
 
 
-# Helper to take substituted args from workflow call and paste them into 
-# a runeable workflow function.
+#'SortArgs
+#'
+#'
+#' Helper to take substituted args from workflow call and paste them into 
+#'   a runeable workflow function.
+#'@name SortArgs
 
 SortArgs <- function(occSub, covSub, proSub, modSub, outSub, forceReproducible){
   call <- paste0("workflow(", 
@@ -246,10 +252,17 @@ SortArgs <- function(occSub, covSub, proSub, modSub, outSub, forceReproducible){
 
 
 
-# Helper to split a character string of a workflow call, as inherited from zoonWorkflow
-#   into it's constituent modules
+#'SplitCall
+#'
+#' Helper to split a character string workflow call, as inherited from zoonWorkflow
+#'   into it's constituent arguments
+#'@name SplitCall
 
 SplitCall <- function(call){
+
+  # Regex to find each argument within call.
+  #   Find 3 patterns and sub whole string with just middle pattern
+  #   Middle pattern is the argument name.
   occurrence <- gsub('(.*occurrence = )(.*)(, covariate.*$)', '\\2', call)
   covariate <- gsub('(.*covariate = )(.*)(, process.*$)', '\\2', call)
   process <- gsub('(.*process = )(.*)(, model.*$)', '\\2', call)
@@ -257,6 +270,7 @@ SplitCall <- function(call){
   output <- gsub('(.*output = )(.*)(, forceReproducible.*$)', '\\2', call)
   forceReproducible <- gsub('(.*forceReproducible = )(.*)())', '\\2', call)
 
+  # Make vector and add names.
   split <- c(occurrence, covariate, process, model, output, forceReproducible)
   names(split) <- c('occurrence', 'covariate', 'process', 
     'model', 'output', 'forceReproducible')
@@ -266,16 +280,23 @@ SplitCall <- function(call){
 }
 
 
-# Function used in tryCatch calls in workflow.
-# If an error is caught, save the workflow to tmpZoonWorkflow.
-# And return some useful messages. Then stop().
-# cond is the error messages passed by try catch.
-# mod is the modules number (1:5) to give NULLS to the correct modules.
-
-# e is the workflow call environment
+#'ErrorAndSave
+#' Function used in tryCatch calls in workflow.
+#'   If an error is caught, save the workflow to tmpZoonWorkflow.
+#'   And return some useful messages. Then stop().
+#'   cond is the error messages passed by try catch.
+#'   mod is the modules number (1:5) to give NULLS to the correct modules.
+#'
+#'@param e The workflow call environment
+#'@param cond The error message that was caught in tryCatch.
+#'@param mod Which module has failed? 1=occurrence, 2=covariate, 3=process
+#'  4=model, 5=output.
+#'@name ErrorAndSave
 
 ErrorAndSave <- function(cond, mod = 1, e){
 
+  # Create list to be populated
+  #  Include the call from the workflow environment e
   w <- list(occurrence.output = NULL,
        covariate.output = NULL,
        process.output = NULL,
@@ -283,6 +304,9 @@ ErrorAndSave <- function(cond, mod = 1, e){
        report = NULL,
        call = e$call)
   
+  # Depending on mod argument, replace NULLS in w with the value of module
+  #   output. To get the module output we have to reference the workflow
+  #   environment which was given as argument e.
   if(mod > 1){
     w$occurrence.output <- e$occurrence.output
   }
@@ -296,20 +320,29 @@ ErrorAndSave <- function(cond, mod = 1, e){
     w$model.output <- e$model.output
   }
 
+  # Select the module type using numeric mod argument
   module <- c('occurrence', 'covariate', 'process', 'model', 'output')[mod]
 
+  
   assign('tmpZoonWorkflow', w,  envir = .GlobalEnv)
 
+  # Give useful messages.
+  # What were the errors that were caught be tryCatch.
   message('Caught errors:\n',  cond)
   message()
+  # Where did workflow break and where is the progress stored?
   x <- paste("Stopping workflow due to error in", module, "module.\n", 
              "Workflow progress stored in object 'tmpZoonWorkflow'.")
+  # Throw error. The call for this error is meaningless so don't print it.
   stop(x, call. = FALSE)
 }
 
 
-
-# Helper to format substituted args ie modules
+#' PasteAndDep
+#'
+#' Paste and deparse. Helper to format substituted args. If arguments were 
+#'   chained or listed then substitute gives a list. We want to paste it back together.
+#'@name PasteAndDep
 
 PasteAndDep <- function(x){
   paste(deparse(x), collapse = ' ')
