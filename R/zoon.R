@@ -52,7 +52,7 @@ NULL
 #'
 #'#str(work1, 1)
 #'
-#'#work2 <- workflow('UKAnophelesPlumbeus', 'UKAir', 'OneHundredBackground', 
+#'#work2 <- workflow('UKAnophelesPlumbeus', 'UKAir', 'OneHundredBackground',   
 #'#           'RandomForest', 'PrintMap')
 #'
 #'
@@ -67,7 +67,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   outSub <- substitute(output)
 
   call <- SortArgs(PasteAndDep(occSub), PasteAndDep(covSub), PasteAndDep(proSub), 
-            PasteAndDep(modSub), PasteAndDep(outSub))
+            PasteAndDep(modSub), PasteAndDep(outSub), forceReproducible)
  
 
 
@@ -115,6 +115,10 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
 
   # First the data collection modules
   # Actually tryCatch here only tells user which module broke, nothing to save.
+
+  # If you want to parallelise modules, (properly on multicores), lapply will
+  #   become snowfall::sflapply or newer things.
+
   tryCatch({
     occurrence.output <- lapply(occurrenceName, function(x) do.call(x$func, x$paras))
     # Then bind together if the occurrence modules were chained
@@ -150,7 +154,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   }
 
 
-
+  # Do process modules
   
   tryCatch({  
     process.output <-  DoProcessModules(process.module, processName, data, e)

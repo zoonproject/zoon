@@ -15,6 +15,9 @@ DoOutputModules <- function(output.module, outputName, covariate.module,
                          c(list(model.output[[1]], 
                                 covariate.output[[1]]),
                            x$paras), envir = e))
+
+    # Actually think that if covariate >1, then model is also >1
+    #   so never need to lapply over covariate?
     } else if (length(covariate.module) > 1){
       output.output <- lapply(covariate.output, 
                          function(x) do.call(outputName[[1]]$func, 
@@ -113,6 +116,9 @@ DoProcessModules <- function(process.module, processName, data, e){
     #   applying them to the output of the previous one.
     # If covariate or occurrence was list, data will be list w/ length > 1
     #   so we assign data -> process.output then apply over that.
+
+    # We might want to save output of each process and return all of them
+    #   at the end of the workflow.
     process.output <- data
     for(p in 1:length(processName)){      
       process.output <- lapply(process.output,

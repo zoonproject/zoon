@@ -51,6 +51,8 @@ RerunWorkflow <- function(workflow, from = NULL) {
   modSub <- callArgs['model']
   outSub <- callArgs['output']
 
+  forceReproducible <- as.logical(callArgs['forceReproducible'])
+
   # save the local environment as it needs to be passed to various functions.
   e <- environment() 
 
@@ -77,13 +79,13 @@ RerunWorkflow <- function(workflow, from = NULL) {
   # Get the modules (functions) from github. 
   # Save name of functions as well as load functions into global namespace.
   # Will probably want to make this so it checks namespace first.
-  occurrenceName <- GetModules(occurrence.module) 
-  covariateName <- GetModules(covariate.module) 
-  processName <- GetModules(process.module) 
+  occurrenceName <- GetModules(occurrence.module, forceReproducible) 
+  covariateName <- GetModules(covariate.module, forceReproducible) 
+  processName <- GetModules(process.module, forceReproducible) 
   # Check for val type lon lat covs
-  modelName <- GetModules(model.module) 
+  modelName <- GetModules(model.module, forceReproducible) 
   # Test for predict method
-  outputName <- GetModules(output.module) 
+  outputName <- GetModules(output.module, forceReproducible) 
   
   
   # Different to workflow(), We have an if statement before each module is run

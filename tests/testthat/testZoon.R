@@ -13,6 +13,9 @@ test_that('CheckModList works.', {
   h <- substitute(list(mod1(para='pm', p2 = 2), mod2(para='pm')))
   i <- substitute(Chain(mod1(para='m', p2 = 2), mod2(para='pm')))
 
+
+  # Deal with occurrence = 'module1(k=2)',
+
   testNames <- function(l) names(l) == c('module', 'paras')
 
 	expect_true(all(sapply(CheckModList(a), testNames)))

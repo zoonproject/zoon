@@ -21,7 +21,7 @@
 
 
 ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, process = NULL, 
-                    model = NULL, output = NULL) {
+                    model = NULL, output = NULL, forceReproducible = NULL) {
 
   # Sub all inputs
   occSub <- substitute(occurrence)
@@ -60,6 +60,10 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
     oldCallArgs$output <- outSub
   }
 
+  if(!is.null(forceReproducible)){
+    oldCallArgs$forceReproducible <- forceReproducible
+  }
+
   # Work out where to run the workflow from.
   from <- which.max(!sapply(list(occSub, covSub, proSub, modSub, outSub), is.null))
 
@@ -70,6 +74,7 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
   proSub <- oldCallArgs['process']
   modSub <- oldCallArgs['model']
   outSub <- oldCallArgs['output']
+  forceReproducible <- as.logical(callArgs['forceReproducible'])
 
   #####
   # From here is the same as RerunWorkflow.
@@ -96,17 +101,17 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
   }
   
   
-  
   # Get the modules (functions) from github. 
   # Save name of functions as well as load functions into global namespace.
   # Will probably want to make this so it checks namespace first.
-  occurrenceName <- GetModules(occurrence.module) 
-  covariateName <- GetModules(covariate.module) 
-  processName <- GetModules(process.module) 
+  occurrenceName <- GetModules(occurrence.module, forceReproducible) 
+  covariateName <- GetModules(covariate.module, forceReproducible) 
+  processName <- GetModules(process.module, forceReproducible) 
   # Check for val type lon lat covs
-  modelName <- GetModules(model.module) 
+  modelName <- GetModules(model.module, forceReproducible) 
   # Test for predict method
-  outputName <- GetModules(output.module) 
+  outputName <- GetModules(output.module, forceReproducible) 
+  
   
   
   # Different to workflow(), We have an if statement before each module is run
@@ -212,7 +217,7 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
     output.output <- workflow$output.output
   }
 
-  call <- SortArgs(occSub, covSub, proSub, modSub, outSub)
+  call <- SortArgs(occSub, covSub, proSub, modSub, outSub, forceReproducible)
 
   # Collate output
   output <- list(occurrence.output = occurrence.output,

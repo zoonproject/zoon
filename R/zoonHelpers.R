@@ -67,6 +67,8 @@ GetModule <- function(module, forceReproducible){
   
   # Probably do one environment up (i.e. in workflow environment)
   eval(txt, envir = parent.frame(4))
+
+  # don't think this is neededanymore.
   eval(txt)
   return(module)
 }
@@ -156,6 +158,7 @@ RunModels <- function(df, modelFunction, paras, workEnv){
 
 
 # Helper to sort modules into lists.
+# Check passing as quoted.
 
 CheckModList <- function(x){
   if (class(x) == 'name'){
@@ -173,7 +176,7 @@ CheckModList <- function(x){
     paras <- as.list(x)
     paras[[1]] <- NULL
     ModuleList <- list(list(module = as.character(x[[1]]), paras = paras))
-  }
+  } # Add else if.
   
   return(ModuleList)
 }
@@ -231,13 +234,14 @@ Chain <- function(...){
 # Helper to take substituted args from workflow call and paste them into 
 # a runeable workflow function.
 
-SortArgs <- function(occSub, covSub, proSub, modSub, outSub){
+SortArgs <- function(occSub, covSub, proSub, modSub, outSub, forceReproducible){
   call <- paste0("workflow(", 
                  "occurrence = ", occSub,
                ", covariate = ", covSub,
                ", process = ", proSub,
                ", model = ", modSub,
-               ", output = ", outSub, ")")
+               ", output = ", outSub,
+               ", forceReproducible = ", as.character(forceReproducible), ")")
 }    
 
 
@@ -250,10 +254,12 @@ SplitCall <- function(call){
   covariate <- gsub('(.*covariate = )(.*)(, process.*$)', '\\2', call)
   process <- gsub('(.*process = )(.*)(, model.*$)', '\\2', call)
   model <- gsub('(.*model = )(.*)(, output.*$)', '\\2', call)
-  output <- gsub('(.*output = )(.*)())', '\\2', call)
+  output <- gsub('(.*output = )(.*)(, forceReproducible.*$)', '\\2', call)
+  forceReproducible <- gsub('(.*forceReproducible = )(.*)())', '\\2', call)
 
-  split <- c(occurrence, covariate, process, model, output)
-  names(split) <- c('occurrence', 'covariate', 'process', 'model', 'output')
+  split <- c(occurrence, covariate, process, model, output, forceReproducible)
+  names(split) <- c('occurrence', 'covariate', 'process', 
+    'model', 'output', 'forceReproducible')
   
   return(split)
 
@@ -265,6 +271,8 @@ SplitCall <- function(call){
 # And return some useful messages. Then stop().
 # cond is the error messages passed by try catch.
 # mod is the modules number (1:5) to give NULLS to the correct modules.
+
+# e is the workflow call environment
 
 ErrorAndSave <- function(cond, mod = 1, e){
 
