@@ -24,9 +24,16 @@ GetModuleList <- function(renew = FALSE){
     moduleNames <- .zoonHidden$moduleList
     return(moduleNames)
   } else {
+
+    # Get list of files in github repo
     files <- gh_list_files('zoonproject', 'modules')
+
+    # Find files in directory 'R/'. Then remove unneeded characters.
     mods <- files[grep('^R/', files)]
-    moduleNames <- gsub('^R/|.R$', '', mods)
+    names <- gsub('^R/|.R$', '', mods)
+
+    # Remove ModulesDocumentation which is not a module.
+    moduleNames <- names[-grep('ModulesDocumentation', names)]
     .zoonHidden$moduleList <- moduleNames
     return(moduleNames)
   }
