@@ -48,11 +48,11 @@ LoadModule <- function(module){
 #'  function is added to workflow environment.
 #'@name GetModule
 
-GetModule <- function(module){
+GetModule <- function(module, forceReproducible){
   zoonURL <- 
     paste0('https://raw.githubusercontent.com/zoonproject/modules/master/R/',
            module, '.R')
-  if (exists(module)){
+  if (exists(module) & !forceReproducible){
     assign(module, eval(parse(text = module)),  envir = parent.frame(4))
     return(module)
   } else {
@@ -75,10 +75,13 @@ GetModule <- function(module){
 #' A function to apply GetModule to a list correctly.
 #'@param modules A list from CheckModList() given details for 
 #'  one or more modules.
+#'@param forceReproducible Logical to determine whether the modules should be 
+#'  taken from repo even if they exist locally to enforce reproducibility.
 #'@name GetModules
 
-GetModules <- function(modules){
-  return(lapply(modules, function(x) list.append(func = GetModule(as.character(x$module)), x)))
+GetModules <- function(modules, forceReproducible){
+  return(lapply(modules, function(x) 
+    list.append(func = GetModule(as.character(x$module), forceReproducible), x)))
 }
 
 
