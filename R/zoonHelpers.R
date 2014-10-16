@@ -106,9 +106,9 @@ GetModule <- function(module, forceReproducible){
 #'  one or more modules.
 #'@param forceReproducible Logical to determine whether the modules should be 
 #'  taken from repo even if they exist locally to enforce reproducibility.
-#'@name GetModules
+#'@name LapplyGetModule
 
-GetModules <- function(modules, forceReproducible){
+LapplyGetModule <- function(modules, forceReproducible){
   lapply(modules, function(x) 
     list.append(func = GetModule(as.character(x$module), forceReproducible), x))
 }
@@ -198,7 +198,7 @@ CheckModList <- function(x){
   # Should accept occurrence = 'module1', but NOT 
   #   occurrence = 'module1(k=2)', or occurrence = 'list(mod1, mod1)'
   if (inherits(x, 'character')){
-    if (grepl('[:punct:]', x)){
+    if (grepl('[!#$%&()*+,-/:;<=>?@[\ ]^_`| ~]', x)){
       stop(paste('If specifying module arguments please use the form',
         'Module(para = 2), without quotes. No special characters should exist',
         'in module names.'))
