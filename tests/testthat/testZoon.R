@@ -47,29 +47,23 @@ test_that('CheckModList works.', {
 
 
 test_that('GetModule works', {
-  # Create local module in working directory to test load.
+  # Get Module only accepts a module name
+  #   Then gets module from namespace or zoon Repo onle
 
   NamespaceModule <- function(){
       return(UKAirRas)
     }
 
-  TestWorkflow <- function(){
-    GetModule(file)
-    return(class(TestModule))
-  }
 
   TestModuleName <- function(){
-    GetModule('NoProcess')
+    GetModule('NoProcess', FALSE)
     return(class(NoProcess))
   }
 
 
-  expect_error(GetModule('xxx'))
-  expect_that(GetModule('NoProcess'), equals('NoProcess'))
+  expect_error(GetModule('xxx', FALSE))
+  expect_that(GetModule('NoProcess', FALSE), equals('NoProcess'))
 
-  # This works when run interactively or using test_dir.
-  # Doesn't work in R CMD check. Environments are annoying.
-  # expect_that(GetModule('NamespaceModule'), equals('NamespaceModule'))
   
 })
 
@@ -79,9 +73,13 @@ test_that('LoadModule works', {
 
   # Load module is only used to URLS and paths.
 
-  # Create local module in working directory to test load.
-  write('#test file for zoon package\n TestModule <- function(){z <- 2}', file = 'TestModule.R')
-  file <- paste0(getwd(), '/TestModule.R')
+  # Create local module to test load.
+  #   This will only work on unix. But I don't know how to test otherwise.
+  #   LoadModule has to take the actual path, 
+  #   NOT e.g. fileName = '~/Test.R', LoadModule(fileName)
+  #   So can't save to paste(getwd(), 'TestFile.R')
+  write('#test file for zoon package\n TestModule <- function(){z <- 2}', 
+    file = '~/TestModule.R')
 
 
   TestWorkflow <- function(){
@@ -95,11 +93,11 @@ test_that('LoadModule works', {
   }
 
   expect_error(LoadModule('xxx'))
-  expect_that(LoadModule(file), equals('TestModule'))
+  expect_that(LoadModule('~/TestModule.R'), equals('TestModule'))
   expect_that(LoadModule('NoProcess'), equals('NoProcess'))
   expect_that(LoadModule('https://raw.githubusercontent.com/zoonproject/modules/master/R/NoProcess.R'), equals('NoProcess'))
   
-  file.remove('TestModule.R')
+  file.remove('~/TestModule.R')
 })
 
 
