@@ -41,7 +41,7 @@ LoadModule <- function(module){
   # Load to global environment
   eval(txt, envir = globalenv())
   # Return the actual name of the module that has been loaded.
-  #   Don't just return module argument as that can be url/path
+  #   Don't just return 'module' argument as that can be url/path
   #   which isn't useful.
   # Cruddy code. But module name is the only other object in this
   #   call environment.
@@ -109,8 +109,8 @@ GetModule <- function(module, forceReproducible){
 #'@name GetModules
 
 GetModules <- function(modules, forceReproducible){
-  return(lapply(modules, function(x) 
-    list.append(func = GetModule(as.character(x$module), forceReproducible), x)))
+  lapply(modules, function(x) 
+    list.append(func = GetModule(as.character(x$module), forceReproducible), x))
 }
 
 
@@ -182,27 +182,59 @@ RunModels <- function(df, modelFunction, paras, workEnv){
 
 
 
-# Helper to sort modules into lists.
-# Check passing as quoted.
+#' CheckModList
+#'
+#' Helper to sort module arguments into lists with common structure.
+#'   Want any input to end up as 
+#'   list(module = moduleName, paras = list(paraName1 = para, paraName2 = 2)).
+#'   See tests/testthat/testZoon.R for list of potential input.
+#'@name CheckModList
+
+# Check passing as quoted. e.g. occurrence = "ModuleName(k=2)"
+# Also occurrence = "list(mod1, mod2)" is probably bad.
 
 CheckModList <- function(x){
+
+  # Should accept occurrence = 'module1', but NOT 
+  #   occurrence = 'module1(k=2)', or occurrence = 'list(mod1, mod1)'
+  if (inherits(x, 'character')){
+    if (grepl('[:punct:]', x)){
+      stop(paste('If specifying module arguments please use the form',
+        'Module(para = 2), without quotes. No special characters should exist',
+        'in module names.'))
+    }
+  }
+  
+  # If argument is passed as unquoted moduleName: occurrence = ModuleName, 
   if (class(x) == 'name'){
     ModuleList <- list(list(module = as.character(x), paras = list()))
+  
+  # If list of modules given: occurrence = list(Mod1, Mod2), 
+  #   If list(Mod1(k=2), Mod2(p = 3)), parameters sorted in 
+  #   FormatModuleList
   } else if (x[[1]] == 'list') {
     listCall <- as.list(x)
     listCall[[1]] <- NULL
     ModuleList <- lapply(listCall, FormatModuleList)
+
+  # If Chained modules given: occurrence = Chain(Mod1, Mod2),
   } else if (x[[1]] == 'Chain'){
     listCall <- as.list(x)
     listCall[[1]] <- NULL
     ModuleList <- lapply(listCall, FormatModuleList) 
     attr(ModuleList, 'chain') <- TRUE
-  } else {
+  
+  # If unquoted module w/ paras given: occurrence = Module1(k=2)
+  #   Or if quoted single module occurrence = 'Module1'
+  } else if (identical(class(x[[1]]), 'name') | inherits(x, 'character')){
+    # Parameters
     paras <- as.list(x)
     paras[[1]] <- NULL
     ModuleList <- list(list(module = as.character(x[[1]]), paras = paras))
-  } # Add else if.
-  
+  } else {
+    stop(paste('Please check the format of argument', as.character(x)))
+  } 
+
   return(ModuleList)
 }
 
@@ -214,9 +246,13 @@ CheckModList <- function(x){
 #'@name FormatModuleList
 
 FormatModuleList <- function(x){
+  # Turn 'call' into list.
   listx <- as.list(x)
+
+  # Empty list to populate.
   newList <- list()
   newList$module <- listx[[1]]
+  # Remove list element which contains modules name. Remaining is parameters.
   listx[[1]] <- NULL
   newList$paras <- listx
   return(newList)

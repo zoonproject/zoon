@@ -76,6 +76,9 @@ test_that('GetModule works', {
 
 
 test_that('LoadModule works', {
+
+  # Load module is only used to URLS and paths.
+
   # Create local module in working directory to test load.
   write('#test file for zoon package\n TestModule <- function(){z <- 2}', file = 'TestModule.R')
   file <- paste0(getwd(), '/TestModule.R')
@@ -91,7 +94,7 @@ test_that('LoadModule works', {
     return(class(NoProcess))
   }
 
-  expect_error(GetModule('xxx'))
+  expect_error(LoadModule('xxx'))
   expect_that(LoadModule(file), equals('TestModule'))
   expect_that(LoadModule('NoProcess'), equals('NoProcess'))
   expect_that(LoadModule('https://raw.githubusercontent.com/zoonproject/modules/master/R/NoProcess.R'), equals('NoProcess'))
