@@ -2,6 +2,7 @@
 context('Test workflow function.')
 
 test_that('simple, package data workflow works.', {
+
   work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                  covariate = UKAir,
                  process = OneHundredBackground,
@@ -290,5 +291,26 @@ test_that('chains work.', {
 
 
 
+test_that('workflow with mix of syntax works.', {
+  workSyn <- workflow(occurrence = UKAnophelesPlumbeus,
+                 covariate = 'UKAir',
+                 process = BackgroundAndCrossvalid(k=2),
+                 model = list(LogisticRegression, RandomForest),
+                 output = Chain('SameTimePlaceMap', 'SameTimePlaceMap'))
 
+  expect_true(exists('workSyn'))
+  expect_equal(names(workSyn), 
+    c('occurrence.output', 'covariate.output', 'process.output', 
+      'model.output', 'report', 'call'))
+  expect_equal(dim(workSyn$occurrence.output[[1]]), c(188,5))
+  expect_is(workSyn$covariate.output[[1]], 'RasterLayer')
+  expect_equal(dim(workSyn$covariate.output[[1]]), c(9,9,1))
+  expect_equal(names(workSyn$process.output[[1]]$df), 
+    c('value', 'type', 'fold', 'longitude',   'latitude',   'layer'))
+  expect_equal(dim(workSyn$process.output[[1]][[1]]),  c(269, 6))
+  expect_is((workSyn$model.output[[1]])$model, c('glm', 'lm'))
+  expect_is((workSyn$model.output[[1]])$data, c('data.frame'))
+  expect_is(workSyn$report[[1]], 'list')
+
+})
 

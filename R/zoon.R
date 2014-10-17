@@ -125,9 +125,11 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
     if (identical(attr(occurrence.module, 'chain'), TRUE)){
       occurrence.output <- list(do.call(rbind, occurrence.output))
     }
+    #return(occurrence.output)
   },  
     error = function(cond){
-      ErrorAndSave(cond, 1, e)
+      t <- ErrorAndSave(cond, 1, e)
+      return(w)
     }
   )
 
