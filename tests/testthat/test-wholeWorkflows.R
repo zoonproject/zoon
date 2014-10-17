@@ -1,5 +1,5 @@
 
-context('Test workflow function.')
+context('Test whole workflows.')
 
 test_that('simple, package data workflow works.', {
 
@@ -78,42 +78,6 @@ test_that('modules downloading data work', {
 })
 
 
-# Since requiring users to LoadModule on non repo/namespace modules
-#  have to do this ina  weird way and it isn't working.
-#test_that('collecting modules with names and urls is equivelent.', {
-#  set.seed(1)
-#  workNames <- workflow(occurrence = UKAnophelesPlumbeus,
-#                         covariate = UKAir,
-#                         process = OneHundredBackground,
-#                         model = LogisticRegression,
-#                         output = SameTimePlaceMap)
-#  set.seed(1)
-#  LoadModule('https://raw.githubusercontent.com/zoonproject/modules/master/R/UKAnophelesPlumbeus.R')
-#  LoadModule('https://raw.githubusercontent.com/zoonproject/modules/master/R/UKAir.R')
-#  LoadModule('https://raw.githubusercontent.com/zoonproject/modules/master/R/OneHundredBackground.R')
-#  LoadModule('https://raw.githubusercontent.com/zoonproject/modules/master/R/LogisticRegression.R')
-#  LoadModule('https://raw.githubusercontent.com/zoonproject/modules/master/R/SameTimePlaceMap.R')##
-#
-#  UKAnophelesPlumbeus2 <- UKAnophelesPlumbeus
-#  UKAir2 <- UKAir
-#  OneHundredBackground2 <- OneHundredBackground
-#  LogisticRegression2 <- LogisticRegression
-#  SameTimePlaceMap2 <- SameTimePlaceMap
-#  
-#
-#  workURLs <- workflow(occurrence = UKAnophelesPlumbeus2,
-#                         covariate = UKAir2,
-#                         process = OneHundredBackground2,
-#                         model = LogisticRegression2,
-#                         output = SameTimePlaceMap2)
-#
-#  expect_equal(workNames[[1]], workURLs[[1]])
-#  expect_equal(workNames[[2]], workURLs[[2]])
-#  expect_equal(workNames[[3]], workURLs[[3]])
-#  expect_equal(workNames[[4]], workURLs[[4]])
-#  expect_equal(workNames[[5]], workURLs[[5]])#
-#
-#})
 
 test_that('Workflows with lists of modules work.', {
   
@@ -314,3 +278,65 @@ test_that('workflow with mix of syntax works.', {
 
 })
 
+
+test_that('workflow is saved on break.', {
+
+})
+
+
+test_that('RerunWorkflow works', {
+
+
+  set.seed(1)
+  w1 <- workflow(UKAnophelesPlumbeus,
+                 UKAir, 
+                 OneHundredBackground,
+                 LogisticRegression,
+                 SameTimePlaceMap)
+
+  set.seed(1)
+  w2 <- RerunWorkflow(w1)
+
+  expect_true(all.equal(w1, w2))
+
+
+
+})
+
+
+test_that('ChangeWorkflow works', {
+
+  set.seed(1)
+  w1 <- workflow(UKAnophelesPlumbeus,
+                 UKAir, 
+                 OneHundredBackground,
+                 LogisticRegression,
+                 SameTimePlaceMap)
+
+  set.seed(1)
+  w2 <- workflow(UKAnophelesPlumbeus,
+                 UKAir, 
+                 OneHundredBackground,
+                 RandomForest,
+                 SameTimePlaceMap)
+
+  set.seed(1)
+  w3 <- ChangeWorkflow(w2, model = LogisticRegression)
+
+  expect_true(all.equal(w1, w3))
+
+  set.seed(1)
+  w4 <- workflow(UKAnophelesPlumbeus,
+                 UKAir, 
+                 BackgroundAndCrossvalid(k=2),
+                 RandomForest,
+                 PerformanceMeasures)
+
+  set.seed(1)
+  w5 <- ChangeWorkflow(w4, process = OneHundredBackground, 
+                           model = LogisticRegression, 
+                           output = SameTimePlaceMap)
+  expect_true(all.equal(w1, w5))
+
+
+})

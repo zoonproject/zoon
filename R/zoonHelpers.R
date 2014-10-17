@@ -383,6 +383,7 @@ ErrorAndSave <- function(cond, mod = 1, e){
   if(mod > 4){
     w$model.output <- e$model.output
   }
+  class(w) <- 'zoonWorkflow'
 
   # Select the module type using numeric mod argument
   module <- c('occurrence', 'covariate', 'process', 'model', 'output')[mod]

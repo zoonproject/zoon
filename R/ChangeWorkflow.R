@@ -69,12 +69,12 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
 
 
   # Give new arg names to *Sub objects so we can continue with RerunWorkflow source code.
-  occSub <- oldCallArgs['occurrence']
-  covSub <- oldCallArgs['covariate']
-  proSub <- oldCallArgs['process']
-  modSub <- oldCallArgs['model']
-  outSub <- oldCallArgs['output']
-  forceReproducible <- as.logical(callArgs['forceReproducible'])
+  occSub <- oldCallArgs[['occurrence']]
+  covSub <- oldCallArgs[['covariate']]
+  proSub <- oldCallArgs[['process']]
+  modSub <- oldCallArgs[['model']]
+  outSub <- oldCallArgs[['output']]
+  forceReproducible <- as.logical(oldCallArgs[['forceReproducible']])
 
   #####
   # From here is the same as RerunWorkflow.
@@ -104,13 +104,13 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
   # Get the modules (functions) from github. 
   # Save name of functions as well as load functions into global namespace.
   # Will probably want to make this so it checks namespace first.
-  occurrenceName <- GetModules(occurrence.module, forceReproducible) 
-  covariateName <- GetModules(covariate.module, forceReproducible) 
-  processName <- GetModules(process.module, forceReproducible) 
+  occurrenceName <- LapplyGetModule(occurrence.module, forceReproducible) 
+  covariateName <- LapplyGetModule(covariate.module, forceReproducible) 
+  processName <- LapplyGetModule(process.module, forceReproducible) 
   # Check for val type lon lat covs
-  modelName <- GetModules(model.module, forceReproducible) 
+  modelName <- LapplyGetModule(model.module, forceReproducible) 
   # Test for predict method
-  outputName <- GetModules(output.module, forceReproducible) 
+  outputName <- LapplyGetModule(output.module, forceReproducible) 
   
   
   

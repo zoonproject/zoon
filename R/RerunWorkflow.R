@@ -79,13 +79,15 @@ RerunWorkflow <- function(workflow, from = NULL) {
   # Get the modules (functions) from github. 
   # Save name of functions as well as load functions into global namespace.
   # Will probably want to make this so it checks namespace first.
-  occurrenceName <- GetModules(occurrence.module, forceReproducible) 
-  covariateName <- GetModules(covariate.module, forceReproducible) 
-  processName <- GetModules(process.module, forceReproducible) 
+  occurrenceName <- LapplyGetModule(occurrence.module, forceReproducible) 
+  covariateName <- LapplyGetModule(covariate.module, forceReproducible) 
+  processName <- LapplyGetModule(process.module, forceReproducible) 
   # Check for val type lon lat covs
-  modelName <- GetModules(model.module, forceReproducible) 
+  modelName <- LapplyGetModule(model.module, forceReproducible) 
   # Test for predict method
-  outputName <- GetModules(output.module, forceReproducible) 
+  outputName <- LapplyGetModule(output.module, forceReproducible) 
+  
+  
   
   
   # Different to workflow(), We have an if statement before each module is run
@@ -198,7 +200,7 @@ RerunWorkflow <- function(workflow, from = NULL) {
               process.output = process.output,
               model.output = model.output,
               report = output.output,
-              call = call)
+              call = workflow$call)
 
   class(output) <- 'zoonWorkflow'
   
