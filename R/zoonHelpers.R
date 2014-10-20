@@ -415,3 +415,61 @@ PasteAndDep <- function(x){
 
 
 
+
+#'Turns named arguments into list ready to be used by workflow()		
+#'
+#'This used to be an exported function and the main way to give arguments to options.
+#'  Now it is purely internal and makes ChangeWorkflow easier.
+#'
+#'@param module The module name.
+#'@param ... Any other parameters or options needed by that  module.		
+#'           All extra options must be named i.e. ModuleOptions('Name', x=1)		
+#'           Not ModuleOptions('Name', 1).		
+#'		
+#'		
+#'@return A list with all module options and the module name/URL in.		
+#'@name ModuleOptions		
+
+		
+ModuleOptions <- function(module, ...){		
+  assert_that(is.string(module))		
+  options <- list(module=module, ...)		
+  if ('' %in% names(options)){		
+    stop(paste0('Unnamed options in module ', module, 		
+                ': All options must be named'))		
+  }		
+  options <- vector("list", 2)		
+  names(options) <- c('module', 'paras')		
+  options$module <- module		
+  options$paras <- list(...)		
+  		
+  return(options)		
+}		
+
+
+#' Split a string into a module and it's arguments
+#'
+#' A function that takes a string (from workflow$call) and splits it into a
+#'   module name and it's arguments.
+#'
+#'@param string A string of the form "moduleName" or 
+#'  "moduleName(parameter = 2, parameter2 = 3)"
+#'
+#'@name SplitArgs
+
+SplitArgs <- function(string){
+  module <- gsub('(^)(.*)(\\(.*$)', '\\2', string)
+  if(grepl('\\(', string)){
+    args <- gsub('(^.*\\()(.*)(\\)$)', '\\2', string)
+  } else {
+    args <- ''
+  }
+  sepArgs <- (strsplit(args, ','))[[1]]
+  arguments <- unlist(lapply(strsplit(sepArgs, '='), 
+    function(x) gsub(' ', '', x[2])))
+  names(arguments) <- unlist(lapply(strsplit(sepArgs, '='), 
+    function(x) gsub(' ', '', x[1])))
+
+}
+
+
