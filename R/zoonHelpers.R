@@ -469,7 +469,7 @@ SplitArgs <- function(string){
     function(x) gsub(' ', '', x[2])))
   names(arguments) <- unlist(lapply(strsplit(sepArgs, '='), 
     function(x) gsub(' ', '', x[1])))
-
+  return(list(func = module, paras = arguments))
 }
 
 
