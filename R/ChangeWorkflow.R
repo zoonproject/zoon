@@ -41,23 +41,23 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
 
   # Replace any arguments that have been specified.
   if(!is.null(occSub)){
-    oldCallArgs$occurrence <- occSub
+    oldCallArgs[['occurrence']] <- as.character(occSub)
   }
 
   if(!is.null(covSub)){
-    oldCallArgs$covariate <- covSub
+    oldCallArgs[['covariate']] <- as.character(covSub)
   }
 
   if(!is.null(proSub)){
-    oldCallArgs$process <- proSub
+    oldCallArgs[['process']] <- as.character(proSub)
   }
 
   if(!is.null(modSub)){
-    oldCallArgs$model <- modSub
+    oldCallArgs[['model']] <- as.character(modSub)
   }
 
   if(!is.null(outSub)){
-    oldCallArgs$output <- outSub
+    oldCallArgs[['output']] <- as.character(outSub)
   }
 
   if(!is.null(forceReproducible)){
@@ -69,11 +69,11 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
 
 
   # Give new arg names to *Sub objects so we can continue with RerunWorkflow source code.
-  occSub <- oldCallArgs[['occurrence']]
-  covSub <- oldCallArgs[['covariate']]
-  proSub <- oldCallArgs[['process']]
-  modSub <- oldCallArgs[['model']]
-  outSub <- oldCallArgs[['output']]
+  occNew <- oldCallArgs[['occurrence']]
+  covNew <- oldCallArgs[['covariate']]
+  proNew <- oldCallArgs[['process']]
+  modNew <- oldCallArgs[['model']]
+  outNew <- oldCallArgs[['output']]
   forceReproducible <- as.logical(oldCallArgs[['forceReproducible']])
 
   #####
@@ -83,11 +83,11 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
   e <- environment() 
 
   # Check all modules are of same list structure
-  occurrence.module <- CheckModList(occSub)
-  covariate.module <- CheckModList(covSub)
-  process.module <- CheckModList(proSub)
-  model.module <- CheckModList(modSub)
-  output.module <- CheckModList(outSub)
+  occurrence.module <- CheckModList(occNew)
+  covariate.module <- CheckModList(covNew)
+  process.module <- CheckModList(proNew)
+  model.module <- CheckModList(modNew)
+  output.module <- CheckModList(outNew)
   
   # Only one of occurrence, covariate, process and model can be a list of 
   #   multiple modules.
@@ -217,7 +217,7 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
     output.output <- workflow$output.output
   }
 
-  call <- SortArgs(occSub, covSub, proSub, modSub, outSub, forceReproducible)
+  call <- SortArgs(occNew, covNew, proNew, modNew, outNew, forceReproducible)
 
   # Collate output
   output <- list(occurrence.output = occurrence.output,
