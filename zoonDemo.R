@@ -5,52 +5,20 @@
 
 library(zoon)
 
-work1 <- workflow(occurMod = 'UKAnophelesPlumbeus',
-                  covarMod = 'UKBioclim',
-                  procMod  = 'OneHundredBackground',
-                  modelMod = 'LogisticRegression',
-                  outMod   = 'PrintMap')
-
-str(work1, 1)
+work1 <- workflow(occurrence = UKAnophelesPlumbeus,
+                  covariate  = UKBioclim,
+                  process    = OneHundredBackground,
+                  model      = LogisticRegression,
+                  output     = PrintMap)
 
 
-
-set.seed(1)
-
-work1 <- workflow(occurMod =  ModuleOptions('LocalOccurrenceData', filename="~/Desktop/ZOON/longipalpis_test.csv",
-                    occurrenceType = 'presence'),
-                  covarMod = ModuleOptions('Bioclim', extent=c(-130,10,10,60)),
-                  procMod  = Chain('~/Dropbox/zoon/scripts/DropEmptyColumns.R','OneHundredBackground'),
-                  modelMod = 'LogisticRegression',
-                  outMod   = 'PrintMap')
-
-
-set.seed(1)
-
-work2 <- workflow(occurMod =  ModuleOptions('LocalOccurrenceData', filename="~/Desktop/ZOON/longipalpis_test.csv",
-                    occurrenceType = 'presence'),
-                  covarMod = ModuleOptions('Bioclim', extent=c(-130,10,10,60)),
-                  procMod  = 'OneHundredBackground',
-                  modelMod = 'LogisticRegression',
-                  outMod   = 'PrintMap')
-
-
-work2 <- workflow(occurMod =  ModuleOptions('LocalOccurrenceData', filename="~/Desktop/ZOON/longipalpis_test.csv",
-                    occurrenceType = 'presence'),
-                  covarMod = ModuleOptions('Bioclim', extent=c(-130,10,10,60)),
-                  procMod  = 'OneHundredBackground',
-                  modelMod = ModuleOptions('BiomodModel', modelType='GLM'),
-                  outMod   = 'PrintMap')
-
-
-identical(work1$process.output, work2$process.output)
 
 
 # Help
 
 GetModuleList()
 
-ModuleHelp('UKBioclim')
+ModuleHelp(UKBioclim)
 
 
 
@@ -69,18 +37,18 @@ ModuleHelp('UKBioclim')
 
 # Modules with arguments
 
-ModuleHelp('SpOcc')
+ModuleHelp(SpOcc)
 
 ?ModuleOptions
 
 
 
-work2 <- workflow(occurMod = ModuleOptions('SpOcc', species = 'Loxia scotica', 
-                                           extent=c(-10, 10, 45, 65)),
-                  covarMod = 'UKBioclim',
-                  procMod  = 'OneHundredBackground',
-                  modelMod = 'LogisticRegression',
-                  outMod   = 'PrintMap')
+work2 <- workflow(occurrence = SpOcc(species = 'Loxia scotica', 
+                                 extent=c(-10, 10, 45, 65)),
+                  covariate  = UKBioclim,
+                  process    = OneHundredBackground,
+                  model      = LogisticRegression,
+                  output     = PrintMap)
 
 
 
@@ -99,14 +67,14 @@ work2 <- workflow(occurMod = ModuleOptions('SpOcc', species = 'Loxia scotica',
 # Do you want 1 analysis?
 
 ?Chain
-work3 <- workflow(occurMod = Chain(ModuleOptions('SpOcc', species = 'Eresus kollari', 
-                                     extent=c(-10, 10, 45, 65)),
-                                   ModuleOptions('SpOcc', species = 'Eresus sandaliatus', 
+work3 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari', 
+                                       extent=c(-10, 10, 45, 65)),
+                                   SpOcc(species = 'Eresus sandaliatus', 
                                       extent=c(-10, 10, 45, 65))),
-                  covarMod = 'UKBioclim',
-                  procMod  = 'OneHundredBackground',
-                  modelMod = 'LogisticRegression',
-                  outMod   = 'PrintMap')
+                  covariate  = UKBioclim,
+                  process    = OneHundredBackground,
+                  model      = LogisticRegression,
+                  output     = PrintMap)
 
 
 
@@ -115,19 +83,19 @@ work3 <- workflow(occurMod = Chain(ModuleOptions('SpOcc', species = 'Eresus koll
 
 
 
-work4 <- workflow(occurMod = list(ModuleOptions('SpOcc', species = 'Eresus kollari', 
-                                     extent=c(-10, 10, 45, 65)),
-                                   ModuleOptions('SpOcc', species = 'Eresus sandaliatus', 
+work4 <- workflow(occurrence = list(SpOcc(species = 'Eresus kollari', 
+                                      extent=c(-10, 10, 45, 65)),
+                                   SpOcc(species = 'Eresus sandaliatus', 
                                       extent=c(-10, 10, 45, 65))),
-                  covarMod = 'UKBioclim',
-                  procMod  = 'OneHundredBackground',
-                  modelMod = 'LogisticRegression',
-                  outMod   = 'SameTimePlaceMap')
+                  covariate  = UKBioclim,
+                  process    = OneHundredBackground,
+                  model      = LogisticRegression,
+                  output     = SameTimePlaceMap)
 
-# This should be in a module, but isn't.
+# This should be in a module, but isnt.
 par(mfrow=c(1,2))
-plot(work4$output.output[[1]], main='Eresus kollari')
-plot(work4$output.output[[2]], main='Eresus sandaliatus')
+plot(work4$report[[1]], main = 'Eresus kollari')
+plot(work4$report[[2]], main = 'Eresus sandaliatus')
 
 
 
@@ -140,14 +108,14 @@ plot(work4$output.output[[2]], main='Eresus sandaliatus')
 
 # Crossvalidation
 
-ModuleHelp('BackgroundAndCrossvalid')
-work5 <- workflow(occurMod = 'UKAnophelesPlumbeus',
-                  covarMod = 'UKBioclim',
-                  procMod  = 'BackgroundAndCrossvalid',
-                  modelMod = 'LogisticRegression',
-                  outMod   = 'PerformanceMeasures')
+ModuleHelp(BackgroundAndCrossvalid)
+work5 <- workflow(occurrence = UKAnophelesPlumbeus,
+                  covariate  = UKBioclim,
+                  process    = BackgroundAndCrossvalid,
+                  model      = LogisticRegression,
+                  output     = PerformanceMeasures)
 
-work5$output.output
+work5$report
 
 
 
@@ -166,30 +134,30 @@ work5$output.output
 
 #       Model modules can be in a list, not in a chain
 
-work6 <- workflow(occurMod = Chain(ModuleOptions('SpOcc', species = 'Eresus kollari', 
-                                     extent=c(-10, 10, 45, 65)),
-                                   ModuleOptions('SpOcc', species = 'Eresus sandaliatus', 
-                                      extent=c(-10, 10, 45, 65))),
+work6 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari', 
+                                       extent=c(-10, 10, 45, 65)),
+                                     SpOcc(species = 'Eresus sandaliatus', 
+                                       extent=c(-10, 10, 45, 65))),
  
-                  covarMod = 'UKBioclim',
+                  covariate = UKBioclim,
 
-                  procMod  = ModuleOptions('BackgroundAndCrossvalid', k=2),
+                  process  = BackgroundAndCrossvalid(k=2),
 
-                  modelMod = list('LogisticRegression', 'RandomForest'),
+                  model = list(LogisticRegression, RandomForest),
 
-                  outMod   = Chain('SameTimePlaceMap', 'PerformanceMeasures')
-                  )
+                  output   = Chain(SameTimePlaceMap, PerformanceMeasures)
+         )
 
 str(work6, 1)
 
 
 par(mfrow=c(1,2))
-plot(work6$output.output[[1]][[1]], 
+plot(work6$report[[1]][[1]], 
   main=paste('Logistic Regression: AUC = ', 
-             round(work6$output.output[[1]][[2]]$auc, 2)))
-plot(work6$output.output[[2]][[1]],
+             round(work6$report[[1]][[2]]$auc, 2)))
+plot(work6$report[[2]][[1]],
   main=paste('Random forest: AUC = ', 
-             round(work6$output.output[[2]][[2]]$auc, 2)))
+             round(work6$report[[2]][[2]]$auc, 2)))
 
 
 
@@ -227,22 +195,23 @@ NewModule <- function(df){
          family = binomial)
 
 # Output a model object. The object class must have a predict method available.
-# If it doesn't, define one here (see BiomodModel at link below for example)
+# If it doesnt, define one here (see BiomodModel at link below for example)
 # https://github.com/zoonproject/modules/blob/master/R/BiomodModel.R
   return (m)
 }
 
 
 
-BuildModule(NewModule, type = "Model", dir = "C:\\Users\\Tim\\Documents\\zoonworkshop",
+BuildModule(NewModule, type = "Model", dir = ".",
             description = "My cool new module")
 
-
-work1 <- workflow(occurMod = "UKAnophelesPlumbeus",
-                  covarMod = 'UKBioclim',
-                  procMod  = 'OneHundredBackground',
-                  modelMod = 'C:\\Users\\Tim\\Documents\\zoonworkshop\\NewModule.R',
-                  outMod   = 'PrintMap')
+rm(NewModule)
+LoadModule('NewModule.R')
+work1 <- workflow(occurrence = UKAnophelesPlumbeus,
+                  covariate = UKBioclim,
+                  process  = OneHundredBackground,
+                  model = NewModule,
+                  output   = PrintMap)
 
 
 
@@ -252,20 +221,20 @@ work1 <- workflow(occurMod = "UKAnophelesPlumbeus",
 # What follows is a simple example of each module type.
 # If you wish to build a module you can use these as an outline
 # The names and structure of input arguments are important
-# And must match these, even if some arguments aren't used
+# And must match these, even if some arguments arent used
 # Class, strucuter and column names of return value is also constrained.
 
 # Structure of an occurrence module
 
 # Input can be anything
-SpOcc <- function(species, extent, databases = 'gbif'){
+SpOcc <- function(species, extent, databases = gbif){
 
   zoon:::GetPackage(spocc)
 
   raw <- occ2df(occ(query = species, geometry = extent, from = databases, limit=10e5))
-  occurrence <- raw[,c('longitude', 'latitude')]
+  occurrence <- raw[,c(longitude, latitude)]
   occurrence$value <- 1
-  occurrence$type <- 'presence'
+  occurrence$type <- presence
   occurrence$fold <- 1
 
   # Must return a dataframe with columns longitude, latitude, value, type and fold
@@ -277,14 +246,14 @@ SpOcc <- function(species, extent, databases = 'gbif'){
 }
 
 # Then run BuildModule to create the module file properly.
-BuildModule(SpOcc, type = "Occurrence", dir = "C:\\Users\\Tim\\Documents\\zoonworkshop",
+BuildModule(SpOcc, type = "Occurrence", dir = ".",
             # Be a good citizen! Describe your module well including parameters
             # These are autobuilt into documentation. 
             # Note: required arguments such as df in the model module above should not be documented.
             description = "My cool new module species occurrence module",
-            paras = list(species = 'The species name',
-                          extent = 'latitudinal, longitudinal extent as numeric vector',
-                          databases = 'Character vector of databases to use from gbif, inat, ebird. Defaults to just gbif.'))
+            paras = list(species = The species name,
+                          extent = latitudinal, longitudinal extent as numeric vector,
+                          databases = Character vector of databases to use from gbif, inat, ebird. Defaults to just gbif.))
 
 
 
