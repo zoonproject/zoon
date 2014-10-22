@@ -67,6 +67,7 @@ work2 <- workflow(occurrence = SpOcc(species = 'Loxia scotica',
 # Do you want 1 analysis?
 
 ?Chain
+
 work3 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari', 
                                        extent=c(-10, 10, 45, 65)),
                                    SpOcc(species = 'Eresus sandaliatus', 
@@ -135,9 +136,9 @@ work5$report
 #       Model modules can be in a list, not in a chain
 
 work6 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari', 
-                                       extent=c(-10, 10, 45, 65)),
+                                       extent = c(-10, 10, 45, 65)),
                                      SpOcc(species = 'Eresus sandaliatus', 
-                                       extent=c(-10, 10, 45, 65))),
+                                       extent = c(-10, 10, 45, 65))),
  
                   covariate = UKBioclim,
 
