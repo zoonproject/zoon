@@ -54,6 +54,10 @@ test_that('GetModule works', {
       return(UKAirRas)
     }
 
+  # Have to do some weird messing here because tests are run in a special
+  #   environment but GetModule looks in global and things.
+  assign('NamespaceModule', NamespaceModule, env = .GlobalEnv)
+
 
   TestModuleName <- function(){
     GetModule('NoProcess', FALSE)
@@ -63,7 +67,10 @@ test_that('GetModule works', {
 
   expect_error(GetModule('xxx', FALSE))
   expect_that(GetModule('NoProcess', FALSE), equals('NoProcess'))
+  expect_equal(GetModule('NamespaceModule', FALSE), 'NamespaceModule')
 
+  eval(GetModule('NamespaceModule', FALSE), env = .GlobalEnv)
+  expect_true(exists('NamespaceModule', env = .GlobalEnv))
   
 })
 
@@ -101,8 +108,84 @@ test_that('LoadModule works', {
 })
 
 
-test_that('SplitCall works correctly', {
+test_that('LapplyGetModule works correctly', {
 
+  a <- list(module = 'UKAir', paras = list())
+  b <- list(module = 'UKAir', paras = list())
+
+  c <- LapplyGetModule(list(a,b), forceReproducible=FALSE)
+
+  cexpect <- list(list(module = 'UKAir', paras = list(), func = 'UKAir'), 
+               list(module = 'UKAir', paras = list(), func = 'UKAir'))
+
+  expect_equal(c, cexpect)
+
+  d <- list(module = 'UKAir', paras = list(a = 2, b = 'a'))
+
+  e <- LapplyGetModule(list(a,d), forceReproducible=FALSE)
+
+  eexpect <- list(list(module = 'UKAir', paras = list(), func = 'UKAir'), 
+               list(module = 'UKAir', paras = list(a = 2, b = 'a'), func = 'UKAir'))
+
+  expect_equal(e, eexpect)
+
+  expect_true(exists('UKAir'))
 })
 
+test_that('RunModels function works correctly', {
+
+  GetModule('LogisticRegression', forceReproducible = FALSE)
+  e <- environment()
+
+  # Test data with training and external validation data
+  
+  df <- data.frame(value = rep(c(0,1), 10),
+                   type = rep(c('absence', 'presence'), 10), 
+                   lon = 1:20, lat = 1:20,
+                   fold = rep(c(1,0), each = 10),
+                   cov1 = 1:20)
+
+
+  x <- RunModels(df, 'LogisticRegression', list(), e)
+
+  expect_equal(class(x$data), 'data.frame')
+  expect_equal(class(x$model), c('glm', 'lm'))
+  expect_true('predictions' %in% names(x$data))
+  # As no crossvalidation, training data should not have predictions
+  expect_true(all(is.na(x$data[x$data['fold'] == 1,'predictions'])))
+
+  # The final model should be trained on all data.
+  expect_true(length(x$model$y) == 20)
+
+
+
+
+  # Test data with crossvalidation data
+  
+  df2 <- data.frame(value = rep(c(0,1), 10),
+                   type = rep(c('absence', 'presence'), 10), 
+                   lon = 1:20, lat = 1:20,
+                   fold = rep(c(1,2), each = 10),
+                   cov1 = c(1:10, 1:10))
+
+
+  x2 <- RunModels(df2, 'LogisticRegression', list(), e)
+
+  expect_equal(class(x2$data), 'data.frame')
+  expect_equal(class(x2$model), c('glm', 'lm'))
+  expect_true('predictions' %in% names(x$data))
+
+  # As crossvalidation, all data should have predictions
+  expect_true(all(!is.na(x2$data[,'predictions'])))
+
+  # The final model should be trained on all data.
+  expect_true(length(x2$model$y) == 20)
+
+  # Because cov1 is artificially replicated, predictions should be equal
+  expect_true(all.equal(x2$data[1:10,'predictions'], 
+                        x2$data[11:20,'predictions']))
+
+
+
+})
 
