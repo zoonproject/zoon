@@ -154,8 +154,8 @@ test_that('RunModels function works correctly', {
   # As no crossvalidation, training data should not have predictions
   expect_true(all(is.na(x$data[x$data['fold'] == 1,'predictions'])))
 
-  # The final model should be trained on all data.
-  expect_true(length(x$model$y) == 20)
+  # The final model should be trained on non external validation data.
+  expect_true(length(x$model$y) == 10)
 
 
 
@@ -173,7 +173,7 @@ test_that('RunModels function works correctly', {
 
   expect_equal(class(x2$data), 'data.frame')
   expect_equal(class(x2$model), c('glm', 'lm'))
-  expect_true('predictions' %in% names(x$data))
+  expect_true('predictions' %in% names(x2$data))
 
   # As crossvalidation, all data should have predictions
   expect_true(all(!is.na(x2$data[,'predictions'])))
@@ -186,6 +186,171 @@ test_that('RunModels function works correctly', {
                         x2$data[11:20,'predictions']))
 
 
+  # Mix of external and cross validation
+  df3 <- data.frame(value = rep(c(0,1), 10),
+                   type = rep(c('absence', 'presence'), 10), 
+                   lon = 1:20, lat = 1:20,
+                   fold = c(rep(c(1,2), each = 5), rep(0,10)),
+                   cov1 = c(1:10, 1:10))
+
+
+  x3 <- RunModels(df3, 'LogisticRegression', list(), e)
+
+  expect_equal(class(x3$data), 'data.frame')
+  expect_equal(class(x3$model), c('glm', 'lm'))
+  expect_true('predictions' %in% names(x3$data))
+
+  # All data should have predictions, cross validated data from CV and
+  #   and external validation from full model
+  expect_true(all(!is.na(x3$data[,'predictions'])))
+
+  # The final model should be trained on half data.
+  expect_true(length(x3$model$y) == 10)
+
 
 })
+
+test_that('SplitArgs works', {
+#' A function that takes a string (from workflow$call) and splits it into a
+#'   module name and it's arguments.
+#'
+#'@param string A string of the form "moduleName" or 
+#'  "moduleName(parameter = 2, parameter2 = 3)"
+
+  a <- SplitArgs("moduleName(parameter = 2, parameter2 = 3)")
+  b <- SplitArgs("moduleName")
+
+  # Interesting to note that SplitArgs doesn't deal with numerics at all. 
+  #   Probably needs looking into.
+  expect_equal(a, list(module = 'moduleName', paras = list(parameter = '2', parameter2 = '3')))
+  expect_equal(b, list(module = 'moduleName', paras = list()))
+})
+
+
+
+test_that('FormatModuleList works', {
+  
+  a <- FormatModuleList(substitute(module1))
+  b <- FormatModuleList(substitute(module1(k=2)))
+  c <- FormatModuleList(substitute(module1(k=2, l='awd')))
+  
+  expect_true(all.equal(names(a), c('module', 'paras')))
+  expect_true(all.equal(names(b), c('module', 'paras')))
+  expect_true(all.equal(names(c), c('module', 'paras')))
+
+  expect_true(class(a$paras) == 'list')
+  expect_true(class(b$paras) == 'list')
+  expect_true(class(c$paras) == 'list')
+
+  expect_equal(a$paras, list())
+  expect_equal(b$paras, list(k=2))
+  expect_equal(c$paras, list(k=2, l='awd'))
+})
+
+
+test_that('ExtractAndCombData works.', {
+  
+  x <- ExtractAndCombData(head(AplumbeusOcc), UKAirRas)
+  
+  expect_true(inherits(x, 'list'))
+  expect_true(all.equal(names(x), c('df', 'ras')))
+  expect_true(all.equal(dim(x$df), c(6,6)))
+
+  # Give an error if trying to use occurrence data outside raster extent
+  outOfExtentData <- head(AplumbeusOcc)
+  outOfExtentData$longitude <- -20
+
+  expect_error(ExtractAndCombData(outOfExtentData, UKAirRas))
+
+})
+
+
+test_that('SortArgs works.', {
+  x <- SortArgs(PasteAndDep(substitute(UKAnophelesPlumbeus)), 
+                PasteAndDep(substitute(UKAir)), 
+                PasteAndDep(substitute(OneHundredBackground)), 
+                PasteAndDep(substitute(LogisticRegression)),
+                PasteAndDep(substitute(SameTimePlaceMap)),
+                TRUE)
+
+  expect_equal(x,
+    "workflow(occurrence = UKAnophelesPlumbeus, covariate = UKAir, process = OneHundredBackground, model = LogisticRegression, output = SameTimePlaceMap, forceReproducible = TRUE)")
+
+  # Check the call is runeable
+  w <- eval(parse(text = x))
+  expect_true(inherits(w, 'zoonWorkflow'))
+  expect_false(any(sapply(w, is.null)))
+
+
+  # More complex syntax
+  y <- SortArgs(PasteAndDep(substitute(UKAnophelesPlumbeus)), 
+                PasteAndDep(substitute('UKAir')), 
+                PasteAndDep(substitute(BackgroundAndCrossvalid(k=2))), 
+                PasteAndDep(substitute(list(LogisticRegression, LogisticRegression))),
+                PasteAndDep(substitute(Chain(SameTimePlaceMap, SameTimePlaceMap))),
+                TRUE)
+
+  expect_true(length(y) == 1)
+  expect_true(inherits(y, 'character'))
+
+  # Check the call is runeable
+  w2 <- eval(parse(text = y))
+  expect_true(inherits(w2, 'zoonWorkflow'))
+  expect_false(any(sapply(w2, is.null)))
+
+})
+
+
+
+test_that('SplitCall works', {
+  # This function is only ever used on calls from a workflow object, so we can use
+  #   SortArgs to simulate the possible things we might get.
+
+
+  call1 <- SortArgs(PasteAndDep(substitute(UKAnophelesPlumbeus)), 
+                PasteAndDep(substitute(UKAir)), 
+                PasteAndDep(substitute(OneHundredBackground)), 
+                PasteAndDep(substitute(LogisticRegression)),
+                PasteAndDep(substitute(SameTimePlaceMap)),
+                TRUE)
+
+
+  split1 <- SplitCall(call1)
+
+  expect_true(inherits(split1, 'character'))
+  expect_equal(length(split1), 6)
+
+
+  # Test argument inputs, lists, chains and character inputs.
+  call2 <- SortArgs(PasteAndDep(substitute(UKAnophelesPlumbeus)), 
+                PasteAndDep(substitute('UKAir')), 
+                PasteAndDep(substitute(BackgroundAndCrossvalid(k=2))), 
+                PasteAndDep(substitute(list(LogisticRegression, LogisticRegression))),
+                PasteAndDep(substitute(Chain(SameTimePlaceMap, SameTimePlaceMap))),
+                TRUE)
+
+  split2 <- SplitCall(call2)
+
+  expect_true(inherits(split2, 'character'))
+  expect_equal(length(split2), 6)
+
+
+  
+  # Test List of arguments, list of characters
+  call3 <- SortArgs(PasteAndDep(substitute(UKAnophelesPlumbeus(k='awd', v = 2))), 
+                PasteAndDep(substitute(Chain('UKAir', 'UKAir'))), 
+                PasteAndDep(substitute(list(BackgroundAndCrossvalid(k=2), BackgroundAndCrossvalid(k=2,l=3)))), 
+                PasteAndDep(substitute(list(LogisticRegression, LogisticRegression))),
+                PasteAndDep(substitute(Chain(SameTimePlaceMap(l=2), SameTimePlaceMap(l=2,k=3,r='23')))),
+                TRUE)
+
+  split3 <- SplitCall(call3)
+
+  expect_true(inherits(split3, 'character'))
+  expect_equal(length(split3), 6)
+
+
+})
+
+
 

@@ -4,9 +4,9 @@ Zoon is a package for the reproducible and shareable analysis of species distrib
 
 
 An overview of the project can be found [here](http://www.2020science.net/research/species-distribution-modelling).
-I am writing a blog to keep collaborators up to date with progress. This can be found [here](http://zoonproject.wordpress.com)
+There is a blog to keep collaborators up to date with progress. This can be found [here](http://zoonproject.wordpress.com)
 
-Zoon is still being developed. Feel free to clone and use the code, open issues, let us know what you want etc. But don't expect much functionality from the package yet.
+Zoon is still being developed. Feel free to clone and use the code, open issues, let us know what you want etc. But don't expect much functionality from the package yet. If you would like to add functionality, please start writing modules!
 
 
 

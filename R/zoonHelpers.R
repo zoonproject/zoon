@@ -163,8 +163,8 @@ RunModels <- function(df, modelFunction, paras, workEnv){
     }
   }
   
-  # Run model on all data.
-  m <- do.call(modelFunction, c(df = list(df), paras), 
+  # Run model on all data except external validation data
+  m <- do.call(modelFunction, c(df = list(df[df$fold != 0, ]), paras), 
                envir = workEnv)
   
   # If external validation dataset exists, predict that;.
@@ -188,6 +188,9 @@ RunModels <- function(df, modelFunction, paras, workEnv){
 #'   Want any input to end up as 
 #'   list(module = moduleName, paras = list(paraName1 = para, paraName2 = 2)).
 #'   See tests/testthat/testZoon.R for list of potential input.
+#'@param x A 'call' or 'character' from substitute(occurrence) etc. So either
+#'    quoted which yields a character substitute('module1') or unquotes which
+#'    yields a call substitute(module1). 
 #'@name CheckModList
 
 # Check passing as quoted. e.g. occurrence = "ModuleName(k=2)"
@@ -273,10 +276,11 @@ SplitArgs <- function(string){
 #' Little helper to format module lists. Want to return a list
 #'   newList$module is the module name and newList$paras is a list
 #'   of the parameters given for the module.
+#'@param x An object of class 'name' or 'call' e.g. module1 or module1(k=2).
 #'@name FormatModuleList
 
 FormatModuleList <- function(x){
-  # Turn 'call' into list.
+  # Turn 'call' or 'name' into list.
   listx <- as.list(x)
 
   # Empty list to populate.
@@ -298,6 +302,11 @@ FormatModuleList <- function(x){
 #'@param ras Environmental raster layer, stack or brick.
 ExtractAndCombData <- function(occurrence, ras){
   
+  # Check that all points are within the raster
+  if(any(is.na(cellFromXY(ras, occurrence[,c('longitude', 'latitude')])))){
+    stop('Some occurrence points are outside the raster extent')
+  }
+
   # extract covariates from lat long values in df.
   occurrenceCovariates <- as.matrix(raster::extract(ras, occurrence[, c('longitude', 'latitude')]))
   names(occurrenceCovariates) <- names(ras)  
@@ -350,6 +359,7 @@ SortArgs <- function(occSub, covSub, proSub, modSub, outSub, forceReproducible){
 #'
 #' Helper to split a character string workflow call, as inherited from zoonWorkflow
 #'   into it's constituent arguments
+#'@param call A character string of a valid zoon workflow call.
 #'@name SplitCall
 
 SplitCall <- function(call){
@@ -442,39 +452,6 @@ ErrorAndSave <- function(cond, mod, e){
 PasteAndDep <- function(x){
   paste(deparse(x), collapse = ' ')
 }
-
-
-
-
-#'Turns named arguments into list ready to be used by workflow()		
-#'
-#'This used to be an exported function and the main way to give arguments to options.
-#'  Now it is purely internal and makes ChangeWorkflow easier.
-#'
-#'@param module The module name.
-#'@param ... Any other parameters or options needed by that  module.		
-#'           All extra options must be named i.e. ModuleOptions('Name', x=1)		
-#'           Not ModuleOptions('Name', 1).		
-#'		
-#'		
-#'@return A list with all module options and the module name/URL in.		
-#'@name ModuleOptions		
-
-		
-ModuleOptions <- function(module, ...){		
-  assert_that(is.string(module))		
-  options <- list(module=module, ...)		
-  if ('' %in% names(options)){		
-    stop(paste0('Unnamed options in module ', module, 		
-                ': All options must be named'))		
-  }		
-  options <- vector("list", 2)		
-  names(options) <- c('module', 'paras')		
-  options$module <- module		
-  options$paras <- list(...)		
-  		
-  return(options)		
-}		
 
 
 
