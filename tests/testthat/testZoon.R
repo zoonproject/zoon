@@ -349,8 +349,39 @@ test_that('SplitCall works', {
   expect_true(inherits(split3, 'character'))
   expect_equal(length(split3), 6)
 
-
 })
 
 
+test_that('ErrorAndSave works.', {
 
+  # As this throws errors it's quite hard to test.
+  #   To properly test that tmpZoonWorkflow is returned properly is a pain as well
+  #   Probably easier to test this thoroughly in test-wholeWorkflow by breaking workflows.
+
+  expect_error(ErrorAndSave('esv', 1, environment()), 'Stopping workflow due to error in')
+
+  expect_true(exists('tmpZoonWorkflow'))
+})
+
+
+test_that('PasteAndDep works', {
+  a <- PasteAndDep(substitute('mod'))
+	b <- PasteAndDep(substitute(mod(para='pm')))
+  c <- PasteAndDep(substitute(list('mod1', 'mod2')))
+  d <- PasteAndDep(substitute(list(mod1, 'mod2')))
+  e <- PasteAndDep(substitute(list(mod1, mod2)))
+	f <- PasteAndDep(substitute(list(mod1(para='pm'), 'mod2')))
+	g <- PasteAndDep(substitute(list(mod1(para='pm'), mod2(para='pm'))))
+  h <- PasteAndDep(substitute(list(mod1(para='pm', p2 = 2), mod2(para='pm'))))
+  i <- PasteAndDep(substitute(Chain(mod1(para='m', p2 = 2), mod2(para='pm'))))
+
+  expect_true(
+    all(sapply(list(a,b,c,d,e,f,g,h,i), function(x) inherits(x, 'character')))
+  )
+  
+  expect_true(
+    all(sapply(list(a,b,c,d,e,f,g,h,i), function(x) length(x) == 1))
+  )
+  
+
+})
