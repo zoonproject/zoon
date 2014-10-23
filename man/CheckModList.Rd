@@ -5,6 +5,11 @@
 \usage{
 CheckModList(x)
 }
+\arguments{
+\item{x}{A 'call' or 'character' from substitute(occurrence) etc. So either
+quoted which yields a character substitute('module1') or unquotes which
+yields a call substitute(module1).}
+}
 \description{
 Helper to sort module arguments into lists with common structure.
   Want any input to end up as

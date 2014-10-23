@@ -5,6 +5,9 @@
 \usage{
 FormatModuleList(x)
 }
+\arguments{
+\item{x}{An object of class 'name' or 'call' e.g. module1 or module1(k=2).}
+}
 \description{
 Little helper to format module lists. Want to return a list
   newList$module is the module name and newList$paras is a list

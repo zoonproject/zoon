@@ -5,6 +5,9 @@
 \usage{
 SplitCall(call)
 }
+\arguments{
+\item{call}{A character string of a valid zoon workflow call.}
+}
 \description{
 Helper to split a character string workflow call, as inherited from zoonWorkflow
   into it's constituent arguments
