@@ -37,7 +37,7 @@
 
 BuildModule <- function(object, type, dir='.', title = '',  description = '', author = '', email = '', paras=NULL){
   assert_that(is(object, 'function'))
-  assert_that(type %in% c('occurrence', 'covariate', 'process', 'model', 'diagnostic', 'output'))
+  assert_that(tolower(type) %in% c('occurrence', 'covariate', 'process', 'model', 'diagnostic', 'output'))
   is.writeable(dir)
 
   

@@ -1,0 +1,30 @@
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Module IO definitions for module developers}
+-->
+
+
+# Module IO definitions for module developers
+
+### Occurrence
+Out: df with longitude latitude value type fold
+
+### Covariate
+out: raster layer or raster stack
+
+### Process
+in: list(df with value, type, fold, lon, lat + covs, covar raster)
+out:  list(df with value, type, fold, lon, lat + covs, covar raster)
+
+
+### Model
+in: df (called df) from process
+out: model object (that has predict method)
+
+### Output
+in: ras, list from model.output. list$model (model object from above) and list$data is a dataframe with sames from process.output + predictions. 
+out: Anything
+
+
+
+

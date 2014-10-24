@@ -8,7 +8,7 @@ Function used in tryCatch calls in workflow.
   cond is the error messages passed by try catch.
   mod is the modules number (1:5) to give NULLS to the correct modules.}
 \usage{
-ErrorAndSave(cond, mod = 1, e)
+ErrorAndSave(cond, mod, e)
 }
 \arguments{
 \item{cond}{The error message that was caught in tryCatch.}

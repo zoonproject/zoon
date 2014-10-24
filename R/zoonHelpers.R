@@ -163,8 +163,8 @@ RunModels <- function(df, modelFunction, paras, workEnv){
     }
   }
   
-  # Run model on all data.
-  m <- do.call(modelFunction, c(df = list(df), paras), 
+  # Run model on all data except external validation data
+  m <- do.call(modelFunction, c(df = list(df[df$fold != 0, ]), paras), 
                envir = workEnv)
   
   # If external validation dataset exists, predict that;.
@@ -188,6 +188,9 @@ RunModels <- function(df, modelFunction, paras, workEnv){
 #'   Want any input to end up as 
 #'   list(module = moduleName, paras = list(paraName1 = para, paraName2 = 2)).
 #'   See tests/testthat/testZoon.R for list of potential input.
+#'@param x A 'call' or 'character' from substitute(occurrence) etc. So either
+#'    quoted which yields a character substitute('module1') or unquotes which
+#'    yields a call substitute(module1). 
 #'@name CheckModList
 
 # Check passing as quoted. e.g. occurrence = "ModuleName(k=2)"
@@ -198,7 +201,7 @@ CheckModList <- function(x){
   # Should accept occurrence = 'module1', but NOT 
   #   occurrence = 'module1(k=2)', or occurrence = 'list(mod1, mod1)'
   if (inherits(x, 'character')){
-    if (grepl('[!#$%&()*+,-/:;<=>?@[\ ]^_`| ~]', x)){
+    if (grepl('[!#$%&*+,-/:;<>?@[\ ]^_`| ]', x)){
       stop(paste('If specifying module arguments please use the form',
         'Module(para = 2), without quotes. No special characters should exist',
         'in module names.'))
@@ -225,17 +228,47 @@ CheckModList <- function(x){
     attr(ModuleList, 'chain') <- TRUE
   
   # If unquoted module w/ paras given: occurrence = Module1(k=2)
-  #   Or if quoted single module occurrence = 'Module1'
-  } else if (identical(class(x[[1]]), 'name') | inherits(x, 'character')){
+  } else if (identical(class(x[[1]]), 'name')){
     # Parameters
     paras <- as.list(x)
     paras[[1]] <- NULL
     ModuleList <- list(list(module = as.character(x[[1]]), paras = paras))
-  } else {
+  # Deal with all quoted forms
+  #   Can include 'module1', 'module(para = 2)', 'module(p = 2, q = 'wer')'
+  } else if(inherits(x, 'character')){
+    ModuleList <- list(SplitArgs(x))
+  }  else {
     stop(paste('Please check the format of argument', as.character(x)))
   } 
 
   return(ModuleList)
+}
+
+
+
+#' Split a string into a module and it's arguments
+#'
+#' A function that takes a string (from workflow$call) and splits it into a
+#'   module name and it's arguments.
+#'
+#'@param string A string of the form "moduleName" or 
+#'  "moduleName(parameter = 2, parameter2 = 3)"
+#'
+#'@name SplitArgs
+
+SplitArgs <- function(string){
+  module <- gsub('(^)(.*)(\\(.*$)', '\\2', string)
+  if(grepl('\\(', string)){
+    args <- gsub('(^.*\\()(.*)(\\)$)', '\\2', string)
+  } else {
+    args <- ''
+  }
+  sepArgs <- (strsplit(args, ','))[[1]]
+  arguments <- lapply(strsplit(sepArgs, '='), 
+    function(x) gsub(' ', '', x[2]))
+  names(arguments) <- unlist(lapply(strsplit(sepArgs, '='), 
+    function(x) gsub(' ', '', x[1])))
+  return(list(module = module, paras = arguments))
 }
 
 #'FormatModuleList
@@ -243,10 +276,11 @@ CheckModList <- function(x){
 #' Little helper to format module lists. Want to return a list
 #'   newList$module is the module name and newList$paras is a list
 #'   of the parameters given for the module.
+#'@param x An object of class 'name' or 'call' e.g. module1 or module1(k=2).
 #'@name FormatModuleList
 
 FormatModuleList <- function(x){
-  # Turn 'call' into list.
+  # Turn 'call' or 'name' into list.
   listx <- as.list(x)
 
   # Empty list to populate.
@@ -268,6 +302,11 @@ FormatModuleList <- function(x){
 #'@param ras Environmental raster layer, stack or brick.
 ExtractAndCombData <- function(occurrence, ras){
   
+  # Check that all points are within the raster
+  if(any(is.na(cellFromXY(ras, occurrence[,c('longitude', 'latitude')])))){
+    stop('Some occurrence points are outside the raster extent')
+  }
+
   # extract covariates from lat long values in df.
   occurrenceCovariates <- as.matrix(raster::extract(ras, occurrence[, c('longitude', 'latitude')]))
   names(occurrenceCovariates) <- names(ras)  
@@ -320,6 +359,7 @@ SortArgs <- function(occSub, covSub, proSub, modSub, outSub, forceReproducible){
 #'
 #' Helper to split a character string workflow call, as inherited from zoonWorkflow
 #'   into it's constituent arguments
+#'@param call A character string of a valid zoon workflow call.
 #'@name SplitCall
 
 SplitCall <- function(call){
@@ -357,7 +397,7 @@ SplitCall <- function(call){
 #'  4=model, 5=output.
 #'@name ErrorAndSave
 
-ErrorAndSave <- function(cond, mod = 1, e){
+ErrorAndSave <- function(cond, mod, e){
 
   # Create list to be populated
   #  Include the call from the workflow environment e
@@ -383,6 +423,7 @@ ErrorAndSave <- function(cond, mod = 1, e){
   if(mod > 4){
     w$model.output <- e$model.output
   }
+  class(w) <- 'zoonWorkflow'
 
   # Select the module type using numeric mod argument
   module <- c('occurrence', 'covariate', 'process', 'model', 'output')[mod]
