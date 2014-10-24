@@ -9,7 +9,7 @@ opts_chunk$set(out.extra='style="display:block; margin: auto"', fig.align="cente
 ## ----load----------------------------------------------------------------
 library(zoon)
 
-## ----basic---------------------------------------------------------------
+## ----basic, warning = FALSE----------------------------------------------
 work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                   covariate  = UKAir,
                   process    = OneHundredBackground,

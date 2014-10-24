@@ -20,3 +20,23 @@ LoadModule(PrintMap)
 oc <- UKAnophelesPlumbeus()
 cov <- UKAir()
 
+## ----extract-------------------------------------------------------------
+data <- zoon:::ExtractAndCombData(oc, cov)
+
+## ----procAndModel--------------------------------------------------------
+proc <- OneHundredBackground(data)
+
+mod <- LogisticRegression(proc$df)
+
+## ----output--------------------------------------------------------------
+model <- list(model = mod, df = proc$df)
+
+out <- PrintMap(model, cov)
+
+## ----cross validation----------------------------------------------------
+modCrossvalid <- zoon:::RunModels(proc$df, 'LogisticRegression', list(), environment())
+
+modelCrossvalid <- list(model = modCrossvalid$model, df = proc$df)
+
+out <- PrintMap(modelCrossvalid, cov)
+

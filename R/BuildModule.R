@@ -14,25 +14,13 @@
 #'@param paras A list of the form 
 #'  list(parameterName = 'Parameter description.',
 #'    anotherParameter = 'Another descriptions.')
+#'@param author String giving the author(s) name(s)
+#'@param email Stirng giving the correspondance address for the module.
 #'
 #'@return NULL. Outputs a file
 #'@name BuildModule
 #'
 #'@export
-#'@examples # Define some module function
-#' NewModule <- function(extent){ 
-#'   covs <- as.data.frame(df[, 5:ncol(df)])
-#'   names(covs) <- names(df)[5:ncol(df)]
-#'   m <- glm(df$value ~ .,
-#'         data = covs,
-#'         family = binomial)
-#'  
-#'   return (m)
-#' }
-#' 
-#' # Then build it into a module file.
-#' BuildModule(NewModule, type = 'process', dir='~/Desktop')
-#'
 #'
 
 BuildModule <- function(object, type, dir='.', title = '',  description = '', author = '', email = '', paras=NULL){

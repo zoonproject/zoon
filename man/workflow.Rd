@@ -16,6 +16,9 @@ workflow(occurrence, covariate, process, model, output,
 \item{model}{SDM model module to be used.}
 
 \item{output}{Output module to be used.}
+
+\item{forceReproducible}{Logical whether to force zoon to collect modules
+ from the online repo. This ensure the analysis is reproducible.}
 }
 \value{
 A list with the results of each module and a copy of the

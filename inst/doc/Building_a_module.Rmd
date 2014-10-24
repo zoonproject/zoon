@@ -18,10 +18,58 @@ output:
 
 # Building a module
 
+The process of making a module is essentially 
+1. Write an R function
+2. Run `BuildModule` with the function and metadata
 
+and optionally
+3. Upload to the zoon modules repository
+
+## An example
+
+Here is a simple function that will become our module. It is a model module that uses general additive models.
+
+```{r newMod, eval = FALSE}
+NewModule <- function(df){
+
+  zoon:::GetPackage("gam")
+  
+  covs <- as.data.frame(df[, 6:ncol(df)])
+  names(covs) <- names(df)[6:ncol(df)]
+  m <- gam::gam(formula = df$value ~ .,
+         data = covs,
+         family = binomial)
+
+}
+```
+We then run `BuildModule` adding fairly extensive meta data and directing BuildModule to save the file in the working directory '.'. As this module has no parameters other than `df` which is not user specified, set `paras` to list().
+
+```{r BuildMod, eval = FALSE}
+
+BuildModule(NewModule, type = 'model', dir = '.', title = 'GAM sdm model', 
+  description = 'This is my mega cool new model. It does GAMs using the gam package.',
+  paras = NULL, author = 'Z. Oon', email = 'zoon@zoon.com')
+
+```
+
+This is now a runeable module.
+
+```{r newmodworkflow, eval = FALSE}
+rm(NewModule)
+LoadModule('NewModule.R')
+work1 <- workflow(occurrence = UKAnophelesPlumbeus,
+                  covariate = UKAir,
+                  process  = OneHundredBackground,
+                  model = NewModule,
+                  output   = PrintMap)
+```
+
+Once we're happy with the module, we will hopefully upload it to the zoon repository.
 
 
 # Module IO definitions for module developers
+
+The input arguments and return values of modules are strict. However, any module type can have additional input arguments but these must be named. A lot of the data frames include '+ covariates'. This indicates that there the number of covariate columns is flexible.
 
 ### Occurrence
 Out: dataframe with column names: longitude, latitude, value, type, fold
@@ -30,7 +78,7 @@ Out: dataframe with column names: longitude, latitude, value, type, fold
 out: raster layer or raster stack
 
 ### Process
-in: list( df with values, type, fold, longitude, latitutde + covariates,  
+in: list( df with values, type, fold, longitude, latitude + covariates,  
           covariate rasterstack/layer
         )
 
@@ -40,7 +88,8 @@ out:  list(df with values, type, fold, longitude, latitude + covariates,
 
 ### Model
 in: dataframe from process
-out: model object (that has predict method)
+out: model object 
+(Object with a predict method. If not, please define a method within the module. See BiomodModel for an example.)
 
 ### Output
 in: list: list$model (model object from above) and list$data is a dataframe from process.output + predictions. Rasterlayer 

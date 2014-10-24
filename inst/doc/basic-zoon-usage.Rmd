@@ -54,7 +54,7 @@ Basic usage
 
 A basic worklow is run using the `workflow` function. We must chose a module for each type: occurrence, covariate, process, model and output.
 
-```{r basic}
+```{r basic, warning = FALSE}
 work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                   covariate  = UKAir,
                   process    = OneHundredBackground,

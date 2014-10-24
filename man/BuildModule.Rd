@@ -19,9 +19,13 @@ working directory.}
 
 \item{description}{A single string giving a full description of the model.}
 
+\item{author}{String giving the author(s) name(s)}
+
+\item{email}{Stirng giving the correspondance address for the module.}
+
 \item{paras}{A list of the form
- list(parameterName = 'Parameter description.',
-   anotherParameter = 'Another descriptions.')}
+list(parameterName = 'Parameter description.',
+  anotherParameter = 'Another descriptions.')}
 }
 \value{
 NULL. Outputs a file
@@ -30,20 +34,5 @@ NULL. Outputs a file
 Turn a function in the namespace into a module.
 Will later add functions to upload module to figshare etc.
 And add testing that the module name is unique.
-}
-\examples{
-# Define some module function
-NewModule <- function(extent){
-  covs <- as.data.frame(df[, 5:ncol(df)])
-  names(covs) <- names(df)[5:ncol(df)]
-  m <- glm(df$value ~ .,
-        data = covs,
-        family = binomial)
-
-  return (m)
-}
-
-# Then build it into a module file.
-BuildModule(NewModule, type = 'process', dir='~/Desktop')
 }
 

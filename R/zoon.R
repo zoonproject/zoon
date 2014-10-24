@@ -35,6 +35,8 @@ NULL
 #'@param process Process module to be used.
 #'@param model SDM model module to be used. 
 #'@param output Output module to be used.
+#'@param forceReproducible Logical whether to force zoon to collect modules 
+#'  from the online repo. This ensure the analysis is reproducible.
 #'
 #'@return A list with the results of each module and a copy of the
 #'  code used to execute the workflow (what's there now should be source-able
