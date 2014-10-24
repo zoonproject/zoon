@@ -1,3 +1,15 @@
+---
+title: "Interactive zoon usage (for devs)"
+author: "Tim Lucas"
+date: "`r Sys.Date()`"
+output: 
+  html_vignette:
+    theme: peaksea
+    highlight: zenburn
+  pdf_document:
+    theme: peaksea
+    highlight: zenburn
+---
 <!--
 %\VignetteEngine{knitr::knitr}
 %\VignetteIndexEntry{Interactive zoon usage (for devs)}
