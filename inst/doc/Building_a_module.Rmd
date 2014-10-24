@@ -1,0 +1,58 @@
+---
+title: "Building modules"
+author: "Tim Lucas"
+date: "`r Sys.Date()`"
+output: 
+  html_vignette:
+    theme: peaksea
+    highlight: zenburn
+  pdf_document:
+    theme: peaksea
+    highlight: zenburn
+---
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Building modules}
+-->
+
+
+# Building a module
+
+
+
+
+# Module IO definitions for module developers
+
+### Occurrence
+Out: dataframe with column names: longitude, latitude, value, type, fold
+
+### Covariate
+out: raster layer or raster stack
+
+### Process
+in: list( df with values, type, fold, longitude, latitutde + covariates,  
+          covariate rasterstack/layer
+        )
+
+out:  list(df with values, type, fold, longitude, latitude + covariates, 
+           covariate rasterstack/layer
+          )
+
+### Model
+in: dataframe from process
+out: model object (that has predict method)
+
+### Output
+in: list: list$model (model object from above) and list$data is a dataframe from process.output + predictions. Rasterlayer 
+out: Anything
+
+# Pictoral description of inputs and outputs
+![OccurrenceModule](occurrenceInOut.svg)
+![CovariateModule](covariateInOut.svg)
+![ProcessModule](processInOut.svg)
+![ModelModule](modelInOut.svg)
+![OuputModule](outputInOut.svg)
+
+
+
+
