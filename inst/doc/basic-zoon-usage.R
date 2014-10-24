@@ -2,11 +2,11 @@
 library(knitr)
 opts_chunk$set(out.extra='style="display:block; margin: auto"', fig.align="center")
 
-## ----methods-------------------------------------------------------------
-#library(devtools)
-#install_github('zoonproject/zoon')
-
-library(zoon)
+## ----methods, eval = FALSE-----------------------------------------------
+#  library(devtools)
+#  install_github('zoonproject/zoon')
+#  
+#  library(zoon)
 
 ## ----main analysis, eval=TRUE, cache=FALSE-------------------------------
 # run a workflow, using the logistic regression model

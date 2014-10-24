@@ -1,0 +1,43 @@
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Interactive zoon usage (for devs)}
+-->
+
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(out.extra='style="display:block; margin: auto"', fig.align="center")
+```
+
+```{r packages}
+library(dismo)
+library(zoon)
+```
+
+```{r noninteractive}
+w <- workflow(UKAnophelesPlumbeus, UKAir, OneHundredBackground, LogisticRegression, PrintMap)
+```
+
+```{r LoadModules}
+LoadModule(UKAnophelesPlumbeus)
+LoadModule(UKAir)
+LoadModule(OneHundredBackground)
+LoadModule(LogisticRegression)
+LoadModule(PrintMap)
+```
+
+```{r runDataMods}
+oc <- UKAnophelesPlumbeus()
+cov <- UKAir()
+```
+
+data <- zoon:::ExtractAndCombData(oc, cov)
+
+proc <- OneHundredBackground(data)
+
+mod <- LogisticRegression(proc$df)
+
+model <- list(model = mod, df = proc$df)
+
+out <- PrintMap(model, cov)
+
