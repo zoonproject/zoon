@@ -279,8 +279,3 @@ test_that('workflow with mix of syntax works.', {
 })
 
 
-test_that('workflow is saved on break.', {
-
-})
-
-

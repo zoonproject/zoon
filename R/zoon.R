@@ -147,13 +147,20 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   # Simply combine data into basic df shape
   # This shape is then input and output of all process modules.
   # Also makes it easy to implement a NULL process
-  if(length(covariateName) > 1){    
-    data <- lapply(covariate.output, 
-                   function(x) ExtractAndCombData(occurrence.output[[1]], x))
-  } else {
-    data <- lapply(occurrence.output, 
-                   function(x) ExtractAndCombData(x, covariate.output[[1]]))
-  }
+  tryCatch({
+    if(length(covariateName) > 1){    
+      data <- lapply(covariate.output, 
+                     function(x) ExtractAndCombData(occurrence.output[[1]], x))
+    } else {
+      data <- lapply(occurrence.output, 
+                     function(x) ExtractAndCombData(x, covariate.output[[1]]))
+    }
+  },  
+    error = function(cond){
+      ErrorAndSave(cond, 3, e)
+    }
+  )
+
 
 
   # Do process modules
