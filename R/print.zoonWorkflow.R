@@ -1,7 +1,12 @@
-# Methods
-
-#' @method print zoonWorkflow
-#' @export
+#' A function to print a zoonWorkflow object
+#' 
+#' The function returns a very simple output detailing the function call.
+#' 
+#'@param x object of class zoonWorkflow
+#'
+#'@name print.zoonWorkflow
+#'@method print zoonWorkflow
+#'@export
 
 print.zoonWorkflow <- function(x, ...){
   
