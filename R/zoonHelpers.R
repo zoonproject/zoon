@@ -303,8 +303,11 @@ FormatModuleList <- function(x){
 ExtractAndCombData <- function(occurrence, ras){
   
   # Check that all points are within the raster
-  if(any(is.na(cellFromXY(ras, occurrence[,c('longitude', 'latitude')])))){
-    stop('Some occurrence points are outside the raster extent')
+  bad.coords <- is.na(cellFromXY(ras,
+                                 occurrence[,c('longitude', 'latitude')]))
+  if(any(bad.coords)){
+    occurrence <- occurrence[!bad.coords, ]
+    warning ('Some occurrence points are outside the raster extent and have been removed before modelling')
   }
 
   # extract covariates from lat long values in df.
