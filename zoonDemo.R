@@ -1,6 +1,5 @@
 
 
-
 # Simplest example
 
 library(zoon)
@@ -41,9 +40,8 @@ ModuleHelp(SpOcc)
 
 
 
-
 work2 <- workflow(occurrence = SpOcc(species = 'Loxia scotica', 
-                                 extent=c(-10, 10, 45, 65)),
+                                     extent=c(-10, 45, 10, 65)),
                   covariate  = UKBioclim,
                   process    = OneHundredBackground,
                   model      = LogisticRegression,
@@ -68,9 +66,9 @@ work2 <- workflow(occurrence = SpOcc(species = 'Loxia scotica',
 ?Chain
 
 work3 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari', 
-                                       extent=c(-10, 10, 45, 65)),
-                                   SpOcc(species = 'Eresus sandaliatus', 
-                                      extent=c(-10, 10, 45, 65))),
+                                           extent=c(-10, 45, 10, 65)),
+                                     SpOcc(species = 'Eresus sandaliatus', 
+                                           extent=c(-10, 45, 10, 65))),
                   covariate  = UKBioclim,
                   process    = OneHundredBackground,
                   model      = LogisticRegression,
@@ -84,9 +82,9 @@ work3 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari',
 
 
 work4 <- workflow(occurrence = list(SpOcc(species = 'Eresus kollari', 
-                                      extent=c(-10, 10, 45, 65)),
-                                   SpOcc(species = 'Eresus sandaliatus', 
-                                      extent=c(-10, 10, 45, 65))),
+                                          extent=c(-10, 45, 10, 65)),
+                                    SpOcc(species = 'Eresus sandaliatus', 
+                                          extent=c(-10, 45, 10, 65))),
                   covariate  = UKBioclim,
                   process    = OneHundredBackground,
                   model      = LogisticRegression,
@@ -135,29 +133,29 @@ work5$report
 #       Model modules can be in a list, not in a chain
 
 work6 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari', 
-                                       extent = c(-10, 10, 45, 65)),
+                                           extent=c(-10, 45, 10, 65)),
                                      SpOcc(species = 'Eresus sandaliatus', 
-                                       extent = c(-10, 10, 45, 65))),
- 
+                                           extent=c(-10, 45, 10, 65))),
+                  
                   covariate = UKBioclim,
-
+                  
                   process  = BackgroundAndCrossvalid(k=2),
-
+                  
                   model = list(LogisticRegression, RandomForest),
-
+                  
                   output   = Chain(SameTimePlaceMap, PerformanceMeasures)
-         )
+)
 
 str(work6, 1)
 
 
 par(mfrow=c(1,2))
 plot(work6$report[[1]][[1]], 
-  main=paste('Logistic Regression: AUC = ', 
-             round(work6$report[[1]][[2]]$auc, 2)))
+     main=paste('Logistic Regression: AUC = ', 
+                round(work6$report[[1]][[2]]$auc, 2)))
 plot(work6$report[[2]][[1]],
-  main=paste('Random forest: AUC = ', 
-             round(work6$report[[2]][[2]]$auc, 2)))
+     main=paste('Random forest: AUC = ', 
+                round(work6$report[[2]][[2]]$auc, 2)))
 
 
 
@@ -185,18 +183,18 @@ plot(work6$report[[2]][[1]],
 # Input is a dataframe with columns value, type, fold, longitude, latitude then 6:ncol(df) covar columns
 # Can have other arguments
 NewModule <- function(df){
-
+  
   zoon:::GetPackage("gam")
   
   covs <- as.data.frame(df[, 6:ncol(df)])
   names(covs) <- names(df)[6:ncol(df)]
   m <- gam::gam(formula = df$value ~ .,
-         data = covs,
-         family = binomial)
-
-# Output a model object. The object class must have a predict method available.
-# If it doesnt, define one here (see BiomodModel at link below for example)
-# https://github.com/zoonproject/modules/blob/master/R/BiomodModel.R
+                data = covs,
+                family = binomial)
+  
+  # Output a model object. The object class must have a predict method available.
+  # If it doesnt, define one here (see BiomodModel at link below for example)
+  # https://github.com/zoonproject/modules/blob/master/R/BiomodModel.R
   return (m)
 }
 
@@ -228,15 +226,15 @@ work1 <- workflow(occurrence = UKAnophelesPlumbeus,
 
 # Input can be anything
 SpOcc <- function(species, extent, databases = gbif){
-
+  
   zoon:::GetPackage(spocc)
-
+  
   raw <- occ2df(occ(query = species, geometry = extent, from = databases, limit=10e5))
   occurrence <- raw[,c(longitude, latitude)]
   occurrence$value <- 1
   occurrence$type <- presence
   occurrence$fold <- 1
-
+  
   # Must return a dataframe with columns longitude, latitude, value, type and fold
   # Value can be 1/0 for presence absence or numbers for abundance etc.
   # type is mostly presence, presence/absence or abundance string. Not settled yet.
@@ -252,8 +250,8 @@ BuildModule(SpOcc, type = "Occurrence", dir = ".",
             # Note: required arguments such as df in the model module above should not be documented.
             description = "My cool new module species occurrence module",
             paras = list(species = The species name,
-                          extent = latitudinal, longitudinal extent as numeric vector,
-                          databases = Character vector of databases to use from gbif, inat, ebird. Defaults to just gbif.))
+                         extent = latitudinal, longitudinal extent as numeric vector,
+                         databases = Character vector of databases to use from gbif, inat, ebird. Defaults to just gbif.))
 
 
 
@@ -261,15 +259,15 @@ BuildModule(SpOcc, type = "Occurrence", dir = ".",
 
 # Any input
 LocalRaster <- function(filenames){
-
+  
   if(is.string(filenames)){
     raster <- raster(filenames)
   } else if(is.list(filenames)) {
     rasterList <- lapply(filenames, raster)
     raster <- stack(rasterList)
   }
-
-# Must return a raster object. Layer, stack or brick.
+  
+  # Must return a raster object. Layer, stack or brick.
   return(raster)
 }
 
@@ -284,10 +282,10 @@ LocalRaster <- function(filenames){
 
 NoProcess <- function (data) {
   
-
+  
   occurrence <- data$df
   ras <- data$ras
-
+  
   noccurrence <- nrow(occurrence)
   
   df <- occurrence
@@ -304,7 +302,5 @@ NoProcess <- function (data) {
 # I imagine this will change so it expects the occurrence data as well
 SameTimePlaceMap <- function (model, ras) {
   
-# Output can be anything. Go nuts.
-
-
-
+  # Output can be anything. Go nuts.
+  
