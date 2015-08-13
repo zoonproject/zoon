@@ -39,7 +39,6 @@ ModuleHelp(UKBioclim)
 
 ModuleHelp(SpOcc)
 
-?ModuleOptions
 
 
 
