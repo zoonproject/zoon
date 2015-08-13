@@ -55,7 +55,8 @@ test_that('Check basic quoted workflow.', {
 
 test_that('modules downloading data work', {
 
-  work2 <- workflow(occurrence = SpOcc(species = 'Anopheles plumbeus', extent = c(-20, 20, 45, 65)),
+  work2 <- workflow(occurrence = SpOcc(species = 'Anopheles plumbeus',
+                                       extent = c(-10, 45, 10, 65)),
                     covariate = UKAir,
                     process = OneHundredBackground,
                     model = RandomForest, 
@@ -83,7 +84,7 @@ test_that('Workflows with lists of modules work.', {
   # In fact I don't think the would pass cran.
   workOccurList <- workflow(occurrence = list(UKAnophelesPlumbeus, 
                         SpOcc(species = 'Anopheles plumbeus', 
-                          extent = c(-20, 20, 45, 65))),
+                          extent = c(-10, 45, 10, 65))),
                         covariate = UKAir,
                         process = OneHundredBackground,
                         model = LogisticRegression,
@@ -114,11 +115,11 @@ test_that('Workflows with lists of modules work.', {
                      model = LogisticRegression,
                      output = list(SameTimePlaceMap, SameTimePlaceMap))
 
-  expect_equivalent(sapply(workOccurList, length), c(2, 1, 2, 2, 2, 1))
-  expect_equivalent(sapply(workCovarList, length), c(1, 2, 2, 2, 2, 1))
-  expect_equivalent(sapply(workProcessList, length), c(1, 1, 2, 2, 2, 1))
-  expect_equivalent(sapply(workModelList, length), c(1, 1, 1, 2, 2, 1))
-  expect_equivalent(sapply(workOutputList, length), c(1, 1, 1, 1, 2, 1))
+  expect_equivalent(sapply(workOccurList, length), c(2, 1, 2, 2, 2, 1, 5))
+  expect_equivalent(sapply(workCovarList, length), c(1, 2, 2, 2, 2, 1, 5))
+  expect_equivalent(sapply(workProcessList, length), c(1, 1, 2, 2, 2, 1, 5))
+  expect_equivalent(sapply(workModelList, length), c(1, 1, 1, 2, 2, 1, 5))
+  expect_equivalent(sapply(workOutputList, length), c(1, 1, 1, 1, 2, 1, 5))
 
   occurClasses <- unlist(lapply(workOccurList, function(x) sapply(x, class)))
   covarClasses <- unlist(lapply(workCovarList, function(x) sapply(x, class)))
@@ -127,15 +128,20 @@ test_that('Workflows with lists of modules work.', {
   outputClasses <- unlist(lapply(workOutputList, function(x) sapply(x, class)))
 
   expect_equivalent(occurClasses, c('data.frame','data.frame','RasterLayer','list',
-    'list','list','list','RasterLayer','RasterLayer', 'character'))
+    'list','list','list','RasterLayer','RasterLayer', 'character',
+    'list','list','list','list','list'))
   expect_equivalent(covarClasses, c('data.frame','RasterLayer','RasterLayer','list',
-    'list','list','list','RasterLayer','RasterLayer', 'character'))
+    'list','list','list','RasterLayer','RasterLayer', 'character',
+    'list','list','list','list','list'))
   expect_equivalent(processClasses, c('data.frame','RasterLayer','list',
-    'list','list','list','RasterLayer','RasterLayer', 'character'))
+    'list','list','list','RasterLayer','RasterLayer', 'character',
+    'list','list','list','list','list'))
   expect_equivalent(modelClasses, c('data.frame','RasterLayer','list',
-    'list','list','RasterLayer','RasterLayer', 'character'))
+    'list','list','RasterLayer','RasterLayer', 'character',
+    'list','list','list','list','list'))
   expect_equivalent(outputClasses, c('data.frame','RasterLayer','list',
-    'list','RasterLayer','RasterLayer', 'character'))
+    'list','RasterLayer','RasterLayer', 'character',
+    'list','list','list','list','list'))
 
 })
 
