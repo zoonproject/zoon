@@ -37,6 +37,8 @@ install.packages('https://github.com/zoonproject/zoon/releases/download/0.3/zoon
 
 ### To install current development version
 
+If you're using Windows, you'll need to have [RTools](https://cran.r-project.org/bin/windows/Rtools/) installed first
+
 ```coffee
 install.packages("devtools")
 library("devtools")
