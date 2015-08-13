@@ -200,7 +200,8 @@ RerunWorkflow <- function(workflow, from = NULL) {
               process.output = process.output,
               model.output = model.output,
               report = output.output,
-              call = workflow$call)
+              call = workflow$call,
+              call.list = workflow$call.list)
 
   class(output) <- 'zoonWorkflow'
   

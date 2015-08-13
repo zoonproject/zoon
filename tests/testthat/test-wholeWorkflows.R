@@ -12,7 +12,7 @@ test_that('simple, package data workflow works.', {
   expect_true(exists('work1'))
   expect_equal(names(work1), 
     c('occurrence.output', 'covariate.output', 'process.output', 
-      'model.output', 'report', 'call'))
+      'model.output', 'report', 'call', 'call.list'))
   expect_equal(dim(work1$occurrence.output[[1]]), c(188,5))
   expect_is(work1$covariate.output[[1]], 'RasterLayer')
   expect_equal(dim(work1$covariate.output[[1]]), c(9,9,1))
@@ -37,7 +37,7 @@ test_that('Check basic quoted workflow.', {
   expect_true(exists('work1'))
   expect_equal(names(work1), 
     c('occurrence.output', 'covariate.output', 'process.output', 
-      'model.output', 'report', 'call'))
+      'model.output', 'report', 'call', 'call.list'))
   expect_equal(dim(work1$occurrence.output[[1]]), c(188,5))
   expect_is(work1$covariate.output[[1]], 'RasterLayer')
   expect_equal(dim(work1$covariate.output[[1]]), c(9,9,1))

@@ -2,17 +2,42 @@
 
 Zoön is a package for the reproducible and shareable analysis of species distribution models with a focus on the ability to compare between models and diagnostic output of models.
 
-
 An overview of the project can be found [here](http://www.2020science.net/research/species-distribution-modelling).
 There is a blog to keep collaborators up to date with progress. This can be found [here](http://zoonproject.wordpress.com)
 
 Zoön is still being developed. Feel free to clone and use the code, open issues, let us know what you want etc. But don't expect much functionality from the package yet. If you would like to add functionality, please start writing modules!
 
+### To install the stable(ish) version directly from R
+
+You'll need to be using R version 3.2.0 or higher.
+
+On Windows:
+
+```r
+# install the raster package first
+install.packages('raster')
+
+# install the Windows binary of the latest release
+install.packages('https://github.com/zoonproject/zoon/releases/download/0.3/zoon_0.3.zip',
+                repos = NULL, method = 'libcurl')
+```
+
+and on OSX or Linux:
+
+```r
+# install the raster package first
+install.packages('raster')
+
+# install the Windows binary of the latest release
+install.packages('https://github.com/zoonproject/zoon/releases/download/0.3/zoon_0.3.tar.gz',
+                repos = NULL, method = 'libcurl')
+```
 
 
 
+### To install current development version
 
-### To install current development version.
+If you're using Windows, you'll need to have [RTools](https://cran.r-project.org/bin/windows/Rtools/) installed first
 
 ```coffee
 install.packages("devtools")
