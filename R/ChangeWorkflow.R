@@ -89,6 +89,13 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
   model.module <- CheckModList(modNew)
   output.module <- CheckModList(outNew)
   
+  # create a list of these things to return
+  call.list <- list(occurrence.module,
+                    covariate.module,
+                    process.module,
+                    model.module,
+                    output.module)
+  
   # Only one of occurrence, covariate, process and model can be a list of 
   #   multiple modules.
   isChain <- sapply(list(occurrence.module, covariate.module, 
@@ -225,7 +232,8 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
               process.output = process.output,
               model.output = model.output,
               report = output.output,
-              call = call)
+              call = call,
+              call.list = call.list)
 
   class(output) <- 'zoonWorkflow'
   

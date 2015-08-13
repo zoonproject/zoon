@@ -1,5 +1,5 @@
 
-context('Test whole workflows.')
+context('Test changing workflows.')
 
 test_that('Basic ChangeWorkflow works', {
 
