@@ -1,6 +1,5 @@
 
 
-
 # Simplest example
 
 library(zoon)
@@ -38,8 +37,6 @@ ModuleHelp(UKBioclim)
 # Modules with arguments
 
 ModuleHelp(SpOcc)
-
-?ModuleOptions
 
 
 
@@ -306,7 +303,4 @@ NoProcess <- function (data) {
 SameTimePlaceMap <- function (model, ras) {
   
   # Output can be anything. Go nuts.
-  
-  
-  
   
