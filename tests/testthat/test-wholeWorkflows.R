@@ -1,6 +1,9 @@
 
 context('Test whole workflows.')
 
+expected_names <- c('occurrence.output', 'covariate.output', 'process.output', 
+      'model.output', 'report', 'call', 'call.list') 
+
 test_that('simple, package data workflow works.', {
 
   work1 <- workflow(occurrence = UKAnophelesPlumbeus,
@@ -10,9 +13,8 @@ test_that('simple, package data workflow works.', {
                  output = SameTimePlaceMap)
 
   expect_true(exists('work1'))
-  expect_equal(names(work1), 
-    c('occurrence.output', 'covariate.output', 'process.output', 
-      'model.output', 'report', 'call', 'call.list'))
+  expect_equal(names(work1), expected_names) 
+    
   expect_equal(dim(work1$occurrence.output[[1]]), c(188,5))
   expect_is(work1$covariate.output[[1]], 'RasterLayer')
   expect_equal(dim(work1$covariate.output[[1]]), c(9,9,1))
@@ -35,9 +37,7 @@ test_that('Check basic quoted workflow.', {
                  output = 'SameTimePlaceMap')
 
   expect_true(exists('work1'))
-  expect_equal(names(work1), 
-    c('occurrence.output', 'covariate.output', 'process.output', 
-      'model.output', 'report', 'call', 'call.list'))
+  expect_equal(names(work1), expected_names) 
   expect_equal(dim(work1$occurrence.output[[1]]), c(188,5))
   expect_is(work1$covariate.output[[1]], 'RasterLayer')
   expect_equal(dim(work1$covariate.output[[1]]), c(9,9,1))
@@ -62,9 +62,7 @@ test_that('modules downloading data work', {
                     output = SameTimePlaceMap)
   
   expect_true(exists('work2'))
-  expect_equal(names(work2), 
-    c('occurrence.output', 'covariate.output', 'process.output', 
-      'model.output', 'report', 'call'))
+  expect_equal(names(work2), expected_names) 
   expect_is(work2$occurrence.output[[1]], 'data.frame')
   expect_equal(names(work2$occurrence.output[[1]]), c('longitude', 'latitude', 'value', 'type', 'fold'))
   expect_true(all(work2$occurrence.output[[1]][,'longitude'] < 20))
@@ -184,8 +182,7 @@ test_that('simple, crossvalidation workflow works.', {
                  output = SameTimePlaceMap)
 
   expect_true(exists('workCross'))
-  expect_equal(names(workCross), c('occurrence.output', 'covariate.output',
-    'process.output', 'model.output', 'report', 'call'))
+  expect_equal(names(workCross), expected_names)
   expect_equal(dim(workCross$occurrence.output[[1]]), c(188, 5))
   expect_is(workCross$covariate.output[[1]], 'RasterLayer')
   expect_equal(dim(workCross$covariate.output[[1]]), c(9,9,1))
@@ -263,9 +260,7 @@ test_that('workflow with mix of syntax works.', {
                  output = Chain('SameTimePlaceMap', 'SameTimePlaceMap'))
 
   expect_true(exists('workSyn'))
-  expect_equal(names(workSyn), 
-    c('occurrence.output', 'covariate.output', 'process.output', 
-      'model.output', 'report', 'call'))
+  expect_equal(names(workSyn), expected_names) 
   expect_equal(dim(workSyn$occurrence.output[[1]]), c(188,5))
   expect_is(workSyn$covariate.output[[1]], 'RasterLayer')
   expect_equal(dim(workSyn$covariate.output[[1]]), c(9,9,1))
