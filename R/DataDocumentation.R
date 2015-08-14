@@ -30,7 +30,7 @@ NULL
 
 
 
-#' @name CWBZimbabwe
+#' @name CWBZim
 #' @title Presence/absence of the coffee white stem borer in Zimbabwe 2003
 #' @description This is an example presence/absence dataset for the 
 #' coffee white stem borer \emph{Monochamus leuconotus} P. taken from an
@@ -54,6 +54,6 @@ NULL
 #'      leuconotus} P.) in Zimbabwe. Dryad Digital Repository.
 #'    \url{http://dx.doi.org/10.1371/journal.pone.0073432}
 #' 
-#' @author Nick Golding September 2014
+#' @author Nick Golding August 2015
 
 NULL
