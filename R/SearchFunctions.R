@@ -61,7 +61,17 @@ make_url <- function(owner, repo, sha) {
 gh_list_files <- function(owner, repo, ...) {
   token <- github_auth(appname = "zoonproject", key = "945195231bd7edd336c9", secret = 'd43d121439b081db59e5f0852e25712294128e2f')
 
-  sha <- FindNewestCommit(owner, rep, token)
+  # if this is a dev version, find the most recent version of modules
+  if (.sha == 'master') {
+
+    sha <- FindNewestCommit(owner, rep, token)
+
+  } else {
+
+    # otherwise use the target sha for modules
+    sha <- .sha
+  
+  }    
   
   req <- GET(make_url(owner, repo, sha), config = list(token = token))
   out <- content(req)

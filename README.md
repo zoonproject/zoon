@@ -14,23 +14,35 @@ You'll need to be using R version 3.2.0 or higher.
 On Windows:
 
 ```r
-# install the raster package first
-install.packages('raster')
-
 # install the Windows binary of the latest release
-install.packages('https://github.com/zoonproject/zoon/releases/download/0.3/zoon_0.3.zip',
+install.packages('https://github.com/zoonproject/zoon/releases/download/0.3.1/zoon_0.3.1.zip',
                 repos = NULL, method = 'libcurl')
+
+# install dependencies
+install.packages(pkgDepends('zoon')$Depends)
+
+# install imports
+install.packages(unlist(strsplit(gsub(',', '', installed.packages(fields = c('imports'))['zoon','Imports']), '\n'))[-1])
+
+# load zoon
+library(zoon)
 ```
 
 and on OSX or Linux:
 
 ```r
-# install the raster package first
-install.packages('raster')
-
 # install the Windows binary of the latest release
-install.packages('https://github.com/zoonproject/zoon/releases/download/0.3/zoon_0.3.tar.gz',
+install.packages('https://github.com/zoonproject/zoon/releases/download/0.3.1/zoon_0.3.1.tar.gz',
                 repos = NULL, method = 'libcurl')
+
+# install dependencies
+install.packages(pkgDepends('zoon')$Depends)
+
+# install imports
+install.packages(unlist(strsplit(gsub(',', '', installed.packages(fields = c('imports'))['zoon','Imports']), '\n'))[-1])
+
+# load zoon
+library(zoon)
 ```
 
 
