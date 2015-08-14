@@ -16,8 +16,8 @@
 
 # name a specific sha for an state of the modules repo, for tagged
 # versions of zoon, or 'master' for non-tagged versions
-.sha <- 'b1544fbadaa21c41b4b51922ae73e44923b890ed'
-#.sha <- 'master'
+# .sha <- 'b1544fbadaa21c41b4b51922ae73e44923b890ed'
+.sha <- 'master'
 
 
 
