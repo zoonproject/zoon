@@ -8,6 +8,8 @@
 }
 \arguments{
 \item{x}{object of class zoonWorkflow}
+
+\item{\dots}{currently ignored}
 }
 \description{
 The function returns a very simple output detailing the function call.
