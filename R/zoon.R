@@ -12,6 +12,15 @@
 # A PROTOTYPE FOR REPRODUCIBLE, ACCESSIBLE & SHAREABLE SCIENTIFIC OUTPUTS IN R
 
 
+
+
+# name a specific sha for an state of the modules repo, for tagged
+# versions of zoon, or 'master' for non-tagged versions
+.sha <- '637258b53ff32c832c917f6821446d275f17913d'
+#.sha <- 'master'
+
+
+
 #'Zoon: A package for comparing multple SDM models, good model diagnostics
 #'      and better reproducibility
 #'@name zoon
