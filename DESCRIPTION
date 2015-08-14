@@ -17,7 +17,8 @@ Imports:
     httpuv,
     dismo
 Depends:
-    raster
+    raster,
+    R (>= 3.2.0)
 Suggests:
     knitr,
     testthat
