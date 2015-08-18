@@ -3,6 +3,7 @@
 #' The function returns a very simple output detailing the function call.
 #' 
 #'@param x object of class zoonWorkflow
+#'@param \dots currently ignored
 #'
 #'@name print.zoonWorkflow
 #'@method print zoonWorkflow

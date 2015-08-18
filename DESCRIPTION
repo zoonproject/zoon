@@ -2,10 +2,9 @@ Package: zoon
 Type: Package
 Title: Reproducible, accessible & shareable species distribution modelling
     in R.
-Version: 0.3
-Date: 2014-08-04
-Author: Tim Lucas, Nick Golding, Greg McInerny, Emiel van Loon
-Maintainer: Tim Lucas <timcdlucas@gmail.com>
+Version: 0.3.2
+Author: Tim Lucas, Nick Golding, Tom August, Greg McInerny, Emiel van Loon
+Maintainer: Tom August <tomaug@ceh.ac.uk>
 Description: A package for reproducible species distribution modelling. The
     package reads user submitted modules from an online repository, runs full
     SDM workflows and returns output that is fully reproducible.
@@ -18,7 +17,8 @@ Imports:
     httpuv,
     dismo
 Depends:
-    raster
+    raster,
+    R (>= 3.2.0)
 Suggests:
     knitr,
     testthat

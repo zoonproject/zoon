@@ -19,9 +19,11 @@ LoadModule <- function(module){
   module <- gsub('"', '', module)
 
   # Create url that matches zoon repo
+  # .sha will vary based on whether this is pegged to a specific version of
+  # modules
   zoonURL <- 
-    paste0('https://raw.githubusercontent.com/zoonproject/modules/master/R/',
-           module, '.R')
+    sprintf('https://raw.githubusercontent.com/zoonproject/modules/%s/R/%s.R',
+            .sha, module)
 
   # If module is a path, load module
   if (file.exists(module)){
