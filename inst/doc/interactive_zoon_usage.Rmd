@@ -24,7 +24,7 @@ opts_chunk$set(out.extra='style="display:block; margin: auto"', fig.align="cente
 
 # Using zoon modules interactively.
 
-While the point of zoon is to run full workflows, which are then reproducible, during development of modules runnings individual modules in the same way you would run normal R functions. 
+While the point of zoon is to run full workflows which are then reproducible, during development of modules it can be useful to run individual modules in the same way you would run normal R functions. 
 
 It is not entirely simple to do this, so this vignette just clarifies how. 
 
@@ -91,4 +91,4 @@ out <- PrintMap(modelCrossvalid, cov)
 
 ## Running workflows with list.
 
-As mentioned above, workflows using list() are likely to not be easy, but then these aren't particularly required while developing a package. To run workflows using list, it would be best to use `LoadModule` as above and then run through the workflow source code interactively.
+As mentioned above, workflows using list() are likely to not be easy, but then these aren't particularly required while developing a package. To run workflows using list, it would be best to use `LoadModule` as above and then run through the `workflow` source code interactively.

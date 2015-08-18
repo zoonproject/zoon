@@ -50,9 +50,9 @@ str(work4, 1)
 
 ## ----largeAnalysis, cache = TRUE, warning = FALSE------------------------
 work5 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari', 
-                                       extent = c(-10, 45, 10, 65)),
+                                       extent = c(-10, 10, 45, 65)),
                                      SpOcc(species = 'Eresus sandaliatus', 
-                                       extent = c(-10, 45, 10, 65))),
+                                       extent = c(-10, 10, 45, 65))),
  
                   covariate  = UKAir,
 
