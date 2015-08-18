@@ -41,7 +41,7 @@ ModuleHelp(SpOcc)
 
 
 work2 <- workflow(occurrence = SpOcc(species = 'Loxia scotica', 
-                                     extent = c(-10, 10, 45, 65)),
+                                     extent=c(-10, 10, 45, 65)),
                   covariate  = UKBioclim,
                   process    = OneHundredBackground,
                   model      = LogisticRegression,
