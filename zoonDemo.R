@@ -41,7 +41,7 @@ ModuleHelp(SpOcc)
 
 
 work2 <- workflow(occurrence = SpOcc(species = 'Loxia scotica', 
-                                     extent=c(-10, 45, 10, 65)),
+                                     extent = c(-10, 10, 45, 65)),
                   covariate  = UKBioclim,
                   process    = OneHundredBackground,
                   model      = LogisticRegression,
@@ -66,9 +66,9 @@ work2 <- workflow(occurrence = SpOcc(species = 'Loxia scotica',
 ?Chain
 
 work3 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari', 
-                                           extent=c(-10, 45, 10, 65)),
+                                           extent=c(-10, 10, 45, 65)),
                                      SpOcc(species = 'Eresus sandaliatus', 
-                                           extent=c(-10, 45, 10, 65))),
+                                           extent=c(-10, 10, 45, 65))),
                   covariate  = UKBioclim,
                   process    = OneHundredBackground,
                   model      = LogisticRegression,
@@ -82,9 +82,9 @@ work3 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari',
 
 
 work4 <- workflow(occurrence = list(SpOcc(species = 'Eresus kollari', 
-                                          extent=c(-10, 45, 10, 65)),
+                                          extent=c(-10, 10, 45, 65)),
                                     SpOcc(species = 'Eresus sandaliatus', 
-                                          extent=c(-10, 45, 10, 65))),
+                                          extent=c(-10, 10, 45, 65))),
                   covariate  = UKBioclim,
                   process    = OneHundredBackground,
                   model      = LogisticRegression,
@@ -133,9 +133,9 @@ work5$report
 #       Model modules can be in a list, not in a chain
 
 work6 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari', 
-                                           extent=c(-10, 45, 10, 65)),
+                                           extent=c(-10, 10, 45, 65)),
                                      SpOcc(species = 'Eresus sandaliatus', 
-                                           extent=c(-10, 45, 10, 65))),
+                                           extent=c(-10, 10, 45, 65))),
                   
                   covariate = UKBioclim,
                   
