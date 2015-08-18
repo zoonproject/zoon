@@ -2,3 +2,4 @@
 ^\.httr-oauth$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+vignettes/cache

@@ -4,10 +4,12 @@
 \alias{summary.zoonWorkflow}
 \title{A function to summarize the output of a zoon workflow}
 \usage{
-\method{summary}{zoonWorkflow}(workflow)
+\method{summary}{zoonWorkflow}(object, ...)
 }
 \arguments{
-\item{workflow}{A zoon workflow object}
+\item{object}{A zoon workflow object}
+
+\item{\dots}{Other arguents to be passed to other methods. Currently ignored}
 }
 \value{
 A list that summarises the workflow

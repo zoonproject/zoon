@@ -6,25 +6,25 @@
 #'   bit of information from each module type e.g. the extent of rasters, the
 #'   type of model object etc.
 #' 
-#'@param workflow A zoon workflow object
-#'
+#'@param object A zoon workflow object
+#'@param \dots Other arguents to be passed to other methods. Currently ignored
 #'@return A list that summarises the workflow
 #'@name summary.zoonWorkflow
 #'@export
 
-summary.zoonWorkflow <- function(workflow){
+summary.zoonWorkflow <- function (object, ...){
 
   # Extract a few parts of the list.
-  processDF <- list.map(workflow$process.output, df)
-  processRas <- list.map(workflow$process.output, ras)
-  models <- list.map(workflow$model.output, model)
+  processDF <- list.map(object$process.output, df)
+  processRas <- list.map(object$process.output, ras)
+  models <- list.map(object$model.output, model)
 
   # Summarise, mostly with dim.
-  summary <- list(occurrence = lapply(workflow$occurrence.output, dim),
-                  covariate = lapply(workflow$covariate.output, dim),
+  summary <- list(occurrence = lapply(object$occurrence.output, dim),
+                  covariate = lapply(object$covariate.output, dim),
                   process = list(lapply(processDF, dim), 
                                 lapply(processRas, dim)),
-                  model = lapply(workflow$model.output, class),
-                  output = lapply(workflow$report, class))
+                  model = lapply(object$model.output, class),
+                  output = lapply(object$report, class))
   summary
 }
