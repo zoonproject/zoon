@@ -12,6 +12,6 @@
 print.zoonWorkflow <- function(x, ...){
   
   cat('zoonWorkflow Object\n===================\n\n')
-  cat('Call:', x$call)
+  cat('Call:', x$call, '\n')
   
 }

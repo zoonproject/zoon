@@ -9,7 +9,7 @@ Zoön is still being developed. Feel free to clone and use the code, open issues
 
 ### To install the stable(ish) version directly from R
 
-You'll need to be using R version 3.2.0 or higher.
+You'll need to be using **R version 3.2.0** or higher.
 
 On Windows:
 
