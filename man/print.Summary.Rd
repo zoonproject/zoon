@@ -9,6 +9,8 @@
 }
 \arguments{
 \item{x}{object of class zoonSummary}
+
+\item{\dots}{currently ignored}
 }
 \description{
 Prints a simple zoonSummary object to console
