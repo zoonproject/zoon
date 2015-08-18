@@ -11,7 +11,7 @@ BuildModule(object, type, dir = ".", title = "", description = "",
 \item{object}{A function that will be made into a module file.}
 
 \item{type}{A string that defines the type of module. Possible module types
-are occurence, covariate, process, model, diagnostic and output.}
+are occurrence, covariate, process, model, diagnostic and output.}
 
 \item{dir}{The directory to put the module into (defaults to the
 working directory.}
