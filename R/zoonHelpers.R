@@ -433,7 +433,7 @@ ErrorAndSave <- function(cond, mod, e){
   # Select the module type using numeric mod argument
   module <- c('occurrence', 'covariate', 'process', 'model', 'output')[mod]
 
-  
+  # R CMD check apparently dislikes this assignment to the global environemtn
   assign('tmpZoonWorkflow', w,  envir = .GlobalEnv)
 
   # Give useful messages.
