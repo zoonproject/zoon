@@ -144,8 +144,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
     #return(occurrence.output)
   },  
     error = function(cond){
-      t <- ErrorAndSave(cond, 1, e)
-      return(t)
+      ErrorAndSave(cond, 1, e)
     }
   )
 

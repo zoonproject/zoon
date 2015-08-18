@@ -15,6 +15,8 @@
 summary.zoonWorkflow <- function (object, ...){
 
   # Extract a few parts of the list.
+
+  # R CMD check dislikes this as df and ras look like unbound variables
   processDF <- list.map(object$process.output, df)
   processRas <- list.map(object$process.output, ras)
   models <- list.map(object$model.output, model)
