@@ -56,7 +56,7 @@ test_that('Check basic quoted workflow.', {
 test_that('modules downloading data work', {
 
   work2 <- workflow(occurrence = SpOcc(species = 'Anopheles plumbeus',
-                                       extent = c(-10, 45, 10, 65)),
+                                       extent = c(-10, 10, 45, 65)),
                     covariate = UKAir,
                     process = OneHundredBackground,
                     model = RandomForest, 
@@ -84,7 +84,7 @@ test_that('Workflows with lists of modules work.', {
   # In fact I don't think the would pass cran.
   workOccurList <- workflow(occurrence = list(UKAnophelesPlumbeus, 
                         SpOcc(species = 'Anopheles plumbeus', 
-                          extent = c(-10, 45, 10, 65))),
+                          extent = c(-10, 10, 45, 65))),
                         covariate = UKAir,
                         process = OneHundredBackground,
                         model = LogisticRegression,
