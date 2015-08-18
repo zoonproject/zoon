@@ -80,8 +80,6 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   call <- SortArgs(PasteAndDep(occSub), PasteAndDep(covSub), PasteAndDep(proSub), 
             PasteAndDep(modSub), PasteAndDep(outSub), forceReproducible)
  
-
-
   # save the local environment as it needs to be passed to various functions.
   e <- environment() 
 
@@ -147,7 +145,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   },  
     error = function(cond){
       t <- ErrorAndSave(cond, 1, e)
-      return(w)
+      return(t)
     }
   )
 

@@ -7,7 +7,13 @@
 \method{summary}{zoonWorkflow}(object, ...)
 }
 \arguments{
+<<<<<<< HEAD
 \item{object}{A zoonWorkflow object}
+=======
+\item{object}{A zoon workflow object}
+
+\item{\dots}{Other arguents to be passed to other methods. Currently ignored}
+>>>>>>> da58c29dc2515f6b2293a02b65c971321308b921
 }
 \value{
 A list of length 2, first the data summaries and then the
