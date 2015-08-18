@@ -4,6 +4,8 @@
 #' occurence element and each model element
 #'
 #'@param object A zoonWorkflow object
+#'@param \dots currently ignored
+
 #'@return A list of length 2, first the data summaries and then the 
 #' model summaries. each of these is as long as the coressponding
 #' elements in the zoonWorkflow object
