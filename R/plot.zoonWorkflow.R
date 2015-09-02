@@ -1,3 +1,12 @@
+GetCex <- function(string, width = 9) {
+  # given a string (character vector of length one),
+  # and a target width on screen, in user coordinates
+  # return a value of cex that when passed to text will
+  # render with the right width 
+  cex <- width / strwidth(string, cex = 1)
+  return (cex)
+}
+
 ModuleLabels <- function(colr, IsChain, IsList){
   ###___ function for writing the module labels 
   
@@ -13,13 +22,18 @@ ModuleLabels <- function(colr, IsChain, IsList){
   # labels options
   moduleLabels <- c("occurrence.module", "covariate.module", "process.module", 
                     "model.module", "output.module")
+  
+  # get cex for module labels
+  moduleLabelsCex <- GetCex(moduleLabels[which.max(strwidth(moduleLabels))],
+                            width = 15)
   # fonts and text 
   fontModules = 2 ### module labels font size
   fontTitle = 3 ### main title font size
   cexTitle = 1.5 ### main title font size
   # mccin function
   segments(x1[1], yL+8, x2[5]+yG*0.5, yL+8, col = colr)
-  text(x1[1:5], yL, moduleLabels, 	col = colr, adj = 0, font = fontModules)
+  text(x1[1:5], yL, moduleLabels, 	col = colr, adj = 0, font = fontModules,
+       cex = moduleLabelsCex)
   for(k in 1:5) {
     segments(x1[k], yL - 5, x2[k]+yG*0.5, yL - 5, col = colr)
     if(IsChain[k]) text(x1[k], yL - 10, "Chain", col = colr, adj = 0, font = 3)
@@ -32,6 +46,10 @@ ModuleLabels <- function(colr, IsChain, IsList){
 
 Boxed2 <- function (NoOfModules, InModuleList, IsList, IsChain, ModuleNames) {
   ###___ function for writing the boxes 
+  
+  # get cex for module names
+  ModuleNamesCex <- GetCex(ModuleNames[[which.max(strwidth(ModuleNames))]],
+                            width = 9)
   
   # reverse the order of module names for chains and lists
   # (Nick added this post-hoc)
@@ -139,7 +157,8 @@ Boxed2 <- function (NoOfModules, InModuleList, IsList, IsChain, ModuleNames) {
       
       
       rect(x1[i], yNow , x2[i], yNow+yH, col = clrs[ColCode], border = clrs[ColCode], lwd = lW)
-      text (x1[i], yNow+0.5*yH, ModuleNames[[ModuleInc]], col = clrsTXT, adj = 0, cex = 0.75)
+      text (x1[i], yNow+0.5*yH, ModuleNames[[ModuleInc]], col = clrsTXT, adj = 0,
+            cex = ModuleNamesCex)
       
       if( ColCode%%2 == 0){
         text(x1[1]+(0.5*(x2[1] - x1[1])), - 18, "** Modules not found in the repoistory", col = "cornsilk4", adj = 0, cex = 0.8)
