@@ -14,15 +14,12 @@ You'll need to be using **R version 3.2.0** or higher.
 On Windows:
 
 ```r
+# install all of the dependencies
+install.packages(c("methods", "raster", "sp (>= 1.0-13)", "assertthat", "rlist", "RCurl", "httr", "httpuv", "dismo"))
+
 # install the Windows binary of the latest release
 install.packages('https://github.com/zoonproject/zoon/releases/download/0.3.1/zoon_0.3.1.zip',
                 repos = NULL, method = 'libcurl')
-
-# install dependencies
-install.packages(pkgDepends('zoon')$Depends)
-
-# install imports
-install.packages(unlist(strsplit(gsub(',', '', installed.packages(fields = c('imports'))['zoon','Imports']), '\n'))[-1])
 
 # load zoon
 library(zoon)
@@ -31,27 +28,23 @@ library(zoon)
 and on OSX or Linux:
 
 ```r
-# install the Windows binary of the latest release
+# install all of the dependencies
+install.packages(c("methods", "raster", "sp (>= 1.0-13)", "assertthat", "rlist", "RCurl", "httr", "httpuv", "dismo"))
+
+# install the tarball of the latest release
 install.packages('https://github.com/zoonproject/zoon/releases/download/0.3.1/zoon_0.3.1.tar.gz',
-                repos = NULL, method = 'libcurl')
-
-# install dependencies
-install.packages(pkgDepends('zoon')$Depends)
-
-# install imports
-install.packages(unlist(strsplit(gsub(',', '', installed.packages(fields = c('imports'))['zoon','Imports']), '\n'))[-1])
+                 repos = NULL, method = 'libcurl')
 
 # load zoon
 library(zoon)
 ```
 
 
-
 ### To install current development version
 
 If you're using Windows, you'll need to have [RTools](https://cran.r-project.org/bin/windows/Rtools/) installed first
 
-```coffee
+```r
 install.packages("devtools")
 library("devtools")
 
@@ -61,7 +54,7 @@ library("zoon")
 
 ### Basic usage
 
-```coffee
+```r
 # Run a workflow, specifying one module of each type.
 work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                   covariate  = UKAir,
