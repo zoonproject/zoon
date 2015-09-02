@@ -22,5 +22,5 @@ Suggests:
     knitr,
     testthat
 VignetteBuilder: knitr
-LazyData: true
+LazyData: TRUE
 URL: https://github.com/zoonproject/zoon
