@@ -54,21 +54,21 @@ LoadModule <- function(module){
 
 
 
-#'A function to get a module function.
-#'
-#'Checks for the module in the global namespace, then the zoon repo. Then reads
-#'  the module source and loads the function.
-#'
-#'@param module A string that describes the location of the R file. Can be a
-#'      module name assuming the module is in global namespace or 
-#'      github.com/zoonproject/modules. Otherwise can be a full URL or a local
-#'      file.
-#'@param forceReproducible Do we want to force the function to get modules from
-#'      the zoon repo, even if they exist in the global namespace.
-#'
-#'@return Name of the function. Function is run with workflow and new module
-#'  function is added to workflow environment.
-#'@name GetModule
+#A function to get a module function.
+#
+#Checks for the module in the global namespace, then the zoon repo. Then reads
+#  the module source and loads the function.
+#
+#@param module A string that describes the location of the R file. Can be a
+#      module name assuming the module is in global namespace or 
+#      github.com/zoonproject/modules. Otherwise can be a full URL or a local
+#      file.
+#@param forceReproducible Do we want to force the function to get modules from
+#      the zoon repo, even if they exist in the global namespace.
+#
+#@return Name of the function. Function is run with workflow and new module
+#  function is added to workflow environment.
+#@name GetModule
 
 GetModule <- function(module, forceReproducible){
   zoonURL <- 
@@ -103,12 +103,12 @@ GetModule <- function(module, forceReproducible){
 }
 
 
-#' A function to apply GetModule to a list correctly.
-#'@param modules A list from CheckModList() given details for 
-#'  one or more modules.
-#'@param forceReproducible Logical to determine whether the modules should be 
-#'  taken from repo even if they exist locally to enforce reproducibility.
-#'@name LapplyGetModule
+# A function to apply GetModule to a list correctly.
+#@param modules A list from CheckModList() given details for 
+#  one or more modules.
+#@param forceReproducible Logical to determine whether the modules should be 
+#  taken from repo even if they exist locally to enforce reproducibility.
+#@name LapplyGetModule
 
 LapplyGetModule <- function(modules, forceReproducible){
   lapply(modules, function(x) 
@@ -184,16 +184,16 @@ RunModels <- function(df, modelFunction, paras, workEnv){
 
 
 
-#' CheckModList
-#'
-#' Helper to sort module arguments into lists with common structure.
-#'   Want any input to end up as 
-#'   list(module = moduleName, paras = list(paraName1 = para, paraName2 = 2)).
-#'   See tests/testthat/testZoon.R for list of potential input.
-#'@param x A 'call' or 'character' from substitute(occurrence) etc. So either
-#'    quoted which yields a character substitute('module1') or unquotes which
-#'    yields a call substitute(module1). 
-#'@name CheckModList
+# CheckModList
+#
+# Helper to sort module arguments into lists with common structure.
+#   Want any input to end up as 
+#   list(module = moduleName, paras = list(paraName1 = para, paraName2 = 2)).
+#   See tests/testthat/testZoon.R for list of potential input.
+#@param x A 'call' or 'character' from substitute(occurrence) etc. So either
+#    quoted which yields a character substitute('module1') or unquotes which
+#    yields a call substitute(module1). 
+#@name CheckModList
 
 # Check passing as quoted. e.g. occurrence = "ModuleName(k=2)"
 # Also occurrence = "list(mod1, mod2)" is probably bad.
@@ -248,15 +248,15 @@ CheckModList <- function(x){
 
 
 
-#' Split a string into a module and it's arguments
-#'
-#' A function that takes a string (from workflow$call) and splits it into a
-#'   module name and it's arguments.
-#'
-#'@param string A string of the form "moduleName" or 
-#'  "moduleName(parameter = 2, parameter2 = 3)"
-#'
-#'@name SplitArgs
+# Split a string into a module and it's arguments
+#
+# A function that takes a string (from workflow$call) and splits it into a
+#   module name and it's arguments.
+#
+#@param string A string of the form "moduleName" or 
+#  "moduleName(parameter = 2, parameter2 = 3)"
+#
+#@name SplitArgs
 
 SplitArgs <- function(string){
   module <- gsub('(^)(.*)(\\(.*$)', '\\2', string)
@@ -273,13 +273,13 @@ SplitArgs <- function(string){
   return(list(module = module, paras = arguments))
 }
 
-#'FormatModuleList
-#'
-#' Little helper to format module lists. Want to return a list
-#'   newList$module is the module name and newList$paras is a list
-#'   of the parameters given for the module.
-#'@param x An object of class 'name' or 'call' e.g. module1 or module1(k=2).
-#'@name FormatModuleList
+#FormatModuleList
+#
+# Little helper to format module lists. Want to return a list
+#   newList$module is the module name and newList$paras is a list
+#   of the parameters given for the module.
+#@param x An object of class 'name' or 'call' e.g. module1 or module1(k=2).
+#@name FormatModuleList
 
 FormatModuleList <- function(x){
   # Turn 'call' or 'name' into list.
@@ -296,12 +296,12 @@ FormatModuleList <- function(x){
 
 
 
-#' ExtractAndCombData
-#'
-#' Simply extract covariates from rasters and combine with occurrence data.
-#'
-#'@param occurrence A data frame from an occurrence module
-#'@param ras Environmental raster layer, stack or brick.
+# ExtractAndCombData
+#
+# Simply extract covariates from rasters and combine with occurrence data.
+#
+#@param occurrence A data frame from an occurrence module
+#@param ras Environmental raster layer, stack or brick.
 ExtractAndCombData <- function(occurrence, ras){
   
   # Check that all points are within the raster
@@ -326,27 +326,27 @@ ExtractAndCombData <- function(occurrence, ras){
 }
 
 
-#'Chain
-#'
-#'This function does nothing. However using Chain(modules... ) in a call
-#'  to workflow will chain the modules together rather than  
-#'  run in separate analyses. For occurrence or covariate modules the datasets are joined. 
-#'  Processes are run sequentially.
-#'@param ... List of modules to be chained.
-#'
-#'@name Chain
+#Chain
+#
+#This function does nothing. However using Chain(modules... ) in a call
+#  to workflow will chain the modules together rather than  
+#  run in separate analyses. For occurrence or covariate modules the datasets are joined. 
+#  Processes are run sequentially.
+#@param ... List of modules to be chained.
+#
+#@name Chain
 
 Chain <- function(...){
   NULL
 }
 
 
-#'SortArgs
-#'
-#'
-#' Helper to take substituted args from workflow call and paste them into 
-#'   a runeable workflow function.
-#'@name SortArgs
+#SortArgs
+#
+#
+# Helper to take substituted args from workflow call and paste them into 
+#   a runeable workflow function.
+#@name SortArgs
 
 SortArgs <- function(occSub, covSub, proSub, modSub, outSub, forceReproducible){
   call <- paste0("workflow(", 
@@ -360,12 +360,12 @@ SortArgs <- function(occSub, covSub, proSub, modSub, outSub, forceReproducible){
 
 
 
-#'SplitCall
-#'
-#' Helper to split a character string workflow call, as inherited from zoonWorkflow
-#'   into it's constituent arguments
-#'@param call A character string of a valid zoon workflow call.
-#'@name SplitCall
+#SplitCall
+#
+# Helper to split a character string workflow call, as inherited from zoonWorkflow
+#   into it's constituent arguments
+#@param call A character string of a valid zoon workflow call.
+#@name SplitCall
 
 SplitCall <- function(call){
 
@@ -389,18 +389,19 @@ SplitCall <- function(call){
 }
 
 
-#'ErrorAndSave
-#' Function used in tryCatch calls in workflow.
-#'   If an error is caught, save the workflow to tmpZoonWorkflow.
-#'   And return some useful messages. Then stop().
-#'   cond is the error messages passed by try catch.
-#'   mod is the modules number (1:5) to give NULLS to the correct modules.
-#'
-#'@param e The workflow call environment
-#'@param cond The error message that was caught in tryCatch.
-#'@param mod Which module has failed? 1=occurrence, 2=covariate, 3=process
-#'  4=model, 5=output.
-#'@name ErrorAndSave
+# ErrorAndSave
+#
+# Function used in tryCatch calls in workflow.
+# If an error is caught, save the workflow to tmpZoonWorkflow.
+# And return some useful messages. Then stop().
+# cond is the error messages passed by try catch.
+# mod is the modules number (1:5) to give NULLS to the correct modules.
+#
+#@param e The workflow call environment
+#@param cond The error message that was caught in tryCatch.
+#@param mod Which module has failed? 1=occurrence, 2=covariate, 3=process
+#  4=model, 5=output.
+#@name ErrorAndSave
 
 ErrorAndSave <- function(cond, mod, e){
 
@@ -433,7 +434,7 @@ ErrorAndSave <- function(cond, mod, e){
   # Select the module type using numeric mod argument
   module <- c('occurrence', 'covariate', 'process', 'model', 'output')[mod]
 
-  
+  # R CMD check apparently dislikes this assignment to the global environemtn
   assign('tmpZoonWorkflow', w,  envir = .GlobalEnv)
 
   # Give useful messages.
@@ -448,11 +449,11 @@ ErrorAndSave <- function(cond, mod, e){
 }
 
 
-#' PasteAndDep
-#'
-#' Paste and deparse. Helper to format substituted args. If arguments were 
-#'   chained or listed then substitute gives a list. We want to paste it back together.
-#'@name PasteAndDep
+# PasteAndDep
+#
+# Paste and deparse. Helper to format substituted args. If arguments were 
+#   chained or listed then substitute gives a list. We want to paste it back together.
+#@name PasteAndDep
 
 PasteAndDep <- function(x){
   paste(deparse(x), collapse = ' ')

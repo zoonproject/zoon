@@ -7,14 +7,13 @@
 ModuleHelp(module)
 }
 \arguments{
-\item{module}{The name of a zoon module (as a string)}
+\item{module}{The name of a zoon module}
 }
 \value{
 Prints the help page to screen.
 }
 \description{
-Returns the help file for a zoon module
-Currently only text help is implemented.
+Returns the help file for a zoon module.
 }
 \seealso{
 \code{\link{GetModuleList}}

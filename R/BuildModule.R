@@ -8,7 +8,7 @@
 #'@param dir The directory to put the module into (defaults to the
 #'      working directory.
 #'@param type A string that defines the type of module. Possible module types
-#'      are occurence, covariate, process, model, diagnostic and output.
+#'      are occurrence, covariate, process, model, diagnostic and output.
 #'@param title A short description of the module.
 #'@param description A single string giving a full description of the model.
 #'@param paras A list of the form 

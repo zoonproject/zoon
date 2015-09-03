@@ -9,6 +9,12 @@ ChangeWorkflow(workflow, occurrence = NULL, covariate = NULL,
 }
 \arguments{
 \item{workflow}{A zoonWorkflow object from a previous zoon analysis}
+
+\item{occurrence,covariate,process,model,output}{Optional modules (or lists or Chains) to
+replace the modules in \code{workflow}}
+
+\item{forceReproducible}{Optional logical. Whether to force zoon to collect modules
+from the online repo in the new workflow. This ensure the analysis is reproducible.}
 }
 \value{
 A list with the results of each module and a copy of the

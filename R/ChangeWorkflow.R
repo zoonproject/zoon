@@ -3,7 +3,10 @@
 #' Takes a workflow object and reruns it with changes. 
 #'
 #'@param workflow A zoonWorkflow object from a previous zoon analysis
-#'
+#'@param occurrence,covariate,process,model,output Optional modules (or lists or Chains) to
+#'  replace the modules in \code{workflow}
+#'@param forceReproducible Optional logical. Whether to force zoon to collect modules
+#'  from the online repo in the new workflow. This ensure the analysis is reproducible.
 #'@return A list with the results of each module and a copy of the
 #'  call used to execute the workflow (
 #'

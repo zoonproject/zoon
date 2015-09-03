@@ -4,18 +4,20 @@
 \alias{summary.zoonWorkflow}
 \title{A function to summarize the output of a zoon workflow}
 \usage{
-\method{summary}{zoonWorkflow}(workflow)
+\method{summary}{zoonWorkflow}(object, ...)
 }
 \arguments{
-\item{workflow}{A zoon workflow object}
+\item{object}{A zoonWorkflow object}
+
+\item{\dots}{currently ignored}
 }
 \value{
-A list that summarises the workflow
+A list of length 2, first the data summaries and then the
+model summaries. each of these is as long as the coressponding
+elements in the zoonWorkflow object
 }
 \description{
-The function currently just outputs the dimensions and a few other
-  parts of a workflow. This could certainly be developed to include useful
-  bit of information from each module type e.g. the extent of rasters, the
-  type of model object etc.
+The function currently outputs the result of summary() on each
+occurence element and each model element
 }
 

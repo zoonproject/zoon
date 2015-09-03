@@ -2,3 +2,7 @@
 ^\.httr-oauth$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+vignettes/cache
+Notes_for_zoon_developers.md
+zoonDemo.R
+zoonQuickStart.R
