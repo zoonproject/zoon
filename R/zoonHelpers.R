@@ -156,7 +156,7 @@ RunModels <- function(df, modelFunction, paras, workEnv){
   # Skip otherwise
   if(k > 1){
     for(i in 1:k){
-      modelFold <- do.call(modelFunction, c(df = list(df[df$fold != i, ]), 
+      modelFold <- do.call(modelFunction, c(.df = list(df[df$fold != i, ]), 
                                             paras),
                            envir = workEnv)
       dfOut$predictions[df$fold == i] <- 
@@ -166,7 +166,7 @@ RunModels <- function(df, modelFunction, paras, workEnv){
   }
   
   # Run model on all data except external validation data
-  m <- do.call(modelFunction, c(df = list(df[df$fold != 0, ]), paras), 
+  m <- do.call(modelFunction, c(.df = list(df[df$fold != 0, ]), paras), 
                envir = workEnv)
   
   # If external validation dataset exists, predict that;.

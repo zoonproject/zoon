@@ -12,8 +12,8 @@ DoOutputModules <- function(output.module, outputName, covariate.module,
     if (length(output.module) > 1){
       output.output <- lapply(outputName, 
                          function(x) do.call(x$func, 
-                         c(list(model.output[[1]], 
-                                covariate.output[[1]]),
+                         c(list(.model = model.output[[1]], 
+                                .ras = covariate.output[[1]]),
                            x$paras), envir = e))
 
     # Actually think that if covariate >1, then model is also >1
@@ -21,13 +21,15 @@ DoOutputModules <- function(output.module, outputName, covariate.module,
     } else if (length(covariate.module) > 1){
       output.output <- lapply(covariate.output, 
                          function(x) do.call(outputName[[1]]$func, 
-                         c(list(model.output[[1]], x),
+                         c(list(.model = model.output[[1]],
+                                .ras = x),
                            outputName[[1]]$paras), envir = e))    
     } else {
       output.output <- lapply(model.output, 
                          function(x) do.call(outputName[[1]]$func, 
-                         c(list(x, covariate.output[[1]]), outputName[[1]]$paras),
-                           envir = e))
+                         c(list(.model = x,
+                                .ras = covariate.output[[1]]),
+                           outputName[[1]]$paras), envir = e))
     }
   # Chained
   } else {
@@ -35,12 +37,16 @@ DoOutputModules <- function(output.module, outputName, covariate.module,
       output.output <- lapply(covariate.output, 
                          function(y) lapply(outputName, 
                            function(x) do.call(x$func, 
-                           c(list(model.output[[1]], y), x$paras), envir = e)))    
+                           c(list(.model = model.output[[1]],
+                                  .ras = y),
+                             x$paras), envir = e)))    
     } else {
       output.output <- lapply(model.output, 
                          function(y) lapply(outputName, 
                            function(x) do.call(x$func, 
-                           c(list(y, covariate.output[[1]]), x$paras), envir = e)))    
+                           c(list(.model = y,
+                                  .ras = covariate.output[[1]]),
+                             x$paras), envir = e)))    
     }
   }
   return(output.output)
@@ -103,12 +109,12 @@ DoProcessModules <- function(process.module, processName, data, e){
     if (length(processName) > 1){
       process.output <- lapply(processName, 
         function(x) do.call(x$func, 
-                      c(list(data = data[[1]]), x$paras), 
+                      c(list(.data = data[[1]]), x$paras), 
                       envir = e))
     } else {
       process.output <- lapply(data,
         function(x) do.call(processName[[1]]$func, 
-                      c(list(data = x), processName[[1]]$paras), 
+                      c(list(.data = x), processName[[1]]$paras), 
                       envir = e))
     }
   } else { 
@@ -123,7 +129,7 @@ DoProcessModules <- function(process.module, processName, data, e){
     for(p in 1:length(processName)){      
       process.output <- lapply(process.output,
         function(x) do.call(processName[[p]]$func, 
-                      c(list(data = x), processName[[p]]$paras), 
+                      c(list(.data = x), processName[[p]]$paras), 
                       envir = e))
     }
   }
