@@ -38,8 +38,8 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '', au
   }
 
   # What are the default arguments for each module type
-  defArgs <- list(occurrence = NULL, covariate = NULL, process = c('data'),
-                    model = c('df'), output = c('model', 'ras'))
+  defArgs <- list(occurrence = NULL, covariate = NULL, process = c('.data'),
+                    model = c('.df'), output = c('.model', '.ras'))
 
 
   missingParas <- names(formals(object))[!names(formals(object)) %in% names(paras)]
