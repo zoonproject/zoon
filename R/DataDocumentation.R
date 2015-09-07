@@ -57,3 +57,16 @@ NULL
 #' @author Nick Golding August 2015
 
 NULL
+
+
+#' @name FrescaloBias 
+#' @title Example bias raster for plants in England
+#' @description This is an example bias raster giving a modelled estimate of the
+#' relative recording effort for plants in England using the Frescalo function in the R package sparta.
+#' @docType data
+#' @format RasterLayer with extent: c(-7.083, 2.167, 49.83, 55.83) and values ranging between 0 and 1.
+#' 
+#' @author Tom August & Nick Golding September 2015
+
+NULL
+
