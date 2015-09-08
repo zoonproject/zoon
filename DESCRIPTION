@@ -7,7 +7,7 @@ Maintainer: Tom August <tomaug@ceh.ac.uk>
 Description: A package for reproducible species distribution modelling. The
     package reads user submitted modules from an online repository, runs full
     SDM workflows and returns output that is fully reproducible.
-License: BSD_3_clause + LICENSE
+License: BSD_3_clause + file LICENSE
 Imports:
     assertthat,
     rlist,
