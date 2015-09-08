@@ -181,7 +181,7 @@ RunModels <- function(df, modelFunction, paras, workEnv){
   # If external validation dataset exists, predict that;.
   if(0 %in% df$fold){
       pred <- predict(m,
-                      newdata = df[df$fold == 0, ],
+                      newdata = df[df$fold == 0, 6:NCOL(df), drop = FALSE],
                       type = 'response')
 
       # if pred is a matrix/dataframe, take only the first column
