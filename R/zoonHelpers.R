@@ -159,9 +159,18 @@ RunModels <- function(df, modelFunction, paras, workEnv){
       modelFold <- do.call(modelFunction, c(.df = list(df[df$fold != i, ]), 
                                             paras),
                            envir = workEnv)
-      dfOut$predictions[df$fold == i] <- 
-        predict(modelFold, newdata = df[df$fold == i, 6:NCOL(df), drop=FALSE], 
-                type = 'response') 
+
+      pred <- predict(modelFold,
+                      newdata = df[df$fold == i, 6:NCOL(df), drop = FALSE],
+                      type = 'response') 
+ 
+      # if pred is a matrix/dataframe, take only the first column
+      if(!is.null(dim(pred))) {
+        pred <- pred[, 1]
+      }
+ 
+      dfOut$predictions[df$fold == i] <- pred 
+
     }
   }
   
@@ -171,8 +180,19 @@ RunModels <- function(df, modelFunction, paras, workEnv){
   
   # If external validation dataset exists, predict that;.
   if(0 %in% df$fold){
-    dfOut$predictions[df$fold == 0] <- 
-      predict(m, newdata = df[df$fold == 0, ], type = 'response')
+      pred <- predict(m,
+                      newdata = df[df$fold == 0, ],
+                      type = 'response')
+
+      # if pred is a matrix/dataframe, take only the first column
+      if(!is.null(dim(pred))) {
+        pred <- pred[, 1]
+      }
+ 
+      dfOut$predictions[df$fold == 0] <- pred 
+
+
+
   }
   
   # Return list of crossvalid and external validation predictions 
