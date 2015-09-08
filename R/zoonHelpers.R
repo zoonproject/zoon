@@ -346,18 +346,28 @@ ExtractAndCombData <- function(occurrence, ras){
 }
 
 
-#Chain
-#
-#This function does nothing. However using Chain(modules... ) in a call
-#  to workflow will chain the modules together rather than  
-#  run in separate analyses. For occurrence or covariate modules the datasets are joined. 
-#  Processes are run sequentially.
-#@param ... List of modules to be chained.
-#
-#@name Chain
+#'Chain modules together
+#'
+#'\code{Chain} combines multiple modules of the same module type such that they are
+#' executed sequentially and their outputs combined.
+#' For example, process modules may be \code{Chain}ed to carry out successive
+#'  processing operations. By contrast, \code{list}ing modules of the same type
+#'  would split the workflow into multiple parallel workflows, each using a
+#'  different module at this step.
+#' Similarly for occurrence or covariate modules the datasets are joined
+#' (row- or layer-wise) whereas \code{list} would carry out separate analyses. 
+#' Model and output modules may not be chained. 
+#' Developers should note that this function is not actually used - calls using
+#'  \code{Chain} are parsed by workflow, with behaviour similar to this function.
+#'@param ... List of modules to be chained.
+#'@export
+#'
+#'@name Chain
 
 Chain <- function(...){
-  NULL
+  ans <- list(...)
+  attr(ans, 'isChain') <- TRUE
+  return (ans)
 }
 
 
