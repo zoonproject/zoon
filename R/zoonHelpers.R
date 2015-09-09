@@ -353,7 +353,7 @@ ExtractAndCombData <- function(occurrence, ras){
 
 Chain <- function(...){
   ans <- list(...)
-  attr(ans, 'isChain') <- TRUE
+  attr(ans, 'chain') <- TRUE
   return (ans)
 }
 
