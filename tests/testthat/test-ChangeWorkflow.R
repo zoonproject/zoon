@@ -91,6 +91,6 @@ test_that('RerunWorkflow works', {
 
   expect_true(all.equal(w1, w2))
 
-
 })
+
 
