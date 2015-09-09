@@ -21,7 +21,8 @@ test_that('simple, package data workflow works.', {
   expect_equal(names(work1$process.output[[1]]$df), 
     c('value', 'type', 'fold', 'longitude',   'latitude',   'layer'))
   expect_equal(dim(work1$process.output[[1]][[1]]),  c(269, 6))
-  expect_is((work1$model.output[[1]])$model, c('glm', 'lm'))
+  expect_is((work1$model.output[[1]])$model, c('zoonModel'))
+  expect_is((work1$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is((work1$model.output[[1]])$data, c('data.frame'))
   expect_is(work1$report[[1]], 'RasterLayer')
 
@@ -44,7 +45,8 @@ test_that('Check basic quoted workflow.', {
   expect_equal(names(work1$process.output[[1]]$df), 
     c('value', 'type', 'fold', 'longitude',   'latitude',   'layer'))
   expect_equal(dim(work1$process.output[[1]][[1]]),  c(269, 6))
-  expect_is((work1$model.output[[1]])$model, c('glm', 'lm'))
+  expect_is((work1$model.output[[1]])$model, c('zoonModel'))
+  expect_is((work1$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is((work1$model.output[[1]])$data, c('data.frame'))
   expect_is(work1$report[[1]], 'RasterLayer')
   
@@ -72,7 +74,8 @@ test_that('modules downloading data work', {
   expect_true(all(work2$occurrence.output[[1]][,'latitude'] > 45))
   expect_true(all(work2$occurrence.output[[1]][,'type']=='presence'))
   expect_is(work2$covariate.output[[1]], 'RasterLayer')
-  expect_is((work2$model.output[[1]])$model, 'randomForest')
+  expect_is((work2$model.output[[1]])$model, 'zoonModel')
+  expect_is((work2$model.output[[1]])$model$model, 'randomForest')
   expect_is(work2$report[[1]], 'RasterLayer')
 })
 
@@ -195,7 +198,8 @@ test_that('simple, crossvalidation workflow works.', {
   expect_equal(names(workCross$process.output[[1]]$df), 
     c('value', 'type', 'fold', 'longitude', 'latitude', 'layer'))
   expect_equal(dim(workCross$process.output[[1]]$df),  c(269, 6))
-  expect_is((workCross$model.output[[1]])$model, c('glm', 'lm'))
+  expect_is((workCross$model.output[[1]])$model, c('zoonModel'))
+  expect_is((workCross$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(workCross$report[[1]], 'RasterLayer')  
 
 })
@@ -230,7 +234,8 @@ test_that('chains work.', {
   expect_equal(names(chain1$process.output[[1]]$df), 
     c('value', 'type', 'fold', 'longitude', 'latitude', 'layer'))
   expect_equal(dim(chain1$process.output[[1]]$df),  c(457, 6))
-  expect_is((chain1$model.output[[1]])$model, c('glm', 'lm'))
+  expect_is((chain1$model.output[[1]])$model, c('zoonModel'))
+  expect_is((chain1$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(chain1$report[[1]], 'RasterLayer')  
 
   expect_true(exists('chain2'))
@@ -240,7 +245,8 @@ test_that('chains work.', {
   expect_equal(names(chain2$process.output[[1]]$df), 
     c('value', 'type', 'fold', 'longitude', 'latitude', 'layer.1', 'layer.2'))
   expect_equal(dim(chain2$process.output[[1]]$df),  c(269, 7))
-  expect_is((chain2$model.output[[1]])$model, c('glm', 'lm'))
+  expect_is((chain2$model.output[[1]])$model, c('zoonModel'))
+  expect_is((chain2$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(chain2$report[[1]], 'RasterLayer')  
 
   expect_true(exists('chain4'))
@@ -250,7 +256,8 @@ test_that('chains work.', {
   expect_equal(names(chain4$process.output[[1]]$df), 
     c('value', 'type', 'fold', 'longitude', 'latitude', 'layer'))
   expect_equal(dim(chain4$process.output[[1]]$df),  c(269, 6))
-  expect_is((chain4$model.output[[1]])$model, c('glm', 'lm'))
+  expect_is((chain4$model.output[[1]])$model, c('zoonModel'))
+  expect_is((chain4$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(chain4$report[[1]], 'list')  
 
 
@@ -273,10 +280,9 @@ test_that('workflow with mix of syntax works.', {
   expect_equal(names(workSyn$process.output[[1]]$df), 
     c('value', 'type', 'fold', 'longitude',   'latitude',   'layer'))
   expect_equal(dim(workSyn$process.output[[1]][[1]]),  c(269, 6))
-  expect_is((workSyn$model.output[[1]])$model, c('glm', 'lm'))
+  expect_is((workSyn$model.output[[1]])$model, c('zoonModel'))
+  expect_is((workSyn$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is((workSyn$model.output[[1]])$data, c('data.frame'))
   expect_is(workSyn$report[[1]], 'list')
 
 })
-
-
