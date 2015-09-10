@@ -175,7 +175,7 @@ RunModels <- function(df, modelFunction, paras, workEnv){
   # If external validation dataset exists, predict that;.
   if(0 %in% df$fold){
     
-    pred <- ZoonPredict(modelFold,
+    pred <- ZoonPredict(m,
                         newdata = df[df$fold == 0, 6:NCOL(df), drop = FALSE])
     
     dfOut$predictions[df$fold == 0] <- pred 

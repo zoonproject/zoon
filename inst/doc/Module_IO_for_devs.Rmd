@@ -25,8 +25,8 @@ Out: df with longitude latitude value type fold
 out: raster layer or raster stack
 
 ### Process
-in: list(df with value, type, fold, lon, lat + covs, covar raster)
-out:  list(df with value, type, fold, lon, lat + covs, covar raster)
+in: list(df with value, type, fold, longitude, latitude + covs, covar raster)
+out:  list(df with value, type, fold, longitude, latitude + covs, covar raster)
 
 
 ### Model
