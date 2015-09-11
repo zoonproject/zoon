@@ -18,7 +18,7 @@ On Windows:
 install.packages(c("methods", "raster", "sp (>= 1.0-13)", "assertthat", "rlist", "RCurl", "httr", "httpuv", "dismo"))
 
 # install the Windows binary of the latest release
-install.packages('https://github.com/zoonproject/zoon/releases/download/0.3.1/zoon_0.3.1.zip',
+install.packages('https://github.com/zoonproject/zoon/releases/download/0.3.2/zoon_0.3.2.zip',
                 repos = NULL, method = 'libcurl')
 
 # load zoon
@@ -32,7 +32,7 @@ and on OSX or Linux:
 install.packages(c("methods", "raster", "sp (>= 1.0-13)", "assertthat", "rlist", "RCurl", "httr", "httpuv", "dismo"))
 
 # install the tarball of the latest release
-install.packages('https://github.com/zoonproject/zoon/releases/download/0.3.1/zoon_0.3.1.tar.gz',
+install.packages('https://github.com/zoonproject/zoon/releases/download/0.3.2/zoon_0.3.2.tar.gz',
                  repos = NULL, method = 'libcurl')
 
 # load zoon

@@ -17,28 +17,28 @@ LoadModule <- function(module){
   # Sub and deparse argument, then remove extra quote marks.
   module <- deparse(substitute(module))
   module <- gsub('"', '', module)
-
+  
   # Create url that matches zoon repo
   # .sha will vary based on whether this is pegged to a specific version of
   # modules
   zoonURL <- 
     sprintf('https://raw.githubusercontent.com/zoonproject/modules/%s/R/%s.R',
             .sha, module)
-
+  
   # If module is a path, load module
   if (file.exists(module)){
     txt <- parse(text = paste(readLines(module), collapse="\n"))
-  # If zoonURL is a zoon repo url, load module
-  #   Could probably do same thing as GetModule here to avoid repeated web call
+    # If zoonURL is a zoon repo url, load module
+    #   Could probably do same thing as GetModule here to avoid repeated web call
   } else if (url.exists(zoonURL, .opts=list(ssl.verifypeer=FALSE))){
     txt <- parse(text = getURL(zoonURL, ssl.verifypeer=FALSE))
-  # If module on its own is a url, load module
+    # If module on its own is a url, load module
   } else if (url.exists(module, .opts=list(ssl.verifypeer=FALSE))){
     txt <- parse( text = getURL(module, ssl.verifypeer=FALSE))
-  # Otherwise throw error.
+    # Otherwise throw error.
   } else {
     stop(paste('Cannot find "', module, 
-      '". Check the URL or check that the module is at github.com/zoonproject'))
+               '". Check the URL or check that the module is at github.com/zoonproject'))
   }
   # Load to global environment
   eval(txt, envir = globalenv())
@@ -74,7 +74,7 @@ GetModule <- function(module, forceReproducible){
   zoonURL <- 
     paste0('https://raw.githubusercontent.com/zoonproject/modules/master/R/',
            module, '.R')
-
+  
   # If the module is in global namespace, use that function
   #   unless forceReproduce is TRUE, in which case we want to get from repo.
   #   
@@ -85,20 +85,20 @@ GetModule <- function(module, forceReproducible){
   } else {
     rawText <- getURL(zoonURL, ssl.verifypeer=FALSE)
   } 
-
+  
   # getURL returns "Not Found" if no webpage found.
   #   Use this to avoid two web call.s
   if(rawText == "Not Found") {
     stop(paste('Cannot find "', module, 
-      '". Check that the module is on the zoon repository or in the global namespace.'))
+               '". Check that the module is on the zoon repository or in the global namespace.'))
   }
-
+  
   # Parse text from webpage.
   txt <- parse(text = rawText)
   
   # Evaluate text in the workflow call environment
   eval(txt, envir = parent.frame(4))
-
+  
   return(module)
 }
 
@@ -156,23 +156,30 @@ RunModels <- function(df, modelFunction, paras, workEnv){
   # Skip otherwise
   if(k > 1){
     for(i in 1:k){
-      modelFold <- do.call(modelFunction, c(df = list(df[df$fold != i, ]), 
+      modelFold <- do.call(modelFunction, c(.df = list(df[df$fold != i, ]), 
                                             paras),
                            envir = workEnv)
-      dfOut$predictions[df$fold == i] <- 
-        predict(modelFold, newdata = df[df$fold == i, 6:NCOL(df), drop=FALSE], 
-                type = 'response') 
+      
+      pred <- ZoonPredict(modelFold,
+                          newdata = df[df$fold == i, 6:NCOL(df), drop = FALSE])
+      
+      dfOut$predictions[df$fold == i] <- pred 
+      
     }
   }
   
   # Run model on all data except external validation data
-  m <- do.call(modelFunction, c(df = list(df[df$fold != 0, ]), paras), 
+  m <- do.call(modelFunction, c(.df = list(df[df$fold != 0, ]), paras), 
                envir = workEnv)
   
   # If external validation dataset exists, predict that;.
   if(0 %in% df$fold){
-    dfOut$predictions[df$fold == 0] <- 
-      predict(m, newdata = df[df$fold == 0, ], type = 'response')
+    
+    pred <- ZoonPredict(m,
+                        newdata = df[df$fold == 0, 6:NCOL(df), drop = FALSE])
+    
+    dfOut$predictions[df$fold == 0] <- pred 
+    
   }
   
   # Return list of crossvalid and external validation predictions 
@@ -199,50 +206,50 @@ RunModels <- function(df, modelFunction, paras, workEnv){
 # Also occurrence = "list(mod1, mod2)" is probably bad.
 
 CheckModList <- function(x){
-
+  
   # Should accept occurrence = 'module1', but NOT 
   #   occurrence = 'module1(k=2)', or occurrence = 'list(mod1, mod1)'
   if (inherits(x, 'character')){
     if (grepl('[!#$%&*+,-/:;<>?@[\ ]^_`| ]', x)){
       stop(paste('If specifying module arguments please use the form',
-        'Module(para = 2), without quotes. No special characters should exist',
-        'in module names.'))
+                 'Module(para = 2), without quotes. No special characters should exist',
+                 'in module names.'))
     }
   }
   
   # If argument is passed as unquoted moduleName: occurrence = ModuleName, 
   if (class(x) == 'name'){
     ModuleList <- list(list(module = as.character(x), paras = list()))
-  
-  # If list of modules given: occurrence = list(Mod1, Mod2), 
-  #   If list(Mod1(k=2), Mod2(p = 3)), parameters sorted in 
-  #   FormatModuleList
+    
+    # If list of modules given: occurrence = list(Mod1, Mod2), 
+    #   If list(Mod1(k=2), Mod2(p = 3)), parameters sorted in 
+    #   FormatModuleList
   } else if (x[[1]] == 'list') {
     listCall <- as.list(x)
     listCall[[1]] <- NULL
     ModuleList <- lapply(listCall, FormatModuleList)
-
-  # If Chained modules given: occurrence = Chain(Mod1, Mod2),
+    
+    # If Chained modules given: occurrence = Chain(Mod1, Mod2),
   } else if (x[[1]] == 'Chain'){
     listCall <- as.list(x)
     listCall[[1]] <- NULL
     ModuleList <- lapply(listCall, FormatModuleList) 
     attr(ModuleList, 'chain') <- TRUE
-  
-  # If unquoted module w/ paras given: occurrence = Module1(k=2)
+    
+    # If unquoted module w/ paras given: occurrence = Module1(k=2)
   } else if (identical(class(x[[1]]), 'name')){
     # Parameters
     paras <- as.list(x)
     paras[[1]] <- NULL
     ModuleList <- list(list(module = as.character(x[[1]]), paras = paras))
-  # Deal with all quoted forms
-  #   Can include 'module1', 'module(para = 2)', 'module(p = 2, q = 'wer')'
+    # Deal with all quoted forms
+    #   Can include 'module1', 'module(para = 2)', 'module(p = 2, q = 'wer')'
   } else if(inherits(x, 'character')){
     ModuleList <- list(SplitArgs(x))
   }  else {
     stop(paste('Please check the format of argument', as.character(x)))
   } 
-
+  
   return(ModuleList)
 }
 
@@ -267,9 +274,9 @@ SplitArgs <- function(string){
   }
   sepArgs <- (strsplit(args, ','))[[1]]
   arguments <- lapply(strsplit(sepArgs, '='), 
-    function(x) gsub(' ', '', x[2]))
+                      function(x) gsub(' ', '', x[2]))
   names(arguments) <- unlist(lapply(strsplit(sepArgs, '='), 
-    function(x) gsub(' ', '', x[1])))
+                                    function(x) gsub(' ', '', x[1])))
   return(list(module = module, paras = arguments))
 }
 
@@ -284,7 +291,7 @@ SplitArgs <- function(string){
 FormatModuleList <- function(x){
   # Turn 'call' or 'name' into list.
   listx <- as.list(x)
-
+  
   # Empty list to populate.
   newList <- list()
   newList$module <- listx[[1]]
@@ -311,14 +318,14 @@ ExtractAndCombData <- function(occurrence, ras){
     occurrence <- occurrence[!bad.coords, ]
     warning ('Some occurrence points are outside the raster extent and have been removed before modelling')
   }
-
+  
   # extract covariates from lat long values in df.
   occurrenceCovariates <- as.matrix(raster::extract(ras, occurrence[, c('longitude', 'latitude')]))
   names(occurrenceCovariates) <- names(ras)  
-
+  
   # combine with the occurrence data
   df <- cbind(occurrence, occurrenceCovariates)
-
+  
   
   # Return as list of df and ras as required by process modules
   return(list(df=df, ras=ras))
@@ -326,18 +333,28 @@ ExtractAndCombData <- function(occurrence, ras){
 }
 
 
-#Chain
-#
-#This function does nothing. However using Chain(modules... ) in a call
-#  to workflow will chain the modules together rather than  
-#  run in separate analyses. For occurrence or covariate modules the datasets are joined. 
-#  Processes are run sequentially.
-#@param ... List of modules to be chained.
-#
-#@name Chain
+#'Chain modules together
+#'
+#'\code{Chain} combines multiple modules of the same module type such that they are
+#' executed sequentially and their outputs combined.
+#' For example, process modules may be \code{Chain}ed to carry out successive
+#'  processing operations. By contrast, \code{list}ing modules of the same type
+#'  would split the workflow into multiple parallel workflows, each using a
+#'  different module at this step.
+#' Similarly for occurrence or covariate modules the datasets are joined
+#' (row- or layer-wise) whereas \code{list} would carry out separate analyses. 
+#' Model and output modules may not be chained. 
+#' Developers should note that this function is not actually used - calls using
+#'  \code{Chain} are parsed by workflow, with behaviour similar to this function.
+#'@param ... List of modules to be chained.
+#'@export
+#'
+#'@name Chain
 
 Chain <- function(...){
-  NULL
+  ans <- list(...)
+  attr(ans, 'chain') <- TRUE
+  return (ans)
 }
 
 
@@ -351,11 +368,11 @@ Chain <- function(...){
 SortArgs <- function(occSub, covSub, proSub, modSub, outSub, forceReproducible){
   call <- paste0("workflow(", 
                  "occurrence = ", occSub,
-               ", covariate = ", covSub,
-               ", process = ", proSub,
-               ", model = ", modSub,
-               ", output = ", outSub,
-               ", forceReproducible = ", as.character(forceReproducible), ")")
+                 ", covariate = ", covSub,
+                 ", process = ", proSub,
+                 ", model = ", modSub,
+                 ", output = ", outSub,
+                 ", forceReproducible = ", as.character(forceReproducible), ")")
 }    
 
 
@@ -368,7 +385,7 @@ SortArgs <- function(occSub, covSub, proSub, modSub, outSub, forceReproducible){
 #@name SplitCall
 
 SplitCall <- function(call){
-
+  
   # Regex to find each argument within call.
   #   Find 3 patterns and sub whole string with just middle pattern
   #   Middle pattern is the argument name.
@@ -378,14 +395,14 @@ SplitCall <- function(call){
   model <- gsub('(.*model = )(.*)(, output.*$)', '\\2', call)
   output <- gsub('(.*output = )(.*)(, forceReproducible.*$)', '\\2', call)
   forceReproducible <- gsub('(.*forceReproducible = )(.*)())', '\\2', call)
-
+  
   # Make vector and add names.
   split <- c(occurrence, covariate, process, model, output, forceReproducible)
   names(split) <- c('occurrence', 'covariate', 'process', 
-    'model', 'output', 'forceReproducible')
+                    'model', 'output', 'forceReproducible')
   
   return(split)
-
+  
 }
 
 
@@ -404,15 +421,15 @@ SplitCall <- function(call){
 #@name ErrorAndSave
 
 ErrorAndSave <- function(cond, mod, e){
-
+  
   # Create list to be populated
   #  Include the call from the workflow environment e
   w <- list(occurrence.output = NULL,
-       covariate.output = NULL,
-       process.output = NULL,
-       model.output = NULL,
-       report = NULL,
-       call = e$call)
+            covariate.output = NULL,
+            process.output = NULL,
+            model.output = NULL,
+            report = NULL,
+            call = e$call)
   
   # Depending on mod argument, replace NULLS in w with the value of module
   #   output. To get the module output we have to reference the workflow
@@ -430,13 +447,13 @@ ErrorAndSave <- function(cond, mod, e){
     w$model.output <- e$model.output
   }
   class(w) <- 'zoonWorkflow'
-
+  
   # Select the module type using numeric mod argument
   module <- c('occurrence', 'covariate', 'process', 'model', 'output')[mod]
-
+  
   # R CMD check apparently dislikes this assignment to the global environemtn
   assign('tmpZoonWorkflow', w,  envir = .GlobalEnv)
-
+  
   # Give useful messages.
   # What were the errors that were caught be tryCatch.
   message('Caught errors:\n',  cond)
