@@ -26,7 +26,7 @@
 BuildModule <- function(object, type, dir='.', title = '',  description = '', author = '', email = '', paras=NULL){
   stopifnot(is(object, 'function'))
   stopifnot(tolower(type) %in% c('occurrence', 'covariate', 'process', 'model', 'diagnostic', 'output'))
-  is.writeable(dir)
+  Writeable(dir)
 
   
   
