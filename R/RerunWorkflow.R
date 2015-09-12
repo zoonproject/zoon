@@ -34,7 +34,7 @@ RerunWorkflow <- function(workflow, from = NULL) {
 
   # Find first NULL modules and run from there.
   if (is.null(from)) {
-    NullModules <- sapply(list.subset(workflow, c(1:5)), is.null)
+    NullModules <- sapply(workflow[1:5], is.null)
     if (!sum(NullModules) == 0){
       from <- which.max(NullModules)
     } else {
