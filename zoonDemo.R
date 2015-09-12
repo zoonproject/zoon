@@ -260,7 +260,7 @@ BuildModule(SpOcc, type = "Occurrence", dir = ".",
 # Any input
 LocalRaster <- function(filenames){
   
-  if(is.string(filenames)){
+  if(is.character(filenames)){
     raster <- raster(filenames)
   } else if(is.list(filenames)) {
     rasterList <- lapply(filenames, raster)
