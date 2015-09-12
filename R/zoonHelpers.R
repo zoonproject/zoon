@@ -112,7 +112,7 @@ GetModule <- function(module, forceReproducible){
 
 LapplyGetModule <- function(modules, forceReproducible){
   lapply(modules, function(x) 
-    list.append(func = GetModule(as.character(x$module), forceReproducible), x))
+    c(x, func = GetModule(as.character(x$module), forceReproducible)))
 }
 
 
