@@ -10,8 +10,7 @@ apt_packages:
  - libv8-dev  # for V8 package, for spocc
  
 before_install:
- - sudo apt-get install libgdal1-dev libgdal-dev libgeos-c1=3.3.3-1.1 libspatialite3=3.1.0~rc2-1ubuntu1
- - sudo apt-get install -y libgeos-dev # for rgeos, for spocc
+ - sudo apt-get install -y libgdal1-dev libgdal-dev libgeos-dev
 
 # these ones have linux binaries available at: https://launchpad.net/~marutter/+archive/ubuntu/c2d4u/ 
 # so they can be loaded much more quickly
