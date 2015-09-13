@@ -28,6 +28,7 @@ apt_packages:
 r_binary_packages:
  - rgeos
  - rgbif
+ - rgdal
  - spocc
  - SDMTools
  - RNCEP
