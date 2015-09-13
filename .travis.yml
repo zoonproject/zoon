@@ -19,7 +19,6 @@ before_install:
 apt_packages:
  - libnetcdf-dev
  - netcdf-bin
- - libgdal-dev
  - libproj-dev
  - libgeos-dev
  - libv8-dev  # for V8 package, for spocc
