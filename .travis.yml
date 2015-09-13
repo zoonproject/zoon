@@ -5,6 +5,10 @@ sudo: required
 # R packages not listed in DESCRIPTION, but required for running the tests
 # (i.e. because modules depend on them)
 
+# linux system dependencies for R packages
+apt_packages:
+ - libv8-dev  # for V8 package, for spocc
+
 # these ones have linux binaries available at: https://launchpad.net/~marutter/+archive/ubuntu/c2d4u/ 
 # so they can be loaded much more quickly
 #r_binary_packages:
@@ -32,4 +36,8 @@ r_packages:
  - randomForest
  - mgcv
  - htmlwidgets
+ - covr  # for code test coverage stats
 
+# get code covarage stats for coveralls
+after_success:
+ - Rscript -e 'covr::coveralls()'
