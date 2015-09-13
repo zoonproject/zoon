@@ -29,13 +29,6 @@ r_packages:
  - sperrorest
  - rgbif
  - V8
- - spocc
- - SDMTools
- - RNCEP
- - rfigshare
- - randomForest
- - mgcv
- - htmlwidgets
  - covr  # for code test coverage stats
 
 # get code covarage stats for coveralls
