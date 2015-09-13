@@ -10,6 +10,7 @@ apt_packages:
  - libv8-dev  # for V8 package, for spocc
  - libgeos-dev # for rgeos, for spocc
  - libproj-dev # for rgdal
+ - libhdf5-dev # for libhdf5-serial-dev
  - libhdf5-serial-dev # for libgdal-dev
  - libgdal-dev # for rgdal
  - libgdal1-dev # for rgdal
