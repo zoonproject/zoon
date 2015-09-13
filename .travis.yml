@@ -11,14 +11,14 @@ apt_packages:
 
 # these ones have linux binaries available at: https://launchpad.net/~marutter/+archive/ubuntu/c2d4u/ 
 # so they can be loaded much more quickly
-#r_binary_packages:
-# - spocc
-# - SDMTools
-# - RNCEP
-# - rfigshare
-# - randomForest
-# - mgcv
-# - htmlwidgets
+r_binary_packages:
+ - spocc
+ - SDMTools
+ - RNCEP
+ - rfigshare
+ - randomForest
+ - mgcv
+ - htmlwidgets
 
 # these will be built from source, which takes longer
 r_packages:
