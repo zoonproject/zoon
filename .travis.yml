@@ -8,13 +8,12 @@ sudo: required
 # linux system dependencies for R packages
 apt_packages:
  - libv8-dev  # for V8 package, for spocc
- - libgeos-dev # for rgeos, for spocc
- - libproj-dev # for rgdal
- - libhdf5-7 # for the next one down...
- - libhdf5-dev # for libhdf5-serial-dev
- - libhdf5-serial-dev # for libgdal-dev
- - libgdal-dev # for rgdal
- - libgdal1-dev # for rgdal
+ 
+before_install:
+ - sudo apt-get update
+ - sudo apt-get install -y libgeos-dev # for rgeos, for spocc
+ - sudo apt-get install -y libgdal-dev # for rgdal
+ - sudo apt-get install -y libproj-dev # for rgdal
 
 # these ones have linux binaries available at: https://launchpad.net/~marutter/+archive/ubuntu/c2d4u/ 
 # so they can be loaded much more quickly
