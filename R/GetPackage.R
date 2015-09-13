@@ -13,7 +13,7 @@ GetPackage <- function (package) {
     
     # otherwise use install.packages
     install.packages(package,
-                     repos = "https://cran.rstudio.com")
+                     repos = "http://cran.rstudio.com")
 
     # now load the package
     library(package,
