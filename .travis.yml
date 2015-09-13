@@ -16,6 +16,7 @@ apt_packages:
 # these ones have linux binaries available at: https://launchpad.net/~marutter/+archive/ubuntu/c2d4u/ 
 # so they can be loaded much more quickly
 r_binary_packages:
+ - rgeos
  - rgbif
  - spocc
  - SDMTools
@@ -28,7 +29,6 @@ r_binary_packages:
 # these will be built from source, which takes longer
 r_packages:
  - biomod2
- - rgeos
  - leaflet
  - viridis
  - GRaF
