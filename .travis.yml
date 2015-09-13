@@ -9,11 +9,11 @@ sudo: required
 # https://github.com/travis-ci/travis-ci/issues/2683
 # and many other places
 before_install:
- - sudo mv /etc/apt/sources.list.d/pgdg-source.list* /tmp
- - sudo apt-get remove -y libgdal1
+# - sudo mv /etc/apt/sources.list.d/pgdg-source.list* /tmp
+# - sudo apt-get remove -y libgdal1
  - sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
  - sudo apt-get update -y
- - sudo apt-get install -y libgdal1-dev libgdal-dev libgeos-c1=3.3.3-1.1 libspatialite3=3.1.0~rc2-1ubuntu1
+# - sudo apt-get install -y libgdal1-dev libgdal-dev libgeos-c1=3.3.3-1.1 libspatialite3=3.1.0~rc2-1ubuntu1
 
 # linux system dependencies for R packages
 apt_packages:
@@ -36,7 +36,7 @@ r_binary_packages:
 
 # these will be built from source, which takes longer
 r_packages:
- - rgdal  # although there is a binary for it, a problem with gdal means we must build from source
+# - rgdal  # although there is a binary for it, a problem with gdal means we must build from source
  - rgbif  # and as rgbif ...
  - spocc  # ... and spocc rely on rgdal, we have to build these from source too 
  - biomod2
