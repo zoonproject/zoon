@@ -112,7 +112,7 @@ GetModule <- function(module, forceReproducible){
 
 LapplyGetModule <- function(modules, forceReproducible){
   lapply(modules, function(x) 
-    list.append(func = GetModule(as.character(x$module), forceReproducible), x))
+    c(x, func = GetModule(as.character(x$module), forceReproducible)))
 }
 
 
@@ -477,4 +477,15 @@ PasteAndDep <- function(x){
 }
 
 
+# Writeable
+# 
+# Check whether we can write to a given filepath, throw an error if not.
+# Inspired by the is.writeable functionality in assertthat
+# @name Writeable
+Writeable <- function (dir) {
+  stopifnot(is.character(dir))
+  stopifnot(length(dir) == 1)
+  stopifnot(file.exists(dir))
+  stopifnot(file.access(dir, mode = 2)[[1]] == 0)
+}
 

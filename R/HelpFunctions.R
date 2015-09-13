@@ -12,7 +12,7 @@
 ModuleHelp <- function(module){
 
   module <- as.character(substitute(module))
-  assert_that(is.string(module))
+  stopifnot(is.character(module) & length(module) == 1)
 
   helpURL <- paste0('https://raw.githubusercontent.com/zoonproject/modules/master/man/', module, '.Rd')
 

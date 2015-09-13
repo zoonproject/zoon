@@ -9,8 +9,6 @@ Description: A package for reproducible species distribution modelling. The
     SDM workflows and returns output that is fully reproducible.
 License: BSD_3_clause + file LICENSE
 Imports:
-    assertthat,
-    rlist,
     RCurl,
     httr,
     httpuv,

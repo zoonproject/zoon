@@ -37,7 +37,7 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
   if(sum(sapply(list(occSub, covSub, proSub, modSub, outSub), is.null)) == 5){
     stop('At least one module type must be changed.')
   }
-  assert_that(inherits(workflow, 'zoonWorkflow'))
+  stopifnot(inherits(workflow, 'zoonWorkflow'))
 
   # Separate the original work flow.
   oldCallArgs <- SplitCall(workflow$call)

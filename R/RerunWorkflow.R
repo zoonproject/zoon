@@ -25,16 +25,16 @@
 
 RerunWorkflow <- function(workflow, from = NULL) {
   
-  assert_that(inherits(workflow, 'zoonWorkflow'))
+  stopifnot(inherits(workflow, 'zoonWorkflow'))
 
   # If from isn't NULL, it should be an integer 1:5
   if (!is.null(from)){
-    assert_that(from %in% c(1:5) )
+   stopifnot(from %in% c(1:5) )
   }
 
   # Find first NULL modules and run from there.
   if (is.null(from)) {
-    NullModules <- sapply(list.subset(workflow, c(1:5)), is.null)
+    NullModules <- sapply(workflow[1:5], is.null)
     if (!sum(NullModules) == 0){
       from <- which.max(NullModules)
     } else {
