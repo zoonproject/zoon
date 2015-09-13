@@ -38,7 +38,7 @@ r_binary_packages:
 
 # these will be built from source, which takes longer
 r_packages:
- - gdal
+ - rgdal
  - biomod2
  - leaflet
  - viridis
