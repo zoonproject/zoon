@@ -5,16 +5,21 @@ sudo: required
 # R packages not listed in DESCRIPTION, but required for running the tests
 # (i.e. because modules depend on them)
 
-r_packages:
- - randomForest
- - RNCEP
+# these ones have linux binaries available at: https://launchpad.net/~marutter/+archive/ubuntu/c2d4u/ 
+# so they can be loaded much more quickly
+r_binary_packages:
  - spocc
- - biomod2
+ - SDMTools
+ - RNCEP
  - rfigshare
- - leaflet
+ - randomForest
+ - mgcv
  - htmlwidgets
+
+# these will be built from source, which takes longer
+r_packages:
+ - biomod2
+ - leaflet
  - viridis
  - GRaF
  - sperrorest
- - SDMTools
- - mgcv
