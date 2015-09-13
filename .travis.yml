@@ -47,6 +47,9 @@ r_packages:
  - V8
  - covr  # for code test coverage stats
 
+before_script:
+ - testthat::test_check('zoon')
+
 # get code covarage stats for coveralls
 after_success:
  - Rscript -e 'covr::coveralls()'
