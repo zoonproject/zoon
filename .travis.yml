@@ -31,7 +31,6 @@ apt_packages:
 # - SDMTools
 # - RNCEP
 # - rfigshare
-# - randomForest
 # - mgcv
 # - htmlwidgets
 
@@ -46,6 +45,7 @@ r_packages:
 # - GRaF
 # - sperrorest
 # - V8
+ - randomForest
  - covr  # for code test coverage stats
 
 before_script:
