@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/goldingn/zoon.svg)](https://travis-ci.org/goldingn/zoon)
+
 # Zoön
 
 Zoön is a package for the reproducible and shareable analysis of species distribution models with a focus on the ability to compare between models and diagnostic output of models.
