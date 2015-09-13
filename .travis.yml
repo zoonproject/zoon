@@ -5,12 +5,19 @@ sudo: required
 # R packages not listed in DESCRIPTION, but required for running the tests
 # (i.e. because modules depend on them)
 
+before_install:
+ - sudo rm /etc/apt/sources.list.d/ubuntugis-stable-source.list
+ - sudo apt-get update -qq
+
 # linux system dependencies for R packages
 apt_packages:
+ - libnetcdf-dev
+ - netcdf-bin
+ - gdal-bin
+ - libgdal-dev
+ - libproj-dev
+ - libgeos-dev
  - libv8-dev  # for V8 package, for spocc
- 
-before_install:
- - sudo apt-get install -y libgdal1h libnetcdf-dev libhdf4-alt-dev libhdf5-7 libhdf5-dev libhdf5-serial-dev libgdal1-dev libgdal-dev libgeos-dev
 
 # these ones have linux binaries available at: https://launchpad.net/~marutter/+archive/ubuntu/c2d4u/ 
 # so they can be loaded much more quickly
