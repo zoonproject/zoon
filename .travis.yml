@@ -45,13 +45,14 @@ r_packages:
 # - GRaF
 # - sperrorest
 # - V8
- - randomForest
+# - randomForest
  - covr  # for code test coverage stats
-
-before_script:
- - R CMD build ../zoon
- - Rscript -e "library('zoon');testthat::test_check('zoon')"
 
 # get code covarage stats for coveralls
 after_success:
  - Rscript -e 'covr::coveralls()'
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
