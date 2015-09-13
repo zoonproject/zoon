@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/goldingn/zoon.svg)](https://travis-ci.org/goldingn/zoon)
+[![Build Status](https://travis-ci.org/zoonproject/zoon.svg)](https://travis-ci.org/zoonproject/zoon)
 
 # Zoön
 
