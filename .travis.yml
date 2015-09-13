@@ -8,6 +8,7 @@ sudo: required
 # linux system dependencies for R packages
 apt_packages:
  - libv8-dev  # for V8 package, for spocc
+ - libgeos-c1 # for rgeos, for spocc
 
 # these ones have linux binaries available at: https://launchpad.net/~marutter/+archive/ubuntu/c2d4u/ 
 # so they can be loaded much more quickly
