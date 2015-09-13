@@ -1,2 +1,20 @@
+# basic bits:
 language: r
 sudo: required
+
+# R packages not listed in DESCRIPTION, but required for running the tests
+# (i.e. because modules depend on them)
+
+r_packages:
+ - randomForest
+ - RNCEP
+ - spocc
+ - biomod2
+ - rfigshare
+ - leaflet
+ - htmlwidgets
+ - viridis
+ - GRaF
+ - sperrorest
+ - SDMTools
+ - mgcv
