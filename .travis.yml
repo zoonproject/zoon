@@ -11,7 +11,11 @@ r_packages:
  - devtools # for checking
 
 script:
- - Rscript -e 'devtools::check()'
+ - R CMD build .  # build
+ - FILE=$(ls -1t *.tar.gz | head -n 1)  # find the tarball
+ - R CMD check --as-cran --no-tests "${FILE}" # check as cran, without tests
+ - R CMD install "${FILE}"  # install the tarball
+ - Rscript -e "testthat::test_dir('tests')"  # run tests
 
 # get code covarage stats for coveralls
 after_success:
