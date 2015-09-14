@@ -8,6 +8,10 @@ apt_packages:
 
 r_packages:
  - covr  # for code test coverage stats
+ - devtools # for checking
+
+script:
+ - Rscript -e 'devtools::check()'
 
 # get code covarage stats for coveralls
 after_success:
