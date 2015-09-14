@@ -15,6 +15,7 @@ after_success:
 
 notifications:
   email:
-    - zoonproject@gmail.com
+    recipients:
+      - zoonproject@gmail.com
     on_success: change
     on_failure: change
