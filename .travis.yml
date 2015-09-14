@@ -14,12 +14,11 @@ script:
  - R CMD build .  # build
  - FILE=$(ls -1t *.tar.gz | head -n 1)  # find the tarball
  - R CMD check --as-cran --no-tests "${FILE}" # check as cran, without tests
- - R CMD install "${FILE}"  # install the tarball
- - Rscript -e "testthat::test_dir('tests')"  # run tests
+ - Rscript -e "library(testthat);test_dir('tests')"
 
 # get code covarage stats for coveralls
 after_success:
- - Rscript -e 'covr::coveralls()'
+ - Rscript -e 'library(covr);coveralls()'
 
 notifications:
   email:
