@@ -489,3 +489,72 @@ Writeable <- function (dir) {
   stopifnot(file.access(dir, mode = 2)[[1]] == 0)
 }
 
+
+#' Get MaxEnt
+#' 
+#' Helper function to get the MaxEnt java executable and install it in
+#'  the right locations for zoon modules that use `dismo::maxent` and
+#'  `biomod2`.
+#'  
+#' @details Since MaxEnt may not be distributed other than via the MaxEnt
+#' website, users must download the file themselves and place it in the
+#' right location for R packages to access it. This function helps with that.
+#' Just run \code{GetMaxEnt()} and follow the prompts in the terminal.
+#'  
+#' @export
+#' @name GetMaxEnt
+GetMaxEnt <- function () {
+  # Send the user to download the MaxEnt executable,
+  # then find and upload it
+  
+  # define text
+  browser_txt <- "\nTo get MaxEnt working, you'll need to download the executable
+  file from the MaxEnt website. The website will require you to give some details,
+  once you've done this please download the 'maxent.jar' file to somewhere
+  memorable (you'll have to find it again in a second).
+  
+  Press return to launch the MaxEnt website and continue."
+  
+  chooser_txt <- "\n\n\n\nzoon now needs to copy the 'maxent.jar' file to the
+  correct locations.
+  
+  Press return to locate the 'maxent.jar' file you just downloaded"
+  
+  # step one, download the file
+  message(browser_txt) # speak to user
+  invisible(readline()) # make them hit return
+  browseURL('http://www.cs.princeton.edu/~schapire/maxent/') # open the browser
+  
+  # step two, choose the file
+  message(chooser_txt) # speak to user
+  invisible(readline()) # make them hit return
+  file <- file.choose()
+  
+  # check it's maxent.jar
+  file_parts <- strsplit(file, '/')[[1]]
+  file_end <- file_parts[length(file_parts)]
+  if (file_end != 'maxent.jar') {
+    stop ("the file selected was not 'maxent.jar'")
+  }
+  
+  # copy to dismo's and biomod2's preferred locations
+  dismo_loc <- paste0(system.file(package = 'dismo'), '/java/maxent.jar')
+  biomod2_loc <- './maxent.jar'
+  dismo_success <- file.copy(file, dismo_loc, overwrite = TRUE)  
+  biomod2_success <- file.copy(file, biomod2_loc, overwrite = TRUE)  
+  
+  # message, warn, or error depending on the level of success
+  if (dismo_success) {
+    if (biomod2_success) {
+      message("maxent.jar successfully deployed for MaxEnt and BiomodModel modules")
+    } else {
+      warning ("maxent.jar successfully deployed for MaxEnt module, but not for BiomodModel module")
+    }
+  } else if (biomod2_success) {
+    warning ("maxent.jar successfully deployed for BiomodModel module, but not for MaxEnt module")
+  } else {
+    stop ("maxent.jar not deployed for MaxEnt or BiomodModel modules")
+  }
+  
+}
+
