@@ -8,15 +8,16 @@ apt_packages:
 
 r_packages:
  - covr  # for code test coverage stats
- - devtools # for checking
 
+# bespoke script to get around R CMD check/testthat integration bug
 script:
  - R CMD build .  # build
  - FILE=$(ls -1t *.tar.gz | head -n 1)  # find the tarball
  - R CMD check --as-cran --no-tests "${FILE}" # check as cran, without tests
- - Rscript -e "library(testthat);test_dir('tests')"
+ - Rscript -e "install.packages(list.files(pattern = '*.tar.gz$'), type = 'source', repos = NULL)"  # install package
+ - Rscript -e "library(testthat);test_dir('tests')" # test it, from inside R
 
-# get code covarage stats for coveralls
+# get code coverage stats for coveralls
 after_success:
  - Rscript -e 'library(covr);coveralls()'
 
@@ -24,5 +25,5 @@ notifications:
   email:
     recipients:
       - zoonproject@gmail.com
-    on_success: change
+    on_success: change  # only email when the status changes
     on_failure: change
