@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/zoonproject/zoon.svg)](https://travis-ci.org/zoonproject/zoon)
-[![Coverage Status](https://coveralls.io/repos/zoonproject/zoon/badge.svg?branch=master)](https://coveralls.io/r/zoonproject/zoon?branch=master)
 [![codecov.io](https://codecov.io/github/zoonproject/zoon/coverage.svg?branch=master)](https://codecov.io/github/zoonproject/zoon?branch=master)
 
 # Zoön
