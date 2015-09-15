@@ -19,7 +19,7 @@ script:
 
 # get code coverage stats for codecov
 after_success:
- - Rscript -e 'library(covr);coveralls();codecov()'
+ - Rscript -e 'library(covr);codecov()'
 
 notifications:
   email:
