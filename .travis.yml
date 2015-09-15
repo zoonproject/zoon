@@ -17,9 +17,9 @@ script:
  - Rscript -e "install.packages(list.files(pattern = '*.tar.gz$'), type = 'source', repos = NULL)"  # install package
  - Rscript -e "library(testthat);test_dir('tests')" # test it, from inside R
 
-# get code coverage stats for coveralls
+# get code coverage stats for codecov
 after_success:
- - Rscript -e 'library(covr);coveralls()'
+ - Rscript -e 'library(covr);coveralls();codecov()'
 
 notifications:
   email:
