@@ -170,6 +170,7 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
     )
   } else {
     occurrence.output <- workflow$occurrence.output
+    output$occurrence.output <- occurrence.output
   }
 
   if (from <= 2) {
@@ -185,7 +186,9 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
       }
     )
   } else {
-    output$covariate.output <- workflow$covariate.output
+    covariate.output <- workflow$covariate.output
+    output$covariate.output <- covariate.output
+    
   }
 
 
@@ -213,7 +216,8 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
       }
     )
   } else {
-    output$process.output <- workflow$process.output
+    process.output <- workflow$process.output
+    output$process.output <- process.output
   }
 
   
@@ -228,7 +232,8 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
       }
     )    
   } else {
-    output$model.output <- workflow$model.output
+    model.output <- workflow$model.output
+    output$model.output <- model.output
   }
   #output module
   # If output isn't chained, might have to lapply over 
@@ -247,7 +252,8 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
       }
     )
   } else {
-    output$report <- workflow$report
+    output.output <- workflow$report
+    output$report <- output.output
   }
 
 

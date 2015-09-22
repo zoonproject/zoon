@@ -135,6 +135,7 @@ RerunWorkflow <- function(workflow, from = NULL) {
     )
   } else {
     occurrence.output <- workflow$occurrence.output
+    output$occurrence.output <- occurrence.output
   }
 
   if (from <= 2) {
@@ -150,7 +151,8 @@ RerunWorkflow <- function(workflow, from = NULL) {
       }
     )
   } else {
-    output$covariate.output <- workflow$covariate.output
+    covariate.output <- workflow$covariate.output
+    output$covariate.output <- covariate.output
   }
 
 
@@ -178,7 +180,8 @@ RerunWorkflow <- function(workflow, from = NULL) {
       }
     )
   } else {
-    output$process.output <- workflow$process.output
+    process.output <- workflow$process.output
+    output$process.output <- process.output
   }
 
   
@@ -193,7 +196,8 @@ RerunWorkflow <- function(workflow, from = NULL) {
       }
     )    
   } else {
-    output$model.output <- workflow$model.output
+    model.output <- workflow$model.output
+    output$model.output <- model.output
   }
   #output module
   # If output isn't chained, might have to lapply over 
@@ -212,7 +216,8 @@ RerunWorkflow <- function(workflow, from = NULL) {
       }
     )
   } else {
-    output$report <- workflow$report
+    output.output <- workflow$report
+    output$report <- output.output
   }
 
 }
