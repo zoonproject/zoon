@@ -1,11 +1,9 @@
 ---
 title: "Module IO definitions for module developers"
-author: "Tim Lucas"
+author: "Tim Lucas & Nick Golding"
 date: "`r Sys.Date()`"
 output: 
   html_vignette:
-    theme: peaksea
-    highlight: zenburn
   pdf_document:
     theme: peaksea
     highlight: zenburn
@@ -20,6 +18,7 @@ output:
 
 ### Occurrence
 Out: `data.frame` with columns named:
+
 * `longitude`
 * `latitude`
 * `value`
@@ -31,49 +30,55 @@ out: `RasterLayer` or `RasterStack` object as defined in the `raster` package
 
 ### Process
 in: `list` with elements:
-- `data.frame` with columns named:
+
+1. `data.frame` with columns named:
  * `longitude`
  * `latitude`
  * `value`
  * `type`
  * `fold`
  * and additional columns giving covariate values
-- `RasterLayer` or `RasterStack` object as defined in the `raster` package
+2. `RasterLayer` or `RasterStack` object as defined in the `raster` package
 
 out: list with elements:
-- a `data.frame` with columns named:
+
+1. a `data.frame` with columns named:
  * `longitude`
  * `latitude`
  * `value`
  * `type`
  * `fold`
  * and additional columns giving covariate values
-- `RasterLayer` or `RasterStack` object as defined in the `raster` package
+2. `RasterLayer` or `RasterStack` object as defined in the `raster` package
 
 
 ### Model
 in: `.df` - a `data.frame` with columns named:
- * `longitude`
- * `latitude`
- * `value`
- * `type`
- * `fold`
- * and additional columns giving covariate values
+
+* `longitude`
+* `latitude`
+* `value`
+* `type`
+* `fold`
+* and additional columns giving covariate values
+
 out: a `ZoonModel` object defined using the `ZoonModel` function
 
 ### Output
 in:
-- `.ras` - `RasterLayer` or `RasterStack` object as defined in the `raster` package
-- a list with named elements:
- * `model` -  a `ZoonModel` object defined using the `ZoonModel` function
- * `data` - a `data.frame` with columns named:
- * `longitude`
- * `latitude`
- * `value`
- * `type`
- * `fold`
- * `predictions`
- * and additional columns giving covariate values 
+
+1. `.ras` - `RasterLayer` or `RasterStack` object as defined in the `raster` package
+2. a list with named elements:
+  * `model` -  a `ZoonModel` object defined using the `ZoonModel` function
+  * `data` - a `data.frame` with columns named:
+  * `longitude`
+  * `latitude`
+  * `value`
+  * `type`
+  * `fold`
+  * `predictions`
+  * and additional columns giving covariate values 
+
 out: Anything
 
 
