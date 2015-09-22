@@ -37,15 +37,19 @@ This is the main function of zoon. The arguments should specify at least five
 }
 \examples{
 # run a workflow, using the logistic regression model
-#work1 <- workflow(occurrence = 'UKAnophelesPlumbeus',
-#                 covariate = 'UKAir',
-#                 process = 'OneHundredBackground',
-#                 model = 'LogisticRegression',
-#                 output = 'SameTimePlaceMap')
+\dontrun{
 
-#str(work1, 1)
+work1 <- workflow(occurrence = 'UKAnophelesPlumbeus',
+                covariate = 'UKAir',
+                process = 'OneHundredBackground',
+                model = 'LogisticRegression',
+                output = 'SameTimePlaceMap')
 
-#work2 <- workflow('UKAnophelesPlumbeus', 'UKAir', 'OneHundredBackground',
-#           'RandomForest', 'PrintMap')
+str(work1, 1)
+
+work2 <- workflow('UKAnophelesPlumbeus', 'UKAir', 'OneHundredBackground',
+          'RandomForest', 'PrintMap')
+
+}
 }
 
