@@ -19,22 +19,61 @@ output:
 # Module IO definitions for module developers
 
 ### Occurrence
-Out: df with longitude latitude value type fold
+Out: `data.frame` with columns named:
+* `longitude`
+* `latitude`
+* `value`
+* `type`
+* `fold`
 
 ### Covariate
-out: raster layer or raster stack
+out: `RasterLayer` or `RasterStack` object as defined in the `raster` package
 
 ### Process
-in: list(df with value, type, fold, longitude, latitude + covs, covar raster)
-out:  list(df with value, type, fold, longitude, latitude + covs, covar raster)
+in: `list` with elements:
+- `data.frame` with columns named:
+ * `longitude`
+ * `latitude`
+ * `value`
+ * `type`
+ * `fold`
+ * and additional columns giving covariate values
+- `RasterLayer` or `RasterStack` object as defined in the `raster` package
+
+out: list with elements:
+- a `data.frame` with columns named:
+ * `longitude`
+ * `latitude`
+ * `value`
+ * `type`
+ * `fold`
+ * and additional columns giving covariate values
+- `RasterLayer` or `RasterStack` object as defined in the `raster` package
 
 
 ### Model
-in: df (called df) from process
-out: model object (that has predict method)
+in: `.df` - a `data.frame` with columns named:
+ * `longitude`
+ * `latitude`
+ * `value`
+ * `type`
+ * `fold`
+ * and additional columns giving covariate values
+out: a `ZoonModel` object defined using the `ZoonModel` function
 
 ### Output
-in: ras, list from model.output. list$model (model object from above) and list$data is a dataframe with sames from process.output + predictions. 
+in:
+- `.ras` - `RasterLayer` or `RasterStack` object as defined in the `raster` package
+- a list with named elements:
+ * `model` -  a `ZoonModel` object defined using the `ZoonModel` function
+ * `data` - a `data.frame` with columns named:
+ * `longitude`
+ * `latitude`
+ * `value`
+ * `type`
+ * `fold`
+ * `predictions`
+ * and additional columns giving covariate values 
 out: Anything
 
 
