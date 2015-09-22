@@ -55,19 +55,20 @@ NULL
 #'@name workflow
 #'@examples 
 #'# run a workflow, using the logistic regression model
-#'#work1 <- workflow(occurrence = 'UKAnophelesPlumbeus',
-#'#                 covariate = 'UKAir',
-#'#                 process = 'OneHundredBackground',
-#'#                 model = 'LogisticRegression',
-#'#                 output = 'SameTimePlaceMap')
+#'\dontrun{
 #'
-#'#str(work1, 1)
+#'work1 <- workflow(occurrence = 'UKAnophelesPlumbeus',
+#'                 covariate = 'UKAir',
+#'                 process = 'OneHundredBackground',
+#'                 model = 'LogisticRegression',
+#'                 output = 'SameTimePlaceMap')
 #'
-#'#work2 <- workflow('UKAnophelesPlumbeus', 'UKAir', 'OneHundredBackground',   
-#'#           'RandomForest', 'PrintMap')
+#'str(work1, 1)
 #'
+#'work2 <- workflow('UKAnophelesPlumbeus', 'UKAir', 'OneHundredBackground',   
+#'           'RandomForest', 'PrintMap')
 #'
-#'
+#'}
 
 workflow <- function(occurrence, covariate, process, model, output, forceReproducible=FALSE) {
 
