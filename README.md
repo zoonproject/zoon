@@ -18,7 +18,7 @@ On Windows:
 
 ```r
 # install all of the dependencies
-install.packages(c("raster", "sp (>= 1.0-13)", "RCurl", "httr", "httpuv", "dismo"))
+install.packages(c("raster", "sp (>= 1.0-13)", "RCurl", "dismo"))
 
 # install the Windows binary of the latest release
 install.packages('https://github.com/zoonproject/zoon/releases/download/0.3.2/zoon_0.3.2.zip',
@@ -32,7 +32,7 @@ and on OSX or Linux:
 
 ```r
 # install all of the dependencies
-install.packages(c("raster", "sp (>= 1.0-13)", "RCurl", "httr", "httpuv", "dismo"))
+install.packages(c("raster", "sp (>= 1.0-13)", "RCurl", "dismo"))
 
 # install the tarball of the latest release
 install.packages('https://github.com/zoonproject/zoon/releases/download/0.3.2/zoon_0.3.2.tar.gz',
@@ -75,7 +75,7 @@ ModuleHelp(LogisticRegression)
 
 ### Contributing modules
 
-Zoön has a modular structure, and we are hoping for user submitted modules. This allows Zoön to keep up to date with the fast-moving SDM field in a way a package maintained by a small team of developers can't. Modules are simple R scripts containing a single function and some metadata. They are currently kept [here](https://github.com/zoonproject/modules). The inputs and outputs of each module type are controlled. A brief description can be found [here](https://github.com/zoonproject/zoon/blob/master/vignettes/Module_IO_for_devs.Rmd). The function `BuildModule` is used to turn a function in an R session into a module. 
+Zoön has a modular structure, and we are hoping for user submitted modules. This allows Zoön to keep up to date with the fast-moving SDM field in a way a package maintained by a small team of developers can't. Modules are simple R scripts containing a single function and some metadata. They are currently kept [here](https://github.com/zoonproject/modules). The inputs and outputs of each module type are controlled. A brief description can be found [here](https://rawgit.com/zoonproject/zoon/master/inst/doc/Module_IO_for_devs.html). The function `BuildModule` is used to turn a function in an R session into a module. 
 
 Please note, Zoön is still being developed. We would love you to contribute modules, but can't yet guarantee that there won't be major changes that might break modules. We will try to fix user submitted modules if we break them. 
 
