@@ -25,69 +25,69 @@ GetModuleList <- function(renew = FALSE){
     return(moduleNames)
   } else {
 
-    # Get list of files in github repo
-    files <- gh_list_files('zoonproject', 'modules')
+    # modules we know belong to each type (doesn't matter which they are,
+    # but these should be fairly stable)
+    canaries <- c(occurrence = 'SpOcc',
+                  covariate = 'Bioclim',
+                  process = 'NoProcess',
+                  model = 'LogisticRegression',
+                  output = 'InteractiveMap')
+    
+    # get URLs for these modules
+    canary_urls <- helpURL <- paste0('https://raw.githubusercontent.com/zoonproject/modules/master/man/',
+                                     canaries,
+                                     '.Rd')
+    
+    # empty list for results
+    moduleNames <- list()
+    
+    for (i in 1:5) {
+      
+      # grab the rd file
+      rd_i <- readLines(url(canary_urls[i], method = 'libcurl'))
+      
+      # get te expected module type
+      type <- names(canaries)[i]
+      
+      # find the starting line
+      start_line <- grep(sprintf('^Other %s: ', type), rd_i)
+      
+      # find all section -closing parentheses
+      end_lines <- grep('^}$', rd_i)
+      
+      # find the end of this section
+      end_line <- min(end_lines[end_lines > start_line])
+      
+      # grab the required lines and combine
+      text <- paste(rd_i[start_line:end_line],
+                    collapse = '')
+      
+      # remove formatting we don't want
+      start_text <- sprintf('^Other %s: ', type)
+      text <- gsub(start_text, '', text)
+      text <- gsub('\\\\code\\{\\\\link\\{', '', text)
+      text <- gsub('\\}', '', text)
+      
+      # split into vector
+      text <- strsplit(text, ';')[[1]]
+      
+      # add the target module in
+      text <- sort(c(canaries[i], text))
+      
+      # remove any names
+      names(text) <- NULL
+      
+      # remove spaces
+      text <- gsub(' ', '', text)
+      
+      # add to results
+      moduleNames[[i]] <- text
+      
+    }
+    
+    names(moduleNames) <- names(canaries)
 
-    # Find files in directory 'R/'. Then remove unneeded characters.
-    mods <- files[grep('^R/', files)]
-    names <- gsub('^R/|.R$', '', mods)
-
-    # Remove ModulesDocumentation which is not a module.
-    moduleNames <- names[-grep('ModulesDocumentation', names)]
     .zoonHidden$moduleList <- moduleNames
     return(moduleNames)
   }
 }
-
-# Code largely taken from 
-
-github_auth <- function(appname = getOption("gh_appname"), key = getOption("gh_id"), 
-                        secret = getOption("gh_secret")) {
-  if (is.null(getOption("gh_token"))) {
-    myapp <- oauth_app(appname, key, secret)
-    token <- oauth2.0_token(oauth_endpoints("github"), myapp)
-    options(gh_token = token)
-  } else {
-    token <- getOption("gh_token")
-  }
-  return(token)
-}
-
-make_url <- function(owner, repo, sha) {
-  sprintf("https://api.github.com/repos/%s/%s/git/trees/%s?recursive=1", owner, repo, sha)
-}
-
-#probably should keep the secret in here, but can't work out how to fix it right now.
-gh_list_files <- function(owner, repo, ...) {
-  token <- github_auth(appname = "zoonproject", key = "945195231bd7edd336c9", secret = 'd43d121439b081db59e5f0852e25712294128e2f')
-
-  # if this is a dev version, find the most recent version of modules
-  if (.sha == 'master') {
-
-    sha <- FindNewestCommit(owner, rep, token)
-
-  } else {
-
-    # otherwise use the target sha for modules
-    sha <- .sha
-  
-  }    
-  
-  req <- GET(make_url(owner, repo, sha), config = list(token = token))
-  out <- content(req)
-  sapply(out$tree, "[[", "path")
-}
-
-FindNewestCommit <- function(owner, repo, token){
-  r <- GET('https://api.github.com/repos/zoonproject/modules/commits', config = list(token = token))
-  outSha <- content(r)
-
-  commits <- data.frame(t(unlist(sapply(outSha, function(l) c(l$commit$committer$date, l$sha)))), stringsAsFactors=FALSE)
-  commits$posixDate <- as.POSIXct(gsub('T|Z',' ', commits[,1]))
-
-  sha <- (commits[order(commits$posixDate, decreasing=TRUE),])[1,2]
-  return(sha)
-}
-
-
-
