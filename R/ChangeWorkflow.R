@@ -137,6 +137,24 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
 
   # First the data collection modules
   # Actually tryCatch here only tells user which module broke, nothing to save.
+  
+  # set up zoon object now so we can return it if there's an error
+  call <- SortArgs(occNew, covNew, proNew, modNew, outNew, forceReproducible)
+  
+  output <- list(occurrence.output = NULL,
+                 covariate.output = NULL,
+                 process.output = NULL,
+                 model.output = NULL,
+                 report = NULL,
+                 call = call,
+                 call.list = call.list)
+  
+  class(output) <- 'zoonWorkflow'
+  
+  # whether exiting on error, or successful completion, return this
+  on.exit(return (output))
+  
+  
   if (from <= 1) {
     tryCatch({
       occurrence.output <- lapply(occurrenceName, function(x) do.call(x$func, x$paras))
@@ -144,13 +162,15 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
       if (identical(attr(occurrence.module, 'chain'), TRUE)){
         occurrence.output <- list(do.call(rbind, occurrence.output))
       }
+      output$occurrence.output <- occurrence.output
     },  
       error = function(cond){
-        ErrorAndSave(cond, 1, e)
+        ErrorModule(cond, 1, e)
       }
     )
   } else {
     occurrence.output <- workflow$occurrence.output
+    output$occurrence.output <- occurrence.output
   }
 
   if (from <= 2) {
@@ -159,13 +179,16 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
       if (identical(attr(covariate.module, 'chain'), TRUE)){
         covariate.output <- list(do.call(raster::stack, covariate.output))
       }
+      output$covariate.output <- covariate.output
     },  
       error = function(cond){
-        ErrorAndSave(cond, 2, e)
+        ErrorModule(cond, 2, e)
       }
     )
   } else {
     covariate.output <- workflow$covariate.output
+    output$covariate.output <- covariate.output
+    
   }
 
 
@@ -186,13 +209,15 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
   if (from <= 3) {
     tryCatch({  
       process.output <-  DoProcessModules(process.module, processName, data, e)
+      output$process.output <- process.output
     },  
       error = function(cond){
-        ErrorAndSave(cond, 3, e)
+        ErrorModule(cond, 3, e)
       }
     )
   } else {
     process.output <- workflow$process.output
+    output$process.output <- process.output
   }
 
   
@@ -200,13 +225,15 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
   if (from <= 4) {
     tryCatch({
       model.output <- DoModelModules(model.module, modelName, process.output, e)
+      output$model.output <- model.output
     },  
       error = function(cond){
-        ErrorAndSave(cond, 4, e)
+        ErrorModule(cond, 4, e)
       }
     )    
   } else {
     model.output <- workflow$model.output
+    output$model.output <- model.output
   }
   #output module
   # If output isn't chained, might have to lapply over 
@@ -218,29 +245,18 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
     tryCatch({
       output.output <- DoOutputModules(output.module, outputName, 
                          covariate.module, covariate.output, model.output, e)
+      output$report <- output.output
     },  
       error = function(cond){
-        ErrorAndSave(cond, 5, e)
+        ErrorModule(cond, 5, e)
       }
     )
   } else {
-    output.output <- workflow$output.output
+    output.output <- workflow$report
+    output$report <- output.output
   }
 
-  call <- SortArgs(occNew, covNew, proNew, modNew, outNew, forceReproducible)
 
-  # Collate output
-  output <- list(occurrence.output = occurrence.output,
-              covariate.output = covariate.output,
-              process.output = process.output,
-              model.output = model.output,
-              report = output.output,
-              call = call,
-              call.list = call.list)
-
-  class(output) <- 'zoonWorkflow'
-  
-  return(output)
 }
 
 

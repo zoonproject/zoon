@@ -406,11 +406,11 @@ SplitCall <- function(call){
 }
 
 
-# ErrorAndSave
+# ErrorModule
 #
 # Function used in tryCatch calls in workflow.
-# If an error is caught, save the workflow to tmpZoonWorkflow.
-# And return some useful messages. Then stop().
+# If an error is caught, return some useful messages.
+# Then stop().
 # cond is the error messages passed by try catch.
 # mod is the modules number (1:5) to give NULLS to the correct modules.
 #
@@ -418,41 +418,16 @@ SplitCall <- function(call){
 #@param cond The error message that was caught in tryCatch.
 #@param mod Which module has failed? 1=occurrence, 2=covariate, 3=process
 #  4=model, 5=output.
-#@name ErrorAndSave
+#@name ErrorModule
 
-ErrorAndSave <- function(cond, mod, e){
-  
-  # Create list to be populated
-  #  Include the call from the workflow environment e
-  w <- list(occurrence.output = NULL,
-            covariate.output = NULL,
-            process.output = NULL,
-            model.output = NULL,
-            report = NULL,
-            call = e$call)
-  
-  # Depending on mod argument, replace NULLS in w with the value of module
-  #   output. To get the module output we have to reference the workflow
-  #   environment which was given as argument e.
-  if(mod > 1){
-    w$occurrence.output <- e$occurrence.output
-  }
-  if(mod > 2){
-    w$covariate.output <- e$covariate.output
-  }
-  if(mod > 3){
-    w$process.output <- e$process.output
-  }  
-  if(mod > 4){
-    w$model.output <- e$model.output
-  }
-  class(w) <- 'zoonWorkflow'
+ErrorModule <- function(cond, mod, e){
   
   # Select the module type using numeric mod argument
-  module <- c('occurrence', 'covariate', 'process', 'model', 'output')[mod]
-  
-  # R CMD check apparently dislikes this assignment to the global environemtn
-  assign('tmpZoonWorkflow', w,  envir = .GlobalEnv)
+  module <- c('occurrence',
+              'covariate',
+              'process',
+              'model',
+              'output')[mod]
   
   # Give useful messages.
   # What were the errors that were caught be tryCatch.
