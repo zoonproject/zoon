@@ -14,8 +14,13 @@ install:
   - ./pkg-build.sh install_deps
   - ./pkg-build.sh install_r covr  # for coverage stats
 
+# bespoke script to get around R CMD check/testthat integration bug
 script:
-  - ./pkg-build.sh run_tests
+ - R CMD build .  # build
+ - FILE=$(ls -1t *.tar.gz | head -n 1)  # find the tarball
+ - R CMD check --as-cran --no-tests "${FILE}" # check as cran, without tests
+ - Rscript -e "install.packages(list.files(pattern = '*.tar.gz$'), type = 'source', repos = NULL)"  # install package
+ - Rscript -e "library(testthat);test_dir('tests')" # test it, from inside R
 
 # get code coverage stats for codecov
 after_success:
