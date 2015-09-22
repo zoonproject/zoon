@@ -25,7 +25,7 @@
 #'      and better reproducibility
 #'@name zoon
 #'@docType package
-#'@import raster RCurl httpuv dismo
+#'@import raster RCurl dismo
 
 NULL
 

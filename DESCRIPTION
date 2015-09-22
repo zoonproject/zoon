@@ -10,7 +10,6 @@ Description: Reproducible and remixable species distribution modelling. The
 License: BSD_3_clause + file LICENSE
 Imports:
     RCurl,
-    httpuv,
     dismo
 Depends:
     raster,
