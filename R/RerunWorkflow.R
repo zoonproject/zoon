@@ -105,11 +105,11 @@ RerunWorkflow <- function(workflow, from = NULL) {
   # set up object to return on error
   
   # Collate output
-  output <- list(occurrence.output = occurrence.output,
-                 covariate.output = covariate.output,
-                 process.output = process.output,
-                 model.output = model.output,
-                 report = output.output,
+  output <- list(occurrence.output = NULL,
+                 covariate.output = NULL,
+                 process.output = NULL,
+                 model.output = NULL,
+                 report = NULL,
                  call = workflow$call,
                  call.list = workflow$call.list)
   
@@ -127,6 +127,7 @@ RerunWorkflow <- function(workflow, from = NULL) {
       if (identical(attr(occurrence.module, 'chain'), TRUE)){
         occurrence.output <- list(do.call(rbind, occurrence.output))
       }
+      output$occurrence.output <- occurrence.output
     },  
       error = function(cond){
         ErrorModule(cond, 1, e)
@@ -142,13 +143,14 @@ RerunWorkflow <- function(workflow, from = NULL) {
       if (identical(attr(covariate.module, 'chain'), TRUE)){
         covariate.output <- list(do.call(raster::stack, covariate.output))
       }
+      output$covariate.output <- covariate.output
     },  
       error = function(cond){
         ErrorModule(cond, 2, e)
       }
     )
   } else {
-    covariate.output <- workflow$covariate.output
+    output$covariate.output <- workflow$covariate.output
   }
 
 
@@ -169,13 +171,14 @@ RerunWorkflow <- function(workflow, from = NULL) {
   if (from <= 3) {
     tryCatch({  
       process.output <-  DoProcessModules(process.module, processName, data, e)
+      output$process.output <- process.output
     },  
       error = function(cond){
         ErrorModule(cond, 3, e)
       }
     )
   } else {
-    process.output <- workflow$process.output
+    output$process.output <- workflow$process.output
   }
 
   
@@ -183,13 +186,14 @@ RerunWorkflow <- function(workflow, from = NULL) {
   if (from <= 4) {
     tryCatch({
       model.output <- DoModelModules(model.module, modelName, process.output, e)
+      output$model.output <- model.output
     },  
       error = function(cond){
         ErrorModule(cond, 4, e)
       }
     )    
   } else {
-    model.output <- workflow$model.output
+    output$model.output <- workflow$model.output
   }
   #output module
   # If output isn't chained, might have to lapply over 
@@ -201,16 +205,15 @@ RerunWorkflow <- function(workflow, from = NULL) {
     tryCatch({
       output.output <- DoOutputModules(output.module, outputName, 
                          covariate.module, covariate.output, model.output, e)
+      output$report <- output.output
     },  
       error = function(cond){
         ErrorModule(cond, 5, e)
       }
     )
   } else {
-    output.output <- workflow$output.output
+    output$report <- workflow$report
   }
-
-
 
 }
 

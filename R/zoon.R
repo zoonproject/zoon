@@ -156,7 +156,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
     if (identical(attr(occurrence.module, 'chain'), TRUE)){
       occurrence.output <- list(do.call(rbind, occurrence.output))
     }
-    #return(occurrence.output)
+    output$occurrence.output <- occurrence.output
   },  
     error = function(cond){
       ErrorModule(cond, 1, e)
@@ -168,6 +168,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
     if (identical(attr(covariate.module, 'chain'), TRUE)){
       covariate.output <- list(do.call(raster::stack, covariate.output))
     }
+    output$covariate.output <- covariate.output
   },  
     error = function(cond){
       ErrorModule(cond, 2, e)
@@ -197,6 +198,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   
   tryCatch({  
     process.output <-  DoProcessModules(process.module, processName, data, e)
+    output$process.output <- process.output
   },  
     error = function(cond){
       ErrorModule(cond, 3, e)
@@ -207,6 +209,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   # Model module
   tryCatch({
     model.output <- DoModelModules(model.module, modelName, process.output, e)
+    output$model.output <- model.output
   },  
     error = function(cond){
       ErrorModule(cond, 4, e)
@@ -220,6 +223,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   tryCatch({
     output.output <- DoOutputModules(output.module, outputName, 
                        covariate.module, covariate.output, model.output, e)
+    output$report <- output.output
   },  
     error = function(cond){
       ErrorModule(cond, 5, e)

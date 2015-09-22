@@ -418,7 +418,7 @@ SplitCall <- function(call){
 #@param cond The error message that was caught in tryCatch.
 #@param mod Which module has failed? 1=occurrence, 2=covariate, 3=process
 #  4=model, 5=output.
-#@name ErrorAndSave
+#@name ErrorModule
 
 ErrorModule <- function(cond, mod, e){
   
