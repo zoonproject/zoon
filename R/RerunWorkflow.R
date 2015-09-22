@@ -101,6 +101,23 @@ RerunWorkflow <- function(workflow, from = NULL) {
   # If a module breaks we want to save the progress so far and let the user 
   # know which module broke.
 
+
+  # set up object to return on error
+  
+  # Collate output
+  output <- list(occurrence.output = occurrence.output,
+                 covariate.output = covariate.output,
+                 process.output = process.output,
+                 model.output = model.output,
+                 report = output.output,
+                 call = workflow$call,
+                 call.list = workflow$call.list)
+  
+  class(output) <- 'zoonWorkflow'
+  
+  # whether exiting on error, or successful completion, return this
+  on.exit(return (output))
+  
   # First the data collection modules
   # Actually tryCatch here only tells user which module broke, nothing to save.
   if (from <= 1) {
@@ -112,7 +129,7 @@ RerunWorkflow <- function(workflow, from = NULL) {
       }
     },  
       error = function(cond){
-        ErrorAndSave(cond, 1, e)
+        ErrorModule(cond, 1, e)
       }
     )
   } else {
@@ -127,7 +144,7 @@ RerunWorkflow <- function(workflow, from = NULL) {
       }
     },  
       error = function(cond){
-        ErrorAndSave(cond, 2, e)
+        ErrorModule(cond, 2, e)
       }
     )
   } else {
@@ -154,7 +171,7 @@ RerunWorkflow <- function(workflow, from = NULL) {
       process.output <-  DoProcessModules(process.module, processName, data, e)
     },  
       error = function(cond){
-        ErrorAndSave(cond, 3, e)
+        ErrorModule(cond, 3, e)
       }
     )
   } else {
@@ -168,7 +185,7 @@ RerunWorkflow <- function(workflow, from = NULL) {
       model.output <- DoModelModules(model.module, modelName, process.output, e)
     },  
       error = function(cond){
-        ErrorAndSave(cond, 4, e)
+        ErrorModule(cond, 4, e)
       }
     )    
   } else {
@@ -186,7 +203,7 @@ RerunWorkflow <- function(workflow, from = NULL) {
                          covariate.module, covariate.output, model.output, e)
     },  
       error = function(cond){
-        ErrorAndSave(cond, 5, e)
+        ErrorModule(cond, 5, e)
       }
     )
   } else {
@@ -194,18 +211,7 @@ RerunWorkflow <- function(workflow, from = NULL) {
   }
 
 
-  # Collate output
-  output <- list(occurrence.output = occurrence.output,
-              covariate.output = covariate.output,
-              process.output = process.output,
-              model.output = model.output,
-              report = output.output,
-              call = workflow$call,
-              call.list = workflow$call.list)
 
-  class(output) <- 'zoonWorkflow'
-  
-  return(output)
 }
 
 

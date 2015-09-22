@@ -137,6 +137,24 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
 
   # First the data collection modules
   # Actually tryCatch here only tells user which module broke, nothing to save.
+  
+  # set up zoon object now so we can return it if there's an error
+  call <- SortArgs(occNew, covNew, proNew, modNew, outNew, forceReproducible)
+  
+  output <- list(occurrence.output = NULL,
+                 covariate.output = NULL,
+                 process.output = NULL,
+                 model.output = NULL,
+                 report = NULL,
+                 call = call,
+                 call.list = call.list)
+  
+  class(output) <- 'zoonWorkflow'
+  
+  # whether exiting on error, or successful completion, return this
+  on.exit(return (output))
+  
+  
   if (from <= 1) {
     tryCatch({
       occurrence.output <- lapply(occurrenceName, function(x) do.call(x$func, x$paras))
@@ -146,7 +164,7 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
       }
     },  
       error = function(cond){
-        ErrorAndSave(cond, 1, e)
+        ErrorModule(cond, 1, e)
       }
     )
   } else {
@@ -161,7 +179,7 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
       }
     },  
       error = function(cond){
-        ErrorAndSave(cond, 2, e)
+        ErrorModule(cond, 2, e)
       }
     )
   } else {
@@ -188,7 +206,7 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
       process.output <-  DoProcessModules(process.module, processName, data, e)
     },  
       error = function(cond){
-        ErrorAndSave(cond, 3, e)
+        ErrorModule(cond, 3, e)
       }
     )
   } else {
@@ -202,7 +220,7 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
       model.output <- DoModelModules(model.module, modelName, process.output, e)
     },  
       error = function(cond){
-        ErrorAndSave(cond, 4, e)
+        ErrorModule(cond, 4, e)
       }
     )    
   } else {
@@ -220,27 +238,14 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
                          covariate.module, covariate.output, model.output, e)
     },  
       error = function(cond){
-        ErrorAndSave(cond, 5, e)
+        ErrorModule(cond, 5, e)
       }
     )
   } else {
     output.output <- workflow$output.output
   }
 
-  call <- SortArgs(occNew, covNew, proNew, modNew, outNew, forceReproducible)
 
-  # Collate output
-  output <- list(occurrence.output = occurrence.output,
-              covariate.output = covariate.output,
-              process.output = process.output,
-              model.output = model.output,
-              report = output.output,
-              call = call,
-              call.list = call.list)
-
-  class(output) <- 'zoonWorkflow'
-  
-  return(output)
 }
 
 
