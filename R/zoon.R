@@ -134,7 +134,22 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
 
   # If you want to parallelise modules, (properly on multicores), lapply will
   #   become snowfall::sflapply or newer things.
-
+  
+  # set up zoon object now so we can return it if there's an error
+  
+  output <- list(occurrence.output = NULL,
+                 covariate.output = NULL,
+                 process.output = NULL,
+                 model.output = NULL,
+                 report = NULL,
+                 call = call,
+                 call.list = call.list)
+  
+  class(output) <- 'zoonWorkflow'
+  
+  # whether exiting on error, or successful completion, return this
+  on.exit(return (output))
+  
   tryCatch({
     occurrence.output <- lapply(occurrenceName, function(x) do.call(x$func, x$paras))
     # Then bind together if the occurrence modules were chained
@@ -144,7 +159,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
     #return(occurrence.output)
   },  
     error = function(cond){
-      ErrorAndSave(cond, 1, e)
+      ErrorModule(cond, 1, e)
     }
   )
 
@@ -155,7 +170,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
     }
   },  
     error = function(cond){
-      ErrorAndSave(cond, 2, e)
+      ErrorModule(cond, 2, e)
     }
   )
 
@@ -172,7 +187,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
     }
   },  
     error = function(cond){
-      ErrorAndSave(cond, 3, e)
+      ErrorModule(cond, 3, e)
     }
   )
 
@@ -184,7 +199,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
     process.output <-  DoProcessModules(process.module, processName, data, e)
   },  
     error = function(cond){
-      ErrorAndSave(cond, 3, e)
+      ErrorModule(cond, 3, e)
     }
   )
   
@@ -194,7 +209,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
     model.output <- DoModelModules(model.module, modelName, process.output, e)
   },  
     error = function(cond){
-      ErrorAndSave(cond, 4, e)
+      ErrorModule(cond, 4, e)
     }
   )    
   #output module
@@ -207,23 +222,11 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
                        covariate.module, covariate.output, model.output, e)
   },  
     error = function(cond){
-      ErrorAndSave(cond, 5, e)
+      ErrorModule(cond, 5, e)
     }
   )
 
 
-
-  output <- list(occurrence.output = occurrence.output,
-              covariate.output = covariate.output,
-              process.output = process.output,
-              model.output = model.output,
-              report = output.output,
-              call = call,
-              call.list = call.list)
-
-  class(output) <- 'zoonWorkflow'
-  
-  return(output)
 }
 
 
