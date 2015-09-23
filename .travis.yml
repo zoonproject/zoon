@@ -1,18 +1,13 @@
-## Sample .travis.yml file for use with metacran/r-builder
-## See https://github.com/metacran/r-builder for details.
-
-language: c
+# basic bits:
+language: r
 sudo: required
 
-before_install:
-  - curl -OL https://raw.githubusercontent.com/metacran/r-builder/master/pkg-build.sh
-  - chmod 755 pkg-build.sh
-  - ./pkg-build.sh bootstrap
+# linux system dependencies for R packages
+apt_packages:
+ - libv8-dev  # for V8 package, for spocc
 
-install:
-  - sudo apt-get install libv8-dev  # for V8 package, for spocc 
-  - ./pkg-build.sh install_deps
-  - ./pkg-build.sh install_r covr  # for coverage stats
+r_packages:
+ - covr  # for code test coverage stats
 
 # bespoke script to get around R CMD check/testthat integration bug
 script:
@@ -26,19 +21,9 @@ script:
 after_success:
  - Rscript -e 'library(covr);codecov()'
 
-after_failure:
-  - ./pkg-build.sh dump_logs
-
 notifications:
   email:
     recipients:
       - zoonproject@gmail.com
-    on_success: change
+    on_success: change  # only email when the status changes
     on_failure: change
-
-env:
-  matrix:
-    - RVERSION=oldrel
-    - RVERSION=release
-    - RVERSION=devel
-
