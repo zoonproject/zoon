@@ -22,7 +22,7 @@ work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                   model      = LogisticRegression,
                   output     = PrintMap)
 
-# Get a list of modules (requires browser verification)
+# Get a list of modules
 GetModuleList()
 
 # Get help on a module
