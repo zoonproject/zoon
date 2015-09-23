@@ -73,6 +73,12 @@ Please note, Zoön is still being developed. We would love you to contribute mod
 
 ### Notes for collaborators
 
+We welcome collaboration and input anyone who'd like to get involved!
+If you have any comments, suggestions or you spot any bugs or errors, please let us know via [the issue tracker](https://github.com/zoonproject/zoon/issues).
+Pull requests are always welcome, though please let us know what you're developing first so we plan how to integrate it into the main package. 
+
+We are committed to making Zoön an inclusive project that the whole research community can contribute to and benefit from it and ask all contributers (including the Zoön development team) to stick to [a code of conduct](https://github.com/zoonproject/zoon/blob/master/code_of_conduct.md)
+
 We are using the [Google style guide](https://google-styleguide.googlecode.com/svn/trunk/Rguide.xml) with the exception that function description goes before the function name, not inside the function definition. We are using [roxygen2](http://cran.r-project.org/web/packages/roxygen2/vignettes/roxygen2.html) to document the package. Try to keep function names as verbs.
 
 
