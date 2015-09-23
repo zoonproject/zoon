@@ -27,3 +27,4 @@ notifications:
       - zoonproject@gmail.com
     on_success: change  # only email when the status changes
     on_failure: change
+

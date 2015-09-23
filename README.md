@@ -10,54 +10,11 @@ There is a blog to keep collaborators up to date with progress. This can be foun
 
 Zoön is still being developed. Feel free to clone and use the code, open issues, let us know what you want etc. But don't expect much functionality from the package yet. If you would like to add functionality, please start writing modules!
 
-### To install the stable(ish) version directly from R
-
-You'll need to be using **R version 3.2.0** or higher.
-
-On Windows:
-
-```r
-# install all of the dependencies
-install.packages(c("raster", "sp (>= 1.0-13)", "RCurl", "dismo"))
-
-# install the Windows binary of the latest release
-install.packages('https://github.com/zoonproject/zoon/releases/download/0.3.2/zoon_0.3.2.zip',
-                repos = NULL, method = 'libcurl')
-
-# load zoon
-library(zoon)
-```
-
-and on OSX or Linux:
-
-```r
-# install all of the dependencies
-install.packages(c("raster", "sp (>= 1.0-13)", "RCurl", "dismo"))
-
-# install the tarball of the latest release
-install.packages('https://github.com/zoonproject/zoon/releases/download/0.3.2/zoon_0.3.2.tar.gz',
-                 repos = NULL, method = 'libcurl')
-
-# load zoon
-library(zoon)
-```
-
-
-### To install current development version
-
-If you're using Windows, you'll need to have [RTools](https://cran.r-project.org/bin/windows/Rtools/) installed first
-
-```r
-install.packages("devtools")
-library("devtools")
-
-install_github("zoonproject/zoon")
-library("zoon")
-```
-
 ### Basic usage
 
 ```r
+library(zoon)
+
 # Run a workflow, specifying one module of each type.
 work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                   covariate  = UKAir,
@@ -65,13 +22,47 @@ work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                   model      = LogisticRegression,
                   output     = PrintMap)
 
-# Get a list of modules (requires browser verification)
+# Get a list of modules
 GetModuleList()
 
 # Get help on a module
 ModuleHelp(LogisticRegression)
 ```
 
+
+### To install the stable(ish) version directly from R
+
+Zoon isn't on CRAN yet, but you can install the package with the following instructions. 
+Note, you'll need to be using **R version 3.2.0** or higher.
+
+First, install some dependencies:
+```r
+install.packages(c("raster", "sp (>= 1.0-13)", "RCurl", "dismo"))
+```
+
+Then to install on Windows do:
+
+```r
+install.packages('https://github.com/zoonproject/zoon/releases/download/0.3.2/zoon_0.3.2.zip',
+                repos = NULL, method = 'libcurl')
+```
+
+and on OSX or Linux:
+
+```r
+install.packages('https://github.com/zoonproject/zoon/releases/download/0.3.2/zoon_0.3.2.tar.gz',
+                 repos = NULL, method = 'libcurl')
+```
+
+
+### To install current development version
+
+You can install the most recent version of the package straight from GitHub using the `devtools` package,
+though if you're using Windows, you'll need to have [RTools](https://cran.r-project.org/bin/windows/Rtools/) installed first:
+
+```r
+devtools::install_github("zoonproject/zoon")
+```
 
 ### Contributing modules
 
@@ -81,6 +72,12 @@ Please note, Zoön is still being developed. We would love you to contribute mod
 
 
 ### Notes for collaborators
+
+We welcome collaboration and input anyone who'd like to get involved!
+If you have any comments, suggestions or you spot any bugs or errors, please let us know via [the issue tracker](https://github.com/zoonproject/zoon/issues).
+Pull requests are always welcome, though please let us know what you're developing first so we plan how to integrate it into the main package. 
+
+We are committed to making Zoön an inclusive project that the whole research community can contribute to and benefit from it and ask all contributers (including the Zoön development team) to stick to [a code of conduct](https://github.com/zoonproject/zoon/blob/master/code_of_conduct.md)
 
 We are using the [Google style guide](https://google-styleguide.googlecode.com/svn/trunk/Rguide.xml) with the exception that function description goes before the function name, not inside the function definition. We are using [roxygen2](http://cran.r-project.org/web/packages/roxygen2/vignettes/roxygen2.html) to document the package. Try to keep function names as verbs.
 
