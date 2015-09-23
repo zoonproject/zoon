@@ -9,11 +9,6 @@ apt_packages:
 r_packages:
  - covr  # for code test coverage stats
 
-# get correct R version (adapted from metacran/r-builder)
-before_install:
- - if [ "$RVERSION" == "release" ]; then RVERSION=$(wget -qO- "http://rversions.r-pkg.org/r-${RVERSION}" | grep version | tail -1 | cut -f2 -d: | tr -d '", '); fi
- - PATH="$HOME/R-bin/R-${RVERSION}/bin:${PATH}:/usr/texbin" # set the R version to be used
-
 # bespoke script to get around R CMD check/testthat integration bug
 script:
  - R CMD build .  # build
@@ -33,8 +28,3 @@ notifications:
     on_success: change  # only email when the status changes
     on_failure: change
 
-# run this with release and devel versions of R
-env:
-  matrix:
-    - RVERSION=release
-    - RVERSION=devel
