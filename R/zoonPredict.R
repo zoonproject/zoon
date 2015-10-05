@@ -58,7 +58,7 @@ ZoonPredict <- function(zoonModel, newdata) {
 #' @param code code to make predictions from \code{model} object to
 #' a dataframe \code{newdata} containing new covaraite observations.
 #' The code must use the objects named \code{model} and \code{newdata} and
-#' no other objects and must return a numeric vector, witht he same length
+#' no other objects and must return a numeric vector, with the same length
 #' as the number of rows in \code{newdata} giving predictions on the response
 #' scale (e.g. probabilities of presence).
 #' 

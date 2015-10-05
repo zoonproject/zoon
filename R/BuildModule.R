@@ -56,8 +56,8 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '', au
 
   # Add param statements for default arguements
   if(any(names(paras) %in% defArgs[[type]])){
-    warning('Parameter descripts for defaults [', defArgs[[type]],
-            ']', 'ignored')
+    warning('Parameter descriptions for defaults [', defArgs[[type]],
+            ']', ' ignored')
   }
   paras <- AddDefaultParas(paras, type)
   
