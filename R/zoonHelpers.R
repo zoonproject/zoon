@@ -533,3 +533,44 @@ GetMaxEnt <- function () {
   
 }
 
+# AddDefaultParas
+# 
+# Adds the default parameters and their descriptions to the parameters list in 
+# BuildModule.
+# @param paras The orginial named list of paramenter descriptions
+# @param type The module type used to allocated the defaul arguements
+AddDefaultParas <- function(paras, type){
+  
+  # Define default arguements
+  defArgs <- list(occurrence = NULL, covariate = NULL, process = c('.data'),
+                  model = c('.df'), output = c('.model', '.ras'))
+  
+  
+  # Remove defaults if they exist, then add in the defaults.
+  paras <- paras[!names(paras) %in% defArgs[[type]]]
+  
+  default_paras <- list(occurrence = NULL,
+                        covariate = NULL,
+                        process = list(.data = paste("\\strong{Internal parameter, do not use in the workflow function}.",
+                                                     "\\code{.data} is a list of a data frame and a raster object returned from", 
+                                                     "occurrence modules and covariate modules respectively. \\code{.data} is",
+                                                     "passed automatically in workflow from the occurrence and covariate modules",
+                                                     "to the process module(s) and should not be passed by the user.")),
+                        model = list(.df = paste("\\strong{Internal parameter, do not use in the workflow function}.",
+                                                 "\\code{.df} is data frame that combines the occurrence data and",
+                                                 "covariate data. \\code{.df} is passed automatically in workflow from",
+                                                 "the process module(s) to the model module(s) and should not be",
+                                                 "passed by the user.")),
+                        output = list(.model = paste("\\strong{Internal parameter, do not use in the workflow function}.",
+                                                     "\\code{.model} is list of a data frame (\\code{data}) and a model",
+                                                     "object (\\code{model}). \\code{.model} is passed automatically in",
+                                                     "workflow, combining data from the model module(s) and process module(s),",
+                                                     "to the output module(s) and should not be passed by the user."),
+                                      .ras = paste("\\strong{Internal parameter, do not use in the workflow function}.",
+                                                   "\\code{.ras} is a raster layer, brick or stack object. \\code{.ras}",
+                                                   "is passed automatically in workflow from the covariate module(s) to",
+                                                   "the output module(s) and should not be passed by the user.")))
+  
+  # Add these defaults to the front of the para list
+  return(c(default_paras[[type]], paras))
+}
