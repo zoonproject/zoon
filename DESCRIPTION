@@ -12,7 +12,7 @@ Imports:
     RCurl,
     dismo
 Depends:
-    raster,
+    raster (>= 2.4-20),
     R (>= 3.2.0)
 Suggests:
     knitr,
