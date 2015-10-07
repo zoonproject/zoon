@@ -45,7 +45,7 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '', au
   missingParas <- names(formals(object))[!names(formals(object)) %in% names(paras)]
 
   # Are all parameters documented (excluding defualt, zoon internal parameters).
-  #   If not give a warning.
+  # If not give a warning.
   if(any(!missingParas %in% defArgs[[type]])){
     complete <- FALSE
   }
@@ -54,7 +54,16 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '', au
       'all parameters documented before uploading module to Zoon repository.'))
   }
 
-
+  # Add param statements for default arguements
+  if(any(names(paras) %in% defArgs[[type]])){
+    warning('Parameter descriptions for defaults [', defArgs[[type]],
+            ']', ' ignored')
+  }
+  paras <- AddDefaultParas(paras, type)
+  
+  
+  
+  
   # Test that model has correct inputs.
   if(any(!defArgs[[type]] %in% names(formals(object)))){
     stop(paste0(type, " modules must contain arguments '", 
@@ -73,10 +82,14 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '', au
   # Roxygen2 uses @ as a tag. So have to double it.
   email <- gsub('@', '@@', email)
         
-  docs <- paste0("#'", obj, ": ", title, "\n#'\n#'", description, "\n#'\n#'", 
-            "Module type: ", toupper(substring(type, 1,1)), substring(type, 2), 
-            "\n#'\n", paraDocs, "#'\n#'@author ", author, 
-            "'\n#'@author ", email, "'\n#'@name ", obj)
+  docs <- paste0("#'", obj, ": ", title,
+                 "\n#'\n#'", description,
+                 "\n#'\n#'", "Module type: ", toupper(substring(type, 1,1)), substring(type, 2), 
+                 "\n#'\n", paraDocs,
+                 "#'@family ", type,
+                 "\n#'@author ", author, 
+                 "\n#'@author ", email,
+                 "\n#'@name ", obj)
 
   write(docs, file = paste0(dir, '/', obj, '.R'))
   dump(c(obj), file = paste0(dir, '/', obj, '.R'), append=TRUE)
