@@ -1,7 +1,7 @@
 context('BuildModule')
 
 dir <- tempdir()
-dir.create(dir)
+dir.create(dir, showWarnings = FALSE)
 
 NewModule <- function(.df){}
 
@@ -13,7 +13,7 @@ NewModule <- function(.df){}
 #             email = 'tom@tom.com',
 #             dir = dir) 
 
-test_that('Simplest case should build'){
+test_that('Simplest case should build', {
   
   BuildModule(object = NewModule,
               type = 'model',
@@ -25,9 +25,9 @@ test_that('Simplest case should build'){
   
   expect_true(file.exists(file.path(dir, 'NewModule.r')))
   
-}
+})
 
-test_that('All metadata given, and correct'){
+test_that('All metadata given, and correct', {
 
   expect_error(BuildModule(object = NewModule,
                            type = '',
@@ -78,12 +78,12 @@ test_that('All metadata given, and correct'){
                              dir = dir),
                  'Information not complete')
   
-}
+})
 
   
-test_that('Misc tests'){
+test_that('Misc tests', {
   
-  expect_warning(BuildModule(object = NewModule,
+  expect_error(BuildModule(object = NewModule,
                              type = 'model',
                              title = 'test',
                              description = 'test',
@@ -92,4 +92,6 @@ test_that('Misc tests'){
                              dir = 'thisdoesnotexist'),
                  'directory is not writeable')
   
-}
+})
+
+unlink(x = dir, recursive = TRUE)
