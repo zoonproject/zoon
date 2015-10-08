@@ -23,7 +23,8 @@
 #'@export
 #'
 
-BuildModule <- function(object, type, dir='.', title = '',  description = '', author = '', email = '', paras=NULL){
+BuildModule <- function(object, type, dir='.', title = '',  description = '',
+                        details = '', author = '', email = '', paras=NULL){
   stopifnot(is(object, 'function'))
   stopifnot(tolower(type) %in% c('occurrence', 'covariate', 'process', 'model', 'diagnostic', 'output'))
   Writeable(dir)
@@ -77,19 +78,21 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '', au
 
   # Sort out parameter formating.
   paraNames <- names(paras)
-  paraDocs <- paste(sapply(paraNames, function(x) paste("#'@param", x, paras[x], "\n")), collapse="#'\n")
+  paraDocs <- paste(sapply(paraNames, function(x) paste("#'@param", x, paras[x])), collapse="#'\n")
 
   # Roxygen2 uses @ as a tag. So have to double it.
   email <- gsub('@', '@@', email)
         
-  docs <- paste0("#'", obj, ": ", title,
-                 "\n#'\n#'", description,
-                 "\n#'\n#'", "Module type: ", toupper(substring(type, 1,1)), substring(type, 2), 
-                 "\n#'\n", paraDocs,
-                 "#'@family ", type,
-                 "\n#'@author ", author, 
-                 "\n#'@author ", email,
-                 "\n#'@name ", obj)
+  docs <- paste0("#' @name ", obj,
+                 "\n#'\n#' @title ", title,
+                 "\n#'\n#' @description ", description,
+                 "\n#'\n#' @details ", "Module type: ", toupper(substring(type, 1,1)), substring(type, 2),
+                 "\n#' ", details,
+                 "\n#'\n ", paraDocs,
+                 "\n#'\n#' @family ", type,
+                 "\n#'\n#' @author ", author, 
+                 "\n#'\n#' @author ", email,
+                 "\n#'\n#' @name ", obj)
 
   write(docs, file = paste0(dir, '/', obj, '.R'))
   dump(c(obj), file = paste0(dir, '/', obj, '.R'), append=TRUE)

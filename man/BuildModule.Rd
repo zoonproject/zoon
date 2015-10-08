@@ -5,7 +5,7 @@
 \title{BuildModule}
 \usage{
 BuildModule(object, type, dir = ".", title = "", description = "",
-  author = "", email = "", paras = NULL)
+  details = "", author = "", email = "", paras = NULL)
 }
 \arguments{
 \item{object}{A function that will be made into a module file.}
