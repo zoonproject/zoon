@@ -458,10 +458,12 @@ PasteAndDep <- function(x){
 # Inspired by the is.writeable functionality in assertthat
 # @name Writeable
 Writeable <- function (dir) {
-  stopifnot(is.character(dir))
-  stopifnot(length(dir) == 1)
-  stopifnot(file.exists(dir))
-  stopifnot(file.access(dir, mode = 2)[[1]] == 0)
+  OK <- TRUE
+  if(!is.character(dir)) OK <- FALSE
+  if(!length(dir) == 1) OK <- FALSE
+  if(!file.exists(dir)) OK <- FALSE
+  if(!file.access(dir, mode = 2)[[1]] == 0) OK <- FALSE
+  if(!OK) stop('directory is not writeable ', dir)
 }
 
 
