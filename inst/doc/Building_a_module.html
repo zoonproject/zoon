@@ -220,12 +220,12 @@ hr {
 
 <p>Here is a simple function that will become our module. It is a model module that uses general additive models. We will work through it one element at a time</p>
 
-<p>First we start function by declaring all the paramters we need, including all the defaults</p>
+<p>First we start our function by declaring all the parameters we need, including all the defaults</p>
 
 <pre><code class="r">NewModule &lt;- function(.df){
 </code></pre>
 
-<p>Since this is a model module the only default is <code>.df</code>. To find out more about defualts see the section <a href="#tag1">Module IO definitions for module developers</a>.</p>
+<p>Since this is a model module the only default is <code>.df</code>. To find out more about defaults see the section <a href="#tag1">Module IO definitions for module developers</a>.</p>
 
 <p>Next we specify the packages our function needs. These should be specified by using GetPackage function in the zoon package. This function will load the package if the user of your module already has it or will install it from CRAN if they don&#39;t. For this reason make sure your package only uses packages that are on CRAN.</p>
 
@@ -252,7 +252,7 @@ m &lt;- gam::gam(formula = .df$value ~ .,
 
 <ol>
 <li><em>model</em> - Your model object</li>
-<li><em>code</em> - A section of code that will use <code>model</code> [your model] and <code>newdata</code> [a new set of covariate data], to return a vetor of predicted values, one for each row of <code>newdata</code></li>
+<li><em>code</em> - A section of code that will use <code>model</code> [your model] and <code>newdata</code> [a new set of covariate data], to return a vector of predicted values, one for each row of <code>newdata</code></li>
 <li><em>packages</em> - A vector of characters naming the packages needed to run <em>code</em></li>
 </ol>
 
@@ -356,7 +356,7 @@ ZoonModel(model = m,
             email = &#39;zoon@zoon.com&#39;)
 </code></pre>
 
-<p>This is now a runable module.</p>
+<p>This is now a run-able module.</p>
 
 <pre><code class="r">rm(NewModule)
 LoadModule(&#39;NewModule.R&#39;)
@@ -377,7 +377,7 @@ work1 &lt;- workflow(occurrence = UKAnophelesPlumbeus,
 
 <p>In: No default inputs</p>
 
-<p>Out: dataframe with column names: longitude, latitude, value, type, fold</p>
+<p>Out: data.frame with column names: longitude, latitude, value, type, fold</p>
 
 <h3>Covariate</h3>
 
@@ -403,7 +403,7 @@ work1 &lt;- workflow(occurrence = UKAnophelesPlumbeus,
 
 <h3>Model</h3>
 
-<p>In: dataframe from process called <strong>.df</strong></p>
+<p>In: data.frame from process called <strong>.df</strong></p>
 
 <p>Out: A ZoonModel object (see the example above)</p>
 
@@ -413,7 +413,7 @@ work1 &lt;- workflow(occurrence = UKAnophelesPlumbeus,
 
 <ul>
 <li><em>model</em> - A ZoonModel object from a model module</li>
-<li><em>data</em> - A dataframe from a process module with the added column <code>predictions</code></li>
+<li><em>data</em> - A data.frame from a process module with the added column <code>predictions</code></li>
 </ul>
 
 <p>Also a Rasterlayer called <strong>.ras</strong> from the covariate module</p>

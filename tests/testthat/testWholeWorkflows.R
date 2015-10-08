@@ -1,5 +1,5 @@
 
-context('Test whole workflows.')
+context('Whole workflows.')
 
 expected_names <- c('occurrence.output', 'covariate.output', 'process.output', 
       'model.output', 'report', 'call', 'call.list') 
