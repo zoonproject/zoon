@@ -53,8 +53,6 @@ test_that('Check basic quoted workflow.', {
 
 })
 
-
-
 test_that('modules downloading data work', {
 
   work2 <- workflow(occurrence = SpOcc(species = 'Anopheles plumbeus',
@@ -208,6 +206,7 @@ test_that('simple, crossvalidation workflow works.', {
 
 
 test_that('chains work.', {
+  
   chain1 <- workflow(occurrence = Chain(UKAnophelesPlumbeus,UKAnophelesPlumbeus),
                  covariate = UKAir,
                  process = OneHundredBackground,

@@ -1,29 +1,25 @@
 context('BuildModule')
 
-dir <- tempdir()
-dir.create(dir, showWarnings = FALSE)
+directory <- tempdir()
 
 NewModule <- function(.df){}
 
-# BuildModule(object = NewModule,
-#             type = 'model',
-#             title = 'test',
-#             description = 'test',
-#             author = 'tom',
-#             email = 'tom@tom.com',
-#             dir = dir) 
-
 test_that('Simplest case should build', {
   
-  BuildModule(object = NewModule,
+
+  build <- BuildModule(object = NewModule,
               type = 'model',
               title = 'test',
               description = 'test',
               author = 'tom',
               email = 'tom@tom.com',
-              dir = dir) 
+              dir = directory) 
+
+  expect_is(build, "character")
   
-  expect_true(file.exists(file.path(dir, 'NewModule.r')))
+  expect_equal(build, 'NewModule')
+  expect_true(file.exists(file.path(directory, 'NewModule.r')))
+  unlink(x = file.path(directory, 'NewModule.r'))
   
 })
 
@@ -35,47 +31,52 @@ test_that('All metadata given, and correct', {
                            description = 'test',
                            author = 'tom',
                            email = 'tom@tom.com',
-                           dir = dir),
+                           dir = directory),
                'type must be one of')
+  
   expect_error(BuildModule(object = NewModule,
                            type = 'zoon',
                            title = 'test',
                            description = 'test',
                            author = 'tom',
                            email = 'tom@tom.com',
-                           dir = dir),
+                           dir = directory),
                'type must be one of')
+  
   expect_warning(BuildModule(object = NewModule,
                            type = 'model',
                            title = '',
                            description = 'test',
                            author = 'tom',
                            email = 'tom@tom.com',
-                           dir = dir),
+                           dir = directory),
                'Information not complete')  
+  
   expect_warning(BuildModule(object = NewModule,
                              type = 'model',
                              title = 'test',
                              description = '',
                              author = 'tom',
                              email = 'tom@tom.com',
-                             dir = dir),
+                             dir = directory),
                  'Information not complete') 
+  
   expect_warning(BuildModule(object = NewModule,
                              type = 'model',
                              title = 'test',
                              description = 'test',
                              author = '',
                              email = 'tom@tom.com',
-                             dir = dir),
+                             dir = directory),
                  'Information not complete') 
+  
   expect_warning(BuildModule(object = NewModule,
                              type = 'model',
                              title = 'test',
                              description = 'test',
                              author = 'tom',
                              email = '',
-                             dir = dir),
+                             dir = directory),
                  'Information not complete')
   
 })
@@ -93,5 +94,3 @@ test_that('Misc tests', {
                  'directory is not writeable')
   
 })
-
-unlink(x = dir, recursive = TRUE)

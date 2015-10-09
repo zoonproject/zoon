@@ -13,7 +13,7 @@ test_that('plot.zoonWorkflow works', {
                     output = SameTimePlaceMap)
   
   expect_null(zoon:::plot.zoonWorkflow(work1, dir = dir))
-  
+  ### use rplots.pdf to test plotting?
 })
 
 unlink(x = dir, recursive = TRUE)

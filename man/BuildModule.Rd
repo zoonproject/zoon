@@ -32,7 +32,7 @@ anotherParameter = 'Another descriptions.')
 This is required if the module takes non-default arguements}
 }
 \value{
-NULL. Outputs a file
+Name of the module. Outputs a file
 }
 \description{
 Turn a function in the namespace into a module.

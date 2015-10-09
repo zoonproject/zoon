@@ -19,7 +19,7 @@
 #'@param author (required) String giving the author(s) name(s)
 #'@param email (required) String giving the correspondance address for the module.
 #'
-#'@return NULL. Outputs a file
+#'@return Name of the module. Outputs a file
 #'@name BuildModule
 #'
 #'@export
@@ -113,6 +113,9 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
 
   write(docs, file = paste0(dir, '/', obj, '.R'))
   dump(c(obj), file = paste0(dir, '/', obj, '.R'), append=TRUE)
+  
+  return(obj)
+  
 }
   
 
