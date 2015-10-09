@@ -10,14 +10,16 @@
 #'@param type A string that defines the type of module. Possible module types
 #'      are occurrence, covariate, process, model, diagnostic and output.
 #'@param title A short description of the module.
-#'@param description A single string giving a full description of the model.
+#'@param description (required) A single string giving a full description of the module.
+#'@param details (optional) A single string giving details of the module.
 #'@param paras A list of the form 
-#'  list(parameterName = 'Parameter description.',
+#'    list(parameterName = 'Parameter description.',
 #'    anotherParameter = 'Another descriptions.')
-#'@param author String giving the author(s) name(s)
-#'@param email Stirng giving the correspondance address for the module.
+#'    This is required if the module takes non-default arguements
+#'@param author (required) String giving the author(s) name(s)
+#'@param email (required) String giving the correspondance address for the module.
 #'
-#'@return NULL. Outputs a file
+#'@return Name of the module. Outputs a file
 #'@name BuildModule
 #'
 #'@export
@@ -25,8 +27,11 @@
 
 BuildModule <- function(object, type, dir='.', title = '',  description = '',
                         details = '', author = '', email = '', paras=NULL){
-  stopifnot(is(object, 'function'))
-  stopifnot(tolower(type) %in% c('occurrence', 'covariate', 'process', 'model', 'diagnostic', 'output'))
+  
+  if(!is(object, 'function')) stop('object must be a function')
+  if(!tolower(type) %in% c('occurrence', 'covariate', 'process', 'model', 'diagnostic', 'output')){
+    stop("type must be one of 'occurrence', 'covariate', 'process', 'model', 'diagnostic', 'output'")
+  }
   Writeable(dir)
 
   
@@ -54,12 +59,24 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
     warning(paste('Information not complete. All arguments must be filled and',
       'all parameters documented before uploading module to Zoon repository.'))
   }
-
+  
+  # To ensure consistancy make sure the default parameters
+  # have been used. This also ensures the documentation
+  # makes sense
+  if(any(!defArgs[[type]] %in% names(formals(object)))){
+    
+    warning(paste('Your', type, 'module does not contain the default arguements',
+            paste('[', paste(defArgs[[type]], collapse = ', '), ']', sep = ''),
+            "See the vignette Building modules for more details."))
+    
+  }
+  
   # Add param statements for default arguements
   if(any(names(paras) %in% defArgs[[type]])){
     warning('Parameter descriptions for defaults [', defArgs[[type]],
             ']', ' ignored')
   }
+  
   paras <- AddDefaultParas(paras, type)
   
   
@@ -96,6 +113,9 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
 
   write(docs, file = paste0(dir, '/', obj, '.R'))
   dump(c(obj), file = paste0(dir, '/', obj, '.R'), append=TRUE)
+  
+  return(obj)
+  
 }
   
 

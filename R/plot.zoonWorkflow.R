@@ -67,14 +67,17 @@ Boxed2 <- function (NoOfModules, InModuleList, IsList, IsChain, ModuleNames) {
       
       # flip the names
       ModuleNames[idx] <- rev(ModuleNames[idx])
+      rm(idx)
+      
     }
 
     # add to number of modules seen
-    counter <- counter + NoOfModules[i]    
+    counter <- counter + NoOfModules[i]  
+    
   }
   
   # clean up as we don't know what Greg might be using
-  rm(idx)
+  #rm(idx)
   rm(counter)
   rm(i)
   

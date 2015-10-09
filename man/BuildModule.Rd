@@ -18,18 +18,21 @@ working directory.}
 
 \item{title}{A short description of the module.}
 
-\item{description}{A single string giving a full description of the model.}
+\item{description}{(required) A single string giving a full description of the module.}
 
-\item{author}{String giving the author(s) name(s)}
+\item{details}{(optional) A single string giving details of the module.}
 
-\item{email}{Stirng giving the correspondance address for the module.}
+\item{author}{(required) String giving the author(s) name(s)}
+
+\item{email}{(required) String giving the correspondance address for the module.}
 
 \item{paras}{A list of the form
 list(parameterName = 'Parameter description.',
-  anotherParameter = 'Another descriptions.')}
+anotherParameter = 'Another descriptions.')
+This is required if the module takes non-default arguements}
 }
 \value{
-NULL. Outputs a file
+Name of the module. Outputs a file
 }
 \description{
 Turn a function in the namespace into a module.
