@@ -14,10 +14,13 @@
 #'@export
 
 LoadModule <- function(module){
-  # Sub and deparse argument, then remove extra quote marks.
-  module <- deparse(substitute(module))
-  module <- gsub('"', '', module)
   
+  # If it is unquoted deparse, otherwise it might 
+  # be a character or call which we leave
+  if(class(substitute(module)) == 'name'){
+    module <- gsub('"', '', deparse(substitute(module)))
+  } 
+
   # Create url that matches zoon repo
   # .sha will vary based on whether this is pegged to a specific version of
   # modules

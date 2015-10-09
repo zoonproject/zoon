@@ -33,8 +33,6 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
     stop("type must be one of 'occurrence', 'covariate', 'process', 'model', 'diagnostic', 'output'")
   }
   Writeable(dir)
-
-  
   
   # Is all meta information provided.
   if(title == '' | description == '' | author == '' | email == '') {
@@ -78,16 +76,6 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
   }
   
   paras <- AddDefaultParas(paras, type)
-  
-  
-  
-  
-  # Test that model has correct inputs.
-  if(any(!defArgs[[type]] %in% names(formals(object)))){
-    stop(paste0(type, " modules must contain arguments '", 
-      paste(defArgs[[type]], collapse = "' and '"), "'."))
-  }
-    
 
   type <- tolower(type)
   obj <- deparse(substitute(object))
@@ -105,7 +93,7 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
                  "\n#'\n#' @description ", description,
                  "\n#'\n#' @details ", "Module type: ", toupper(substring(type, 1,1)), substring(type, 2),
                  "\n#' ", details,
-                 "\n#'\n ", paraDocs,
+                 "\n#'\n", paraDocs,
                  "\n#'\n#' @family ", type,
                  "\n#'\n#' @author ", author, 
                  "\n#'\n#' @author ", email,
