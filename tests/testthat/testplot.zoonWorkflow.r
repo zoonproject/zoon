@@ -71,6 +71,10 @@ test_that('plot.zoonWorkflow works', {
   
   LoadModule(module = file.path(directory, 'myMissing.R'))
   
+  # This line accounts for the fact that testing is done
+  # in a different environment
+  assign('myMissing', NamespaceModule, env = .GlobalEnv)
+  
   work4 <- workflow(occurrence = UKAnophelesPlumbeus, 
                     covariate = UKAir,
                     process = myMissing,
