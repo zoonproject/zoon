@@ -16,7 +16,7 @@ install:
   - ./pkg-build.sh install_r covr
 
 script:
-  - R_CHECK_ARGS=${RCA} ./pkg-build.sh run_tests
+  - R_CHECK_ARGS=${RCA} NOT_CRAN=${NOT_CRAN} ./pkg-build.sh run_tests
 
 after_failure:
   - ./pkg-build.sh dump_logs
