@@ -15,19 +15,15 @@
 
 LoadModule <- function(module){
   
-  # If it is unquoted deparse, otherwise it might 
-  # be a character or call which we leave
-  if(class(substitute(module)) == 'name'){
-    module <- gsub('"', '', deparse(substitute(module)))
-  } 
-
+  # module must be a string 
+  
+  
   # Create url that matches zoon repo
   # .sha will vary based on whether this is pegged to a specific version of
   # modules
   zoonURL <- 
     sprintf('https://raw.githubusercontent.com/zoonproject/modules/%s/R/%s.R',
             .sha, module)
-  
   # If module is a path, load module
   if (file.exists(module)){
     txt <- parse(text = paste(readLines(module), collapse="\n"))
@@ -41,7 +37,7 @@ LoadModule <- function(module){
     # Otherwise throw error.
   } else {
     stop(paste('Cannot find "', module, 
-               '". Check the URL or check that the module is at github.com/zoonproject'))
+               '". Check the file path or URL exist'))
   }
   # Load to global environment
   eval(txt, envir = globalenv())
