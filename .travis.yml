@@ -1,30 +1,45 @@
-# basic bits:
-language: r
+## Sample .travis.yml file for use with metacran/r-builder
+## See https://github.com/metacran/r-builder for details.
+
+language: c
 sudo: required
 
-# linux system dependencies for R packages
-apt_packages:
- - libv8-dev  # for V8 package, for spocc
+before_install:
+  - curl -OL https://raw.githubusercontent.com/goldingn/r-builder/master/pkg-build.sh
+  - chmod 755 pkg-build.sh
+  - ./pkg-build.sh bootstrap
 
-r_packages:
- - covr  # for code test coverage stats
+install:
+  - sudo apt-get install libv8-dev
+  - ./pkg-build.sh install_deps
+  - ./pkg-build.sh install_r covr
 
-# bespoke script to get around R CMD check/testthat integration bug
 script:
- - R CMD build .  # build
- - FILE=$(ls -1t *.tar.gz | head -n 1)  # find the tarball
- - R CMD check --as-cran --no-tests "${FILE}" # check as cran, without tests
- - Rscript -e "install.packages(list.files(pattern = '*.tar.gz$'), type = 'source', repos = NULL)"  # install package
- - Rscript -e "library(testthat);test_dir('tests')" # test it, from inside R
+  - ./pkg-build.sh run_tests
 
-# get code coverage stats for codecov
+after_failure:
+  - ./pkg-build.sh dump_logs
+
 after_success:
  - Rscript -e 'library(covr);codecov()'
+
 
 notifications:
   email:
     recipients:
       - zoonproject@gmail.com
-    on_success: change  # only email when the status changes
+    on_success: change
     on_failure: change
+
+env:
+  matrix:
+    - RVERSION=release
+      NOT_CRAN=true
+    - RVERSION=release
+      NOT_CRAN=false
+    - RVERSION=devel
+      NOT_CRAN=true
+    - RVERSION=devel
+      NOT_CRAN=false
+
 
