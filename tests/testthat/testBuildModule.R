@@ -19,7 +19,6 @@ test_that('Simplest case should build', {
   
   expect_equal(build, 'NewModule')
   expect_true(file.exists(file.path(directory, 'NewModule.R')))
-  unlink(x = file.path(directory, 'NewModule.R'))
   
 })
 
