@@ -44,11 +44,15 @@ test_that('Basic ChangeWorkflow works', {
   
   # Change occurrence and covariate
   set.seed(1)
+  sink(file=ifelse(Sys.info()["sysname"] == "Windows",
+                   "NUL",
+                   "/dev/null"))
   w6 <- workflow(AnophelesPlumbeus,
                  UKBioclim, 
                  OneHundredBackground,
                  LogisticRegression,
                  SameTimePlaceMap)
+  sink()
   
   set.seed(1)
   w7 <- ChangeWorkflow(w6,
