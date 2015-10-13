@@ -78,9 +78,43 @@ test_that('All metadata given, and correct', {
                              email = '',
                              dir = directory),
                  'Information not complete')
-  
 })
 
+test_that('Module parameters', {
+  
+  NewModule2 <- function(.df, tom){}
+  
+  expect_warning(BuildModule(object = NewModule2,
+                             type = 'model',
+                             title = 'test',
+                             description = 'test',
+                             author = 'tom',
+                             email = 'tom@tom.com',
+                             dir = directory),
+                 'Information not complete')
+  
+  NewModule3 <- function(){}
+  
+  expect_warning(BuildModule(object = NewModule3,
+                             type = 'model',
+                             title = 'test',
+                             description = 'test',
+                             author = 'tom',
+                             email = 'tom@tom.com',
+                             dir = directory),
+                 'Your model module does not contain the default arguements')
+  
+  expect_warning(BuildModule(object = NewModule2,
+                             type = 'model',
+                             title = 'test',
+                             description = 'test',
+                             author = 'tom',
+                             paras = list(.df = 'this',
+                                          tom = 'that'),
+                             email = 'tom@tom.com',
+                             dir = directory),
+                 'Parameter descriptions for defaults')
+})
   
 test_that('Misc tests', {
   
