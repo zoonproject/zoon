@@ -2,7 +2,7 @@ context('GetModuleList')
 
 test_that('GetModuleList renew', {
   
-if(!capabilities('libcurl')) testthat::skip()  
+   if (!capabilities('libcurl')) skip('skipping as libcurl not supported')  
 
    modList <- GetModuleList(renew = TRUE)
    
@@ -20,7 +20,7 @@ if(!capabilities('libcurl')) testthat::skip()
 
 test_that('GetModuleList no renew', {
   
-  if(!capabilities('libcurl')) testthat::skip()
+   if (!capabilities('libcurl')) skip('skipping as libcurl not supported')  
 
    modList <- GetModuleList(renew = FALSE)
    
