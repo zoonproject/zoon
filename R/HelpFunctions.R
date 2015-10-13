@@ -12,7 +12,7 @@
 ModuleHelp <- function(module){
 
   module <- as.character(substitute(module))
-  stopifnot(is.character(module) & length(module) == 1)
+  if(!is.character(module) | !length(module) == 1) stop('module must be a character of length 1')
 
   helpURL <- paste0('https://raw.githubusercontent.com/zoonproject/modules/master/man/', module, '.Rd')
 

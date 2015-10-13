@@ -14,9 +14,9 @@
 #'@export
 
 LoadModule <- function(module){
-  # Sub and deparse argument, then remove extra quote marks.
-  module <- deparse(substitute(module))
-  module <- gsub('"', '', module)
+  
+  # module must be a string 
+  
   
   # Create url that matches zoon repo
   # .sha will vary based on whether this is pegged to a specific version of
@@ -24,7 +24,6 @@ LoadModule <- function(module){
   zoonURL <- 
     sprintf('https://raw.githubusercontent.com/zoonproject/modules/%s/R/%s.R',
             .sha, module)
-  
   # If module is a path, load module
   if (file.exists(module)){
     txt <- parse(text = paste(readLines(module), collapse="\n"))
@@ -38,7 +37,7 @@ LoadModule <- function(module){
     # Otherwise throw error.
   } else {
     stop(paste('Cannot find "', module, 
-               '". Check the URL or check that the module is at github.com/zoonproject'))
+               '". Check the file path or URL exist'))
   }
   # Load to global environment
   eval(txt, envir = globalenv())
