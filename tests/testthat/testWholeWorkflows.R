@@ -1,4 +1,3 @@
-
 context('Whole workflows.')
 
 expected_names <- c('occurrence.output', 'covariate.output', 'process.output', 
@@ -179,7 +178,6 @@ fnc3 <- function(){
 })
 
 
-
 test_that('simple, crossvalidation workflow works.', {
 
   workCross <- workflow(occurrence = UKAnophelesPlumbeus,
@@ -207,12 +205,13 @@ test_that('simple, crossvalidation workflow works.', {
 
 test_that('chains work.', {
   
-   chain1 <- workflow(occurrence = Chain(UKAnophelesPlumbeus,UKAnophelesPlumbeus),
-                  covariate = UKAir,
-                  process = OneHundredBackground,
-                  model = LogisticRegression,
-                  output = SameTimePlaceMap)
+  chain1 <- workflow(occurrence = Chain(UKAnophelesPlumbeus,UKAnophelesPlumbeus),
+                 covariate = UKAir,
+                 process = OneHundredBackground,
+                 model = LogisticRegression,
+                 output = SameTimePlaceMap)
 
+  
   chain2 <- workflow(occurrence = UKAnophelesPlumbeus,
                  covariate = Chain(UKAir,UKAir),
                  process = OneHundredBackground,
@@ -226,16 +225,16 @@ test_that('chains work.', {
                  model = LogisticRegression,
                  output = Chain(SameTimePlaceMap, SameTimePlaceMap))
 
-   expect_true(exists('chain1'))
-   expect_equal(dim(chain1$occurrence.output[[1]]), c(376, 5))
-   expect_is(chain1$covariate.output[[1]], 'RasterLayer')
-   expect_equal(dim(chain1$covariate.output[[1]]), c(9,9,1))
-   expect_equal(names(chain1$process.output[[1]]$df), 
-     c('value', 'type', 'fold', 'longitude', 'latitude', 'layer'))
-   expect_equal(dim(chain1$process.output[[1]]$df),  c(457, 6))
-   expect_is((chain1$model.output[[1]])$model, c('zoonModel'))
-   expect_is((chain1$model.output[[1]])$model$model, c('glm', 'lm'))
-   expect_is(chain1$report[[1]], 'RasterLayer')  
+  expect_true(exists('chain1'))
+  expect_equal(dim(chain1$occurrence.output[[1]]), c(376, 5))
+  expect_is(chain1$covariate.output[[1]], 'RasterLayer')
+  expect_equal(dim(chain1$covariate.output[[1]]), c(9,9,1))
+  expect_equal(names(chain1$process.output[[1]]$df), 
+    c('value', 'type', 'fold', 'longitude', 'latitude', 'layer'))
+  expect_equal(dim(chain1$process.output[[1]]$df),  c(457, 6))
+  expect_is((chain1$model.output[[1]])$model, c('zoonModel'))
+  expect_is((chain1$model.output[[1]])$model$model, c('glm', 'lm'))
+  expect_is(chain1$report[[1]], 'RasterLayer')  
 
   expect_true(exists('chain2'))
   expect_equal(dim(chain2$occurrence.output[[1]]), c(188, 5))
@@ -285,3 +284,50 @@ test_that('workflow with mix of syntax works.', {
   expect_is(workSyn$report[[1]], 'list')
 
 })
+
+
+# test_that('workflow with user defined cross validation', {
+#   
+#   extent = c(-10, 10, 55, 65)
+#   
+#   reorderExtent <- extent[c(1, 3, 2, 4)]
+#   
+#   # Get the data
+#   raw <- occ2df(occ(query = 'Anopheles plumbeus',
+#                     geometry = reorderExtent,
+#                     from = 'gbif',
+#                     limit = 10000))
+#   raw$value <- 1
+#   
+#   write.csv(raw, file = file.path(tempdir(), 'test.csv'), row.names = FALSE)
+#     
+#   work2 <- workflow(occurrence = Chain(SpOcc(species = 'Anopheles plumbeus',
+#                                              extent = c(-10, 10, 45, 55)),
+#                                        LocalOccurrenceData(file.path(tempdir(), 'test.csv'),
+#                                                            'presence',
+#                                                            columns = c(long = 'longitude',
+#                                                                        lat = 'latitude',
+#                                                                        value = 'value'),
+#                                                            externalValidation = TRUE)),
+#                     covariate = UKAir,
+#                     process = NoProcess,
+#                     model = RandomForest, 
+#                     output = PerformanceMeasures)
+#   
+#   str(work2$model.output)
+#   
+#   expect_true(exists('workSyn'))
+#   expect_equal(names(workSyn), expected_names) 
+#   expect_equal(dim(workSyn$occurrence.output[[1]]), c(188,5))
+#   expect_is(workSyn$covariate.output[[1]], 'RasterLayer')
+#   expect_equal(dim(workSyn$covariate.output[[1]]), c(9,9,1))
+#   expect_equal(names(workSyn$process.output[[1]]$df), 
+#                c('value', 'type', 'fold', 'longitude',   'latitude',   'layer'))
+#   expect_equal(dim(workSyn$process.output[[1]][[1]]),  c(269, 6))
+#   expect_is((workSyn$model.output[[1]])$model, c('zoonModel'))
+#   expect_is((workSyn$model.output[[1]])$model$model, c('glm', 'lm'))
+#   expect_is((workSyn$model.output[[1]])$data, c('data.frame'))
+#   expect_is(workSyn$report[[1]], 'list')
+#   
+# })
+## add external validation dataset (fold == 0)
