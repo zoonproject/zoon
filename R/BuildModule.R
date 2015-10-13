@@ -103,7 +103,6 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
   dump(c(obj), file = paste0(dir, '/', obj, '.R'), append=TRUE)
   
   return(obj)
-  
 }
   
 
