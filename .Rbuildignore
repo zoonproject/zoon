@@ -6,3 +6,5 @@ vignettes/cache
 Notes_for_zoon_developers.md
 zoonDemo.R
 zoonQuickStart.R
+.travis.yml
+code_of_conduct.md

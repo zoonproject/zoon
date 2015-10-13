@@ -25,16 +25,16 @@
 
 RerunWorkflow <- function(workflow, from = NULL) {
   
-  assert_that(inherits(workflow, 'zoonWorkflow'))
+  stopifnot(inherits(workflow, 'zoonWorkflow'))
 
   # If from isn't NULL, it should be an integer 1:5
   if (!is.null(from)){
-    assert_that(from %in% c(1:5) )
+   stopifnot(from %in% c(1:5) )
   }
 
   # Find first NULL modules and run from there.
   if (is.null(from)) {
-    NullModules <- sapply(list.subset(workflow, c(1:5)), is.null)
+    NullModules <- sapply(workflow[1:5], is.null)
     if (!sum(NullModules) == 0){
       from <- which.max(NullModules)
     } else {
@@ -101,6 +101,23 @@ RerunWorkflow <- function(workflow, from = NULL) {
   # If a module breaks we want to save the progress so far and let the user 
   # know which module broke.
 
+
+  # set up object to return on error
+  
+  # Collate output
+  output <- list(occurrence.output = NULL,
+                 covariate.output = NULL,
+                 process.output = NULL,
+                 model.output = NULL,
+                 report = NULL,
+                 call = workflow$call,
+                 call.list = workflow$call.list)
+  
+  class(output) <- 'zoonWorkflow'
+  
+  # whether exiting on error, or successful completion, return this
+  on.exit(return (output))
+  
   # First the data collection modules
   # Actually tryCatch here only tells user which module broke, nothing to save.
   if (from <= 1) {
@@ -110,13 +127,15 @@ RerunWorkflow <- function(workflow, from = NULL) {
       if (identical(attr(occurrence.module, 'chain'), TRUE)){
         occurrence.output <- list(do.call(rbind, occurrence.output))
       }
+      output$occurrence.output <- occurrence.output
     },  
       error = function(cond){
-        ErrorAndSave(cond, 1, e)
+        ErrorModule(cond, 1, e)
       }
     )
   } else {
     occurrence.output <- workflow$occurrence.output
+    output$occurrence.output <- occurrence.output
   }
 
   if (from <= 2) {
@@ -125,13 +144,15 @@ RerunWorkflow <- function(workflow, from = NULL) {
       if (identical(attr(covariate.module, 'chain'), TRUE)){
         covariate.output <- list(do.call(raster::stack, covariate.output))
       }
+      output$covariate.output <- covariate.output
     },  
       error = function(cond){
-        ErrorAndSave(cond, 2, e)
+        ErrorModule(cond, 2, e)
       }
     )
   } else {
     covariate.output <- workflow$covariate.output
+    output$covariate.output <- covariate.output
   }
 
 
@@ -152,13 +173,15 @@ RerunWorkflow <- function(workflow, from = NULL) {
   if (from <= 3) {
     tryCatch({  
       process.output <-  DoProcessModules(process.module, processName, data, e)
+      output$process.output <- process.output
     },  
       error = function(cond){
-        ErrorAndSave(cond, 3, e)
+        ErrorModule(cond, 3, e)
       }
     )
   } else {
     process.output <- workflow$process.output
+    output$process.output <- process.output
   }
 
   
@@ -166,13 +189,15 @@ RerunWorkflow <- function(workflow, from = NULL) {
   if (from <= 4) {
     tryCatch({
       model.output <- DoModelModules(model.module, modelName, process.output, e)
+      output$model.output <- model.output
     },  
       error = function(cond){
-        ErrorAndSave(cond, 4, e)
+        ErrorModule(cond, 4, e)
       }
     )    
   } else {
     model.output <- workflow$model.output
+    output$model.output <- model.output
   }
   #output module
   # If output isn't chained, might have to lapply over 
@@ -184,28 +209,17 @@ RerunWorkflow <- function(workflow, from = NULL) {
     tryCatch({
       output.output <- DoOutputModules(output.module, outputName, 
                          covariate.module, covariate.output, model.output, e)
+      output$report <- output.output
     },  
       error = function(cond){
-        ErrorAndSave(cond, 5, e)
+        ErrorModule(cond, 5, e)
       }
     )
   } else {
-    output.output <- workflow$output.output
+    output.output <- workflow$report
+    output$report <- output.output
   }
 
-
-  # Collate output
-  output <- list(occurrence.output = occurrence.output,
-              covariate.output = covariate.output,
-              process.output = process.output,
-              model.output = model.output,
-              report = output.output,
-              call = workflow$call,
-              call.list = workflow$call.list)
-
-  class(output) <- 'zoonWorkflow'
-  
-  return(output)
 }
 
 

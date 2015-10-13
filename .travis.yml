@@ -1,0 +1,45 @@
+## Sample .travis.yml file for use with metacran/r-builder
+## See https://github.com/metacran/r-builder for details.
+
+language: c
+sudo: required
+
+before_install:
+  - curl -OL https://raw.githubusercontent.com/metacran/r-builder/master/pkg-build.sh
+  - chmod 755 pkg-build.sh
+  - if ${NOT_CRAN}; then RCA="--no-build-vignettes --no-manual"; else RCA="--no-build-vignettes --no-manual --as-cran"; fi
+  - ./pkg-build.sh bootstrap
+
+install:
+  - sudo apt-get install -y libv8-dev curl libcurl4-openssl-dev
+  - ./pkg-build.sh install_deps
+  - ./pkg-build.sh install_r covr
+
+script:
+  - R_CHECK_ARGS=${RCA} NOT_CRAN=${NOT_CRAN} ./pkg-build.sh run_tests
+
+after_failure:
+  - ./pkg-build.sh dump_logs
+
+after_success:
+ - ./pkg-build.sh run_script -e 'library(covr);codecov()'
+
+notifications:
+  email:
+    recipients:
+      - zoonproject@gmail.com
+    on_success: change
+    on_failure: change
+
+env:
+  matrix:
+    - RVERSION=release
+      NOT_CRAN=true
+    - RVERSION=release
+      NOT_CRAN=false
+    - RVERSION=devel
+      NOT_CRAN=true
+    - RVERSION=devel
+      NOT_CRAN=false
+
+

@@ -1,6 +1,17 @@
-
-# Helper to install (if needed) and load a package,
-# given as the package name, either as a string or object.
+#' Helper to install (if needed) and load a package
+#' 
+#' Given a package name, either as a string or object,
+#' load the package if it exists, else install it from
+#' CRAN and then load
+#' 
+#' @param package The name of the package with or without
+#' quotes
+#' @return NULL
+#' @examples  
+#' \dontrun{
+#' GetPackage('gam')
+#' }
+#' @export
 
 GetPackage <- function (package) {
   
@@ -13,7 +24,7 @@ GetPackage <- function (package) {
     
     # otherwise use install.packages
     install.packages(package,
-                     repos = "https://cran.rstudio.com")
+                     repos = "http://cran.rstudio.com")
 
     # now load the package
     library(package,

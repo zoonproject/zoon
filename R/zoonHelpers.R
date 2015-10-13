@@ -112,7 +112,7 @@ GetModule <- function(module, forceReproducible){
 
 LapplyGetModule <- function(modules, forceReproducible){
   lapply(modules, function(x) 
-    list.append(func = GetModule(as.character(x$module), forceReproducible), x))
+    c(x, func = GetModule(as.character(x$module), forceReproducible)))
 }
 
 
@@ -406,11 +406,11 @@ SplitCall <- function(call){
 }
 
 
-# ErrorAndSave
+# ErrorModule
 #
 # Function used in tryCatch calls in workflow.
-# If an error is caught, save the workflow to tmpZoonWorkflow.
-# And return some useful messages. Then stop().
+# If an error is caught, return some useful messages.
+# Then stop().
 # cond is the error messages passed by try catch.
 # mod is the modules number (1:5) to give NULLS to the correct modules.
 #
@@ -418,41 +418,16 @@ SplitCall <- function(call){
 #@param cond The error message that was caught in tryCatch.
 #@param mod Which module has failed? 1=occurrence, 2=covariate, 3=process
 #  4=model, 5=output.
-#@name ErrorAndSave
+#@name ErrorModule
 
-ErrorAndSave <- function(cond, mod, e){
-  
-  # Create list to be populated
-  #  Include the call from the workflow environment e
-  w <- list(occurrence.output = NULL,
-            covariate.output = NULL,
-            process.output = NULL,
-            model.output = NULL,
-            report = NULL,
-            call = e$call)
-  
-  # Depending on mod argument, replace NULLS in w with the value of module
-  #   output. To get the module output we have to reference the workflow
-  #   environment which was given as argument e.
-  if(mod > 1){
-    w$occurrence.output <- e$occurrence.output
-  }
-  if(mod > 2){
-    w$covariate.output <- e$covariate.output
-  }
-  if(mod > 3){
-    w$process.output <- e$process.output
-  }  
-  if(mod > 4){
-    w$model.output <- e$model.output
-  }
-  class(w) <- 'zoonWorkflow'
+ErrorModule <- function(cond, mod, e){
   
   # Select the module type using numeric mod argument
-  module <- c('occurrence', 'covariate', 'process', 'model', 'output')[mod]
-  
-  # R CMD check apparently dislikes this assignment to the global environemtn
-  assign('tmpZoonWorkflow', w,  envir = .GlobalEnv)
+  module <- c('occurrence',
+              'covariate',
+              'process',
+              'model',
+              'output')[mod]
   
   # Give useful messages.
   # What were the errors that were caught be tryCatch.
@@ -477,4 +452,127 @@ PasteAndDep <- function(x){
 }
 
 
+# Writeable
+# 
+# Check whether we can write to a given filepath, throw an error if not.
+# Inspired by the is.writeable functionality in assertthat
+# @name Writeable
+Writeable <- function (dir) {
+  OK <- TRUE
+  if(!is.character(dir)) OK <- FALSE
+  if(!length(dir) == 1) OK <- FALSE
+  if(!file.exists(dir)) OK <- FALSE
+  if(!file.access(dir, mode = 2)[[1]] == 0) OK <- FALSE
+  if(!OK) stop('directory is not writeable ', dir)
+}
 
+
+#' Get MaxEnt
+#' 
+#' Helper function to get the MaxEnt java executable and install it in
+#'  the right locations for zoon modules that use `dismo::maxent` and
+#'  `biomod2`.
+#'  
+#' @details Since MaxEnt may not be distributed other than via the MaxEnt
+#' website, users must download the file themselves and place it in the
+#' right location for R packages to access it. This function helps with that.
+#' Just run \code{GetMaxEnt()} and follow the prompts in the terminal.
+#'  
+#' @export
+#' @name GetMaxEnt
+GetMaxEnt <- function () {
+  # Send the user to download the MaxEnt executable,
+  # then find and upload it
+  
+  # define text
+  browser_txt <- "\nTo get MaxEnt working, you'll need to download the executable
+  file from the MaxEnt website. The website will require you to give some details,
+  once you've done this please download the 'maxent.jar' file to somewhere
+  memorable (you'll have to find it again in a second).
+  
+  Press return to launch the MaxEnt website and continue."
+  
+  chooser_txt <- "\n\n\n\nzoon now needs to copy the 'maxent.jar' file to the
+  correct locations.
+  
+  Press return to locate the 'maxent.jar' file you just downloaded"
+  
+  # step one, download the file
+  message(browser_txt) # speak to user
+  invisible(readline()) # make them hit return
+  browseURL('http://www.cs.princeton.edu/~schapire/maxent/') # open the browser
+  
+  # step two, choose the file
+  message(chooser_txt) # speak to user
+  invisible(readline()) # make them hit return
+  file <- file.choose()
+  
+  # check it's maxent.jar
+  file_parts <- strsplit(file, '/')[[1]]
+  file_end <- file_parts[length(file_parts)]
+  if (file_end != 'maxent.jar') {
+    stop ("the file selected was not 'maxent.jar'")
+  }
+  
+  # copy to dismo's and biomod2's preferred locations
+  dismo_loc <- paste0(system.file(package = 'dismo'), '/java/maxent.jar')
+  biomod2_loc <- './maxent.jar'
+  dismo_success <- file.copy(file, dismo_loc, overwrite = TRUE)  
+  biomod2_success <- file.copy(file, biomod2_loc, overwrite = TRUE)  
+  
+  # message, warn, or error depending on the level of success
+  if (dismo_success) {
+    if (biomod2_success) {
+      message("maxent.jar successfully deployed for MaxEnt and BiomodModel modules")
+    } else {
+      warning ("maxent.jar successfully deployed for MaxEnt module, but not for BiomodModel module")
+    }
+  } else if (biomod2_success) {
+    warning ("maxent.jar successfully deployed for BiomodModel module, but not for MaxEnt module")
+  } else {
+    stop ("maxent.jar not deployed for MaxEnt or BiomodModel modules")
+  }
+  
+}
+
+# AddDefaultParas
+# 
+# Adds the default parameters and their descriptions to the parameters list in 
+# BuildModule.
+# @param paras The orginial named list of paramenter descriptions
+# @param type The module type used to allocated the defaul arguements
+AddDefaultParas <- function(paras, type){
+  
+  # Define default arguements
+  defArgs <- list(occurrence = NULL, covariate = NULL, process = c('.data'),
+                  model = c('.df'), output = c('.model', '.ras'))
+  
+  
+  # Remove defaults if they exist, then add in the defaults.
+  paras <- paras[!names(paras) %in% defArgs[[type]]]
+  
+  default_paras <- list(occurrence = NULL,
+                        covariate = NULL,
+                        process = list(.data = paste("\\strong{Internal parameter, do not use in the workflow function}.",
+                                                     "\\code{.data} is a list of a data frame and a raster object returned from", 
+                                                     "occurrence modules and covariate modules respectively. \\code{.data} is",
+                                                     "passed automatically in workflow from the occurrence and covariate modules",
+                                                     "to the process module(s) and should not be passed by the user.")),
+                        model = list(.df = paste("\\strong{Internal parameter, do not use in the workflow function}.",
+                                                 "\\code{.df} is data frame that combines the occurrence data and",
+                                                 "covariate data. \\code{.df} is passed automatically in workflow from",
+                                                 "the process module(s) to the model module(s) and should not be",
+                                                 "passed by the user.")),
+                        output = list(.model = paste("\\strong{Internal parameter, do not use in the workflow function}.",
+                                                     "\\code{.model} is list of a data frame (\\code{data}) and a model",
+                                                     "object (\\code{model}). \\code{.model} is passed automatically in",
+                                                     "workflow, combining data from the model module(s) and process module(s),",
+                                                     "to the output module(s) and should not be passed by the user."),
+                                      .ras = paste("\\strong{Internal parameter, do not use in the workflow function}.",
+                                                   "\\code{.ras} is a raster layer, brick or stack object. \\code{.ras}",
+                                                   "is passed automatically in workflow from the covariate module(s) to",
+                                                   "the output module(s) and should not be passed by the user.")))
+  
+  # Add these defaults to the front of the para list
+  return(c(default_paras[[type]], paras))
+}
