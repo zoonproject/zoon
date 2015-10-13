@@ -7,7 +7,6 @@ sudo: required
 before_install:
   - curl -OL https://raw.githubusercontent.com/metacran/r-builder/master/pkg-build.sh
   - chmod 755 pkg-build.sh
-  - if ${NOT_CRAN}; then RCA="--no-build-vignettes --no-manual"; else RCA="--no-build-vignettes --no-manual --as-cran"; fi
   - ./pkg-build.sh bootstrap
 
 install:
@@ -16,7 +15,7 @@ install:
   - ./pkg-build.sh install_r covr
 
 script:
-  - travis_wait R_CHECK_ARGS=${RCA} NOT_CRAN=${NOT_CRAN} ./pkg-build.sh run_tests
+  - travis_wait ./pkg-build.sh run_tests
 
 after_failure:
   - ./pkg-build.sh dump_logs
@@ -35,11 +34,15 @@ env:
   matrix:
     - RVERSION=release
       NOT_CRAN=true
+      R_CHECK_ARGS="--no-build-vignettes --no-manual"
     - RVERSION=release
       NOT_CRAN=false
+      R_CHECK_ARGS="--no-build-vignettes --no-manual --as-cran"
     - RVERSION=devel
       NOT_CRAN=true
+      R_CHECK_ARGS="--no-build-vignettes --no-manual"
     - RVERSION=devel
       NOT_CRAN=false
+      R_CHECK_ARGS="--no-build-vignettes --no-manual --as--cran"
 
 
