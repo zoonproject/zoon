@@ -25,12 +25,14 @@ Takes a workflow object and reruns it with changes.
 }
 \examples{
 \dontrun{
-w <- workflow(UKAnophelesPlumbeus, UKAir,
+w <- workflow(UKAnophelesPlumbeus,
+              UKAir,
               OneHundredBackground,
               LogisticRegression,
               SameTimePlaceMap)
 
-ChangeWorkflow(w)
+w2 <- ChangeWorkflow(w,
+                     output = PrintMap)
 }
 }
 

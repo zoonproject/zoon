@@ -14,7 +14,7 @@ test_that('LoadModule works', {
   
   
   TestWorkflow <- function(){
-    LoadModule(file)
+    LoadModule('~/TestModule.R')
     return(class(TestModule))
   }
   
