@@ -16,13 +16,13 @@ install:
   - ./pkg-build.sh install_r covr
 
 script:
-  - R_CHECK_ARGS=${RCA} ./pkg-build.sh run_tests
+  - R_CHECK_ARGS=${RCA} NOT_CRAN=${NOT_CRAN} ./pkg-build.sh run_tests
 
 after_failure:
   - ./pkg-build.sh dump_logs
 
 after_success:
- - Rscript -e 'library(covr);codecov()'
+ - ./pkg-build.sh run_script -e 'library(covr);codecov()'
 
 notifications:
   email:
