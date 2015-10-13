@@ -32,6 +32,10 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
   if(!tolower(type) %in% c('occurrence', 'covariate', 'process', 'model', 'diagnostic', 'output')){
     stop("type must be one of 'occurrence', 'covariate', 'process', 'model', 'diagnostic', 'output'")
   }
+  
+  #Remove trailing '/' from dir
+  dir <- gsub('/$', '', dir)
+  
   Writeable(dir)
   
   # Is all meta information provided.
