@@ -111,8 +111,15 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
                  "\n#'\n#' @author ", email,
                  "\n#'\n#' @name ", obj)
 
-  write(docs, file = paste0(dir, '/', obj, '.R'))
-  dump(c(obj), file = paste0(dir, '/', obj, '.R'), append=TRUE)
+  # get and format the source code
+  src <- capture.output(dput(object))
+  src[1] <- sprintf('%s <- %s', obj, src[1])
+  src <- paste0(src, collapse = '\n')
+
+  # get the file path and write to disk
+  fpath <- paste0(dir, "/", obj, ".R")
+  write(docs, file = fpath)
+  cat(src, file = fpath, append = TRUE)
   
   return(obj)
   
