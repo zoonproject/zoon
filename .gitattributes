@@ -1,0 +1,2 @@
+inst/doc/*.html linguist-vendored
+inst/doc/*.R linguist-vendored
