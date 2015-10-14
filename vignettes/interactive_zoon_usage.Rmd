@@ -85,7 +85,6 @@ Crossvalidation requires the modules to be run using the function `zoon:::RunMod
 modCrossvalid <- zoon:::RunModels(proc$df, 'LogisticRegression', list(), environment())
 
 modelCrossvalid <- list(model = modCrossvalid$model, data = proc$df)
-any(.model$data$value == 0)
 
 out <- PrintMap(modelCrossvalid, cov)
 ```
