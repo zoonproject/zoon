@@ -1,14 +1,21 @@
 context('Changing workflows.')
 
-test_that('Basic ChangeWorkflow works', {
+# Original run
+set.seed(1)
+w1 <- workflow(UKAnophelesPlumbeus,
+               UKAir, 
+               OneHundredBackground,
+               LogisticRegression,
+               SameTimePlaceMap)
 
-  # Original run
-  set.seed(1)
-  w1 <- workflow(UKAnophelesPlumbeus,
-                 UKAir, 
-                 OneHundredBackground,
-                 LogisticRegression,
-                 SameTimePlaceMap)
+test_that('ChangeWorkflow errors', {
+  
+  expect_error(ChangeWorkflow(w2),
+               'At least one module type must be changed')
+  
+})
+
+test_that('Basic ChangeWorkflow works', {
 
   # Change model
   set.seed(1)
