@@ -1,5 +1,6 @@
 context('print.zoonWorkflow')
 
+set.seed(1)
 work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                   covariate = UKAir,
                   process = OneHundredBackground,
