@@ -86,6 +86,7 @@ modCrossvalid <- zoon:::RunModels(proc$df, 'LogisticRegression', list(), environ
 
 modelCrossvalid <- list(model = modCrossvalid$model, data = proc$df)
 any(.model$data$value == 0)
+
 out <- PrintMap(modelCrossvalid, cov)
 ```
 
