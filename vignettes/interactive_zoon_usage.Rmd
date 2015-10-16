@@ -44,11 +44,11 @@ It's worth noting that this is a simple workflow. Chaining modules will be fairl
 
 Get the modules from the zoon repository and load them into the working environment.
 ```{r LoadModules}
-LoadModule(UKAnophelesPlumbeus)
-LoadModule(UKAir)
-LoadModule(OneHundredBackground)
-LoadModule(LogisticRegression)
-LoadModule(PrintMap)
+LoadModule('UKAnophelesPlumbeus')
+LoadModule('UKAir')
+LoadModule('OneHundredBackground')
+LoadModule('LogisticRegression')
+LoadModule('PrintMap')
 ```
  
 Run the data modules. To chain occurrence modules, just `rbind` the resulting dataframes. To chain covariate modules, use `raster::stack` to combine the covariate data.
