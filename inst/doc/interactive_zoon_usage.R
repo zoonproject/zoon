@@ -10,11 +10,11 @@ library(zoon)
 w <- workflow(UKAnophelesPlumbeus, UKAir, OneHundredBackground, LogisticRegression, PrintMap)
 
 ## ----LoadModules---------------------------------------------------------
-LoadModule(UKAnophelesPlumbeus)
-LoadModule(UKAir)
-LoadModule(OneHundredBackground)
-LoadModule(LogisticRegression)
-LoadModule(PrintMap)
+LoadModule('UKAnophelesPlumbeus')
+LoadModule('UKAir')
+LoadModule('OneHundredBackground')
+LoadModule('LogisticRegression')
+LoadModule('PrintMap')
 
 ## ----runDataMods---------------------------------------------------------
 oc <- UKAnophelesPlumbeus()
@@ -29,14 +29,14 @@ proc <- OneHundredBackground(data)
 mod <- LogisticRegression(proc$df)
 
 ## ----output--------------------------------------------------------------
-model <- list(model = mod, df = proc$df)
+model <- list(model = mod, data = proc$df)
 
 out <- PrintMap(model, cov)
 
 ## ----cross validation----------------------------------------------------
 modCrossvalid <- zoon:::RunModels(proc$df, 'LogisticRegression', list(), environment())
 
-modelCrossvalid <- list(model = modCrossvalid$model, df = proc$df)
+modelCrossvalid <- list(model = modCrossvalid$model, data = proc$df)
 
 out <- PrintMap(modelCrossvalid, cov)
 
