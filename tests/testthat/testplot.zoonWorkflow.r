@@ -44,6 +44,13 @@ test_that('plot.zoonWorkflow works', {
   expect_true(file.exists(file.path(directory, 'tempzoonWorkflow3.png')))
   unlink(x = file.path(directory, 'tempzoonWorkflow3.png'))
   
+})
+
+
+test_that('plot.zoonWorkflow module not on repo', {
+  
+  if (!capabilities('libcurl')) skip('skipping as libcurl not supported')  
+  
   #missing module
   myMissing <- function(.data){
       
