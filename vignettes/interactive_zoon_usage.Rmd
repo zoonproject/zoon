@@ -72,7 +72,7 @@ mod <- LogisticRegression(proc$df)
 
 Finally, combine some output into a list and run the output modules.
 ```{r output}
-model <- list(model = mod, df = proc$df)
+model <- list(model = mod, data = proc$df)
 
 out <- PrintMap(model, cov)
 ```
@@ -84,7 +84,7 @@ Crossvalidation requires the modules to be run using the function `zoon:::RunMod
 ```{r cross validation}
 modCrossvalid <- zoon:::RunModels(proc$df, 'LogisticRegression', list(), environment())
 
-modelCrossvalid <- list(model = modCrossvalid$model, df = proc$df)
+modelCrossvalid <- list(model = modCrossvalid$model, data = proc$df)
 
 out <- PrintMap(modelCrossvalid, cov)
 ```

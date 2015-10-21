@@ -48,29 +48,3 @@ work4 <- workflow(occurrence = UKAnophelesPlumbeus,
 
 str(work4, 1)
 
-## ----largeAnalysis, cache = TRUE, warning = FALSE------------------------
-work5 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari', 
-                                       extent = c(-10, 10, 45, 65)),
-                                     SpOcc(species = 'Eresus sandaliatus', 
-                                       extent = c(-10, 10, 45, 65))),
- 
-                  covariate  = UKAir,
-
-                  process    = BackgroundAndCrossvalid(k = 2),
-
-                  model      = list(LogisticRegression, RandomForest),
-
-                  output     = Chain(SameTimePlaceMap, PerformanceMeasures)
-         )
-
-str(work5, 1)
-
-
-par(mfrow=c(1,2))
-plot(work5$report[[1]][[1]], 
-  main = paste('Logistic Regression: AUC = ', 
-             round(work5$report[[1]][[2]]$auc, 2)))
-plot(work5$report[[2]][[1]],
-  main = paste('Random forest: AUC = ', 
-             round(work5$report[[2]][[2]]$auc, 2)))
-
