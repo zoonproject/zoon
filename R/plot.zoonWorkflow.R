@@ -190,6 +190,9 @@ CallLister <- function( callList ){
   isList <- rep(FALSE, 5)
   isChain <- rep(FALSE, 5)
   
+  # get list of modules in repo
+  repoModuleList <- unlist(GetModuleList(), use.names = FALSE)
+  
   # loop through the module types and 
   for(j in 1:5){
     noOfModules[j] <- length( callList [[j]] )
@@ -202,7 +205,7 @@ CallLister <- function( callList ){
       modNom <- callList [[ j ]][[k]]$module
       moduleNames <- c(moduleNames, modNom)
       moduleIndex <- c(moduleIndex, j)
-      inModuleList <- c(inModuleList, TRUE)	#letters[round(runif(1,1,26), digits = 0)] )
+      inModuleList <- c(inModuleList, modNom %in% repoModuleList)	#letters[round(runif(1,1,26), digits = 0)] )
     }
   } # end for j
   moduleIndex <- as.numeric(moduleIndex)
