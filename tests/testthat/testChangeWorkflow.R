@@ -58,15 +58,16 @@ test_that('Basic ChangeWorkflow works', {
                  UKBioclim, 
                  OneHundredBackground,
                  LogisticRegression,
-                 SameTimePlaceMap)
+                 SameTimePlaceMap,
+                 forceReproducible = TRUE)
   sink()
   
   set.seed(1)
   w7 <- ChangeWorkflow(w6,
                        occurrence = UKAnophelesPlumbeus,
-                       covariate = UKAir)
+                       covariate = UKAir,
+                       forceReproducible = FALSE)
   expect_true(all.equal(w1, w7))
-  
   
 #   # Replace with a occurrence with chain
 #   set.seed(1)
@@ -99,6 +100,8 @@ test_that('Basic ChangeWorkflow works', {
 #   expect_true(all.equal(w10, w11))
   
 })
+
+
 
 
 # This doesn't work and I didn't have time to sort ChangeWorkflow properly

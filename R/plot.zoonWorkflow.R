@@ -67,6 +67,9 @@ Boxed2 <- function (NoOfModules, InModuleList, IsList, IsChain, ModuleNames) {
       
       # flip the names
       ModuleNames[idx] <- rev(ModuleNames[idx])
+      
+      # also flip the InModuleList
+      InModuleList[idx] <- rev(InModuleList[idx])
       rm(idx)
       
     }
@@ -122,9 +125,9 @@ Boxed2 <- function (NoOfModules, InModuleList, IsList, IsChain, ModuleNames) {
       if( IsList[i] && ListAlready == 1) ListAlready = 2
       if(ListAlready != 2){
         if(InModuleList[[ModuleInc]]) ColCode = 1 else ColCode = 2
-      } else {
-        if(InModuleList[[ModuleInc]]) ColCode = 3 else ColCode = 4
-        clrsTXT = "white"			
+#       } else {
+#         if(InModuleList[[ModuleInc]]) ColCode = 3 else ColCode = 4
+#         clrsTXT = "white"			
       }
       
       if(IsList[i]){
@@ -139,13 +142,13 @@ Boxed2 <- function (NoOfModules, InModuleList, IsList, IsChain, ModuleNames) {
         segments(	x2[i], yNow+0.5*yH, 
                   x2[i]+xG*0.33, yNow+0.5*yH, lwd = lW, col = clrs[ColCode])
         
-        if(ListAlready == 2){
-          segments( x1[i] - (xG*0.5), 5, x1[i] - xG*0.5, yM, 
-                    lwd = 1.5, lty = 3, col = "cornsilk4")
-          segments(x1[1]+0.5*xG, 5, x1[i] - xG*0.5, 5, lwd = 1.5, lty = 3, col = "cornsilk4")
-          text (x1[1]+0.5*xG, 0, "*, only 1 list permitted per workflow", col = "cornsilk4", adj = 0, cex = 0.8)
-          ListAlready = 2
-        }
+#         if(ListAlready == 2){
+#           segments( x1[i] - (xG*0.5), 5, x1[i] - xG*0.5, yM, 
+#                     lwd = 1.5, lty = 3, col = "cornsilk4")
+#           segments(x1[1]+0.5*xG, 5, x1[i] - xG*0.5, 5, lwd = 1.5, lty = 3, col = "cornsilk4")
+#           text (x1[1]+0.5*xG, 0, "*, only 1 list permitted per workflow", col = "cornsilk4", adj = 0, cex = 0.8)
+#           ListAlready = 2
+#         }
       }else{
         if(IsChain[i]){
           if(i != 1 && N == NoOfModules[i]) segments(x1[i] - xG*0.33, yLnow, x1[i], yNow+0.5*yH, lwd = lW, col = clrs[ColCode])
@@ -166,7 +169,7 @@ Boxed2 <- function (NoOfModules, InModuleList, IsList, IsChain, ModuleNames) {
       if( ColCode%%2 == 0){
         text(x1[1]+(0.5*(x2[1] - x1[1])), - 18, "** Modules not found in the repoistory", col = "cornsilk4", adj = 0, cex = 0.8)
         rect(x1[1]+(0.5*(x2[1] - x1[1])), wInc , x2[1]+(0.5*(x2[1] - x1[1])), wInc+yH, col = clrs[ColCode], border = clrs[ColCode], lwd = lW)
-        text (x1[1]+(0.5*(x2[1] - x1[1])), wInc+0.5*yH, "moduleName.module", col = clrsTXT, adj = 0, cex = 0.75)
+        text (x1[1]+(0.5*(x2[1] - x1[1])), wInc+0.5*yH, ModuleNames[[ModuleInc]], col = clrsTXT, adj = 0, cex = 0.75)
         wInc = wInc - (yH+yG)
       }
       

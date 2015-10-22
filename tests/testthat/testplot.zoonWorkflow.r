@@ -86,7 +86,11 @@ test_that('plot.zoonWorkflow module not on repo', {
   
   work4 <- workflow(occurrence = UKAnophelesPlumbeus, 
                     covariate = UKAir,
-                    process = myMissing,
+                    process = list(myMissing,
+                                   OneHundredBackground,
+                                   OneThousandBackground,
+                                   myMissing,
+                                   NoProcess),
                     model = LogisticRegression,
                     output = PrintMap)
   png(filename = file.path(directory, 'tempzoonWorkflow4.png'))
@@ -95,5 +99,9 @@ test_that('plot.zoonWorkflow module not on repo', {
   expect_true(file.exists(file.path(directory, 'tempzoonWorkflow4.png')))
   unlink(x = file.path(directory, 'tempzoonWorkflow4.png'))
   unlink(x = file.path(directory, 'myMissing.R'))
+  
+  # There is some functionality for when multiple lists
+  # are given... not sure if this can ever actually happen?
+  # these have been commented out of the function
   
 })
