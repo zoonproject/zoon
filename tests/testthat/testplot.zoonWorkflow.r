@@ -3,7 +3,9 @@ context('plot.zoonwWorkflow')
 directory <- tempdir()
 
 test_that('plot.zoonWorkflow works', {
-
+  
+  if (!capabilities('libcurl')) skip('skipping as libcurl not supported')  
+  
   # Create a simple workflow to test on
   work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                     covariate = UKAir,
