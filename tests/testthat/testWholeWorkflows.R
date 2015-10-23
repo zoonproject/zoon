@@ -217,14 +217,25 @@ test_that('chains work.', {
                  process = OneHundredBackground,
                  model = LogisticRegression,
                  output = SameTimePlaceMap)
-
-
+  
+  chain3 <- workflow(occurrence = UKAnophelesPlumbeus,
+                     covariate = Chain(UKAir,UKAir),
+                     process = OneHundredBackground,
+                     model = LogisticRegression,
+                     output = Chain(SameTimePlaceMap, SameTimePlaceMap))
+  
   chain4 <- workflow(occurrence = UKAnophelesPlumbeus,
                  covariate = UKAir,
                  process = OneHundredBackground,
                  model = LogisticRegression,
                  output = Chain(SameTimePlaceMap, SameTimePlaceMap))
-
+  
+  chain5 <- workflow(occurrence = UKAnophelesPlumbeus,
+                     covariate = UKAir,
+                     process = Chain(OneHundredBackground, NoProcess),
+                     model = LogisticRegression,
+                     output = SameTimePlaceMap)
+  
   expect_true(exists('chain1'))
   expect_equal(dim(chain1$occurrence.output[[1]]), c(376, 5))
   expect_is(chain1$covariate.output[[1]], 'RasterLayer')
@@ -246,7 +257,18 @@ test_that('chains work.', {
   expect_is((chain2$model.output[[1]])$model, c('zoonModel'))
   expect_is((chain2$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(chain2$report[[1]], 'RasterLayer')  
-
+  
+  expect_true(exists('chain3'))
+  expect_equal(dim(chain3$occurrence.output[[1]]), c(188, 5))
+  expect_is(chain3$covariate.output[[1]], 'RasterStack')
+  expect_equal(dim(chain3$covariate.output[[1]]), c(9,9,2))
+  expect_equal(names(chain3$process.output[[1]]$df), 
+               c('value', 'type', 'fold', 'longitude', 'latitude', 'layer.1', 'layer.2'))
+  expect_equal(dim(chain3$process.output[[1]]$df),  c(269, 7))
+  expect_is((chain3$model.output[[1]])$model, c('zoonModel'))
+  expect_is((chain3$model.output[[1]])$model$model, c('glm', 'lm'))
+  expect_is(chain3$report[[1]], 'list')  
+  
   expect_true(exists('chain4'))
   expect_equal(dim(chain4$occurrence.output[[1]]), c(188, 5))
   expect_is(chain4$covariate.output[[1]], 'RasterLayer')
@@ -257,7 +279,18 @@ test_that('chains work.', {
   expect_is((chain4$model.output[[1]])$model, c('zoonModel'))
   expect_is((chain4$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(chain4$report[[1]], 'list')  
-
+  
+  expect_true(exists('chain5'))
+  expect_equal(dim(chain5$occurrence.output[[1]]), c(188, 5))
+  expect_is(chain5$covariate.output[[1]], 'RasterLayer')
+  expect_equal(dim(chain5$covariate.output[[1]]), c(9,9,1))
+  expect_equal(names(chain5$process.output[[1]]$df), 
+               c('value', 'type', 'fold', 'longitude', 'latitude', 'layer'))
+  expect_equal(dim(chain5$process.output[[1]]$df),  c(269, 6))
+  expect_is((chain5$model.output[[1]])$model, c('zoonModel'))
+  expect_is((chain5$model.output[[1]])$model$model, c('glm', 'lm'))
+  expect_is(chain5$report[[1]], 'RasterLayer')  
+  
 
 })
 
