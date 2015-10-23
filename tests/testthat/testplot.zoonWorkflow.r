@@ -3,7 +3,9 @@ context('plot.zoonwWorkflow')
 directory <- tempdir()
 
 test_that('plot.zoonWorkflow works', {
-
+  
+  if (!capabilities('libcurl')) skip('skipping as libcurl not supported')  
+  
   # Create a simple workflow to test on
   work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                     covariate = UKAir,
@@ -44,6 +46,13 @@ test_that('plot.zoonWorkflow works', {
   expect_true(file.exists(file.path(directory, 'tempzoonWorkflow3.png')))
   unlink(x = file.path(directory, 'tempzoonWorkflow3.png'))
   
+})
+
+
+test_that('plot.zoonWorkflow module not on repo', {
+  
+  if (!capabilities('libcurl')) skip('skipping as libcurl not supported')  
+  
   #missing module
   myMissing <- function(.data){
       
@@ -77,7 +86,11 @@ test_that('plot.zoonWorkflow works', {
   
   work4 <- workflow(occurrence = UKAnophelesPlumbeus, 
                     covariate = UKAir,
-                    process = myMissing,
+                    process = list(myMissing,
+                                   OneHundredBackground,
+                                   OneThousandBackground,
+                                   myMissing,
+                                   NoProcess),
                     model = LogisticRegression,
                     output = PrintMap)
   png(filename = file.path(directory, 'tempzoonWorkflow4.png'))
@@ -86,5 +99,9 @@ test_that('plot.zoonWorkflow works', {
   expect_true(file.exists(file.path(directory, 'tempzoonWorkflow4.png')))
   unlink(x = file.path(directory, 'tempzoonWorkflow4.png'))
   unlink(x = file.path(directory, 'myMissing.R'))
+  
+  # There is some functionality for when multiple lists
+  # are given... not sure if this can ever actually happen?
+  # these have been commented out of the function
   
 })

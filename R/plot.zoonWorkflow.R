@@ -67,6 +67,9 @@ Boxed2 <- function (NoOfModules, InModuleList, IsList, IsChain, ModuleNames) {
       
       # flip the names
       ModuleNames[idx] <- rev(ModuleNames[idx])
+      
+      # also flip the InModuleList
+      InModuleList[idx] <- rev(InModuleList[idx])
       rm(idx)
       
     }
@@ -122,9 +125,9 @@ Boxed2 <- function (NoOfModules, InModuleList, IsList, IsChain, ModuleNames) {
       if( IsList[i] && ListAlready == 1) ListAlready = 2
       if(ListAlready != 2){
         if(InModuleList[[ModuleInc]]) ColCode = 1 else ColCode = 2
-      } else {
-        if(InModuleList[[ModuleInc]]) ColCode = 3 else ColCode = 4
-        clrsTXT = "white"			
+#       } else {
+#         if(InModuleList[[ModuleInc]]) ColCode = 3 else ColCode = 4
+#         clrsTXT = "white"			
       }
       
       if(IsList[i]){
@@ -139,13 +142,13 @@ Boxed2 <- function (NoOfModules, InModuleList, IsList, IsChain, ModuleNames) {
         segments(	x2[i], yNow+0.5*yH, 
                   x2[i]+xG*0.33, yNow+0.5*yH, lwd = lW, col = clrs[ColCode])
         
-        if(ListAlready == 2){
-          segments( x1[i] - (xG*0.5), 5, x1[i] - xG*0.5, yM, 
-                    lwd = 1.5, lty = 3, col = "cornsilk4")
-          segments(x1[1]+0.5*xG, 5, x1[i] - xG*0.5, 5, lwd = 1.5, lty = 3, col = "cornsilk4")
-          text (x1[1]+0.5*xG, 0, "*, only 1 list permitted per workflow", col = "cornsilk4", adj = 0, cex = 0.8)
-          ListAlready = 2
-        }
+#         if(ListAlready == 2){
+#           segments( x1[i] - (xG*0.5), 5, x1[i] - xG*0.5, yM, 
+#                     lwd = 1.5, lty = 3, col = "cornsilk4")
+#           segments(x1[1]+0.5*xG, 5, x1[i] - xG*0.5, 5, lwd = 1.5, lty = 3, col = "cornsilk4")
+#           text (x1[1]+0.5*xG, 0, "*, only 1 list permitted per workflow", col = "cornsilk4", adj = 0, cex = 0.8)
+#           ListAlready = 2
+#         }
       }else{
         if(IsChain[i]){
           if(i != 1 && N == NoOfModules[i]) segments(x1[i] - xG*0.33, yLnow, x1[i], yNow+0.5*yH, lwd = lW, col = clrs[ColCode])
@@ -166,7 +169,7 @@ Boxed2 <- function (NoOfModules, InModuleList, IsList, IsChain, ModuleNames) {
       if( ColCode%%2 == 0){
         text(x1[1]+(0.5*(x2[1] - x1[1])), - 18, "** Modules not found in the repoistory", col = "cornsilk4", adj = 0, cex = 0.8)
         rect(x1[1]+(0.5*(x2[1] - x1[1])), wInc , x2[1]+(0.5*(x2[1] - x1[1])), wInc+yH, col = clrs[ColCode], border = clrs[ColCode], lwd = lW)
-        text (x1[1]+(0.5*(x2[1] - x1[1])), wInc+0.5*yH, "moduleName.module", col = clrsTXT, adj = 0, cex = 0.75)
+        text (x1[1]+(0.5*(x2[1] - x1[1])), wInc+0.5*yH, ModuleNames[[ModuleInc]], col = clrsTXT, adj = 0, cex = 0.75)
         wInc = wInc - (yH+yG)
       }
       
@@ -190,6 +193,9 @@ CallLister <- function( callList ){
   isList <- rep(FALSE, 5)
   isChain <- rep(FALSE, 5)
   
+  # get list of modules in repo
+  repoModuleList <- unlist(GetModuleList(renew = TRUE), use.names = FALSE)
+  
   # loop through the module types and 
   for(j in 1:5){
     noOfModules[j] <- length( callList [[j]] )
@@ -199,10 +205,11 @@ CallLister <- function( callList ){
     }
     for(k in 1:length(callList [[j]] ) ){
       #add module name to names list and add index (i.e. order)
-      modNom <- callList [[ j ]][[k]]$module
+      modNom <- callList [[j]][[k]]$module
       moduleNames <- c(moduleNames, modNom)
       moduleIndex <- c(moduleIndex, j)
-      inModuleList <- c(inModuleList, TRUE)	#letters[round(runif(1,1,26), digits = 0)] )
+      modOnRepo <- as.character(modNom) %in% repoModuleList
+      inModuleList <- c(inModuleList, modOnRepo)
     }
   } # end for j
   moduleIndex <- as.numeric(moduleIndex)
