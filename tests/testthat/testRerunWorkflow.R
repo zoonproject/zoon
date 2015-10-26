@@ -128,7 +128,7 @@ test_that('RerunWorkflow test quoted modules', {
                   output     = PrintMap)
   
   set.seed(1)
-  w22 <- RerunWorkflow(z)
+  w22 <- RerunWorkflow(w21)
   
   expect_true(all.equal(w21, w22))
   
