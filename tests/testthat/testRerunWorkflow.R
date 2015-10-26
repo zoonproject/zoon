@@ -24,6 +24,8 @@ test_that('RerunWorkflow test error', {
   expect_error(w2 <- RerunWorkflow(w1, from = 'a'), regexp = 'Error : from')
   expect_error(w2 <- RerunWorkflow(w1, from = 6), regexp = 'Error : from')
   
+  # You cannot re-run a workflow with 
+  
 })
 
 
@@ -60,5 +62,74 @@ test_that('RerunWorkflow test with NULLs', {
   expect_true(all.equal(w1, w10))
   expect_true(all.equal(w1, w11))
   expect_true(all.equal(w1, w12))
+  
+})
+
+
+test_that('RerunWorkflow test with Chains', {
+  
+  set.seed(1)
+  w13 <- workflow(Chain(UKAnophelesPlumbeus,UKAnophelesPlumbeus),
+                 UKAir, 
+                 OneHundredBackground,
+                 LogisticRegression,
+                 SameTimePlaceMap)
+  
+  set.seed(1)
+  w14 <- RerunWorkflow(w13)
+  expect_true(all.equal(w14, w13))
+  
+  set.seed(1)
+  w15 <- workflow(Chain(UKAnophelesPlumbeus,UKAnophelesPlumbeus),
+                  Chain(UKAir, UKAir), 
+                  OneHundredBackground,
+                  LogisticRegression,
+                  SameTimePlaceMap)
+  
+  set.seed(1)
+  w16 <- RerunWorkflow(w15)
+  expect_true(all.equal(w15, w16))
+  
+})
+
+test_that('RerunWorkflow test with lists', {
+  
+  set.seed(1)
+  w17 <- workflow(list(UKAnophelesPlumbeus,UKAnophelesPlumbeus),
+                  UKAir, 
+                  OneHundredBackground,
+                  LogisticRegression,
+                  SameTimePlaceMap)
+  
+  set.seed(1)
+  w18 <- RerunWorkflow(w17)
+  expect_true(all.equal(w18, w17))
+  
+  set.seed(1)
+  w19 <- workflow(UKAnophelesPlumbeus,
+                  list(UKAir, UKAir), 
+                  OneHundredBackground,
+                  LogisticRegression,
+                  SameTimePlaceMap)
+  
+  set.seed(1)
+  w20 <- RerunWorkflow(w19)
+  expect_true(all.equal(w19, w20))
+  
+})
+
+test_that('RerunWorkflow test quoted modules', {
+  
+  set.seed(1)
+  w21 <- workflow(occurrence = "UKAnophelesPlumbeus",
+                  covariate  = UKAir,
+                  process    = OneHundredBackground,
+                  model      = RandomForest,
+                  output     = PrintMap)
+  
+  set.seed(1)
+  w22 <- RerunWorkflow(w21)
+  
+  expect_true(all.equal(w21, w22))
   
 })

@@ -575,3 +575,17 @@ AddDefaultParas <- function(paras, type){
   # Add these defaults to the front of the para list
   return(c(default_paras[[type]], paras))
 }
+
+# StringToCall
+# 
+# takes a string and converts it to a call. This is useful for taking the
+# call from a workflow that has been run and re-running it.
+# @param x The string
+
+StringToCall <- function(x){
+  
+  parse(text = x[[1]])[[1]]
+  
+}
+
+

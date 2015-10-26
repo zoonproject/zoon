@@ -43,26 +43,28 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
 
   # Separate the original work flow.
   oldCallArgs <- SplitCall(workflow$call)
+  # Convert strings to calls
+  oldCallArgs <- lapply(oldCallArgs, StringToCall)
 
   # Replace any arguments that have been specified.
   if(!is.null(occSub)){
-    oldCallArgs[['occurrence']] <- as.character(occSub)
+    oldCallArgs[['occurrence']] <- occSub
   }
 
   if(!is.null(covSub)){
-    oldCallArgs[['covariate']] <- as.character(covSub)
+    oldCallArgs[['covariate']] <- covSub
   }
 
   if(!is.null(proSub)){
-    oldCallArgs[['process']] <- as.character(proSub)
+    oldCallArgs[['process']] <- proSub
   }
 
   if(!is.null(modSub)){
-    oldCallArgs[['model']] <- as.character(modSub)
+    oldCallArgs[['model']] <- modSub
   }
 
   if(!is.null(outSub)){
-    oldCallArgs[['output']] <- as.character(outSub)
+    oldCallArgs[['output']] <- outSub
   }
 
   if(!is.null(forceReproducible)){
@@ -141,7 +143,8 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
   # Actually tryCatch here only tells user which module broke, nothing to save.
   
   # set up zoon object now so we can return it if there's an error
-  call <- SortArgs(occNew, covNew, proNew, modNew, outNew, forceReproducible)
+  call <- SortArgs(PasteAndDep(occNew), PasteAndDep(covNew), PasteAndDep(proNew), 
+                   PasteAndDep(modNew), PasteAndDep(outNew), forceReproducible)
   
   output <- list(occurrence.output = NULL,
                  covariate.output = NULL,

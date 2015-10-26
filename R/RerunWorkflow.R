@@ -45,11 +45,14 @@ RerunWorkflow <- function(workflow, from = NULL) {
   # get the arguments from the call used to run this workflow
   callArgs <- SplitCall(workflow$call)
 
-  occSub <- callArgs['occurrence']
-  covSub <- callArgs['covariate']
-  proSub <- callArgs['process']
-  modSub <- callArgs['model']
-  outSub <- callArgs['output']
+  # These are strings at first but we need to change them
+  # to calls as is expected in the main zoon workflow function
+  # this 
+  occSub <- StringToCall(callArgs['occurrence'])
+  covSub <- StringToCall(callArgs['covariate'])
+  proSub <- StringToCall(callArgs['process'])
+  modSub <- StringToCall(callArgs['model'])
+  outSub <- StringToCall(callArgs['output'])
 
   forceReproducible <- as.logical(callArgs['forceReproducible'])
 
