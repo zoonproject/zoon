@@ -1,4 +1,4 @@
-context('Changing workflows.')
+context('Changing workflows')
 
 # Original run
 set.seed(1)
@@ -68,10 +68,15 @@ test_that('Basic ChangeWorkflow works', {
   sink()
   
   set.seed(1)
+  sink(file=ifelse(Sys.info()["sysname"] == "Windows",
+                   "NUL",
+                   "/dev/null"))           
   w7 <- ChangeWorkflow(w6,
                        occurrence = UKAnophelesPlumbeus,
                        covariate = UKAir,
                        forceReproducible = FALSE)
+  sink()
+  
   expect_true(all.equal(w1, w7))
   
   # Only change output

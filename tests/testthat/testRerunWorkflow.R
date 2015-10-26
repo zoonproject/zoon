@@ -117,3 +117,19 @@ test_that('RerunWorkflow test with lists', {
   expect_true(all.equal(w19, w20))
   
 })
+
+test_that('RerunWorkflow test quoted modules', {
+  
+  set.seed(1)
+  w21 <- workflow(occurrence = "UKAnophelesPlumbeus",
+                  covariate  = UKAir,
+                  process    = OneHundredBackground,
+                  model      = RandomForest,
+                  output     = PrintMap)
+  
+  set.seed(1)
+  w22 <- RerunWorkflow(z)
+  
+  expect_true(all.equal(w21, w22))
+  
+})
