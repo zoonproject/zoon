@@ -46,7 +46,7 @@ GetModuleList <- function(renew = FALSE){
       # grab the rd file
       rd_i <- readLines(url(canary_urls[i], method = 'libcurl'))
       
-      # get te expected module type
+      # get the expected module type
       type <- names(canaries)[i]
       
       # find the starting line
@@ -69,7 +69,7 @@ GetModuleList <- function(renew = FALSE){
       text <- gsub('\\}', '', text)
       
       # split into vector
-      text <- strsplit(text, ';')[[1]]
+      text <- strsplit(text, c(','))[[1]]
       
       # add the target module in
       text <- sort(c(canaries[i], text))
