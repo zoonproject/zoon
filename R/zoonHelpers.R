@@ -80,9 +80,10 @@ GetModule <- function(module, forceReproducible){
   # Get module from zoonURL otherwise.
   if (exists(module) & !forceReproducible){
     assign(module, eval(parse(text = module)),  envir = parent.frame(4))
+    attr(module, 'version') <- 'local copy'
     return(module)
   } else {
-    rawText <- getURL(zoonURL, ssl.verifypeer=FALSE)
+    rawText <- getURL(zoonURL, ssl.verifypeer = FALSE)
   } 
   
   # getURL returns "Not Found" if no webpage found.
@@ -98,6 +99,9 @@ GetModule <- function(module, forceReproducible){
   # Evaluate text in the workflow call environment
   eval(txt, envir = parent.frame(4))
   
+  # Assign version attribute
+  attr(module, 'version') <- GetModuleVersion(rawText)
+  
   return(module)
 }
 
@@ -110,8 +114,11 @@ GetModule <- function(module, forceReproducible){
 #@name LapplyGetModule
 
 LapplyGetModule <- function(modules, forceReproducible){
-  lapply(modules, function(x) 
-    c(x, func = GetModule(as.character(x$module), forceReproducible)))
+  lapply(modules, function(x){ 
+    GotModule <- GetModule(as.character(x$module), forceReproducible)
+    return(c(x, func = GotModule, version = attr(GotModule, 'version')))
+  }
+  )
 }
 
 
@@ -347,7 +354,6 @@ ExtractAndCombData <- function(occurrence, ras){
 #'  \code{Chain} are parsed by workflow, with behaviour similar to this function.
 #'@param ... List of modules to be chained.
 #'@export
-#'
 #'@name Chain
 
 Chain <- function(...){
@@ -589,3 +595,18 @@ StringToCall <- function(x){
 }
 
 
+# GetModuleVersion
+#
+# Using the raw text returned from a GetURL call to github
+# this extracts the version number
+
+GetModuleVersion <- function(rawText){
+  
+  # Break down into lines
+  ModLines <- strsplit(rawText, '\n')[[1]]
+  VersionLine <- ModLines[grep('@section Version: ', ModLines)]
+  TagPosition <- gregexpr('@section Version: ', VersionLine)
+  Start <- TagPosition[[1]] + attr(TagPosition[[1]], 'match.length')
+  substr(VersionLine, Start, nchar(VersionLine))    
+
+}

@@ -17,9 +17,8 @@
 #' 
 #' @param newdata a dataframe containing data to predict to.
 #' @name ZoonPredict
-#' @export
-#' 
-# @family module developer tools
+#' @export 
+
 ZoonPredict <- function(zoonModel, newdata) {
   
   # check the model

@@ -33,7 +33,8 @@ test_that('Basic ChangeWorkflow works', {
   set.seed(1)
   w3 <- ChangeWorkflow(w2, model = LogisticRegression)
 
-  expect_true(all.equal(w1, w3))
+  expect_true(all.equal(w1[!names(w1) %in% 'session.info'],
+                        w3[!names(w3) %in% 'session.info']))
   expect_true(identical(w2$call,
     "workflow(occurrence = UKAnophelesPlumbeus, covariate = UKAir, process = OneHundredBackground, model = RandomForest, output = SameTimePlaceMap, forceReproducible = FALSE)"))
 
@@ -51,7 +52,8 @@ test_that('Basic ChangeWorkflow works', {
                        process = OneHundredBackground, 
                        model = LogisticRegression, 
                        output = SameTimePlaceMap)
-  expect_true(all.equal(w1, w5))
+  expect_true(all.equal(w1[!names(w1) %in% 'session.info'],
+                        w5[!names(w5) %in% 'session.info']))
   
   
   # Change occurrence and covariate
@@ -77,7 +79,8 @@ test_that('Basic ChangeWorkflow works', {
                        forceReproducible = FALSE)
   sink()
   
-  expect_true(all.equal(w1, w7))
+  expect_true(all.equal(w1[!names(w1) %in% 'session.info'],
+                        w7[!names(w7) %in% 'session.info']))
   
   # Only change output
   # Change Process, model and output
@@ -90,7 +93,8 @@ test_that('Basic ChangeWorkflow works', {
   set.seed(1)
   w7b <- ChangeWorkflow(w7a,
                         output = SameTimePlaceMap)
-  expect_true(all.equal(w1, w7b))
+  expect_true(all.equal(w1[!names(w1) %in% 'session.info'],
+                        w7b[!names(w7b) %in% 'session.info']))
   
 })
 
@@ -109,7 +113,8 @@ test_that('ChangeWorkflow - Chains', {
                        occurrence = Chain(UKAnophelesPlumbeus, UKAnophelesPlumbeus)
                        )
 
-  expect_true(all.equal(w9, w8))
+  expect_true(all.equal(w9[!names(w9) %in% 'session.info'],
+                        w8[!names(w8) %in% 'session.info']))
   
   # Replace with a covariate chain
   set.seed(1)
@@ -124,14 +129,16 @@ test_that('ChangeWorkflow - Chains', {
                        covariate = Chain(UKAir, UKAir)
                        )
   
-  expect_true(all.equal(w10, w11))
+  expect_true(all.equal(w10[!names(w10) %in% 'session.info'],
+                        w11[!names(w11) %in% 'session.info']))
   
   # Replace a chain with a non-chain
   set.seed(1)
   w12 <- ChangeWorkflow(w8,
                         occurrence = UKAnophelesPlumbeus)
   
-  expect_true(all.equal(w12, w1))
+  expect_true(all.equal(w12[!names(w12) %in% 'session.info'],
+                        w1[!names(w1) %in% 'session.info']))
 
 })
 
@@ -150,7 +157,8 @@ test_that('ChangeWorkflow - Lists', {
                         occurrence = list(UKAnophelesPlumbeus, UKAnophelesPlumbeus)
   )
   
-  expect_true(all.equal(w13, w14))
+  expect_true(all.equal(w13[!names(w13) %in% 'session.info'],
+                        w14[!names(w14) %in% 'session.info']))
   
   # Replace with a covariate chain
   set.seed(1)
@@ -165,14 +173,16 @@ test_that('ChangeWorkflow - Lists', {
                         covariate = list(UKAir, UKAir)
   )
   
-  expect_true(all.equal(w15, w16))
+  expect_true(all.equal(w15[!names(w15) %in% 'session.info'],
+                        w16[!names(w16) %in% 'session.info']))
   
   # Replace a chain with a non-chain
   set.seed(1)
   w17 <- ChangeWorkflow(w13,
                         occurrence = UKAnophelesPlumbeus)
   
-  expect_true(all.equal(w17, w1))
+  expect_true(all.equal(w17[!names(w17) %in% 'session.info'],
+                        w1[!names(w1) %in% 'session.info']))
   
 })
 
@@ -189,11 +199,13 @@ test_that('More complex syntax in remaining modules works', {
  set.seed(1)
  w19 <- ChangeWorkflow(w18, occurrence = UKAnophelesPlumbeus)
 
- expect_true(all.equal(w18, w19))
+ expect_true(all.equal(w18[!names(w18) %in% 'session.info'],
+                       w19[!names(w19) %in% 'session.info']))
 
  set.seed(1)
  w20 <- ChangeWorkflow(w1, process = BackgroundAndCrossvalid(k = 2))
  
- expect_true(all.equal(w20, w18))
+ expect_true(all.equal(w20[!names(w20) %in% 'session.info'],
+                       w18[!names(w18) %in% 'session.info']))
  
 })

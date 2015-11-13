@@ -4,26 +4,24 @@
 #'Will later add functions to upload module to figshare etc.
 #'And add testing that the module name is unique.
 #'
-#'@param object A function that will be made into a module file.
-#'@param dir The directory to put the module into (defaults to the
+#' @param object A function that will be made into a module file.
+#' @param dir The directory to put the module into (defaults to the
 #'      working directory.
-#'@param type A string that defines the type of module. Possible module types
+#' @param type A string that defines the type of module. Possible module types
 #'      are occurrence, covariate, process, model, diagnostic and output.
-#'@param title A short description of the module.
-#'@param description (required) A single string giving a full description of the module.
-#'@param details (optional) A single string giving details of the module.
-#'@param paras A list of the form 
+#' @param title A short description of the module.
+#' @param description (required) A single string giving a full description of the module.
+#' @param details (optional) A single string giving details of the module.
+#' @param paras A list of the form 
 #'    list(parameterName = 'Parameter description.',
 #'    anotherParameter = 'Another descriptions.')
 #'    This is required if the module takes non-default arguements
-#'@param author (required) String giving the author(s) name(s)
-#'@param email (required) String giving the correspondance address for the module.
+#' @param author (required) String giving the author(s) name(s)
+#' @param email (required) String giving the correspondance address for the module.
 #'
-#'@return Name of the module. Outputs a file
-#'@name BuildModule
-#'
-#'@export
-#'
+#' @return Name of the module. Outputs a file
+#' @name BuildModule
+#' @export
 
 BuildModule <- function(object, type, dir='.', title = '',  description = '',
                         details = '', author = '', email = '', paras=NULL){

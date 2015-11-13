@@ -10,7 +10,8 @@ Description: Reproducible and remixable species distribution modelling. The
 License: BSD_3_clause + file LICENSE
 Imports:
     RCurl,
-    dismo
+    dismo,
+    rfigshare
 Depends:
     raster (>= 2.4-20),
     R (>= 3.2.0)
@@ -20,3 +21,4 @@ Suggests:
 VignetteBuilder: knitr
 LazyData: TRUE
 URL: https://github.com/zoonproject/zoon
+RoxygenNote: 5.0.0

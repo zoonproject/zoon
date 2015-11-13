@@ -88,6 +88,9 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
 
   # save the local environment as it needs to be passed to various functions.
   e <- environment() 
+  
+  # capture the session info to return in workflow object
+  session.info <- sessionInfo()
 
   # Check all modules are of same list structure
   occurrence.module <- CheckModList(occNew)
@@ -126,6 +129,22 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
   # Test for predict method
   outputName <- LapplyGetModule(output.module, forceReproducible) 
   
+  # Build module version list
+  moduleVersions <- list(occurrence = sapply(occurrenceName,
+                                             function(x) c(module = x$func,
+                                                           version = x$version)),
+                         covariate = sapply(covariateName,
+                                            function(x) c(module = x$func,
+                                                          version = x$version)),
+                         process = sapply(processName,
+                                          function(x) c(module = x$func,
+                                                        version = x$version)),
+                         model = sapply(modelName,
+                                        function(x) c(module = x$func,
+                                                      version = x$version)),
+                         output = sapply(outputName,
+                                         function(x) c(module = x$func,
+                                                       version = x$version)))
   
   
   # Different to workflow(), We have an if statement before each module is run
@@ -152,7 +171,9 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
                  model.output = NULL,
                  report = NULL,
                  call = call,
-                 call.list = call.list)
+                 call.list = call.list,
+                 session.info = session.info,
+                 module.versions = moduleVersions)
   
   class(output) <- 'zoonWorkflow'
   
