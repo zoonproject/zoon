@@ -5,7 +5,8 @@
 \title{BuildModule}
 \usage{
 BuildModule(object, type, dir = ".", title = "", description = "",
-  details = "", author = "", email = "", paras = NULL)
+  details = "", author = "", email = "", paras = NULL,
+  dataType = NULL)
 }
 \arguments{
 \item{object}{A function that will be made into a module file.}
@@ -30,6 +31,14 @@ working directory.}
 list(parameterName = 'Parameter description.',
 anotherParameter = 'Another descriptions.')
 This is required if the module takes non-default arguements}
+
+\item{dataType}{Character vector required for all module types except 'covariate'.
+Indicates the types of data that this module works with. Values can be any of
+'presence-only', 'presence/absence', 'abundance' or 'proportion'. For a occurrence
+model this should indicate the type of data that is retuned and for other modules
+should indicate the type of data they will work with. If the module works with
+multiple types they can be supplied in a vector, e.g. c('presence-only',
+'presence/absence')}
 }
 \value{
 Name of the module. Outputs a file
