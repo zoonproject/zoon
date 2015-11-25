@@ -24,18 +24,27 @@ ZoonFigshare <- function(zoonWorkflow, title = 'My Zoon Workflow',
                          description = 'zoon workflow',
                          authors = 'zoon', categories = 'SDM', tags = 'zoon'){
   
-  temp_save <- file.path(tempdir(), 'zoonTMPfigshare.RData')
-  
-  save(zoonWorkflow, file = temp_save)
+  # Create the filename
+  tx <- gsub(' ', '_', title)
+  tx <- substr(tx, 1, min(20, nchar(tx)))
+  datasave <- file.path(tempdir(), paste0(tx, '.RData'))
+  metasave <- file.path(tempdir(), paste0(tx, '_metadata.txt'))
+  # Write the metadata to file
+  WriteWorkflowMetadata(object, title, description,
+                        authors, categories, tags,
+                        filename = metasave)
+    
+  save(zoonWorkflow, file = datasave)
   
   
   id <- fs_new_article(title = title,
                        description = description, 
-                       type = "dataset",
+                       type = "fileset",
                        authors = authors,
                        tags = c(tags, 'zoonWorkflow'),
                        categories = 'ecology',
-                       files = temp_save,
+                       files = c(datasave,
+                                 metasave),
                        visibility = "private")
   
   message('To share your workflow with the ZOON community remember to make it public on Figshare')
@@ -43,7 +52,7 @@ ZoonFigshare <- function(zoonWorkflow, title = 'My Zoon Workflow',
   if(is.numeric(id)) browseURL(paste('http://figshare.com/preview/_preview/',
                                      id, sep = '')) 
   
-  file.remove(temp_save)
+  file.remove(metasave, datasave)
   
   return(invisible(NULL))
   
