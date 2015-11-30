@@ -1,9 +1,10 @@
 ---
 title: "Building modules"
 author: "Tom August & Tim Lucas"
-date: "`r Sys.Date()`"
-output: html_vignette
-toc: yes
+date: '`r Sys.Date()`'
+output:
+  html_document:
+    toc: yes
 ---
 <!--
 %\VignetteEngine{knitr::knitr}
@@ -11,7 +12,7 @@ toc: yes
 -->
 
 ```{r, echo = FALSE}
-invisible(require(zoon, quietly = TRUE, verbose = FALSE))
+require(zoon, quietly = TRUE)
 ```
 
 ## The "1, 2, 3" of module building
@@ -22,7 +23,7 @@ The process of making a module is essentially
 2. Run `BuildModule` with the function and metadata
 3. *Optional* -- Upload to the zoon modules repository
 
-Each module type is slightly different to write thought the same three basic steps apply. Below we show an example of how to write each of the module types. We also link to pre-existing modules that you can use as templates.
+Each module type is slightly different to write though the same three basic steps apply. Below we show an example of how to write each of the module types. We also link to pre-existing modules that you can use as templates.
 
 ## How to build an occurrence module
 
@@ -36,7 +37,7 @@ library(zoon)
 Lorem_ipsum_UK <- function(){
 ```
 
-In this case we have not given our function any arguements as we simply want to return the online dataset. However you could add arguements here to modify what your function returns (for an example [see the SpOcc module](https://github.com/zoonproject/modules/blob/master/R/SpOcc.R)).
+In this case we have not given our function any arguments as we simply want to return the online dataset. However you could add arguments here to modify what your function returns (for an example [see the SpOcc module](https://github.com/zoonproject/modules/blob/master/R/SpOcc.R)).
 
 ```{r, eval = TRUE}
 # I'm going to use the package 'RCurl' so first I get that
@@ -53,21 +54,9 @@ x <- getURL(URL)
 out <- read.csv(textConnection(x))
 ```
 
-Now it is time to think about how we return our data
+Now it is time to think about how we return our data. The output format for occurrence modules is very important. If you do not ensure that the format is correct then your module will not work properly when entered into a workflow. An occurrence module must return a data.frame with the columns longitude, latitude, value, type and fold, the details are given at [the end of this document](#occIO)
 
-### Occurrence model output format
-
-The output format for occurrence modules is very important. If you do not ensure that the format is correct then your module will not work properly when entered into a workflow. Here is what you need to know.
-
-An occurrence module must return a dataframe with the columns longitude, latitude, value, type and fold:
-
-- *Longitude*: The longitude of the observation (or absence)
-- *Latitude*: The latitude of the observation (or absence)
-- *Value*: The value of the observation. This can be 1 or 0 for presence/absence, an interger for abundance (e.g. 1, 3, 67), or a decimal number between 0 and 1 for proportions (e.g. 0.12, 0.5, 0.98)
-- *Type*: This is linked to Value above and dictates for each row of the dataframe the type of value given. This can be one of the following; 'presence', 'absence', 'background', 'abundance', 'proportion'.
-- *Fold*: Folds are used to test your model. If we have, for example, 3 folds (1, 2, 3) then we can use the [PerformanceMeasures output module](https://github.com/zoonproject/modules/blob/master/R/PerformanceMeasures.R) to test the performance of the model. A common method, implemented by `PerformanceMeasures` is to build the model using all but one fold, and then test the models ability to predict the fold that was held back.  
-
-Our occurrence data does not have all of these columns so we need to add them. Here is what our data currently looks like.
+Our occurrence data does not have all of these columns so we need to add them. Here is what our data currently look like.
 
 ```{r, echo = FALSE, message = FALSE}
 URL <- "http://files.figshare.com/2519918/Lorem_ipsum_data.csv"
@@ -75,7 +64,7 @@ x <- getURL(URL)
 head(read.csv(textConnection(x)))
 ```
 
-So we need to do a little reformating
+So we need to do a little reformatting
 
 ```{r, eval = FALSE}
 # Keep only Lat Long columns
@@ -114,7 +103,7 @@ Lorem_ipsum_UK <- function(){
 
 Now that we have our function written we can test it very simply in a workflow like this.
 
-```{r, fig.width = 5, fig.height = 5}
+```{r, fig.width = 5, fig.height = 5, warning = FALSE}
 workl1 <- workflow(occurrence = Lorem_ipsum_UK,
                    covariate = UKBioclim,
                    process = OneHundredBackground,
@@ -122,9 +111,9 @@ workl1 <- workflow(occurrence = Lorem_ipsum_UK,
                    output = PrintMap)
 ```
 
-This is a nice way to debug your code and ensure you are getting the results you expect.
+This is a nice way to debug your function and ensure you are getting the results you expect.
 
-Once you are happy that your code is working as you expect it to you can build you code into a module using the `BuildModule` function in `zoon`. This script adds in metadata including the authors' names, the parameter definitions, etc.
+Once you are happy that your function is working as you expect it to you can build you code into a module using the `BuildModule` function in `zoon`. This script adds in metadata including the type of module, authors' names, a brief description and documentation for the arguments it accepts (though this one doesn't accept any arguments).
 
 ```{r}
 # Let's build our module
@@ -141,9 +130,9 @@ BuildModule(Lorem_ipsum_UK,
             dataType = 'presence-only')
 ```
 
-This function is fairly self explanitory however it is worth noting the dataType field. This must be any of 'presence-only', 'presence/absence', 'abundance' or 'proportion'. This is important so that people using your module in the future will know what it is going to output. 
+This function is fairly self explanatory however it is worth noting the `dataType` field. This must be any of 'presence-only', 'presence/absence', 'abundance' or 'proportion'. This is important so that people using your module in the future will know what it is going to output. 
 
-We will now have an R file in our working directory that represents our module and can be shared with others.
+`BuildModule` has now written an R file in our working directory containing the function and metadata, so that it can be shared with others.
 
 ```{r, eval = FALSE}
 # First we remove the function from our workspace
@@ -163,23 +152,23 @@ Once we're happy with the module, we will hopefully upload it to the zoon reposi
 
 ## How to write a covariate module
 
-The aim of a covariate module is to provide spatial information that will help to explian the distribution of a species. For example this data could be climate data, habitat data or topology.
+The aim of a covariate module is to provide spatial information that will help to explain the distribution of a species. For example this data could be climate data, habitat data or topology.
 
-A covariate module, like an occurrence module, does not have to take any arguements but must return a raster layer, brick or stack.
+A covariate module, like an occurrence module, does not have to take any arguments but must return a raster layer, brick or stack.
 
 In this example we will create a covariate module that can provide a number of different climate layers for the area covering Australia.
 
 ```{r, eval = FALSE}
-# Our function will take an arguement to set the variable
+# Our function will take an argument to set the variable
 # the user wants returned
 AustraliaAir <- function(variable = 'rhum'){
 ```
 
-When your module has arguements, as here, it is important to include default for all arguements. This make it easier for other users to use your modules and allows your module to be tested effectivly when you upload it to the zoon repository.
+When your module has arguments, as here, it is important to include default for all arguments. This make it easier for other users to use your modules and allows your module to be tested effectively when you upload it to the zoon repository.
 
-The first step is to load the R pacakges that your code is going to need. It is important that you use the `GetPackage` function rather than `library` or `require` as it will also install the package if the user does not already have it installed. In this example we do not need any external packages.
+The first step is to load the R packages that your code is going to need. It is important that you use the `GetPackage` function rather than `library` or `require` as it will also install the package if the user does not already have it installed.
 
-The data we want to share is currently a rasterstack object in R.
+In this example we do not need any external packages as the data we are downloading is a RasterStack object, and zoon already loads the `raster` package to deal with RasterStacks.
 
 ```{r, echo = FALSE}
 URL <- "http://files.figshare.com/2527274/aus_air.rdata"
@@ -187,9 +176,9 @@ load(url(URL))
 print(ras)
 ```
 
-To share this we have saved the object as an R data file and [placed it on Figshare](http://figshare.com/articles/NCEP_Australia/1610215), being sure to attribute those that created the data. 
+To share this we have saved the object as an R data file and [placed it on Figshare](http://figshare.com/articles/NCEP_Australia/1610215) - attributing those that created the data. 
 
-In our function we can then download this data into R
+In our function we download this data into R
 
 ```{r, eval = FALSE}
 # Load in the data
@@ -204,7 +193,7 @@ return(ras)
 
 We can test our function works by running it in a workflow with other modules
 
-```{r, fig.width = 5, fig.height = 5}
+```{r, fig.width = 5, fig.height = 5, message = FALSE, warning = FALSE}
 AustraliaAir <- function(variables = 'rhum'){
 
   URL <- "http://files.figshare.com/2527274/aus_air.rdata"
@@ -226,7 +215,7 @@ work3 <- workflow(occurrence = SpOcc(extent = c(111, 157, -46, -6),
                   output = PrintMap)
 ```
 
-Once we are happy with the function we have written we need to use the `BuildModule` function to convert our function into a module by adding in the nessecary metadata
+Once we are happy with the function we have written we need to use the `BuildModule` function to convert our function into a module by adding in the necessary metadata
 
 ```{r}
 # Build our module
@@ -248,7 +237,7 @@ BuildModule(AustraliaAir,
                          "'uwnd','vwnd'")))
 ```
 
-`BuildModule` is fairly self explanitory but it is worth noting the `paras` arguement. This takes a named list of the parameters the module takes. This should follow the following structure; *list(parameterName = 'Parameter description.', anotherParameter = 'Another description.')* 
+`BuildModule` is fairly self explanatory but it is worth noting the `paras` argument. This takes a named list of the parameters the module takes. This should follow the following structure; *list(parameterName = 'Parameter description.', anotherParameter = 'Another description.')* 
 
 Once `BuildModule` has been run there will be an R file in our working directory that represents our module and can be shared with others. This R script can be used as follows.
 
@@ -272,6 +261,140 @@ Once we're happy with the module, we will hopefully upload it to the zoon reposi
 
 ## How to write a process module
 
+The aim of a process model is to modify the occurrence data or/and the covariate data prior to modelling. Examples include adding background points, or adding folds for cross-validation.
+
+A process model returns data in exactly the same format that it accepts data. It takes and returns a list of two elements. The first element is a data.frame with the columns values, type, fold, longitude, latitude ([see Occurrence module output](#occIO)), and additional covariate columns. The covariate columns are added internally in the zoon workflow by combining the output of the covariate module. The second element of the list is a RasterBrick, RasterLayer, or RasterStack as output by a covariate module.
+
+In this example we are going to create a process module that cuts down our occurrence data to a user supplied extent.
+
+When writing a module it is useful to have example input to test with. One way to do this is to run a similar workflow and use the outputs of that workflow to test yours. Here is an example:
+
+```{r, warning = FALSE}
+# We run a very simple workflow so that we can get example input
+# for our module
+work5 <- workflow(occurrence = UKAnophelesPlumbeus,
+                  covariate  = UKAir,
+                  process    = NoProcess,
+                  model      = LogisticRegression,
+                  output     = PrintMap)
+
+# The output from a process module is in the same format as the 
+# input, so we can use the output of NoProcess as the testing
+# input for our module. Note that this object should be called
+# .data
+.data <- work5$process.output[[1]]
+
+str(.data, 2)
+```
+
+It is important to note that the list object that is passed into a process module is named `.data`, and so when writing our module we need to adhere to this convention.
+
+```{r, eval = FALSE}
+# Start writing our module
+ClipOccurence <- function(.data, extent = c(-180, 180, -180, 180)){
+```
+
+Here we have remembered to give `.data` as an argument as this is a [default for process modules](#proIO). In addition we have supplied an argument for the extent and set the default to the entire globe (i.e. no clipping). It is important that all of your arguments have defaults (even if the default might not be a good idea in practice), as this allows the zoon system to perform automatic testing on your modules when you share them online.
+
+```{r, eval = FALSE}
+# Write the body of our function
+# extract the occurrence data from the .data object
+occDF <- .data$df
+
+# Subset by longitude
+occSub <- occDF[occDF$longitude >= extent[1] &
+                occDF$longitude <= extent[2], ]
+
+# Subset by latitude
+occSub <- occSub[occSub$latitude >= extent[3] &
+                 occSub$latitude <= extent[4], ]
+
+# assign this data.frame back to the .data object
+.data$df <- occSub
+```
+
+So our simple process function looks like this:
+
+```{r}
+ClipOccurrence <- function(.data, extent = c(-180, 180, -180, 180)){
+  
+  # Write the body of our function
+  # extract the occurrence data from the .data object
+  occDF <- .data$df
+  
+  occSub <- occDF[occDF$longitude >= extent[1] &
+                  occDF$longitude <= extent[2], ]
+ 
+  occSub <- occSub[occSub$latitude >= extent[3] &
+                   occSub$latitude <= extent[4], ]
+  
+  .data$df <- occSub
+  
+  return(.data)
+  
+}
+```
+
+Our next step is to test that this function will work in a workflow. Once we have read in our function so that it is available in our working environment we can then include it in a workflow as we would a normal module.
+
+```{r, message = FALSE, warning = FALSE}
+# Run a workflow with our new process
+# In this example we first add background points, then clip the data
+work6 <- workflow(occurrence = UKAnophelesPlumbeus,
+                  covariate  = UKAir,
+                  process    = Chain(OneHundredBackground,
+                                     ClipOccurrence(extent = c(-3, 2, 50, 53))),
+                  model      = LogisticRegression,
+                  output     = PrintMap)
+```
+
+We can see that the data has been clipped to the extent we specified in the map printed by the output module.
+
+The next stage is to turn this function into a module which is shareable. To do this we need to add metadata to our function using the `BuildModule` function
+
+```{r}
+# Build our module
+BuildModule(ClipOccurrence,
+            type = 'process',
+            title = 'Clip occurrence data to extent',
+            description = paste('This process module clips the occurrence',
+                                'data that is returned from the occurrence',
+                                'module to a user defined extent'),
+            details = paste('The extent is a square region which denotes the',
+                            'area within which observations will be kept.',
+                            'All data that falls outside of the extent will',
+                            'be removed and will be not be used in the',
+                            'modelling process'),
+            author = 'Z.O. Onn',
+            email = 'zoon@zoon-zoon.com',
+            paras = list(extent = paste('A numeric vector of length for',
+                                        'giving (in this order) the minimum',
+                                        'longitude, maximum longitude, minimum',
+                                        'latitude, maximum latitude.')),
+            dataType = c('presence-only', 'presence/absence', 'abundance',
+                         'proportion'))
+```
+
+Much of how to use `BuildModule` is self-explanatory but two parameters are worth mentioning here. The `paras` argument takes a named list of the parameters the module takes. This should follow the following structure; *list(parameterName = 'Parameter description.', anotherParameter = 'Another description.')*, but should not include the defaults (i.e. we do not include `.data`). `dataType` describes the types of occurrence data that this module will work with. Certain modules might only work with presence-only data for example. In our case, our module will work with any type of data and so we list all the data types in the `dataType` field.
+
+Once `BuildModule` has been run there will be an R file in our working directory that represents our module and can be shared with others. This R script can be used as follows.
+
+```{r, warning = FALSE}
+# remove the original function from our environment
+rm(list = 'ClipOccurrence')
+
+# Load the module script
+LoadModule('ClipOccurrence.R')
+
+work7 <- workflow(occurrence = CWBZimbabwe,
+                  covariate = Bioclim(extent = c(31, 34, -22, -18)),
+                  process = ClipOccurrence(extent = c(32, 33, -21, -19)),
+                  model = LogisticRegression,
+                  output = PrintMap)
+```
+
+Once we're happy with the module, we will hopefully upload it to the zoon repository. The repository is currently under development. Visit [the development pages](https://zoonproject.wordpress.com/) for more information.
+
 ## How to write a model module
 
 Here is a simple function that will become our module. It is a model module that uses general additive models. We will work through it one element at a time
@@ -279,12 +402,12 @@ Here is a simple function that will become our module. It is a model module that
 First we start our function by declaring all the parameters we need, including all the defaults
 
 ```{r, eval = FALSE}
-NewModule <- function(.df){
+GamGam <- function(.df){
 ```
 
-Since this is a model module the only default is `.df`. To find out more about defaults see the section [Module IO definitions for module developers](#tag1).
+Since this is a model module the only default is `.df`. To find out more about defaults see the section [Module IO definitions for module developers](#ModIO).
 
-Next we specify the packages our function needs. These should be specified by using GetPackage function in the zoon package. This function will load the package if the user of your module already has it or will install it from CRAN if they don't. For this reason make sure your package only uses packages that are on CRAN.
+Next we specify the packages our function needs. These should be specified by using `GetPackage` function in the zoon package. This function will load the package if the user of your module already has it or will install it from CRAN if they don't. For this reason make sure your package only uses packages that are on CRAN.
 
 ```{r, eval = FALSE}
 # Specify the packages we need using the function
@@ -299,19 +422,24 @@ Next we can add the code that does our modelling, here we create a simple GAM (G
 covs <- as.data.frame(.df[, 6:ncol(.df)])
 names(covs) <- names(.df)[6:ncol(.df)]
 
+# do a bit of copy-pasting to define smooth terms for each covariate
+f <- sprintf('.df$value ~ s(%s)',
+                    paste(colnames(covs),
+                          collapse = ') + s('))
+
 # Run our gam model
-m <- gam::gam(formula = .df$value ~ .,
+m <- gam::gam(formula = formula(f),
               data = covs,
               family = binomial)
 ```
 
-The final stage of building a model module is to create a ZoonModel object. This is important as it ensures that all model module output are the same and specifically that zoon can predict from them easily.
+The final stage of building a model module is to write some code within the function to create a `ZoonModel` object. This is important as it standardises all outputs from model modules and crucially enables zoon to make predictions from them in a predictable and standard way.
 
-We build a ZoonModel object by using the function `ZoonModel`. This takes three parameters
+We build a `ZoonModel` object by using the function `ZoonModel`. This takes three parameters
 
-1. *model* - Your model object
-2. *code* - A section of code that will use `model` [your model] and `newdata` [a new set of covariate data], to return a vector of predicted values, one for each row of `newdata`
-3. *packages* - A vector of characters naming the packages needed to run *code*
+- **`model`**: Your model object
+- **`code`**: A section of code that will use `model` [your model] and **`newdata`** [a new set of covariate data], to return a vector of predicted values, one for each row of `newdata`
+- **`packages`**: A vector of characters naming the packages needed to run `code`
 
 ```{r, eval = FALSE}
 # Create a ZoonModel object to return.
@@ -350,8 +478,8 @@ ZoonModel(model = m,
 
 With all these elements in place we now have our module complete. All together it looks like this.
 
-```{r, eval = FALSE}
-NewModule <- function(.df){
+```{r}
+GamGam <- function(.df){
 
   # Specify the packages we need using the function
   # GetPackage
@@ -361,10 +489,15 @@ NewModule <- function(.df){
   covs <- as.data.frame(.df[, 6:ncol(.df)])
   names(covs) <- names(.df)[6:ncol(.df)]
   
+  # do a bit of copy-pasting to define smooth terms for each covariate
+  f <- sprintf('.df$value ~ s(%s)',
+                      paste(colnames(covs),
+                            collapse = ') + s('))
+  
   # Run our gam model
-  m <- gam::gam(formula = .df$value ~ .,
-         data = covs,
-         family = binomial)
+  m <- gam::gam(formula = formula(f),
+                data = covs,
+                family = binomial)
   
   # Create a ZoonModel object to return.
   # this includes our model, predict method
@@ -402,16 +535,15 @@ NewModule <- function(.df){
 }
 ```
 
-We then run `BuildModule` adding fairly extensive meta data and directing BuildModule to save the file in the working directory '.'. As this module has no parameters other than `.df` which is not user specified, set `paras` to list(). Default parameters, like `.df`, all start with with a `.` and will be written into the module documentation automatically.
+We then run `BuildModule` on out function, adding the required metadata. As this module has no parameters other than `.df` which is not user specified, we don't need to set the `paras` argument, which would normally be used to document arguments. Default arguments, like `.df` are all signified by starting with a `.` and don't need to be documented as this will be written into the module documentation automatically.
 
-```{r BuildMod, eval = FALSE}
-BuildModule(object = NewModule,
+```{r BuildMod}
+BuildModule(object = GamGam,
             type = 'model',
-            dir = '.',
             title = 'GAM sdm model',
             description = 'This is my mega cool new model.',
-            details = 'This module performs GAMs (Generalised Additive Models) using the \\code{gam} function from the package \\code{gam}.',
-            paras = NULL,
+            details = paste('This module performs GAMs (Generalised Additive',
+                            'Models) using the gam function from the package gam.'),
             author = 'Z. Oon',
             email = 'zoon@zoon.com',
             dataType = c('presence-only', 'presence/absence'))
@@ -419,65 +551,245 @@ BuildModule(object = NewModule,
 
 This is now a run-able module.
 
-```{r newmodworkflow, eval = FALSE}
+```{r, warning=FALSE, message=FALSE}
 # remove the function in our workspace else
 # this will cause problems
-rm(NewModule)
+rm(GamGam)
 
 # Load in teh module we just built
-LoadModule('NewModule.R')
+LoadModule('GamGam.R')
 
 # Run a workflow using our module
-workmod <- workflow(occurrence = UKAnophelesPlumbeus,
-                    covariate = UKAir,
-                    process  = OneHundredBackground,
-                    model = NewModule,
-                    output = PrintMap)
+work8 <- workflow(occurrence = UKAnophelesPlumbeus,
+                  covariate = UKAir,
+                  process  = OneHundredBackground,
+                  model = GamGam,
+                  output = PrintMap)
 ```
 
 Once we're happy with the module, we will hopefully upload it to the zoon repository. The repository is currently under development. Visit [the development pages](https://zoonproject.wordpress.com/) for more information.
 
 ## How to write a output module
 
-# <a name="tag1"></a>Module IO definitions for module developers
+An ouput module is the last module in a zoon workflow and is an oppertunity to summarise the model results, make predictions, or otherwise visualise the data or results. The input to output modules is a combination of the outputs of occurrence, covariate, process and model modules providing many possible output types.
 
-The input arguments and return values of modules are strict. However, any module type can have additional input arguments but these must be named. A lot of the data frames include '+ covariates'. This indicates that the number of covariate columns is flexible.
+In this example we will create an output module that uses the model output to predict the species occurrence in a new location given by a user provided raster.
+
+When writing a module it is useful to have example input to test with. One way to do this is to run a similar workflow and use the outputs of that workflow to test yours. Here is an example:
+
+```{r, warning = FALSE, eval = FALSE}
+# We run a very simple workflow so that we can get example input
+# for our module
+work9 <- workflow(occurrence = UKAnophelesPlumbeus,
+                  covariate  = UKAir,
+                  process    = OneHundredBackground,
+                  model      = LogisticRegression,
+                  output     = PrintMap)
+
+# The input to an output module is a combination of the output
+# from the model module and the covariate module. We can recreate
+# it for this work flow like this
+.model <- work9$model.output[[1]]
+.ras <- work9$covariate.output[[1]]
+```
+
+Both `.model` and `.ras` are default arguements for an output model so it is important that you have them as arguements for your module, even if you dont use them both. It is also important that you stick to the same naming conventions.
+
+```{r, eval = FALSE}
+# Our output module takes the default parameters and a user defined
+# raster layer that has the same structure as the raster layer output
+# by the covariate module
+PredictNewRasterMap <- function(.model, .ras, raster = .ras){
+```
+
+It is important to have default values for all user defined parameters so that your module can be tested when you upload it to the zoon website. Here we set our defualt 'new area' raster to be the same as the raster used to create the model. Clearly this is not how we envisage a user useing the module (unless they geniuinely wanted to predict back to the same area), however this ensures that this module will always work with its default, no matter what workflow it is placed in. 
+
+```{r, eval = FALSE}
+# The first step is to extract the covariate values
+# from the user provided raster
+vals <- data.frame(getValues(raster))
+colnames(vals) <- names(raster)
+```
+
+Once we have these new values we can predict useing the ZoonPredict function. This function is very useful as it simplifies the process of making predictions from the ouput of a model module. See the [InteractiveMap](https://github.com/zoonproject/modules/blob/master/R/InteractiveMap.R) module for an innovative visualisation using predicted values.
+
+```{r, eval = FALSE}
+# Make predictions to the new values
+pred <- ZoonPredict(.model$model,
+                    newdata = vals)
+
+# Create a copy of the users' raster...
+# (just a single layer)
+pred_ras <- raster[[1]]
+    
+# ... and assign the predicted values to it
+pred_ras <- setValues(pred_ras, pred)
+```
+
+Once we have the raster of predicted values we can plot it and return the results to the user.
+
+```{r, eval = FALSE}
+# Plot the predictions as a map
+plot(pred_ras)
+
+# Return the raster of predictions
+return(pred_ras)
+```
+
+Our function now looks like this:
+
+```{r}
+PredictNewRasterMap <- function(.model, .ras, raster = .ras){
+  
+  # Extract the values from the user provided raster
+  vals <- data.frame(getValues(raster))
+  colnames(vals) <- names(raster)
+  
+  # Make predictions to the new values
+  pred <- ZoonPredict(.model$model,
+                      newdata = vals)
+  
+  pred_ras <- raster[[1]]
+  pred_ras <- setValues(pred_ras, pred)
+  
+  # Print the predictions as a map
+  plot(pred_ras)
+  
+  return(pred_ras)
+}
+```
+
+Our next step is to test that this function will work in a workflow. Once we have read in our function so that it is available in our working environment we can then include it in a workflow as we would a normal module.
+
+```{r, message = FALSE, warning = FALSE}
+# Run it with the defaults
+work10 <- workflow(occurrence = UKAnophelesPlumbeus,
+                   covariate  = UKBioclim,
+                   process    = OneHundredBackground,
+                   model      = LogisticRegression,
+                   output     = PredictNewRasterMap)
+
+# Now I'm going to run it with a different raster
+library(raster)
+
+# Get Bioclim data...
+BioclimData <- getData('worldclim', var = 'bio', res = 5)
+BioclimData <- BioclimData[[1:19]]
+
+# ... and crop to Australia
+cropped <- crop(BioclimData,
+                c(109,155,-46,-7))
+
+# Run it with my new raster
+work11 <- workflow(occurrence = UKAnophelesPlumbeus,
+                   covariate  = UKBioclim,
+                   process    = OneHundredBackground,
+                   model      = LogisticRegression,
+                   output     = PredictNewRasterMap(raster = cropped))
+
+# The prediction map should also be returned as a raster
+str(work11$report, 2)
+```
+
+The next stage is to turn this function into a module which is shareable. To do this we need to add metadata to our function using the `BuildModule` function
+
+```{r}
+# Build our module
+BuildModule(PredictNewRasterMap,
+            type = 'output',
+            title = 'Predict to a new raster and map',
+            description = paste('This output module predicts the species',
+                                'distribution in a new area given a new',
+                                'raster'),
+            details = paste('The results are printed as a map and a raster is',
+                            'returned with the predicted values. It is important',
+                            'that the new raster has the same structure as the',
+                            'raster provided by the covariate module.',
+                            'It must have the same covariate columns in the',
+                            'same order.'),
+            author = 'Z.O. Onn',
+            email = 'zoon@zoon-zoon.com',
+            paras = list(raster = paste('A raster brick, layer or stack in',
+                                        'the same format as the raster provided',
+                                        'by the covariate module. Predicted values',
+                                        'will be estimated for this raster useing',
+                                        'the results from the model module')),
+            dataType = c('presence-only', 'presence/absence', 'abundance',
+                         'proportion'))
+```
+
+Much of how to use `BuildModule` is self-explanatory but two parameters are worth mentioning here. The `paras` argument takes a named list of the parameters the module takes. This should follow the following structure; *list(parameterName = 'Parameter description.', anotherParameter = 'Another description.')*, but should not include the defaults (i.e. we do not include `.model` or `.ras`). `dataType` describes the types of occurrence data that this module will work with. Certain modules might only work with presence-only data for example. In our case, our module will work with any type of data and so we list all the data types in the `dataType` field.
+
+Once `BuildModule` has been run there will be an R file in our working directory that represents our module and can be shared with others. This R script can be used as follows.
+
+```{r, warning = FALSE}
+# remove the original function from our environment
+rm(list = 'PredictNewRasterMap')
+
+# Load the module script
+LoadModule('PredictNewRasterMap.R')
+
+# Now I model a crop pest from Zimbabwe in its home
+# range and in Australia by chaining together
+# output modules
+work12 <- workflow(occurrence = CWBZimbabwe,
+                   covariate = Bioclim(extent = c(28, 38, -24, -16)),
+                   process = NoProcess,
+                   model = RandomForest,
+                   output = Chain(PrintMap,
+                                  PredictNewRasterMap(raster = cropped)))
+```
+
+Once we're happy with the module, we will hopefully upload it to the zoon repository. The repository is currently under development. Visit [the development pages](https://zoonproject.wordpress.com/) for more information.
+<a id="ModIO"> </a>
+
+## Module IO definitions for module developers 
+
+The input arguments and return values of modules are strict. However, any module type can have additional named input arguments, provided they have default values. A lot of the data frames include '+ covariates'. This indicates that the number of covariate columns is flexible.
+<a id="occIO"></a>
 
 ### Occurrence
-In: No default inputs
 
-Out: data.frame with column names: longitude, latitude, value, type, fold
+*In*: No default inputs
+
+*Out*: `data.frame` with column names:
+
+* `longitude`: The longitude of the observation.
+* `latitude`: The latitude of the observation.
+* `value`: The response value for the observation when used in a model. This can be 1 or 0 for presence/absence, an integer for abundance (e.g. 1, 3, 67), or a decimal number between 0 and 1 for proportions (e.g. 0.12, 0.5, 0.98).
+* `type`: This is linked to `value` and dictates for each row of the data.frame the type of value given. This can be one of the following; `'presence'`, `'absence'`, `'background'`, `'abundance'`, `'proportion'`.
+* `fold`: Folds are used to test your model. If we have, for example, 3 folds (1, 2, 3) then we can use the [`PerformanceMeasures` output module](https://github.com/zoonproject/modules/blob/master/R/PerformanceMeasures.R) to test the performance of the model. A common method, implemented by `PerformanceMeasures` is to build the model using all but one fold, and then test the models ability to predict the fold that was held back.  
 
 ### Covariate
-In: No default inputs
+*In*: No default inputs
 
-Out: raster layer or raster stack
+*Out*: `RasterLayer` or `RasterStack` object
+<a id="proIO"></a>
 
-### Process
-In: list called **.data** with 2 elements
+### Process 
+*In*: list named `.data` with 2 named elements:
 
-- *df* - A data.frame with columns: values, type, fold, longitude, latitude + covariates
-- *ras* - A covariate rasterstack/layer
+* `df`: A data.frame with columns: `'values'`, `'type'`, `'fold'`, `'longitude'`, `'latitude'` plus additional names columns giving associated covariate values. See [occurrence module](#occIO) for details on these columns.
+* `ras`: A `RasterLayer` or `RasterStack` object of covariate rasters
 
 Out:  list with 2 elements
 
-- *df* - A data.frame with columns: values, type, fold, longitude, latitude + covariates
-- *ras* - A covariate rasterstack/layer
-
+- `df`: A data.frame with columns: `values`, `type`, `fold`, `longitude`, `latitude` plus additional names columns giving associated covariate values
+- `ras`: A `RasterLayer` or `RasterStack` object of covariate rasters
 ### Model
 In: data.frame from process called **.df**
 
-Out: A ZoonModel object (see the example above)
+Out: A `ZoonModel` object (see the example above)
 
 ### Output
-In: list called **.model** with 2 elements
+In: A list named **`.model`** with 2 named elements:
 
-- *model* - A ZoonModel object from a model module
-- *data* - A data.frame from a process module with the added column `predictions`
+- `model`: A `ZoonModel` object from a model module
+- `data`: A data.frame from a process module with the added column `predictions`
 
-Also a Rasterlayer called **.ras** from the covariate module
+Also a Rasterlayer called **`.ras`** from the covariate module
 
-Out: Anything
+Out: Anything!
 
 # Pictoral description of inputs and outputs
 ![OccurrenceModule](occurrenceInOut.svg)
