@@ -124,11 +124,13 @@ test_that('Workflows with lists of modules work.', {
                      model = LogisticRegression,
                      output = list(SameTimePlaceMap, SameTimePlaceMap))
 
-  expect_equivalent(sapply(workOccurList, length), c(2, 1, 2, 2, 2, 1, 5, 7, 5))
-  expect_equivalent(sapply(workCovarList, length), c(1, 2, 2, 2, 2, 1, 5, 7, 5))
-  expect_equivalent(sapply(workProcessList, length), c(1, 1, 2, 2, 2, 1, 5, 7, 5))
-  expect_equivalent(sapply(workModelList, length), c(1, 1, 1, 2, 2, 1, 5, 7, 5))
-  expect_equivalent(sapply(workOutputList, length), c(1, 1, 1, 1, 2, 1, 5, 7, 5))
+  # Note session info is not tested [-8] as it varies from system
+  # to system - most notably Travis
+  expect_equivalent(sapply(workOccurList, length)[-8], c(2, 1, 2, 2, 2, 1, 5, 5))
+  expect_equivalent(sapply(workCovarList, length)[-8], c(1, 2, 2, 2, 2, 1, 5, 5))
+  expect_equivalent(sapply(workProcessList, length)[-8], c(1, 1, 2, 2, 2, 1, 5, 5))
+  expect_equivalent(sapply(workModelList, length)[-8], c(1, 1, 1, 2, 2, 1, 5, 5))
+  expect_equivalent(sapply(workOutputList, length)[-8], c(1, 1, 1, 1, 2, 1, 5, 5))
 
   occurClasses <- unlist(lapply(workOccurList[!names(workOccurList) %in% 'session.info'], function(x) sapply(x, class)))
   covarClasses <- unlist(lapply(workCovarList[!names(workCovarList) %in% 'session.info'], function(x) sapply(x, class)))
