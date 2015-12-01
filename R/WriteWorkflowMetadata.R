@@ -1,4 +1,4 @@
-WriteWorkflowMetadata <- function(object, title, description,
+WriteWorkflowMetadata <- function(zoonWorkflow, title, description,
                                   authors, categories, tags, filename){
   
   # Write out the basic metadata
@@ -10,9 +10,9 @@ WriteWorkflowMetadata <- function(object, title, description,
   write(paste('Tags:', tags), file = filename, append = TRUE)
   
   # Write out the module call
-  write(paste('Call:', object$call), file = filename, append = TRUE)
+  write(paste('Call:', zoonWorkflow$call), file = filename, append = TRUE)
   
-  versions <- do.call(cbind, object$module.versions)
+  versions <- do.call(cbind, zoonWorkflow$module.versions)
   version_text <- paste(versions[1,], versions[2,], sep = ', ', collapse = '; ')
   
   # write out the module versions

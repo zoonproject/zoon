@@ -30,7 +30,7 @@ ZoonFigshare <- function(zoonWorkflow, title = 'My Zoon Workflow',
   datasave <- file.path(tempdir(), paste0(tx, '.RData'))
   metasave <- file.path(tempdir(), paste0(tx, '_metadata.txt'))
   # Write the metadata to file
-  WriteWorkflowMetadata(object, title, description,
+  WriteWorkflowMetadata(zoonWorkflow, title, description,
                         authors, categories, tags,
                         filename = metasave)
     
