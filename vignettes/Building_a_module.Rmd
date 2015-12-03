@@ -535,7 +535,7 @@ GamGam <- function(.df){
 }
 ```
 
-We then run `BuildModule` on out function, adding the required metadata. As this module has no parameters other than `.df` which is not user specified, we don't need to set the `paras` argument, which would normally be used to document arguments. Default arguments, like `.df` are all signified by starting with a `.` and don't need to be documented as this will be written into the module documentation automatically.
+We then run `BuildModule` on our function, adding the required metadata. As this module has no parameters other than `.df` which is not user specified, we don't need to set the `paras` argument, which would normally be used to document arguments. Default arguments, like `.df` are all signified by starting with a `.` and don't need to be documented as this will be written into the module documentation automatically.
 
 ```{r BuildMod}
 BuildModule(object = GamGam,
@@ -571,9 +571,9 @@ Once we're happy with the module, we will hopefully upload it to the zoon reposi
 
 ## How to write a output module
 
-An ouput module is the last module in a zoon workflow and is an oppertunity to summarise the model results, make predictions, or otherwise visualise the data or results. The input to output modules is a combination of the outputs of occurrence, covariate, process and model modules providing many possible output types.
+An output module is the last module in a zoon workflow and is an opportunity to summarise the model results, make predictions, or otherwise visualise the data or results. The input to output modules is a combination of the outputs of occurrence, covariate, process and model modules providing many possible output types.
 
-In this example we will create an output module that uses the model output to predict the species occurrence in a new location given by a user provided raster.
+In this example we will create an output module that uses the model output to predict the species occurrence in a new location given by a user-provided raster.
 
 When writing a module it is useful to have example input to test with. One way to do this is to run a similar workflow and use the outputs of that workflow to test yours. Here is an example:
 
@@ -596,13 +596,13 @@ work9 <- workflow(occurrence = UKAnophelesPlumbeus,
 Both `.model` and `.ras` are default arguements for an output model so it is important that you have them as arguements for your module, even if you dont use them both. It is also important that you stick to the same naming conventions.
 
 ```{r, eval = FALSE}
-# Our output module takes the default parameters and a user defined
-# raster layer that has the same structure as the raster layer output
+# Our output module takes the default parameters and a user-defined
+# Raster* object that has the same structure as the raster layer output
 # by the covariate module
 PredictNewRasterMap <- function(.model, .ras, raster = .ras){
 ```
 
-It is important to have default values for all user defined parameters so that your module can be tested when you upload it to the zoon website. Here we set our defualt 'new area' raster to be the same as the raster used to create the model. Clearly this is not how we envisage a user useing the module (unless they geniuinely wanted to predict back to the same area), however this ensures that this module will always work with its default, no matter what workflow it is placed in. 
+It is important to have default values for all user defined parameters so that your module can be tested when you upload it to the zoon website. Here we set our default 'new area' raster to be the same as the raster used to create the model. Clearly this is not how we envisage the module being used in a real application (unless they genuinely wanted to predict back to the same area), however this ensures that this module will always work with its default arguments, no matter what workflow it is placed in. 
 
 ```{r, eval = FALSE}
 # The first step is to extract the covariate values
@@ -611,7 +611,7 @@ vals <- data.frame(getValues(raster))
 colnames(vals) <- names(raster)
 ```
 
-Once we have these new values we can predict useing the ZoonPredict function. This function is very useful as it simplifies the process of making predictions from the ouput of a model module. See the [InteractiveMap](https://github.com/zoonproject/modules/blob/master/R/InteractiveMap.R) module for an innovative visualisation using predicted values.
+Once we have these new values we can predict using the `ZoonPredict` function. This function is very useful as it simplifies the process of making predictions from the ouput of a model module. See the [InteractiveMap](https://github.com/zoonproject/modules/blob/master/R/InteractiveMap.R) module for an innovative visualisation using predicted values.
 
 ```{r, eval = FALSE}
 # Make predictions to the new values
@@ -633,7 +633,7 @@ Once we have the raster of predicted values we can plot it and return the result
 plot(pred_ras)
 
 # Return the raster of predictions
-return(pred_ras)
+return (pred_ras)
 ```
 
 Our function now looks like this:
@@ -672,7 +672,8 @@ work10 <- workflow(occurrence = UKAnophelesPlumbeus,
 # Now I'm going to run it with a different raster
 library(raster)
 
-# Get Bioclim data...
+# Get Bioclim data (using the getData function in the raster package,
+# which zoon loads) ...
 BioclimData <- getData('worldclim', var = 'bio', res = 5)
 BioclimData <- BioclimData[[1:19]]
 
@@ -707,18 +708,18 @@ BuildModule(PredictNewRasterMap,
                             'raster provided by the covariate module.',
                             'It must have the same covariate columns in the',
                             'same order.'),
-            author = 'Z.O. Onn',
+            author = 'Z.O. On',
             email = 'zoon@zoon-zoon.com',
-            paras = list(raster = paste('A raster brick, layer or stack in',
+            paras = list(raster = paste('A RasterBrick, RasterLayer or RasterStack in',
                                         'the same format as the raster provided',
                                         'by the covariate module. Predicted values',
-                                        'will be estimated for this raster useing',
+                                        'will be estimated for this raster using',
                                         'the results from the model module')),
             dataType = c('presence-only', 'presence/absence', 'abundance',
                          'proportion'))
 ```
 
-Much of how to use `BuildModule` is self-explanatory but two parameters are worth mentioning here. The `paras` argument takes a named list of the parameters the module takes. This should follow the following structure; *list(parameterName = 'Parameter description.', anotherParameter = 'Another description.')*, but should not include the defaults (i.e. we do not include `.model` or `.ras`). `dataType` describes the types of occurrence data that this module will work with. Certain modules might only work with presence-only data for example. In our case, our module will work with any type of data and so we list all the data types in the `dataType` field.
+Much of how to use `BuildModule` is self-explanatory but two parameters are worth mentioning here. The `paras` argument takes a named list of the parameters the module takes in the following structure: `list(parameterName = 'Parameter description.', anotherParameter = 'Another description.')`, but should not include the defaults (i.e. we do not include `.model` or `.ras`). `dataType` describes the types of occurrence data that this module will work with. Certain modules might only work with presence-only data for example. In our case, our module will work with any type of data and so we list all the data types in the `dataType` field.
 
 Once `BuildModule` has been run there will be an R file in our working directory that represents our module and can be shared with others. This R script can be used as follows.
 
@@ -745,7 +746,7 @@ Once we're happy with the module, we will hopefully upload it to the zoon reposi
 
 ## Module IO definitions for module developers 
 
-The input arguments and return values of modules are strict. However, any module type can have additional named input arguments, provided they have default values. A lot of the data frames include '+ covariates'. This indicates that the number of covariate columns is flexible.
+The default input arguments and return values of modules are strict. However, any module type can have additional named input arguments, provided they have default values. A lot of the data frames include '+ covariates'. This indicates that the number of covariate columns is flexible.
 <a id="occIO"></a>
 
 ### Occurrence
@@ -763,31 +764,34 @@ The input arguments and return values of modules are strict. However, any module
 ### Covariate
 *In*: No default inputs
 
-*Out*: `RasterLayer` or `RasterStack` object
+*Out*: `RasterLayer`, `RasterBrick` or `RasterStack` object
 <a id="proIO"></a>
 
 ### Process 
 *In*: list named `.data` with 2 named elements:
 
 * `df`: A data.frame with columns: `'values'`, `'type'`, `'fold'`, `'longitude'`, `'latitude'` plus additional names columns giving associated covariate values. See [occurrence module](#occIO) for details on these columns.
-* `ras`: A `RasterLayer` or `RasterStack` object of covariate rasters
+* `ras`: A `RasterLayer`, `RasterBrick` or `RasterStack` object of covariate rasters
 
 Out:  list with 2 elements
 
-- `df`: A data.frame with columns: `values`, `type`, `fold`, `longitude`, `latitude` plus additional names columns giving associated covariate values
-- `ras`: A `RasterLayer` or `RasterStack` object of covariate rasters
+* `df`: A data.frame with columns: `values`, `type`, `fold`, `longitude`, `latitude` plus additional names columns giving associated covariate values
+* `ras`: A `RasterLayer`, `RasterBrick` or `RasterStack` object of covariate rasters
+
 ### Model
 In: data.frame from process called **.df**
 
 Out: A `ZoonModel` object (see the example above)
 
 ### Output
-In: A list named **`.model`** with 2 named elements:
+In:
+
+* A list named **`.model`** with 2 named elements:
 
 - `model`: A `ZoonModel` object from a model module
 - `data`: A data.frame from a process module with the added column `predictions`
 
-Also a Rasterlayer called **`.ras`** from the covariate module
+* A `RasterLayer`, `RasterBrick` or `RasterStack` object named **`.ras`**, provided by the covariate module
 
 Out: Anything!
 
