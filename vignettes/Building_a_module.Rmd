@@ -5,11 +5,11 @@ date: '`r Sys.Date()`'
 output:
   html_document:
     toc: yes
+vignette: >
+  %\VignetteIndexEntry{Building modules}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Building modules}
--->
 
 ```{r, echo = FALSE}
 require(zoon, quietly = TRUE)
@@ -412,7 +412,7 @@ Next we specify the packages our function needs. These should be specified by us
 ```{r, eval = FALSE}
 # Specify the packages we need using the function
 # GetPackage
-zoon:::GetPackage("gam")
+zoon::GetPackage("gam")
 ```  
 
 Next we can add the code that does our modelling, here we create a simple GAM (Generalised Additive Model) using the package [gam](https://cran.r-project.org/web/packages/gam/index.html)
@@ -483,7 +483,7 @@ GamGam <- function(.df){
 
   # Specify the packages we need using the function
   # GetPackage
-  zoon:::GetPackage("gam")
+  zoon::GetPackage("gam")
   
   # Create a data.frame of covariate data
   covs <- as.data.frame(.df[, 6:ncol(.df)])
@@ -802,6 +802,13 @@ Out: Anything!
 ![ModelModule](modelInOut.svg)
 ![OuputModule](outputInOut.svg)
 
-
+```{r, echo = FALSE}
+# Clean up
+unlink('AustraliaAir.R')
+unlink('ClipOccurrence.R')
+unlink('GamGam.R')
+unlink('Lorem_ipsum_UK.R')
+unlink('PredictNewRasterMap.R')
+```
 
 
