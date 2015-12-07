@@ -1,11 +1,16 @@
 context('RerunWorkflow')
 
+# NOTE: forceReproducible is used here to ensure that modules
+# are not cached as this results in a change in the version number 
+# from x to 'local copy'
+
 set.seed(1)
 w1 <- workflow(UKAnophelesPlumbeus,
                UKAir, 
                OneHundredBackground,
                LogisticRegression,
-               SameTimePlaceMap)
+               SameTimePlaceMap,
+               forceReproducible = TRUE)
 
 test_that('RerunWorkflow simple test', {
 
@@ -73,7 +78,8 @@ test_that('RerunWorkflow test with Chains', {
                  UKAir, 
                  OneHundredBackground,
                  LogisticRegression,
-                 SameTimePlaceMap)
+                 SameTimePlaceMap,
+                 forceReproducible = TRUE)
   
   set.seed(1)
   w14 <- RerunWorkflow(w13)
@@ -84,7 +90,8 @@ test_that('RerunWorkflow test with Chains', {
                   Chain(UKAir, UKAir), 
                   OneHundredBackground,
                   LogisticRegression,
-                  SameTimePlaceMap)
+                  SameTimePlaceMap,
+                  forceReproducible = TRUE)
   
   set.seed(1)
   w16 <- RerunWorkflow(w15)
@@ -99,8 +106,9 @@ test_that('RerunWorkflow test with lists', {
                   UKAir, 
                   OneHundredBackground,
                   LogisticRegression,
-                  SameTimePlaceMap)
-  
+                  SameTimePlaceMap,
+                  forceReproducible = TRUE)
+
   set.seed(1)
   w18 <- RerunWorkflow(w17)
   expect_true(all.equal(w18, w17))
@@ -110,8 +118,9 @@ test_that('RerunWorkflow test with lists', {
                   list(UKAir, UKAir), 
                   OneHundredBackground,
                   LogisticRegression,
-                  SameTimePlaceMap)
-  
+                  SameTimePlaceMap,
+                  forceReproducible = TRUE)
+
   set.seed(1)
   w20 <- RerunWorkflow(w19)
   expect_true(all.equal(w19, w20))
@@ -125,8 +134,9 @@ test_that('RerunWorkflow test quoted modules', {
                   covariate  = UKAir,
                   process    = OneHundredBackground,
                   model      = RandomForest,
-                  output     = PrintMap)
-  
+                  output     = PrintMap,
+                  forceReproducible = TRUE)
+
   set.seed(1)
   w22 <- RerunWorkflow(w21)
   

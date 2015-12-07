@@ -1,7 +1,7 @@
 context('Whole workflows.')
 
 expected_names <- c('occurrence.output', 'covariate.output', 'process.output', 
-      'model.output', 'report', 'call', 'call.list') 
+      'model.output', 'report', 'call', 'call.list', 'session.info', 'module.versions') 
 
 test_that('simple, package data workflow works.', {
 
@@ -24,8 +24,10 @@ test_that('simple, package data workflow works.', {
   expect_is((work1$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is((work1$model.output[[1]])$data, c('data.frame'))
   expect_is(work1$report[[1]], 'RasterLayer')
-
-
+  expect_is(work1$session.info, 'sessionInfo')
+  expect_is(work1$module.versions, 'list')
+  expect_named(work1$module.versions, c("occurrence","covariate","process","model","output"))
+  
 })
 
 
@@ -48,8 +50,10 @@ test_that('Check basic quoted workflow.', {
   expect_is((work1$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is((work1$model.output[[1]])$data, c('data.frame'))
   expect_is(work1$report[[1]], 'RasterLayer')
+  expect_is(work1$session.info, 'sessionInfo')
+  expect_is(work1$module.versions, 'list')
+  expect_named(work1$module.versions, c("occurrence","covariate","process","model","output"))
   
-
 })
 
 test_that('modules downloading data work', {
@@ -74,6 +78,11 @@ test_that('modules downloading data work', {
    expect_is((work2$model.output[[1]])$model, 'zoonModel')
    expect_is((work2$model.output[[1]])$model$model, 'randomForest')
    expect_is(work2$report[[1]], 'RasterLayer')
+   expect_is(work2$session.info, 'sessionInfo')
+   expect_is(work2$module.versions, 'list')
+   expect_named(work2$module.versions, c("occurrence","covariate","process","model","output"))
+   
+   
 })
 
 
@@ -115,33 +124,40 @@ test_that('Workflows with lists of modules work.', {
                      model = LogisticRegression,
                      output = list(SameTimePlaceMap, SameTimePlaceMap))
 
-  expect_equivalent(sapply(workOccurList, length), c(2, 1, 2, 2, 2, 1, 5))
-  expect_equivalent(sapply(workCovarList, length), c(1, 2, 2, 2, 2, 1, 5))
-  expect_equivalent(sapply(workProcessList, length), c(1, 1, 2, 2, 2, 1, 5))
-  expect_equivalent(sapply(workModelList, length), c(1, 1, 1, 2, 2, 1, 5))
-  expect_equivalent(sapply(workOutputList, length), c(1, 1, 1, 1, 2, 1, 5))
+  # Note session info is not tested [-8] as it varies from system
+  # to system - most notably Travis
+  expect_equivalent(sapply(workOccurList, length)[-8], c(2, 1, 2, 2, 2, 1, 5, 5))
+  expect_equivalent(sapply(workCovarList, length)[-8], c(1, 2, 2, 2, 2, 1, 5, 5))
+  expect_equivalent(sapply(workProcessList, length)[-8], c(1, 1, 2, 2, 2, 1, 5, 5))
+  expect_equivalent(sapply(workModelList, length)[-8], c(1, 1, 1, 2, 2, 1, 5, 5))
+  expect_equivalent(sapply(workOutputList, length)[-8], c(1, 1, 1, 1, 2, 1, 5, 5))
 
-  occurClasses <- unlist(lapply(workOccurList, function(x) sapply(x, class)))
-  covarClasses <- unlist(lapply(workCovarList, function(x) sapply(x, class)))
-  processClasses <- unlist(lapply(workProcessList, function(x) sapply(x, class)))
-  modelClasses <- unlist(lapply(workModelList, function(x) sapply(x, class)))
-  outputClasses <- unlist(lapply(workOutputList, function(x) sapply(x, class)))
+  occurClasses <- unlist(lapply(workOccurList[!names(workOccurList) %in% 'session.info'], function(x) sapply(x, class)))
+  covarClasses <- unlist(lapply(workCovarList[!names(workCovarList) %in% 'session.info'], function(x) sapply(x, class)))
+  processClasses <- unlist(lapply(workProcessList[!names(workProcessList) %in% 'session.info'], function(x) sapply(x, class)))
+  modelClasses <- unlist(lapply(workModelList[!names(workModelList) %in% 'session.info'], function(x) sapply(x, class)))
+  outputClasses <- unlist(lapply(workOutputList[!names(workOutputList) %in% 'session.info'], function(x) sapply(x, class)))
 
   expect_equivalent(occurClasses, c('data.frame','data.frame','RasterLayer','list',
     'list','list','list','RasterLayer','RasterLayer', 'character',
-    'list','list','list','list','list'))
+    'list','list','list','list','list',
+    'matrix','matrix','matrix','matrix','matrix'))
   expect_equivalent(covarClasses, c('data.frame','RasterLayer','RasterLayer','list',
     'list','list','list','RasterLayer','RasterLayer', 'character',
-    'list','list','list','list','list'))
+    'list','list','list','list','list',
+    'matrix','matrix','matrix','matrix','matrix'))
   expect_equivalent(processClasses, c('data.frame','RasterLayer','list',
     'list','list','list','RasterLayer','RasterLayer', 'character',
-    'list','list','list','list','list'))
+    'list','list','list','list','list',
+    'matrix','matrix','matrix','matrix','matrix'))
   expect_equivalent(modelClasses, c('data.frame','RasterLayer','list',
     'list','list','RasterLayer','RasterLayer', 'character',
-    'list','list','list','list','list'))
+    'list','list','list','list','list',
+    'matrix','matrix','matrix','matrix','matrix'))
   expect_equivalent(outputClasses, c('data.frame','RasterLayer','list',
     'list','RasterLayer','RasterLayer', 'character',
-    'list','list','list','list','list'))
+    'list','list','list','list','list',
+    'matrix','matrix','matrix','matrix','matrix'))
 
 })
 
@@ -197,7 +213,10 @@ test_that('simple, crossvalidation workflow works.', {
   expect_is((workCross$model.output[[1]])$model, c('zoonModel'))
   expect_is((workCross$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(workCross$report[[1]], 'RasterLayer')  
-
+  expect_is(workCross$session.info, 'sessionInfo')
+  expect_is(workCross$module.versions, 'list')
+  expect_named(workCross$module.versions, c("occurrence","covariate","process","model","output"))
+  
 })
 
 
@@ -245,8 +264,12 @@ test_that('chains work.', {
   expect_equal(dim(chain1$process.output[[1]]$df),  c(457, 6))
   expect_is((chain1$model.output[[1]])$model, c('zoonModel'))
   expect_is((chain1$model.output[[1]])$model$model, c('glm', 'lm'))
-  expect_is(chain1$report[[1]], 'RasterLayer')  
-
+  expect_is(chain1$report[[1]], 'RasterLayer') 
+  expect_is(chain1$session.info, 'sessionInfo')
+  expect_is(chain1$module.versions, 'list')
+  expect_named(chain1$module.versions, c("occurrence","covariate","process","model","output"))
+  
+  
   expect_true(exists('chain2'))
   expect_equal(dim(chain2$occurrence.output[[1]]), c(188, 5))
   expect_is(chain2$covariate.output[[1]], 'RasterStack')
@@ -257,6 +280,10 @@ test_that('chains work.', {
   expect_is((chain2$model.output[[1]])$model, c('zoonModel'))
   expect_is((chain2$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(chain2$report[[1]], 'RasterLayer')  
+  expect_is(chain2$session.info, 'sessionInfo')
+  expect_is(chain2$module.versions, 'list')
+  expect_named(chain2$module.versions, c("occurrence","covariate","process","model","output"))
+  
   
   expect_true(exists('chain3'))
   expect_equal(dim(chain3$occurrence.output[[1]]), c(188, 5))
@@ -268,6 +295,10 @@ test_that('chains work.', {
   expect_is((chain3$model.output[[1]])$model, c('zoonModel'))
   expect_is((chain3$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(chain3$report[[1]], 'list')  
+  expect_is(chain3$session.info, 'sessionInfo')
+  expect_is(chain3$module.versions, 'list')
+  expect_named(chain3$module.versions, c("occurrence","covariate","process","model","output"))
+  
   
   expect_true(exists('chain4'))
   expect_equal(dim(chain4$occurrence.output[[1]]), c(188, 5))
@@ -279,6 +310,10 @@ test_that('chains work.', {
   expect_is((chain4$model.output[[1]])$model, c('zoonModel'))
   expect_is((chain4$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(chain4$report[[1]], 'list')  
+  expect_is(chain4$session.info, 'sessionInfo')
+  expect_is(chain4$module.versions, 'list')
+  expect_named(chain4$module.versions, c("occurrence","covariate","process","model","output"))
+  
   
   expect_true(exists('chain5'))
   expect_equal(dim(chain5$occurrence.output[[1]]), c(188, 5))
@@ -290,8 +325,11 @@ test_that('chains work.', {
   expect_is((chain5$model.output[[1]])$model, c('zoonModel'))
   expect_is((chain5$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(chain5$report[[1]], 'RasterLayer')  
+  expect_is(chain5$session.info, 'sessionInfo')
+  expect_is(chain5$module.versions, 'list')
+  expect_named(chain5$module.versions, c("occurrence","covariate","process","model","output"))
   
-
+  
 })
 
 
@@ -315,7 +353,11 @@ test_that('workflow with mix of syntax works.', {
   expect_is((workSyn$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is((workSyn$model.output[[1]])$data, c('data.frame'))
   expect_is(workSyn$report[[1]], 'list')
-
+  expect_is(workSyn$session.info, 'sessionInfo')
+  expect_is(workSyn$module.versions, 'list')
+  expect_named(workSyn$module.versions, c("occurrence","covariate","process","model","output"))
+  
+  
 })
 
 

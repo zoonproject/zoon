@@ -4,33 +4,51 @@
 #'Will later add functions to upload module to figshare etc.
 #'And add testing that the module name is unique.
 #'
-#'@param object A function that will be made into a module file.
-#'@param dir The directory to put the module into (defaults to the
+#' @param object A function that will be made into a module file.
+#' @param dir The directory to put the module into (defaults to the
 #'      working directory.
-#'@param type A string that defines the type of module. Possible module types
+#' @param type A string that defines the type of module. Possible module types
 #'      are occurrence, covariate, process, model, diagnostic and output.
-#'@param title A short description of the module.
-#'@param description (required) A single string giving a full description of the module.
-#'@param details (optional) A single string giving details of the module.
-#'@param paras A list of the form 
+#' @param title A short description of the module.
+#' @param description (required) A single string giving a full description of the module.
+#' @param details (optional) A single string giving details of the module.
+#' @param paras A list of the form 
 #'    list(parameterName = 'Parameter description.',
 #'    anotherParameter = 'Another descriptions.')
 #'    This is required if the module takes non-default arguements
-#'@param author (required) String giving the author(s) name(s)
-#'@param email (required) String giving the correspondance address for the module.
+#' @param author (required) String giving the author(s) name(s)
+#' @param email (required) String giving the correspondance address for the module.
+#' @param dataType Character vector required for all module types except 'covariate'.
+#' Indicates the types of data that this module works with. Values can be any of
+#' 'presence-only', 'presence/absence', 'abundance' or 'proportion'. For a occurrence
+#' model this should indicate the type of data that is retuned and for other modules
+#' should indicate the type of data they will work with. If the module works with
+#' multiple types they can be supplied in a vector, e.g. c('presence-only',
+#' 'presence/absence') 
 #'
-#'@return Name of the module. Outputs a file
-#'@name BuildModule
-#'
-#'@export
-#'
+#' @return Name of the module. Outputs a file
+#' @name BuildModule
+#' @export
 
 BuildModule <- function(object, type, dir='.', title = '',  description = '',
-                        details = '', author = '', email = '', paras=NULL){
+                        details = '', author = '', email = '', paras = NULL,
+                        dataType = NULL){
   
+  # Check object is a function
   if(!is(object, 'function')) stop('object must be a function')
+  
+  # Check type is known
   if(!tolower(type) %in% c('occurrence', 'covariate', 'process', 'model', 'diagnostic', 'output')){
     stop("type must be one of 'occurrence', 'covariate', 'process', 'model', 'diagnostic', 'output'")
+  }
+  
+  # Check dataType is known
+  if(is.null(dataType)){
+    if(type != 'covariate') stop('dataType is needed for all modules except covariate modules')
+  } else{
+    if(any(!dataType %in% c('presence-only', 'presence/absence', 'abundance', 'proportion'))){
+      stop("dataType must be one of 'presence-only', 'presence/absence', 'abundance' or 'proportion'")
+    }
   }
   
   #Remove trailing '/' from dir
@@ -83,24 +101,26 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
 
   type <- tolower(type)
   obj <- deparse(substitute(object))
-  
 
   # Sort out parameter formating.
   paraNames <- names(paras)
-  paraDocs <- paste(sapply(paraNames, function(x) paste("#'@param", x, paras[x])), collapse="#'\n")
+  paraDocs <- paste(sapply(paraNames, function(x) paste("#' @param", x, paras[x])), collapse="#'\n")
 
   # Roxygen2 uses @ as a tag. So have to double it.
   email <- gsub('@', '@@', email)
+  
+  # Add Data type if required
+  if(!is.null(dataType)) dataType <- paste0("\n#'\n#' @section Data type: ",
+                                            paste(dataType, collapse = ', '))
         
   docs <- paste0("#' @name ", obj,
                  "\n#'\n#' @title ", title,
                  "\n#'\n#' @description ", description,
-                 "\n#'\n#' @details ", "Module type: ", toupper(substring(type, 1,1)), substring(type, 2),
-                 "\n#' ", details,
+                 "\n#'\n#' @details ", details,
                  "\n#'\n", paraDocs,
                  "\n#'\n#' @family ", type,
-                 "\n#'\n#' @author ", author, 
-                 "\n#'\n#' @author ", email)
+                 "\n#'\n#' @author ", author, ', ', '\\email{', email, '}',
+                 dataType)
 
   # get and format the source code
   src <- capture.output(dput(object))
@@ -112,7 +132,8 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
   write(docs, file = fpath)
   cat(src, file = fpath, append = TRUE)
   
+  # add a final line break
+  cat('\n', file = fpath, append = TRUE)
+  
   return(obj)
 }
-  
-

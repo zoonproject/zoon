@@ -8,12 +8,13 @@ test_that('Simplest case should build', {
   
 
   build <- BuildModule(object = NewModule,
-              type = 'model',
-              title = 'test',
-              description = 'test',
-              author = 'tom',
-              email = 'tom@tom.com',
-              dir = directory) 
+                      type = 'model',
+                      title = 'test',
+                      description = 'test',
+                      author = 'tom',
+                      email = 'tom@tom.com',
+                      dir = directory,
+                      dataType = 'abundance') 
 
   expect_is(build, "character")
   
@@ -31,7 +32,8 @@ test_that('All metadata given, and correct', {
                            description = 'test',
                            author = 'tom',
                            email = 'tom@tom.com',
-                           dir = directory),
+                           dir = directory,
+                           dataType = 'abundance'),
                'type must be one of')
   
   expect_error(BuildModule(object = NewModule,
@@ -40,7 +42,8 @@ test_that('All metadata given, and correct', {
                            description = 'test',
                            author = 'tom',
                            email = 'tom@tom.com',
-                           dir = directory),
+                           dir = directory,
+                           dataType = 'abundance'),
                'type must be one of')
   
   expect_warning(BuildModule(object = NewModule,
@@ -49,7 +52,8 @@ test_that('All metadata given, and correct', {
                            description = 'test',
                            author = 'tom',
                            email = 'tom@tom.com',
-                           dir = directory),
+                           dir = directory,
+                           dataType = 'abundance'),
                'Information not complete')  
   
   expect_warning(BuildModule(object = NewModule,
@@ -58,7 +62,8 @@ test_that('All metadata given, and correct', {
                              description = '',
                              author = 'tom',
                              email = 'tom@tom.com',
-                             dir = directory),
+                             dir = directory,
+                             dataType = 'abundance'),
                  'Information not complete') 
   
   expect_warning(BuildModule(object = NewModule,
@@ -67,7 +72,8 @@ test_that('All metadata given, and correct', {
                              description = 'test',
                              author = '',
                              email = 'tom@tom.com',
-                             dir = directory),
+                             dir = directory,
+                             dataType = 'abundance'),
                  'Information not complete') 
   
   expect_warning(BuildModule(object = NewModule,
@@ -76,8 +82,19 @@ test_that('All metadata given, and correct', {
                              description = 'test',
                              author = 'tom',
                              email = '',
-                             dir = directory),
+                             dir = directory,
+                             dataType = 'abundance'),
                  'Information not complete')
+  
+  expect_error(BuildModule(object = NewModule,
+                             type = 'model',
+                             title = 'test',
+                             description = 'test',
+                             author = 'tom',
+                             email = '',
+                             dir = directory,
+                             dataType = ''),
+                 'dataType must be one of')
 })
 
 test_that('Module parameters', {
@@ -90,7 +107,8 @@ test_that('Module parameters', {
                              description = 'test',
                              author = 'tom',
                              email = 'tom@tom.com',
-                             dir = directory),
+                             dir = directory,
+                             dataType = 'abundance'),
                  'Information not complete')
   
   NewModule3 <- function(){}
@@ -101,7 +119,8 @@ test_that('Module parameters', {
                              description = 'test',
                              author = 'tom',
                              email = 'tom@tom.com',
-                             dir = directory),
+                             dir = directory,
+                             dataType = 'abundance'),
                  'Your model module does not contain the default arguements')
   
   expect_warning(BuildModule(object = NewModule2,
@@ -112,7 +131,8 @@ test_that('Module parameters', {
                              paras = list(.df = 'this',
                                           tom = 'that'),
                              email = 'tom@tom.com',
-                             dir = directory),
+                             dir = directory,
+                             dataType = 'abundance'),
                  'Parameter descriptions for defaults')
 })
   
@@ -124,7 +144,8 @@ test_that('Misc tests', {
                              description = 'test',
                              author = 'tom',
                              email = 'tom@tom.com',
-                             dir = 'thisdoesnotexist'),
+                             dir = 'thisdoesnotexist',
+                             dataType = 'abundance'),
                  'directory is not writeable')
   
 })

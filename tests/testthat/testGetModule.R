@@ -20,8 +20,10 @@ test_that('GetModule works', {
   
   
   expect_error(GetModule('xxx', FALSE))
-  expect_that(GetModule('NoProcess', FALSE), equals('NoProcess'))
-  expect_equal(GetModule('NamespaceModule', FALSE), 'NamespaceModule')
+  expect_that(as.character(GetModule('NoProcess', FALSE)), equals('NoProcess'))
+  expect_true('version' %in% names(attributes(GetModule('NoProcess', FALSE))))
+  expect_equal(as.character(GetModule('NamespaceModule', FALSE)), 'NamespaceModule')
+  expect_equal(attr(GetModule('NamespaceModule', FALSE), 'version'), 'local copy')
   
   eval(GetModule('NamespaceModule', FALSE), env = .GlobalEnv)
   expect_true(exists('NamespaceModule', env = .GlobalEnv))
