@@ -3,6 +3,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 vignettes/cache
+vignettes/figure
 Notes_for_zoon_developers.md
 zoonDemo.R
 zoonQuickStart.R
