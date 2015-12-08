@@ -11,7 +11,8 @@ License: BSD_3_clause + file LICENSE
 Imports:
     RCurl,
     dismo,
-    rfigshare
+    rfigshare,
+    methods
 Depends:
     raster (>= 2.4-20),
     R (>= 3.2.0)

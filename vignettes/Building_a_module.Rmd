@@ -415,7 +415,7 @@ Next we specify the packages our function needs. These should be specified by us
 zoon::GetPackage("gam")
 ```  
 
-Next we can add the code that does our modelling, here we create a simple GAM (Generalised Additive Model) using the package [gam](https://cran.r-project.org/web/packages/gam/index.html)
+Next we can add the code that does our modelling, here we create a simple GAM (Generalised Additive Model) using the package [gam](https://cran.r-project.org/package=gam)
 
 ```{r, eval = FALSE}
 # Create a data.frame of covariate data

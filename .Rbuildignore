@@ -10,3 +10,4 @@ zoonQuickStart.R
 .travis.yml
 code_of_conduct.md
 vignettes/figure
+tests/testthat/*.pdf

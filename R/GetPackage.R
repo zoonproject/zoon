@@ -7,6 +7,7 @@
 #' @param package The name of the package with or without
 #' quotes
 #' @return NULL
+#' @importFrom utils install.packages
 #' @examples  
 #' \dontrun{
 #' GetPackage('gam')
