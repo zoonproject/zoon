@@ -605,7 +605,10 @@ PredictNewRasterMap <- function(.model, .ras, raster = .ras){
 It is important to have default values for all user defined parameters so that your module can be tested when you upload it to the zoon website. Here we set our default 'new area' raster to be the same as the raster used to create the model. Clearly this is not how we envisage the module being used in a real application (unless they genuinely wanted to predict back to the same area), however this ensures that this module will always work with its default arguments, no matter what workflow it is placed in. 
 
 ```{r, eval = FALSE}
-# The first step is to extract the covariate values
+# The first step is to load in the packages we need
+zoon::GetPackage(raster) 
+  
+# Then extract the covariate values
 # from the user provided raster
 vals <- data.frame(getValues(raster))
 colnames(vals) <- names(raster)
@@ -640,6 +643,8 @@ Our function now looks like this:
 
 ```{r}
 PredictNewRasterMap <- function(.model, .ras, raster = .ras){
+  
+  zoon::GetPackage(raster)
   
   # Extract the values from the user provided raster
   vals <- data.frame(getValues(raster))

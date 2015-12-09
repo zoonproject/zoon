@@ -7,7 +7,7 @@
 #'@param renew Download from github even if we already have a module list.
 #'
 #'@export
-#'@examples \dontrun{GetModuleList()}
+#'@examples GetModuleList()
 
 GetModuleList <- function(renew = FALSE){
 

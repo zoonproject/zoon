@@ -8,10 +8,7 @@
 #' quotes
 #' @return NULL
 #' @importFrom utils install.packages
-#' @examples  
-#' \dontrun{
-#' GetPackage('gam')
-#' }
+#' @examples GetPackage('gam')
 #' @export
 
 GetPackage <- function (package) {

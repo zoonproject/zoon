@@ -1,4 +1,5 @@
 #' @importFrom graphics strwidth
+
 GetCex <- function(string, width = 9) {
   # given a string (character vector of length one),
   # and a target width on screen, in user coordinates
@@ -9,6 +10,7 @@ GetCex <- function(string, width = 9) {
 }
 
 #' @importFrom graphics strwidth segments
+
 ModuleLabels <- function(colr, IsChain, IsList){
   ###___ function for writing the module labels 
   
@@ -229,7 +231,7 @@ CallLister <- function( callList ){
 #' @param \dots currently ignored
 #'
 #' @method plot zoonWorkflow
-#' @importFrom graphics plot.new par plot rect
+#' @importFrom graphics plot.new par rect
 #' @export
 plot.zoonWorkflow <- function(x, ...) {
   

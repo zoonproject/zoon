@@ -16,6 +16,6 @@ A list with all module names.
 Get a list of all the modules available on the github repo.
 }
 \examples{
-\dontrun{GetModuleList()}
+GetModuleList()
 }
 
