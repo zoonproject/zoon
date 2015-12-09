@@ -11,11 +11,11 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
+
 ```{r setup, include=FALSE}
 library(knitr)
 opts_chunk$set(out.extra='style="display:block; margin: auto"', fig.align="center")
 ```
-
 
 # Using zoon modules interactively.
 

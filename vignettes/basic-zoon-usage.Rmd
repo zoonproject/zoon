@@ -11,6 +11,7 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
+
 ```{r, include=FALSE}
 library(knitr)
 opts_chunk$set(out.extra='style="display:block; margin: auto"', fig.align="center")
@@ -18,7 +19,6 @@ opts_chunk$set(out.extra='style="display:block; margin: auto"', fig.align="cente
 
 An Introduction to the **zoon** package
 =======================================
-
 
 **Zoon** is a package to aid reproducibility and between-model comparisons in species distribution modelling. Each step in an analysis is a 'module'. These modules will include: 
 + Data collection of **occurrence** and environmental **covariate** data from online databases. 
