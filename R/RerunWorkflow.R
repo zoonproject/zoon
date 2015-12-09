@@ -14,7 +14,8 @@
 #' @name RerunWorkflow
 #' @importFrom utils sessionInfo
 #' @examples \dontrun{
-#' w <- workflow(UKAnophelesPlumbeus, UKAir,
+#' w <- workflow(UKAnophelesPlumbeus,
+#'               UKAir,
 #'               OneHundredBackground, 
 #'               LogisticRegression,
 #'               SameTimePlaceMap)

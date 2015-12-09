@@ -15,7 +15,13 @@ A list with all module names.
 \description{
 Get a list of all the modules available on the github repo.
 }
+\details{
+This function will only work on a platform that supports the 
+method 'libcurl' in the function url. This can be tested using the function
+\code{capabilities} (see example).
+}
 \examples{
-GetModuleList()
+# GetModuleList requires libcurl to be supported
+if(capabilities('libcurl')) GetModuleList()
 }
 

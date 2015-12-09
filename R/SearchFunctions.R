@@ -5,9 +5,14 @@
 #'@return A list with all module names.
 #'@name GetModuleList
 #'@param renew Download from github even if we already have a module list.
+#' @details This function will only work on a platform that supports the 
+#' method 'libcurl' in the function url. This can be tested using the function
+#' \code{capabilities} (see example).
 #'
 #'@export
-#'@examples GetModuleList()
+#'@examples 
+#'# GetModuleList requires libcurl to be supported
+#'if(capabilities('libcurl')) GetModuleList()
 
 GetModuleList <- function(renew = FALSE){
 
