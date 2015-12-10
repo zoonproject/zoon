@@ -11,3 +11,12 @@ zoonQuickStart.R
 code_of_conduct.md
 vignettes/figure
 tests/testthat/*.pdf
+tests/testthat/testChangeWorkflow.R
+tests/testthat/testGetMaxEnt.R
+tests/testthat/testplot.zoonWorkflow.R
+tests/testthat/testprint.zoonSummary.R
+tests/testthat/testprint.zoonWorkflow.R
+tests/testthat/testRerunWorkflow.R
+tests/testthat/testRunModules.R
+tests/testthat/testsummary.zoonWorkflow.R
+tests/testthat/testWholeWorkflows.R

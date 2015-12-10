@@ -239,11 +239,11 @@ plot.zoonWorkflow <- function(x, ...) {
   plot.new()
   par(mar = c(0, 0, 0, 0))
   
-  plot(-99, -99,
-       xlim = c(0, 110),
-       ylim = c(-100, 125),
-       xlab = "", ylab = "",
-       axes = FALSE)
+  graphics::plot(-99, -99,
+                 xlim = c(0, 110),
+                 ylim = c(-100, 125),
+                 xlab = "", ylab = "",
+                 axes = FALSE)
   
   rect( -200, -200, 200, 200,
         col = "cornsilk1",
