@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/zoonproject/zoon.svg)](https://travis-ci.org/zoonproject/zoon)
 [![codecov.io](https://codecov.io/github/zoonproject/zoon/coverage.svg?branch=master)](https://codecov.io/github/zoonproject/zoon?branch=master)
+[![cran version](http://www.r-pkg.org/badges/version/zoon)](http://cran.rstudio.com/web/packages/zoon) 
+[![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/zoon?)](https://github.com/metacran/cranlogs.app)
 
 Zoön is a package for the reproducible and shareable analysis of species distribution models with a focus on the ability to compare between models and diagnostic output of models.
 
@@ -30,35 +32,15 @@ ModuleHelp(LogisticRegression)
 ```
 
 
-### To install the stable(ish) version directly from R
+### Installation
 
-Zoon isn't on CRAN yet, but you can install the package with the following instructions. 
-Note, you'll need to be using **R version 3.2.0** or higher.
-
-First, install some dependencies:
-```r
-install.packages(c("raster", "sp (>= 1.0-13)", "RCurl", "dismo"))
-```
-
-Then to install on Windows do:
+Zoön is now on CRAN, so you can install the stable(ish) version directly from R with:
 
 ```r
-install.packages('https://github.com/zoonproject/zoon/releases/download/0.3.2/zoon_0.3.2.zip',
-                repos = NULL, method = 'libcurl')
+install.packages('zoon')
 ```
 
-and on OSX or Linux:
-
-```r
-install.packages('https://github.com/zoonproject/zoon/releases/download/0.3.2/zoon_0.3.2.tar.gz',
-                 repos = NULL, method = 'libcurl')
-```
-
-
-### To install current development version
-
-You can install the most recent version of the package straight from GitHub using the `devtools` package,
-though if you're using Windows, you'll need to have [RTools](https://cran.r-project.org/bin/windows/Rtools/) installed first:
+you can also install the most recent development version of the package straight from GitHub using the `devtools` package:
 
 ```r
 devtools::install_github("zoonproject/zoon")
