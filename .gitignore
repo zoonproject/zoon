@@ -9,3 +9,6 @@ vignettes/*.md
 vignettes/*.R
 vignettes/figure
 vignettes/cache
+
+# outputs from testing
+tests/testthat/*.pdf

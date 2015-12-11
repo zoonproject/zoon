@@ -12,6 +12,7 @@
 #'
 #'@export
 #'@name ChangeWorkflow
+#'@importFrom utils sessionInfo
 #'@examples \dontrun{
 #' w <- workflow(UKAnophelesPlumbeus,
 #'               UKAir,

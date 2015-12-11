@@ -2,18 +2,20 @@
 #'
 #' Takes a workflow object and reruns it.
 #'
-#'@param workflow A zoonWorkflow object from a previous zoon analysis
-#'@param from Which modules should be run. If NULL (default), run from the
+#' @param workflow A zoonWorkflow object from a previous zoon analysis
+#' @param from Which modules should be run. If NULL (default), run from the
 #'  first NULL output (i.e. where the workflow broke). Otherwise takes an
 #'  integer and runs from that module.
 #'
-#'@return A list with the results of each module and a copy of the
+#' @return A list with the results of each module and a copy of the
 #'  call used to execute the workflow.
 #'
-#'@export
-#'@name RerunWorkflow
-#'@examples \dontrun{
-#' w <- workflow(UKAnophelesPlumbeus, UKAir,
+#' @export
+#' @name RerunWorkflow
+#' @importFrom utils sessionInfo
+#' @examples \dontrun{
+#' w <- workflow(UKAnophelesPlumbeus,
+#'               UKAir,
 #'               OneHundredBackground, 
 #'               LogisticRegression,
 #'               SameTimePlaceMap)

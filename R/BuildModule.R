@@ -28,6 +28,8 @@
 #'
 #' @return Name of the module. Outputs a file
 #' @name BuildModule
+#' @import methods
+#' @importFrom utils capture.output
 #' @export
 
 BuildModule <- function(object, type, dir='.', title = '',  description = '',

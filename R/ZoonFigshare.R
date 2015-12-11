@@ -18,6 +18,7 @@
 #' @param tags Character vector of searchable tags. 
 #'
 #' @importFrom rfigshare fs_new_article
+#' @importFrom utils browseURL
 #' @export
 
 ZoonFigshare <- function(zoonWorkflow, title = 'My Zoon Workflow',

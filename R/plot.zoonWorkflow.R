@@ -1,3 +1,5 @@
+#' @importFrom graphics strwidth
+
 GetCex <- function(string, width = 9) {
   # given a string (character vector of length one),
   # and a target width on screen, in user coordinates
@@ -6,6 +8,8 @@ GetCex <- function(string, width = 9) {
   cex <- width / strwidth(string, cex = 1)
   return (cex)
 }
+
+#' @importFrom graphics strwidth segments
 
 ModuleLabels <- function(colr, IsChain, IsList){
   ###___ function for writing the module labels 
@@ -43,6 +47,7 @@ ModuleLabels <- function(colr, IsChain, IsList){
 } #END ModuleLabels
 
 
+#' @importFrom graphics rect segments strwidth
 
 Boxed2 <- function (NoOfModules, InModuleList, IsList, IsChain, ModuleNames) {
   ###___ function for writing the boxes 
@@ -226,6 +231,7 @@ CallLister <- function( callList ){
 #' @param \dots currently ignored
 #'
 #' @method plot zoonWorkflow
+#' @importFrom graphics plot.new par rect
 #' @export
 plot.zoonWorkflow <- function(x, ...) {
   
@@ -233,11 +239,11 @@ plot.zoonWorkflow <- function(x, ...) {
   plot.new()
   par(mar = c(0, 0, 0, 0))
   
-  plot(-99, -99,
-       xlim = c(0, 110),
-       ylim = c(-100, 125),
-       xlab = "", ylab = "",
-       axes = FALSE)
+  graphics::plot(-99, -99,
+                 xlim = c(0, 110),
+                 ylim = c(-100, 125),
+                 xlab = "", ylab = "",
+                 axes = FALSE)
   
   rect( -200, -200, 200, 200,
         col = "cornsilk1",
