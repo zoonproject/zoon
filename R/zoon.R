@@ -39,21 +39,22 @@ NULL
 #'   give the modules in the form of a function 
 #'   e.g. occurrence = AModule(para1 = 2, para2 = 'detail')
 #'
-#'@param occurrence Occurrence module to be used.
-#'@param covariate  Covariate module to be used.
-#'@param process Process module to be used.
-#'@param model SDM model module to be used. 
-#'@param output Output module to be used.
-#'@param forceReproducible Logical whether to force zoon to collect modules 
+#' @param occurrence Occurrence module to be used.
+#' @param covariate  Covariate module to be used.
+#' @param process Process module to be used.
+#' @param model SDM model module to be used. 
+#' @param output Output module to be used.
+#' @param forceReproducible Logical whether to force zoon to collect modules 
 #'  from the online repo. This ensure the analysis is reproducible.
 #'
-#'@return A list with the results of each module and a copy of the
+#' @return A list with the results of each module and a copy of the
 #'  code used to execute the workflow (what's there now should be source-able
 #'  though I'm sure there is a much neater approach than the one I took - the
 #'  ultimate aim would be a much nicer way of enhancing reproducibility).
-#'@export
-#'@name workflow
-#'@examples 
+#' @export
+#' @name workflow
+#' @importFrom utils sessionInfo
+#' @examples 
 #'# run a workflow, using the logistic regression model
 #'\dontrun{
 #'

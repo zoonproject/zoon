@@ -22,7 +22,8 @@ Takes a workflow object and reruns it.
 }
 \examples{
 \dontrun{
-w <- workflow(UKAnophelesPlumbeus, UKAir,
+w <- workflow(UKAnophelesPlumbeus,
+              UKAir,
               OneHundredBackground, 
               LogisticRegression,
               SameTimePlaceMap)

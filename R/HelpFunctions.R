@@ -39,6 +39,7 @@ ModuleHelp <- function(module){
 
 
 # Download a file with libcurl and no messages to the console
+#'@importFrom utils download.file
 
 DownloadQuietly <- function(url, file) {
   download.file(url,
@@ -52,6 +53,7 @@ DownloadQuietly <- function(url, file) {
 # Display a module helpfile in accordance with the 'help_type' option
 # help is either displayed as an HTML or text, pdf is not supported and 
 # an error is returned
+#'@importFrom utils browseURL
 
 DisplayModuleHelp <- function (url) {
   

@@ -7,10 +7,8 @@
 #' @param package The name of the package with or without
 #' quotes
 #' @return NULL
-#' @examples  
-#' \dontrun{
-#' GetPackage('gam')
-#' }
+#' @importFrom utils install.packages
+#' @examples GetPackage('gam')
 #' @export
 
 GetPackage <- function (package) {

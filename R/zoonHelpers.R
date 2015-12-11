@@ -440,7 +440,7 @@ ErrorModule <- function(cond, mod, e){
   message()
   # Where did workflow break and where is the progress stored?
   x <- paste("Stopping workflow due to error in", module, "module.\n", 
-             "Workflow progress stored in object 'tmpZoonWorkflow'.")
+             "Workflow progress will be returned.")
   # Throw error. The call for this error is meaningless so don't print it.
   stop(x, call. = FALSE)
 }
@@ -485,6 +485,7 @@ Writeable <- function (dir) {
 #'  
 #' @export
 #' @name GetMaxEnt
+#' @importFrom utils browseURL
 GetMaxEnt <- function () {
   # Send the user to download the MaxEnt executable,
   # then find and upload it

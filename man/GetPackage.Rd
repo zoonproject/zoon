@@ -16,9 +16,6 @@ load the package if it exists, else install it from
 CRAN and then load
 }
 \examples{
- 
-\dontrun{
 GetPackage('gam')
-}
 }
 
