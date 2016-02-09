@@ -514,9 +514,7 @@ GetMaxEnt <- function () {
   file <- file.choose()
   
   # check it's maxent.jar
-  file_parts <- strsplit(file, '/')[[1]]
-  file_end <- file_parts[length(file_parts)]
-  if (file_end != 'maxent.jar') {
+  if (basename(file) != 'maxent.jar') {
     stop ("the file selected was not 'maxent.jar'")
   }
   
