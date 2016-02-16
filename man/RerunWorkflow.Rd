@@ -26,7 +26,7 @@ w <- workflow(UKAnophelesPlumbeus,
               UKAir,
               OneHundredBackground, 
               LogisticRegression,
-              SameTimePlaceMap)
+              PrintMap)
 
 RerunWorkflow(w)
 }

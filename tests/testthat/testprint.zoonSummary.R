@@ -7,7 +7,7 @@ test_that('print.zoonSummary tests', {
                     covariate = UKAir,
                     process = OneHundredBackground,
                     model = LogisticRegression,
-                    output = SameTimePlaceMap)
+                    output = PrintMap)
   
   sum_out <- capture.output(summary(work1))
   

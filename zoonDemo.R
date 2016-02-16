@@ -88,7 +88,7 @@ work4 <- workflow(occurrence = list(SpOcc(species = 'Eresus kollari',
                   covariate  = UKBioclim,
                   process    = OneHundredBackground,
                   model      = LogisticRegression,
-                  output     = SameTimePlaceMap)
+                  output     = PrintMap)
 
 # This should be in a module, but isnt.
 par(mfrow=c(1,2))
@@ -143,7 +143,7 @@ work6 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari',
                   
                   model = list(LogisticRegression, RandomForest),
                   
-                  output   = Chain(SameTimePlaceMap, PerformanceMeasures)
+                  output   = Chain(PrintMap, PerformanceMeasures)
 )
 
 str(work6, 1)

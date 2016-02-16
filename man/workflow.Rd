@@ -43,7 +43,7 @@ work1 <- workflow(occurrence = 'UKAnophelesPlumbeus',
                 covariate = 'UKAir',
                 process = 'OneHundredBackground',
                 model = 'LogisticRegression',
-                output = 'SameTimePlaceMap')
+                output = 'PrintMap')
 
 str(work1, 1)
 

@@ -11,7 +11,7 @@ test_that('plot.zoonWorkflow works', {
                     covariate = UKAir,
                     process = OneHundredBackground,
                     model = LogisticRegression,
-                    output = SameTimePlaceMap)
+                    output = PrintMap)
   png(filename = file.path(directory, 'tempzoonWorkflow1.png'))
   expect_null(zoon:::plot.zoonWorkflow(work1))
   dev.off()
@@ -25,7 +25,7 @@ test_that('plot.zoonWorkflow works', {
                     covariate = UKAir,
                     process = OneHundredBackground,
                     model = LogisticRegression,
-                    output = SameTimePlaceMap)
+                    output = PrintMap)
   png(filename = file.path(directory, 'tempzoonWorkflow2.png'))
   expect_null(zoon:::plot.zoonWorkflow(work2))
   dev.off()
@@ -39,7 +39,7 @@ test_that('plot.zoonWorkflow works', {
                     covariate = UKAir,
                     process = OneHundredBackground,
                     model = LogisticRegression,
-                    output = SameTimePlaceMap)
+                    output = PrintMap)
   png(filename = file.path(directory, 'tempzoonWorkflow3.png'))
   expect_null(zoon:::plot.zoonWorkflow(work3))
   dev.off()

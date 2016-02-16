@@ -9,7 +9,7 @@ test_that('SplitCall works', {
                     PasteAndDep(substitute(UKAir)), 
                     PasteAndDep(substitute(OneHundredBackground)), 
                     PasteAndDep(substitute(LogisticRegression)),
-                    PasteAndDep(substitute(SameTimePlaceMap)),
+                    PasteAndDep(substitute(PrintMap)),
                     TRUE)
   
   
@@ -24,7 +24,7 @@ test_that('SplitCall works', {
                     PasteAndDep(substitute('UKAir')), 
                     PasteAndDep(substitute(BackgroundAndCrossvalid(k=2))), 
                     PasteAndDep(substitute(list(LogisticRegression, LogisticRegression))),
-                    PasteAndDep(substitute(Chain(SameTimePlaceMap, SameTimePlaceMap))),
+                    PasteAndDep(substitute(Chain(PrintMap, PrintMap))),
                     TRUE)
   
   split2 <- SplitCall(call2)
@@ -39,7 +39,7 @@ test_that('SplitCall works', {
                     PasteAndDep(substitute(Chain('UKAir', 'UKAir'))), 
                     PasteAndDep(substitute(list(BackgroundAndCrossvalid(k=2), BackgroundAndCrossvalid(k=2,l=3)))), 
                     PasteAndDep(substitute(list(LogisticRegression, LogisticRegression))),
-                    PasteAndDep(substitute(Chain(SameTimePlaceMap(l=2), SameTimePlaceMap(l=2,k=3,r='23')))),
+                    PasteAndDep(substitute(Chain(PrintMap(l=2), PrintMap(l=2,k=3,r='23')))),
                     TRUE)
   
   split3 <- SplitCall(call3)
