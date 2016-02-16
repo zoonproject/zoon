@@ -94,7 +94,8 @@ DisplayModuleHelp <- function (url) {
     } else {
     
       # view the help file
-      browseURL(htmlFile)
+      browseURL(url = htmlFile,
+                browser = browser)
       
     }
     
