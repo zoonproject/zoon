@@ -62,7 +62,7 @@ NULL
 #'                 covariate = 'UKAir',
 #'                 process = 'OneHundredBackground',
 #'                 model = 'LogisticRegression',
-#'                 output = 'SameTimePlaceMap')
+#'                 output = 'PrintMap')
 #'
 #'str(work1, 1)
 #'
