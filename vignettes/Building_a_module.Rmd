@@ -130,7 +130,7 @@ BuildModule(Lorem_ipsum_UK,
             dataType = 'presence-only')
 ```
 
-This function is fairly self explanatory however it is worth noting the `dataType` field. This must be any of 'presence-only', 'presence/absence', 'abundance' or 'proportion'. This is important so that people using your module in the future will know what it is going to output. 
+This function is fairly self explanatory however it is worth noting the `dataType` field. This must be any of 'presence-only', 'presence/absence', 'presence/background', 'abundance' or 'proportion'. This is important so that people using your module in the future will know what it is going to output. 
 
 `BuildModule` has now written an R file in our working directory containing the function and metadata, so that it can be shared with others.
 
@@ -371,7 +371,8 @@ BuildModule(ClipOccurrence,
                                         'giving (in this order) the minimum',
                                         'longitude, maximum longitude, minimum',
                                         'latitude, maximum latitude.')),
-            dataType = c('presence-only', 'presence/absence', 'abundance',
+            dataType = c('presence-only', 'presence/absence',
+                         'presence/background', 'abundance',
                          'proportion'))
 ```
 
@@ -535,7 +536,7 @@ GamGam <- function(.df){
 }
 ```
 
-We then run `BuildModule` on our function, adding the required metadata. As this module has no parameters other than `.df` which is not user specified, we don't need to set the `paras` argument, which would normally be used to document arguments. Default arguments, like `.df` are all signified by starting with a `.` and don't need to be documented as this will be written into the module documentation automatically.
+We then run `BuildModule` on our function, adding the required metadata. As this module has no parameters other than `.df` which is not user specified, we don't need to set the `paras` argument, which would normally be used to document arguments. Default arguments, like `.df` are all signified by starting with a `.` and don't need to be documented as this will be written into the module documentation automatically. It is worth noting the `dataType` field. This must be any of 'presence-only', 'presence/absence', 'presence/background', 'abundance' or 'proportion'. This is important so that people using your module in the future will know what types of data can be used as inputs.
 
 ```{r BuildMod}
 BuildModule(object = GamGam,
