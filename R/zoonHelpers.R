@@ -126,6 +126,8 @@ LapplyGetModule <- function(modules, forceReproducible){
 #'
 #' A function to train and predict crossvalidation folds
 #' and train one full model and predict any external validation data.
+#' This function is primarily used internally but can be used when
+#' running workflows interactively (see vignette \code{basic zoon useage})
 #'
 #'@param df Dataframe from process module. Should contain columns 
 #'  value, type, lon, lat
@@ -145,7 +147,7 @@ LapplyGetModule <- function(modules, forceReproducible){
 #'@return A list of length 2 containing the model trained on all data and a
 #'  data.frame which contains value, type, fold, lon, lat, predictions and 
 #'  then all environmental variables.
-#'
+#'@export
 #'@name RunModels
 
 RunModels <- function(df, modelFunction, paras, workEnv){
@@ -309,12 +311,17 @@ FormatModuleList <- function(x){
 
 
 
-# ExtractAndCombData
-#
-# Simply extract covariates from rasters and combine with occurrence data.
-#
-#@param occurrence A data frame from an occurrence module
-#@param ras Environmental raster layer, stack or brick.
+#' ExtractAndCombData
+#'
+#' Simply extract covariates from rasters and combine with occurrence data.
+#' This function is primarily used internally but can be used when
+#' running workflows interactively (see vignette \code{basic zoon useage})
+#'
+#' @param occurrence A data frame from an occurrence module
+#' @param ras Environmental raster layer, stack or brick.
+#' @export
+#' @name ExtractAndCombData
+
 ExtractAndCombData <- function(occurrence, ras){
   
   # Check that all points are within the raster

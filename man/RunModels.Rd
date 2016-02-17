@@ -30,5 +30,7 @@ A list of length 2 containing the model trained on all data and a
 \description{
 A function to train and predict crossvalidation folds
 and train one full model and predict any external validation data.
+This function is primarily used internally but can be used when
+running workflows interactively (see vignette \code{basic zoon useage})
 }
 
