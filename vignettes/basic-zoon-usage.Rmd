@@ -153,18 +153,20 @@ work5 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari',
                                        extent = c(-10, 10, 45, 65)),
                                      SpOcc(species = 'Eresus sandaliatus', 
                                        extent = c(-10, 10, 45, 65))),
- 
-                  covariate  = UKAir,
-
-                  process    = BackgroundAndCrossvalid(k = 2),
-
-                  model      = list(LogisticRegression, RandomForest),
-
-                  output     = Chain(PrintMap, PerformanceMeasures)
+                  covariate = UKAir,
+                  process = BackgroundAndCrossvalid(k = 2),
+                  model = list(LogisticRegression,
+                               RandomForest),
+                  output = Chain(PrintMap(plot = FALSE),
+                                 PerformanceMeasures)
          )
 
+# Take a look at the structure of hte workflow object
 str(work5, 1)
 
+# Create some custom plots using the raster returned from 
+# the output module ($report)
+par(mfrow = c(1,2), mar = c(3,4,6,4))
 plot(work5$report[[1]][[1]], 
      main = paste('Logistic Regression: AUC = ', 
              round(work5$report[[1]][[2]]$auc, 2)),
