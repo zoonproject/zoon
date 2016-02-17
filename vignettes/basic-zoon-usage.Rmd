@@ -4,11 +4,12 @@ author: "Tim Lucas"
 date: "`r Sys.Date()`"
 output:
   html_document:
+    keep_md: yes
     toc: yes
 vignette: >
   %\VignetteIndexEntry{Basic zoon usage}
-  %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 
@@ -135,7 +136,7 @@ work4 <- workflow(occurrence = UKAnophelesPlumbeus,
                   covariate  = UKAir,
                   process    = OneHundredBackground,
                   model      = list(LogisticRegression, RandomForest),
-                  output     = SameTimePlaceMap)
+                  output     = PrintMap)
 
 str(work4, 1)
 ```
@@ -159,16 +160,15 @@ work5 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari',
 
                   model      = list(LogisticRegression, RandomForest),
 
-                  output     = Chain(SameTimePlaceMap, PerformanceMeasures)
+                  output     = Chain(PrintMap, PerformanceMeasures)
          )
 
 str(work5, 1)
 
-
-par(mfrow=c(1,2))
 plot(work5$report[[1]][[1]], 
-  main = paste('Logistic Regression: AUC = ', 
-             round(work5$report[[1]][[2]]$auc, 2)))
+     main = paste('Logistic Regression: AUC = ', 
+             round(work5$report[[1]][[2]]$auc, 2)),
+     xlim = c(-10, 10))
 plot(work5$report[[2]][[1]],
   main = paste('Random forest: AUC = ', 
              round(work5$report[[2]][[2]]$auc, 2)))

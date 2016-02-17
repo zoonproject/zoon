@@ -6,7 +6,7 @@ w1 <- workflow(UKAnophelesPlumbeus,
                UKAir, 
                OneHundredBackground,
                LogisticRegression,
-               SameTimePlaceMap)
+               PrintMap)
 
 test_that('ChangeWorkflow errors', {
   
@@ -28,7 +28,7 @@ test_that('Basic ChangeWorkflow works', {
                  UKAir, 
                  OneHundredBackground,
                  RandomForest,
-                 SameTimePlaceMap)
+                 PrintMap)
 
   set.seed(1)
   w3 <- ChangeWorkflow(w2, model = LogisticRegression)
@@ -36,7 +36,7 @@ test_that('Basic ChangeWorkflow works', {
   expect_true(all.equal(w1[!names(w1) %in% 'session.info'],
                         w3[!names(w3) %in% 'session.info']))
   expect_true(identical(w2$call,
-    "workflow(occurrence = UKAnophelesPlumbeus, covariate = UKAir, process = OneHundredBackground, model = RandomForest, output = SameTimePlaceMap, forceReproducible = FALSE)"))
+    "workflow(occurrence = UKAnophelesPlumbeus, covariate = UKAir, process = OneHundredBackground, model = RandomForest, output = PrintMap, forceReproducible = FALSE)"))
 
   
   # Change Process, model and output
@@ -51,7 +51,7 @@ test_that('Basic ChangeWorkflow works', {
   w5 <- ChangeWorkflow(w4,
                        process = OneHundredBackground, 
                        model = LogisticRegression, 
-                       output = SameTimePlaceMap)
+                       output = PrintMap)
   expect_true(all.equal(w1[!names(w1) %in% 'session.info'],
                         w5[!names(w5) %in% 'session.info']))
   
@@ -65,7 +65,7 @@ test_that('Basic ChangeWorkflow works', {
                  UKBioclim, 
                  OneHundredBackground,
                  LogisticRegression,
-                 SameTimePlaceMap,
+                 PrintMap,
                  forceReproducible = TRUE)
   sink()
   
@@ -89,10 +89,10 @@ test_that('Basic ChangeWorkflow works', {
                   UKAir, 
                   OneHundredBackground,
                   LogisticRegression,
-                  PrintMap)
+                  PerformanceMeasures)
   set.seed(1)
   w7b <- ChangeWorkflow(w7a,
-                        output = SameTimePlaceMap)
+                        output = PrintMap)
   expect_true(all.equal(w1[!names(w1) %in% 'session.info'],
                         w7b[!names(w7b) %in% 'session.info']))
   
@@ -106,7 +106,7 @@ test_that('ChangeWorkflow - Chains', {
                  UKAir, 
                  OneHundredBackground,
                  LogisticRegression,
-                 SameTimePlaceMap)
+                 PrintMap)
   
   set.seed(1)
   w9 <- ChangeWorkflow(w1,
@@ -122,7 +122,7 @@ test_that('ChangeWorkflow - Chains', {
                   Chain(UKAir, UKAir), 
                   OneHundredBackground,
                   LogisticRegression,
-                  SameTimePlaceMap)
+                  PrintMap)
   
   set.seed(1)
   w11 <- ChangeWorkflow(w1,
@@ -150,7 +150,7 @@ test_that('ChangeWorkflow - Lists', {
                  UKAir, 
                  OneHundredBackground,
                  LogisticRegression,
-                 SameTimePlaceMap)
+                 PrintMap)
   
   set.seed(1)
   w14 <- ChangeWorkflow(w1,
@@ -166,7 +166,7 @@ test_that('ChangeWorkflow - Lists', {
                   list(UKAir, UKAir), 
                   OneHundredBackground,
                   LogisticRegression,
-                  SameTimePlaceMap)
+                  PrintMap)
   
   set.seed(1)
   w16 <- ChangeWorkflow(w1,
@@ -194,7 +194,7 @@ test_that('More complex syntax in remaining modules works', {
                  UKAir, 
                  BackgroundAndCrossvalid(k=2),
                  LogisticRegression,
-                 SameTimePlaceMap)
+                 PrintMap)
 
  set.seed(1)
  w19 <- ChangeWorkflow(w18, occurrence = UKAnophelesPlumbeus)

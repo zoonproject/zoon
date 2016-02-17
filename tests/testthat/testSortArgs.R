@@ -6,11 +6,11 @@ test_that('SortArgs works.', {
                 PasteAndDep(substitute(UKAir)), 
                 PasteAndDep(substitute(OneHundredBackground)), 
                 PasteAndDep(substitute(LogisticRegression)),
-                PasteAndDep(substitute(SameTimePlaceMap)),
+                PasteAndDep(substitute(PrintMap)),
                 TRUE)
   
   expect_equal(x,
-               "workflow(occurrence = UKAnophelesPlumbeus, covariate = UKAir, process = OneHundredBackground, model = LogisticRegression, output = SameTimePlaceMap, forceReproducible = TRUE)")
+               "workflow(occurrence = UKAnophelesPlumbeus, covariate = UKAir, process = OneHundredBackground, model = LogisticRegression, output = PrintMap, forceReproducible = TRUE)")
   
   # Check the call is runeable
   w <- eval(parse(text = x))
@@ -23,7 +23,7 @@ test_that('SortArgs works.', {
                 PasteAndDep(substitute('UKAir')), 
                 PasteAndDep(substitute(BackgroundAndCrossvalid(k=2))), 
                 PasteAndDep(substitute(list(LogisticRegression, LogisticRegression))),
-                PasteAndDep(substitute(Chain(SameTimePlaceMap, SameTimePlaceMap))),
+                PasteAndDep(substitute(Chain(PrintMap, PrintMap))),
                 TRUE)
   
   expect_true(length(y) == 1)

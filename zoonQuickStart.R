@@ -16,14 +16,14 @@ install.packages(c("dismo", "randomForest", "biomod2", "RNCEP", "spocc"))
 
 # Run this to test things are working.
 workflow(UKAnophelesPlumbeus, UKAir, OneHundredBackground,
-         LogisticRegression, SameTimePlaceMap)
+         LogisticRegression, PrintMap)
 
 
 # If you wish to use biomod2 during the workshop check that this works.
 # I am having problems getting it to work on this windows machine
 # But had no problems on linux.
 workflow(UKAnophelesPlumbeus, UKAir, OneHundredBackground,
-         BiomodModel(modelType="GAM"), SameTimePlaceMap)
+         BiomodModel(modelType="GAM"), PrintMap)
 
 
 # Finally, this is just a useful function
