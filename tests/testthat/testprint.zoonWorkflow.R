@@ -5,7 +5,7 @@ work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                   covariate = UKAir,
                   process = OneHundredBackground,
                   model = LogisticRegression,
-                  output = SameTimePlaceMap)
+                  output = PrintMap)
 
 test_that('print.zoonWorkflow tests', {
   
@@ -14,7 +14,7 @@ test_that('print.zoonWorkflow tests', {
   expect_identical(sum_out,
                    c("zoonWorkflow Object", "===================",
                      "",
-                     "Call: workflow(occurrence = UKAnophelesPlumbeus, covariate = UKAir, process = OneHundredBackground, model = LogisticRegression, output = SameTimePlaceMap, forceReproducible = FALSE) "
+                     "Call: workflow(occurrence = UKAnophelesPlumbeus, covariate = UKAir, process = OneHundredBackground, model = LogisticRegression, output = PrintMap, forceReproducible = FALSE) "
                    ))
 })
 
