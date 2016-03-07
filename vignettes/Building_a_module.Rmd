@@ -70,9 +70,7 @@ Our occurrence data does not have all of these columns so we need to add them. H
 
 ```{r, echo = FALSE, message = FALSE}
 URL <- "https://ndownloader.figshare.com/files/2519918"
-temp_csv <- tempfile(fileext = '.csv')
-download.file(URL, destfile = temp_csv)
-head(read.csv(temp_csv))
+head(read.csv(URL))
 ```
 
 So we need to do a little reformatting
@@ -99,9 +97,7 @@ Lorem_ipsum_UK <- function(){
   
   # Get data
   URL <- "https://ndownloader.figshare.com/files/2519918"
-  temp_csv <- tempfile(fileext = '.csv')
-  download.file(URL, destfile = temp_csv)
-  out <- read.csv(temp_csv)
+  out <- read.csv(URL)
   out <- out[, c("latitude", "longitude")]
   
   # Add in the columns we dont have
