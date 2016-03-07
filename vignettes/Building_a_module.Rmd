@@ -10,6 +10,7 @@ vignette: >
   %\VignetteIndexEntry{Building modules}
   \usepackage[utf8]{inputenc}
   %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{spocc,raster,dismo,gam}
 ---
 
 ```{r, echo = FALSE}
@@ -40,27 +41,13 @@ Lorem_ipsum_UK <- function(){
 
 In this case we have not given our function any arguments as we simply want to return the online dataset. However you could add arguments here to modify what your function returns (for an example [see the SpOcc module](https://github.com/zoonproject/modules/blob/master/R/SpOcc.R)).
 
-```{r, eval = TRUE}
-# I'm going to use the package 'RCurl' so first I get that
-# using the zoon 'GetPackage' function
-GetPackage('RCurl')
-```  
-
-It is important that you use the `GetPackage` function rather than `library` or `require` as it will also install the package if the user does not already have it installed. 
-  
 ```{r, eval = FALSE}
-# Next I retrieve the data from figshare
+# First I retrieve the data from figshare
 # Here is the URL
 URL <- "https://ndownloader.figshare.com/files/2519918"
 
-# Set up a filename to save it
-temp_csv <- tempfile(fileext = '.csv')
-
-# Download it
-download.file(URL, destfile = temp_csv)
-
-# Lets look at teh first few rows
-out <- read.csv(temp_csv)
+# Here is the data
+out <- read.csv(URL)
 head(out)
 ```
 

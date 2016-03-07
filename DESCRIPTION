@@ -19,7 +19,8 @@ Depends:
 Suggests:
     knitr,
     testthat,
-    gam
+    gam,
+    spocc
 VignetteBuilder: knitr
 LazyData: TRUE
 URL: https://github.com/zoonproject/zoon
