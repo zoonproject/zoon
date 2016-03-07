@@ -50,9 +50,18 @@ It is important that you use the `GetPackage` function rather than `library` or 
   
 ```{r, eval = FALSE}
 # Next I retrieve the data from figshare
-URL <- "http://files.figshare.com/2519918/Lorem_ipsum_data.csv"
-x <- getURL(URL)
-out <- read.csv(textConnection(x))
+# Here is the URL
+URL <- "https://ndownloader.figshare.com/files/2519918"
+
+# Set up a filename to save it
+temp_csv <- tempfile(fileext = '.csv')
+
+# Download it
+download.file(URL, destfile = temp_csv)
+
+# Lets look at teh first few rows
+out <- read.csv(temp_csv)
+head(out)
 ```
 
 Now it is time to think about how we return our data. The output format for occurrence modules is very important. If you do not ensure that the format is correct then your module will not work properly when entered into a workflow. An occurrence module must return a data.frame with the columns longitude, latitude, value, type and fold, the details are given at [the end of this document](#occIO)
@@ -60,9 +69,10 @@ Now it is time to think about how we return our data. The output format for occu
 Our occurrence data does not have all of these columns so we need to add them. Here is what our data currently look like.
 
 ```{r, echo = FALSE, message = FALSE}
-URL <- "http://files.figshare.com/2519918/Lorem_ipsum_data.csv"
-x <- getURL(URL)
-head(read.csv(textConnection(x)))
+URL <- "https://ndownloader.figshare.com/files/2519918"
+temp_csv <- tempfile(fileext = '.csv')
+download.file(URL, destfile = temp_csv)
+head(read.csv(temp_csv))
 ```
 
 So we need to do a little reformatting
@@ -88,9 +98,10 @@ Lorem_ipsum_UK <- function(){
   GetPackage('RCurl')
   
   # Get data
-  URL <- "http://files.figshare.com/2519918/Lorem_ipsum_data.csv"
-  x <- getURL(URL)
-  out <- read.csv(textConnection(x))
+  URL <- "https://ndownloader.figshare.com/files/2519918"
+  temp_csv <- tempfile(fileext = '.csv')
+  download.file(URL, destfile = temp_csv)
+  out <- read.csv(temp_csv)
   out <- out[, c("latitude", "longitude")]
   
   # Add in the columns we dont have
