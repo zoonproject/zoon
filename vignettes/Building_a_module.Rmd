@@ -93,8 +93,6 @@ We have now written the R code for our occurrence module, this is what it looks 
 ```{r}
 Lorem_ipsum_UK <- function(){
   
-  GetPackage('RCurl')
-  
   # Get data
   URL <- "https://ndownloader.figshare.com/files/2519918"
   out <- read.csv(URL)
@@ -180,7 +178,7 @@ In this example we do not need any external packages as the data we are download
 
 ```{r, echo = FALSE}
 URL <- "http://files.figshare.com/2527274/aus_air.rdata"
-load(url(URL))
+load(url(URL, method = 'libcurl'))
 print(ras)
 ```
 
@@ -191,7 +189,7 @@ In our function we download this data into R
 ```{r, eval = FALSE}
 # Load in the data
 URL <- "http://files.figshare.com/2527274/aus_air.rdata"
-load(url(URL)) # The object is called 'ras'
+load(url(URL, method = 'libcurl')) # The object is called 'ras'
 
 # Subset the data according the the variable parameter
 ras <- subset(ras, variables)
@@ -205,7 +203,7 @@ We can test our function works by running it in a workflow with other modules
 AustraliaAir <- function(variables = 'rhum'){
 
   URL <- "http://files.figshare.com/2527274/aus_air.rdata"
-  load(url(URL)) # The object is called 'ras'
+  load(url(URL, method = 'libcurl')) # The object is called 'ras'
   ras <- subset(ras, variables)
   return(ras)
   
