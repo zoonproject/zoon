@@ -18,10 +18,11 @@ Depends:
     R (>= 3.2.0)
 Suggests:
     knitr,
+    rmarkdown,
     testthat,
     gam,
     spocc
-VignetteBuilder: knitr
+VignetteBuilder: rmarkdown
 LazyData: TRUE
 URL: https://github.com/zoonproject/zoon
 RoxygenNote: 5.0.1
