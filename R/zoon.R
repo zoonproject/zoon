@@ -28,4 +28,3 @@
 #'@import raster RCurl dismo
 
 NULL
-

@@ -78,18 +78,6 @@ DoModelModules <- function(model.module, modelName, process.output, e){
                         )
               )
     } else {
-      # model.output <- 
-      #   lapply(process.output,
-      #          function(x) 
-      #            do.call(RunModels, 
-      #                    list(df = x, 
-      #                         modelFunction = modelName[[1]]$func, 
-      #                         paras = modelName[[1]]$paras, 
-      #                         workEnv = e
-      #                        ),
-      #                    envir = e
-      #                   )
-      #         )
       model.output <- 
         lapply(process.output,
                function(x) 
