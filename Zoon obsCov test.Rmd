@@ -1,9 +1,19 @@
+---
+title: "Testing obsCovs"
+author: "James Campbell"
+date: "March 29, 2016"
+output: html_document
+---
+
+### Load modified Modules which are compatable with branch
+
+```{r}
 ##  Build and reload package before execution
 
 ##  The branch 'observationCovariates' contains the working demo of the code changes
 ##  Use the branch master is an up-to-date fork of Zoon
 
-GetModuleList()
+#GetModuleList()
 
 #################################
 ## Testing different workflows ##
@@ -19,7 +29,11 @@ source('Modified Modules/UKBioclim.R')
 ## function in order to test the LocalRaster module
 source('Modified Modules/LocalRaster.R')
 source('Modified Modules/PrintMap.R')
+```
 
+### Run workflows to compare output  with zoon master branch
+
+```{r}
 ## Logistic regression
 test1 <- workflow(occurrence = UKAnophelesPlumbeus,
                   covariate = UKBioclim,
@@ -49,5 +63,4 @@ test3 <- workflow(occurrence = UKAnophelesPlumbeus,
                   process = OneHundredBackground(seed = 1),
                   model = LogisticRegression,
                   output = PrintMap)
-
-
+```
