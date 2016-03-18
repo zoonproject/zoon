@@ -202,7 +202,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   # Also makes it easy to implement a NULL process
   tryCatch({
     if(length(covariateName) > 1){    
-      data <- lapply(covariate.output, 
+      data <- lapply(, 
                      function(x) ExtractAndCombData(occurrence.output[[1]], x))
     } else {
       data <- lapply(occurrence.output, 
