@@ -73,6 +73,9 @@ NULL
 
 workflow <- function(occurrence, covariate, process, model, output, forceReproducible=FALSE) {
 
+  ## To identify which version of package is being used
+  message('working version (observation level covariates)')
+  
   occSub <- substitute(occurrence)
   covSub <- substitute(covariate)
   proSub <- substitute(process)
@@ -229,28 +232,28 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   
   
   # Model module
-  tryCatch({
+#  tryCatch({
     model.output <- DoModelModules(model.module, modelName, process.output, e)
     output$model.output <- model.output
-  },  
-    error = function(cond){
-      ErrorModule(cond, 4, e)
-    }
-  )    
+#  },  
+#    error = function(cond){
+#      ErrorModule(cond, 4, e)
+#    }
+#  )    
   #output module
   # If output isn't chained, might have to lapply over 
   #   output, covariate or process
   # If output is chained, either covariate or process only. 
   #  Within this need to chain output
-  tryCatch({
+#  tryCatch({
     output.output <- DoOutputModules(output.module, outputName, 
                        covariate.module, covariate.output, model.output, e)
     output$report <- output.output
-  },  
-    error = function(cond){
-      ErrorModule(cond, 5, e)
-    }
-  )
+#  },  
+#    error = function(cond){
+#      ErrorModule(cond, 5, e)
+#    }
+#  )
 
 
 }
