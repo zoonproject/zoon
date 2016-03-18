@@ -156,7 +156,7 @@ RunModels <- function(data, modelFunction, paras, workEnv){
   k <- length(unique(data$df$fold)[unique(data$df$fold) != 0])
   
   # Init. output dataframe with predictions column
-  dfOut <- cbind(data$df, predictions = NA, data$df)
+  dfOut <- cbind(data$df, predictions = NA)
   # Not necessary?
 #  names(dfOut)[7:ncol(dfOut)] <- names(df)[6:ncol(df)]
   
@@ -165,39 +165,43 @@ RunModels <- function(data, modelFunction, paras, workEnv){
   # Skip otherwise
   if(k > 1){
     for(i in 1:k){
-      modelFold <- do.call(modelFunction, c(.df = list(df[df$fold != i, ]), 
-                                            paras),
-                           envir = workEnv)
-      
+      # Get rows within current fold
+      idx <- which(data$df$fold != i)
+      modelFold <- do.call(modelFunction, c(.df = list(data$df[idx, ]),
+                                            .obs.covariates = list(data$obs.covariates[idx, ]),
+                                            .site.covariates = list(data$site.covariates[idx, ]),
+                                            paras), envir = workEnv)
+      ## Merge observation and site level covariates
       pred <- ZoonPredict(modelFold,
-                          newdata = df[df$fold == i, 6:NCOL(df), drop = FALSE])
+                          newdata = list(site.covariates = data$site.covariates[idx, , drop = FALSE],
+                                         obs.covariates = data$obs.covariates[idx, , drop = FALSE]))
       
-      dfOut$predictions[df$fold == i] <- pred 
+      dfOut$predictions[data$df$fold == i] <- pred 
       
     }
   }
   
   # Run model on all data except external validation data
-  m <- do.call(modelFunction, c(.df = list(df[df$fold != 0, ]), paras), 
-               envir = workEnv)
+  m <- do.call(modelFunction,  c(.df = list(data$df[data$df$fold != 0, ]),
+                                 .obs.covariates = list(data$obs.covariates[data$df$fold != 0, ]),
+                                 .site.covariates = list(data$site.covariates[data$df$fold != 0, ]),
+                                 paras), envir = workEnv)
   
   # If external validation dataset exists, predict that;.
-  if(0 %in% df$fold){
-    
+  if(0 %in% data$df$fold){
+    idx <- which(data$df$fold != 0)
     pred <- ZoonPredict(m,
-                        newdata = df[df$fold == 0, 6:NCOL(df), drop = FALSE])
-    
+                        newdata = list(site.covariates = data$site.covariates[idx, , drop = FALSE],
+                        obs.covariates = data$obs.covariates[idx, , drop = FALSE]))
     dfOut$predictions[df$fold == 0] <- pred 
     
   }
   
   # Return list of crossvalid and external validation predictions 
   # This list is then the one list that has everything in it.
-  out <- list(model = m, data = dfOut)
+  out <- list(model = m, data = dfOut, obs.coeffifients = data$obs.covariates, site.coefficients = data$site.covariates)
   return(out)
 }
-
-
 
 
 # CheckModList
@@ -334,7 +338,7 @@ ExtractAndCombData <- function(occurrence, ras){
   }
   
   # extract covariates from lat long values in df.
-  siteCovariates <- as.matrix(raster::extract(ras, occurrence[, c('longitude', 'latitude')]))
+  siteCovariates <- as.data.frame(raster::extract(ras, occurrence[, c('longitude', 'latitude')]))
   
   # extract observation level covariates from occurence data.frame
   idx <- !c("longitude", "latitude","value", "type", "fold") %in% names(occurrence)
