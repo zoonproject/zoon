@@ -156,7 +156,8 @@ RunModels <- function(data, modelFunction, paras, workEnv){
   k <- length(unique(data$df$fold)[unique(data$df$fold) != 0])
   
   # Init. output dataframe with predictions column
-  dfOut <- cbind(data$df, predictions = NA)
+
+  dfOut <- cbind(data$df, predictions = NA, data$df)
   # Not necessary?
 #  names(dfOut)[7:ncol(dfOut)] <- names(df)[6:ncol(df)]
   
@@ -339,7 +340,7 @@ ExtractAndCombData <- function(occurrence, ras){
   
   # extract covariates from lat long values in df.
   siteCovariates <- as.data.frame(raster::extract(ras, occurrence[, c('longitude', 'latitude')]))
-  
+
   # extract observation level covariates from occurence data.frame
   idx <- !c("longitude", "latitude","value", "type", "fold") %in% names(occurrence)
   obs.cov.names <- names(occurrence)[idx]
