@@ -5,49 +5,36 @@
 # If chained, we certainly need to apply over output modules,
 #   AND apply over covariate or model output.
 
-DoOutputModules <- function(output.module, outputName, covariate.module, 
-                     covariate.output, model.output, e) {
+DoOutputModules <- function(output.module, outputName, process.module, 
+                     process.output, model.output, e) {
   # Not chained
   if(!identical(attr(output.module, 'chain'), TRUE)){
+    # if output is a list
     if (length(output.module) > 1){
       output.output <- lapply(outputName, 
                          function(x) do.call(x$func, 
                          c(list(.model = model.output[[1]], 
-                                .ras = covariate.output[[1]]),
+                                .ras = process.output[[1]]$ras),
                            x$paras), envir = e))
 
-    # Actually think that if covariate >1, then model is also >1
-    #   so never need to lapply over covariate?
-    } else if (length(covariate.module) > 1){
-      output.output <- lapply(covariate.output, 
-                         function(x) do.call(outputName[[1]]$func, 
-                         c(list(.model = model.output[[1]],
-                                .ras = x),
-                           outputName[[1]]$paras), envir = e))    
+    # Otherwise model may be parallel. If not, this will still run the 
+    #   single model ok.
     } else {
       output.output <- lapply(model.output, 
                          function(x) do.call(outputName[[1]]$func, 
                          c(list(.model = x,
-                                .ras = covariate.output[[1]]),
+                                .ras = process.output[[1]]$ras),
                            outputName[[1]]$paras), envir = e))
     }
   # Chained
   } else {
-    if (length(covariate.module) > 1){
-      output.output <- lapply(covariate.output, 
-                         function(y) lapply(outputName, 
-                           function(x) do.call(x$func, 
-                           c(list(.model = model.output[[1]],
-                                  .ras = y),
-                             x$paras), envir = e)))    
-    } else {
       output.output <- lapply(model.output, 
                          function(y) lapply(outputName, 
                            function(x) do.call(x$func, 
                            c(list(.model = y,
-                                  .ras = covariate.output[[1]]),
+                                  .ras = process.output[[1]]$ras),
                              x$paras), envir = e)))    
-    }
+    
   }
   return(output.output)
 }
