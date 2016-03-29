@@ -8,6 +8,7 @@ output: html_document
 ### Load modified Modules which are compatable with branch
 
 ```{r}
+require(zoon)
 ##  Build and reload package before execution
 
 ##  The branch 'observationCovariates' contains the working demo of the code changes
@@ -58,7 +59,7 @@ test3 <- workflow(occurrence = UKAnophelesPlumbeus,
                   output = PerformanceMeasures)
 
 ## Print map
-test3 <- workflow(occurrence = UKAnophelesPlumbeus,
+test4 <- workflow(occurrence = UKAnophelesPlumbeus,
                   covariate = UKBioclim,
                   process = OneHundredBackground(seed = 1),
                   model = LogisticRegression,
