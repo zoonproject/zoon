@@ -10,7 +10,7 @@
 #'
 #'@param workflow A workflow object
 #'
-#'@name occurrence
+#'@name Occurrence
 #'
 #'@export
 #'
@@ -22,15 +22,15 @@
 #'                  model      = list(LogisticRegression, LogisticRegression),
 #'                  output     = PrintMap)
 #'
-#'occurrence(work1)
-#'covariate(work1)
-#'process(work1)
-#'model(work1)
-#'model(work1)[[1]]
-#'output(work1)
+#'Occurrence(work1)
+#'Covariate(work1)
+#'Process(work1)
+#'Model(work1)
+#'Model(work1)[[1]]
+#'Output(work1)
 #'}
 
-occurrence <- function(workflow){
+Occurrence <- function(workflow){
   if(!inherits(workflow, 'zoonWorkflow')) stop('workflow should be a zoon workflow object.')
 
 
@@ -45,11 +45,11 @@ occurrence <- function(workflow){
 
 
 
-#'@rdname occurrence
-#'@name covariate
+#'@rdname Occurrence
+#'@name Covariate
 #'@export
 
-covariate <- function(workflow){
+Covariate <- function(workflow){
   if(!inherits(workflow, 'zoonWorkflow')) stop('workflow should be a zoon workflow object.')
 
   
@@ -64,11 +64,11 @@ covariate <- function(workflow){
 
 
 
-#'@rdname occurrence
-#'@name process
+#'@rdname Occurrence
+#'@name Process
 #'@export
 
-process <- function(workflow){
+Process <- function(workflow){
   if(!inherits(workflow, 'zoonWorkflow')) stop('workflow should be a zoon workflow object.')
 
   
@@ -83,10 +83,10 @@ process <- function(workflow){
 
 
 
-#'@rdname occurrence
-#'@name model
+#'@rdname Occurrence
+#'@name Model
 #'@export
-model <- function(workflow){
+Model <- function(workflow){
   if(!inherits(workflow, 'zoonWorkflow')) stop('workflow should be a zoon workflow object.')
 
   
@@ -100,10 +100,10 @@ model <- function(workflow){
 }
 
 
-#'@rdname occurrence
-#'@name output
+#'@rdname Occurrence
+#'@name Output
 #'@export
-output <- function(workflow){
+Output <- function(workflow){
   if(!inherits(workflow, 'zoonWorkflow')) stop('workflow should be a zoon workflow object.')
 
   
