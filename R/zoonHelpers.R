@@ -156,13 +156,7 @@ RunModels <- function(data, modelFunction, paras, workEnv){
   k <- length(unique(data$df$fold)[unique(data$df$fold) != 0])
   
   # Init. output dataframe with predictions column
-<<<<<<< HEAD
-
-=======
->>>>>>> f68030b33d2c14da0f1ed66158079c27f8c3d75e
   dfOut <- cbind(data$df, predictions = NA)
-  # Not necessary?
-#  names(dfOut)[7:ncol(dfOut)] <- names(df)[6:ncol(df)]
   
   # We don't know that they want cross validation.
   # If they do, k>1, then run model k times and predict out of bag
@@ -170,17 +164,18 @@ RunModels <- function(data, modelFunction, paras, workEnv){
   if(k > 1){
     for(i in 1:k){
       # Get rows within current fold
-      idx <- which(data$df$fold != i)
-      modelFold <- do.call(modelFunction, c(.df = list(data$df[idx, ]),
-                                            .obs.covariates = list(data$obs.covariates[idx, ]),
-                                            .site.covariates = list(data$site.covariates[idx, ]),
+      idx.training <- which(data$df$fold != i)
+      idx.testing <- which(data$df$fold == i)
+      modelFold <- do.call(modelFunction, c(.df = list(data$df[idx.training, ]),
+                                            .obs.covariates = list(data$obs.covariates[idx.training, ]),
+                                            .site.covariates = list(data$site.covariates[idx.training, ]),
                                             paras), envir = workEnv)
       ## Merge observation and site level covariates
       pred <- ZoonPredict(modelFold,
-                          newdata = list(site.covariates = data$site.covariates[idx, , drop = FALSE],
-                                         obs.covariates = data$obs.covariates[idx, , drop = FALSE]))
+                          newdata = list(site.covariates = data$site.covariates[idx.testing, , drop = FALSE],
+                                         obs.covariates = data$obs.covariates[idx.testing, , drop = FALSE]))
       
-      dfOut$predictions[data$df$fold == i] <- pred 
+      dfOut$predictions[idx.testing] <- pred 
       
     }
   }
@@ -343,10 +338,6 @@ ExtractAndCombData <- function(occurrence, ras){
   
   # extract covariates from lat long values in df.
   siteCovariates <- as.data.frame(raster::extract(ras, occurrence[, c('longitude', 'latitude')]))
-<<<<<<< HEAD
-=======
-  
->>>>>>> f68030b33d2c14da0f1ed66158079c27f8c3d75e
   # extract observation level covariates from occurence data.frame
   idx <- !c("longitude", "latitude","value", "type", "fold") %in% names(occurrence)
   obs.cov.names <- names(occurrence)[idx]
