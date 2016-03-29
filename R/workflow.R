@@ -27,16 +27,16 @@
 #'# run a workflow, using the logistic regression model
 #'\dontrun{
 #'
-#'work1 <- workflow(occurrence = 'UKAnophelesPlumbeus',
-#'                 covariate = 'UKAir',
-#'                 process = 'OneHundredBackground',
-#'                 model = 'LogisticRegression',
-#'                 output = 'SameTimePlaceMap')
+#'work1 <- workflow(occurrence = UKAnophelesPlumbeus,
+#'                 covariate = UKAir,
+#'                 process = OneHundredBackground,
+#'                 model = LogisticRegression,
+#'                 output = SameTimePlaceMap)
 #'
 #'str(work1, 1)
 #'
-#'work2 <- workflow('UKAnophelesPlumbeus', 'UKAir', 'OneHundredBackground',   
-#'           'RandomForest', 'PrintMap')
+#'work2 <- workflow(UKAnophelesPlumbeus, UKAir, OneHundredBackground,   
+#'           RandomForest, PrintMap)
 #'
 #'}
 
