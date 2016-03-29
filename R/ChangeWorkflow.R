@@ -271,7 +271,7 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
   if (from <= 5) {
     tryCatch({
       output.output <- DoOutputModules(output.module, outputName, 
-                         covariate.module, covariate.output, model.output, e)
+                         process.module, process.output, model.output, e)
       output$report <- output.output
     },  
       error = function(cond){
