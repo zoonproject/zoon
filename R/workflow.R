@@ -213,7 +213,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   #  Within this need to chain output
   tryCatch({
     output.output <- DoOutputModules(output.module, outputName, 
-                       covariate.module, covariate.output, model.output, e)
+                       process.module, process.output, model.output, e)
     output$report <- output.output
   },  
     error = function(cond){
