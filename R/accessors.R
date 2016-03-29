@@ -13,6 +13,22 @@
 #'@name occurrence
 #'
 #'@export
+#'
+#'@examples
+#'\dontrun{
+#'work1 <- workflow(occurrence = UKAnophelesPlumbeus,
+#'                  covariate  = UKAir,
+#'                  process    = OneHundredBackground,
+#'                  model      = list(LogisticRegression, LogisticRegression),
+#'                  output     = PrintMap)
+#'
+#'occurrence(work1)
+#'covariate(work1)
+#'process(work1)
+#'model(work1)
+#'model(work1)[[1]]
+#'output(work1)
+#'}
 
 occurrence <- function(workflow){
   if(!inherits(workflow, 'zoonWorkflow')) stop('workflow should be a zoon workflow object.')
@@ -26,6 +42,12 @@ occurrence <- function(workflow){
   out
 
 }
+
+
+
+#'@rdname occurrence
+#'@name covariate
+#'@export
 
 covariate <- function(workflow){
   if(!inherits(workflow, 'zoonWorkflow')) stop('workflow should be a zoon workflow object.')
@@ -42,6 +64,10 @@ covariate <- function(workflow){
 
 
 
+#'@rdname occurrence
+#'@name process
+#'@export
+
 process <- function(workflow){
   if(!inherits(workflow, 'zoonWorkflow')) stop('workflow should be a zoon workflow object.')
 
@@ -57,6 +83,9 @@ process <- function(workflow){
 
 
 
+#'@rdname occurrence
+#'@name model
+#'@export
 model <- function(workflow){
   if(!inherits(workflow, 'zoonWorkflow')) stop('workflow should be a zoon workflow object.')
 
@@ -71,6 +100,9 @@ model <- function(workflow){
 }
 
 
+#'@rdname occurrence
+#'@name output
+#'@export
 output <- function(workflow){
   if(!inherits(workflow, 'zoonWorkflow')) stop('workflow should be a zoon workflow object.')
 
