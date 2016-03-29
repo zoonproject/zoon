@@ -37,10 +37,17 @@ function(.model, .ras, threshold = 0.5){
     warning('You have no cross-validation folds, validation statistics may be misleading')
 
     # make predictions for the model
+<<<<<<< HEAD
     p <- ZoonPredict(zoonModel = .model$model,
                      newdata = list(site.coefficients = .model$site.coeffifients,
                                     obs.coefficients = .model$obs.coeffifients))
 
+=======
+    covs <- as.data.frame(cbind(.model$obs.coeffifients,.model$site.coefficients))
+    p <- ZoonPredict(zoonModel = .model$model,
+                     newdata = covs)
+    
+>>>>>>> f68030b33d2c14da0f1ed66158079c27f8c3d75e
     confusion <- SDMTools::confusion.matrix(.model$data$value,
                                             p,
                                             threshold)
