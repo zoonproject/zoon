@@ -150,53 +150,57 @@ LapplyGetModule <- function(modules, forceReproducible){
 #'@export
 #'@name RunModels
 
-RunModels <- function(df, modelFunction, paras, workEnv){
+RunModels <- function(data, modelFunction, paras, workEnv){
   # Count non zero folds
   # 0 are for external validation only. 
-  k <- length(unique(df$fold)[unique(df$fold) != 0])
+  k <- length(unique(data$df$fold)[unique(data$df$fold) != 0])
   
   # Init. output dataframe with predictions column
-  dfOut <- cbind(df[, 1:5], predictions = NA, df[,6:NCOL(df)])
-  names(dfOut)[7:ncol(dfOut)] <- names(df)[6:ncol(df)]
+  dfOut <- cbind(data$df, predictions = NA)
   
   # We don't know that they want cross validation.
   # If they do, k>1, then run model k times and predict out of bag
   # Skip otherwise
   if(k > 1){
     for(i in 1:k){
-      modelFold <- do.call(modelFunction, c(.df = list(df[df$fold != i, ]), 
-                                            paras),
-                           envir = workEnv)
-      
+      # Get rows within current fold
+      idx.training <- which(data$df$fold != i)
+      idx.testing <- which(data$df$fold == i)
+      modelFold <- do.call(modelFunction, c(.df = list(data$df[idx.training, ]),
+                                            .obs.covariates = list(data$obs.covariates[idx.training, ]),
+                                            .site.covariates = list(data$site.covariates[idx.training, ]),
+                                            paras), envir = workEnv)
+      ## Merge observation and site level covariates
       pred <- ZoonPredict(modelFold,
-                          newdata = df[df$fold == i, 6:NCOL(df), drop = FALSE])
+                          newdata = list(site.covariates = data$site.covariates[idx.testing, , drop = FALSE],
+                                         obs.covariates = data$obs.covariates[idx.testing, , drop = FALSE]))
       
-      dfOut$predictions[df$fold == i] <- pred 
+      dfOut$predictions[idx.testing] <- pred 
       
     }
   }
   
   # Run model on all data except external validation data
-  m <- do.call(modelFunction, c(.df = list(df[df$fold != 0, ]), paras), 
-               envir = workEnv)
+  m <- do.call(modelFunction,  c(.df = list(data$df[data$df$fold != 0, ]),
+                                 .obs.covariates = list(data$obs.covariates[data$df$fold != 0, ]),
+                                 .site.covariates = list(data$site.covariates[data$df$fold != 0, ]),
+                                 paras), envir = workEnv)
   
   # If external validation dataset exists, predict that;.
-  if(0 %in% df$fold){
-    
+  if(0 %in% data$df$fold){
+    idx <- which(data$df$fold != 0)
     pred <- ZoonPredict(m,
-                        newdata = df[df$fold == 0, 6:NCOL(df), drop = FALSE])
-    
+                        newdata = list(site.covariates = data$site.covariates[idx, , drop = FALSE],
+                        obs.covariates = data$obs.covariates[idx, , drop = FALSE]))
     dfOut$predictions[df$fold == 0] <- pred 
     
   }
   
   # Return list of crossvalid and external validation predictions 
   # This list is then the one list that has everything in it.
-  out <- list(model = m, data = dfOut)
+  out <- list(model = m, data = dfOut, obs.coeffifients = data$obs.covariates, site.coefficients = data$site.covariates)
   return(out)
 }
-
-
 
 
 # CheckModList
@@ -333,16 +337,14 @@ ExtractAndCombData <- function(occurrence, ras){
   }
   
   # extract covariates from lat long values in df.
-  occurrenceCovariates <- as.matrix(raster::extract(ras, occurrence[, c('longitude', 'latitude')]))
-  names(occurrenceCovariates) <- names(ras)  
-  
-  # combine with the occurrence data
-  df <- cbind(occurrence, occurrenceCovariates)
-  
+  siteCovariates <- as.data.frame(raster::extract(ras, occurrence[, c('longitude', 'latitude')]))
+  # extract observation level covariates from occurence data.frame
+  idx <- !c("longitude", "latitude","value", "type", "fold") %in% names(occurrence)
+  obs.cov.names <- names(occurrence)[idx]
+  observationCovariates <- subset(occurrence,select = obs.cov.names)
   
   # Return as list of df and ras as required by process modules
-  return(list(df=df, ras=ras))
-  
+  return(list(df=occurrence, site.covariates=siteCovariates, obs.covariates = observationCovariates, ras=ras))
 }
 
 

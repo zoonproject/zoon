@@ -69,7 +69,7 @@ DoModelModules <- function(model.module, modelName, process.output, e){
         lapply(modelName, 
                function(x) 
                  do.call(RunModels,
-                         list(df = process.output[[1]]$df, 
+                         list(data = process.output[[1]], 
                               modelFunction = x$func, 
                               paras = x$paras, 
                               workEnv = e
@@ -82,20 +82,17 @@ DoModelModules <- function(model.module, modelName, process.output, e){
         lapply(process.output,
                function(x) 
                  do.call(RunModels, 
-                         list(df = x$df, 
+                         list(data = x, 
                               modelFunction = modelName[[1]]$func, 
                               paras = modelName[[1]]$paras, 
                               workEnv = e
-                             ),
+                         ),
                          envir = e
-                        )
-              )
+                 )
+        )
     }
   return(model.output)
 }
-
-
-
 
 # Do all process modules
 # If process is not chained, then either apply over process (for list of 
