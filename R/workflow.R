@@ -41,22 +41,25 @@
 #'}
 
 workflow <- function(occurrence, covariate, process, model, output, forceReproducible=FALSE) {
-
+  
+  ## To identify which version of package is being used
+  message('working version (observation level covariates)')
+  
   occSub <- substitute(occurrence)
   covSub <- substitute(covariate)
   proSub <- substitute(process)
   modSub <- substitute(model)
   outSub <- substitute(output)
-
+  
   call <- SortArgs(PasteAndDep(occSub), PasteAndDep(covSub), PasteAndDep(proSub), 
-            PasteAndDep(modSub), PasteAndDep(outSub), forceReproducible)
- 
+                   PasteAndDep(modSub), PasteAndDep(outSub), forceReproducible)
+  
   # save the local environment as it needs to be passed to various functions.
   e <- environment() 
   
   # capture the session info to return in workflow object
   session.info <- sessionInfo()
-
+  
   # Check all modules are of same list structure
   occurrence.module <- CheckModList(occSub)
   covariate.module <- CheckModList(covSub)
@@ -77,7 +80,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
                          process.module, model.module, output.module), 
                     function(x) identical(attr(x, 'chain'), TRUE))
   NoOfModules <- sapply(list(occurrence.module, covariate.module, 
-    process.module, model.module, output.module), length)
+                             process.module, model.module, output.module), length)
   if(sum(NoOfModules[!isChain] > 1) > 1){
     stop('Only one module type can be a list of multiple modules.')
   }
@@ -113,14 +116,14 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   # Run the modules. (these functions are in DoModuleFunctions.R)
   # But we have to check for chained modules and deal with them
   # And work out which module has been given as a list, and lapply over that.
-
+  
   # Each module is in trycatch.
   # If a module breaks we want to save the progress so far and let the user 
   # know which module broke.
-
+  
   # First the data collection modules
   # Actually tryCatch here only tells user which module broke, nothing to save.
-
+  
   # If you want to parallelise modules, (properly on multicores), lapply will
   #   become snowfall::sflapply or newer things.
   
@@ -149,11 +152,11 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
     }
     output$occurrence.output <- occurrence.output
   },  
-    error = function(cond){
-      ErrorModule(cond, 1, e)
-    }
+  error = function(cond){
+    ErrorModule(cond, 1, e)
+  }
   )
-
+  
   tryCatch({
     covariate.output <- lapply(covariateName, function(x) do.call(x$func, x$paras))
     if (identical(attr(covariate.module, 'chain'), TRUE)){
@@ -161,67 +164,67 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
     }
     output$covariate.output <- covariate.output
   },  
-    error = function(cond){
-      ErrorModule(cond, 2, e)
-    }
+  error = function(cond){
+    ErrorModule(cond, 2, e)
+  }
   )
-
+  
   # Simply combine data into basic df shape
   # This shape is then input and output of all process modules.
   # Also makes it easy to implement a NULL process
   tryCatch({
     if(length(covariateName) > 1){    
-      data <- lapply(covariate.output, 
+      data <- lapply(, 
                      function(x) ExtractAndCombData(occurrence.output[[1]], x))
     } else {
       data <- lapply(occurrence.output, 
                      function(x) ExtractAndCombData(x, covariate.output[[1]]))
     }
   },  
-    error = function(cond){
-      ErrorModule(cond, 3, e)
-    }
+  error = function(cond){
+    ErrorModule(cond, 3, e)
+  }
   )
-
-
-
+  
+  
+  
   # Do process modules
   
   tryCatch({  
     process.output <-  DoProcessModules(process.module, processName, data, e)
     output$process.output <- process.output
   },  
-    error = function(cond){
-      ErrorModule(cond, 3, e)
-    }
+  error = function(cond){
+    ErrorModule(cond, 3, e)
+  }
   )
   
   
   # Model module
-  tryCatch({
-    model.output <- DoModelModules(model.module, modelName, process.output, e)
-    output$model.output <- model.output
-  },  
-    error = function(cond){
-      ErrorModule(cond, 4, e)
-    }
-  )    
+  #  tryCatch({
+  model.output <- DoModelModules(model.module, modelName, process.output, e)
+  output$model.output <- model.output
+  #  },  
+  #    error = function(cond){
+  #      ErrorModule(cond, 4, e)
+  #    }
+  #  )    
   #output module
   # If output isn't chained, might have to lapply over 
   #   output, covariate or process
   # If output is chained, either covariate or process only. 
   #  Within this need to chain output
-  tryCatch({
-    output.output <- DoOutputModules(output.module, outputName, 
-                       covariate.module, covariate.output, model.output, e)
-    output$report <- output.output
-  },  
-    error = function(cond){
-      ErrorModule(cond, 5, e)
-    }
-  )
-
-
+  #  tryCatch({
+  output.output <- DoOutputModules(output.module, outputName, 
+                                   covariate.module, covariate.output, model.output, e)
+  output$report <- output.output
+  #  },  
+  #    error = function(cond){
+  #      ErrorModule(cond, 5, e)
+  #    }
+  #  )
+  
+  
 }
 
 
