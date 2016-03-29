@@ -3,28 +3,29 @@ title: "Basic zoon usage"
 author: "Tim Lucas"
 date: "`r Sys.Date()`"
 output:
-  html_document:
+  rmarkdown::html_vignette:
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{Basic zoon usage}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  %\VignetteIndexEntry{Basic zoon usage}
+  %\usepackage[utf8]{inputenc}
+  %\VignetteDepends{spocc,dismo,raster}
 ---
-
 
 ```{r, include=FALSE}
 library(knitr)
-opts_chunk$set(out.extra='style="display:block; margin: auto"', fig.align="center")
+opts_chunk$set(out.extra='style="display:block; margin: auto"', fig.align="center", fig.width=6, fig.height=6)
 ```
 
 An Introduction to the **zoon** package
 =======================================
 
 **Zoon** is a package to aid reproducibility and between-model comparisons in species distribution modelling. Each step in an analysis is a 'module'. These modules will include: 
-+ Data collection of **occurrence** and environmental **covariate** data from online databases. 
-+ **Process** steps such as removal of spatial autocorrelation in the data or generation of background pseudoabsences.
-+ The fitting of **models**.
-+ Model **output** including diagnostics, reports and vizualisation.
+
+* Data collection of **occurrence** and environmental **covariate** data from online databases. 
+* **Process** steps such as removal of spatial autocorrelation in the data or generation of background pseudoabsences.
+* The fitting of **models**.
+* Model **output** including diagnostics, reports and vizualisation.
 
 
 
@@ -60,11 +61,12 @@ str(work1, 1)
 ```
 
 In this case we are using the following modules which do the following things:
-+ `UKAnophelesPlumbeus`: Uses occurrence points of _Anopheles plumbeus_ in the UK collected from GBIF
-+ `UKAir`: Uses NCEP air temperature data for the UK
-+ `OneHundredBackground`: Randomly creates 100 pseudoabsence or background datapoints
-+ `LogisticRegression`: Run a random forest to model the relationship between _A. plumbeus_ and air temperature
-+ `PrintMap`: Predicts the model across the whole of the UK and prints to graphics device. 
+
+* `UKAnophelesPlumbeus`: Uses occurrence points of _Anopheles plumbeus_ in the UK collected from GBIF
+* `UKAir`: Uses NCEP air temperature data for the UK
+* `OneHundredBackground`: Randomly creates 100 pseudoabsence or background datapoints
+* `LogisticRegression`: Run a random forest to model the relationship between _A. plumbeus_ and air temperature
+* `PrintMap`: Predicts the model across the whole of the UK and prints to graphics device. 
 
 For output we get an object of class "zoonWorkflow". This object is basically a big list with all the data, models and output we collected and created in our analysis.
 
@@ -117,12 +119,13 @@ work3 <- workflow(occurrence = UKAnophelesPlumbeus,
 ```
 Here we drawing some pseudoabsence background points, and doing crossvalidation (which is the same as `work2`, but explicitely using the separate modules.)
 
-The effect of `Chain` depends on the module type: 
-+`occurrence`: All data from chained modules are combined.
-+`covariate`: All raster data from chained modules are stacked.
-+`process`: The processes are run sequentially, the output of one going into the next.
-+`model`: Model modules cannot be chained.
-+`output`: Each output module that is chained is run separately on the output from other modules.
+The effect of `Chain` depends on the module type:
+
+*`occurrence`: All data from chained modules are combined.
+*`covariate`: All raster data from chained modules are stacked.
+*`process`: The processes are run sequentially, the output of one going into the next.
+*`model`: Model modules cannot be chained.
+*`output`: Each output module that is chained is run separately on the output from other modules.
 
 `Chain` can be used on as many module type as is required.
 
@@ -135,10 +138,11 @@ work4 <- workflow(occurrence = UKAnophelesPlumbeus,
                   covariate  = UKAir,
                   process    = OneHundredBackground,
                   model      = list(LogisticRegression, RandomForest),
-                  output     = SameTimePlaceMap)
+                  output     = PrintMap)
 
 str(work4, 1)
 ```
+
 Here, the analysis is split into two and both logistic regression and random forest (a machine learning algorithm) are used to model the data. Looking at the structure of the output we can see that the output from the first three modules are a list of length one. When the analysis splits into two, the output of the modules (in `work4$model.output` and `work4$report`) is then a list of length two. One for each branch of the split analysis.
 
 
@@ -147,28 +151,29 @@ Here, the analysis is split into two and both logistic regression and random for
 
 Here is an example of a larger analysis.
 
-```{r, warning = FALSE}
+```{r, warning = FALSE, fig.height=12}
 work5 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari', 
                                        extent = c(-10, 10, 45, 65)),
                                      SpOcc(species = 'Eresus sandaliatus', 
                                        extent = c(-10, 10, 45, 65))),
- 
-                  covariate  = UKAir,
-
-                  process    = BackgroundAndCrossvalid(k = 2),
-
-                  model      = list(LogisticRegression, RandomForest),
-
-                  output     = Chain(SameTimePlaceMap, PerformanceMeasures)
+                  covariate = UKAir,
+                  process = BackgroundAndCrossvalid(k = 2),
+                  model = list(LogisticRegression,
+                               RandomForest),
+                  output = Chain(PrintMap(plot = FALSE),
+                                 PerformanceMeasures)
          )
 
+# Take a look at the structure of hte workflow object
 str(work5, 1)
 
-
-par(mfrow=c(1,2))
+# Create some custom plots using the raster returned from 
+# the output module ($report)
+par(mfrow = c(2,1), mar = c(3,4,6,4))
 plot(work5$report[[1]][[1]], 
-  main = paste('Logistic Regression: AUC = ', 
-             round(work5$report[[1]][[2]]$auc, 2)))
+     main = paste('Logistic Regression: AUC = ', 
+             round(work5$report[[1]][[2]]$auc, 2)),
+     xlim = c(-10, 10))
 plot(work5$report[[2]][[1]],
   main = paste('Random forest: AUC = ', 
              round(work5$report[[2]][[2]]$auc, 2)))
@@ -177,11 +182,3 @@ plot(work5$report[[2]][[1]],
 Here we are collecting occurrence data for two species, _Eresus kollari_ and _E. sandaliatus_ and combining them (having presumably decided that this is ecologically appropriate.) We are using the air temperature data from NCEP again. We are sampling 100 pseudo absence points and running two fold crossvalidation.
 
 We run logistic regression and random forest on the data separately. We then predict the model back over the extent of our environmental data and calculate some measures of how good the models are. Collating the output into one plot we can see the very different forms of the models and can see that the random forest has a higher AUC (implying it predicts the data better.)
-
-
-
-
-
-
-
-

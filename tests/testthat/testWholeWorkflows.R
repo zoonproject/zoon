@@ -9,7 +9,7 @@ test_that('simple, package data workflow works.', {
                  covariate = UKAir,
                  process = OneHundredBackground,
                  model = LogisticRegression,
-                 output = SameTimePlaceMap)
+                 output = PrintMap)
 
   expect_true(exists('work1'))
   expect_equal(names(work1), expected_names) 
@@ -36,7 +36,7 @@ test_that('Check basic quoted workflow.', {
                  covariate = 'UKAir',
                  process = 'OneHundredBackground',
                  model = 'LogisticRegression',
-                 output = 'SameTimePlaceMap')
+                 output = 'PrintMap')
 
   expect_true(exists('work1'))
   expect_equal(names(work1), expected_names) 
@@ -63,7 +63,7 @@ test_that('modules downloading data work', {
                      covariate = UKAir,
                      process = OneHundredBackground,
                      model = RandomForest, 
-                     output = SameTimePlaceMap)
+                     output = PrintMap)
    
    expect_true(exists('work2'))
    expect_equal(names(work2), expected_names) 
@@ -97,32 +97,32 @@ test_that('Workflows with lists of modules work.', {
                          covariate = UKAir,
                          process = OneHundredBackground,
                          model = LogisticRegression,
-                         output = SameTimePlaceMap)
+                         output = PrintMap)
 
   workCovarList <- workflow(occurrence = UKAnophelesPlumbeus,
                      covariate = list(UKAir, UKAir),
                      process = OneHundredBackground,
                      model = LogisticRegression,
-                     output = SameTimePlaceMap)
+                     output = PrintMap)
 
   # There's only 1 appropriate process module at the moment!
   workProcessList <- workflow(occurrence = UKAnophelesPlumbeus,
                        covariate = UKAir,
                        process = list(OneHundredBackground, OneHundredBackground),
                        model = LogisticRegression,
-                       output = SameTimePlaceMap)
+                       output = PrintMap)
 
   workModelList <- workflow(occurrence = UKAnophelesPlumbeus,
                      covariate = UKAir,
                      process = OneHundredBackground,
                      model = list(LogisticRegression, RandomForest),
-                     output = SameTimePlaceMap)
+                     output = PrintMap)
 
   workOutputList <- workflow(occurrence = UKAnophelesPlumbeus,
                      covariate = UKAir,
                      process = OneHundredBackground,
                      model = LogisticRegression,
-                     output = list(SameTimePlaceMap, SameTimePlaceMap))
+                     output = list(PrintMap, PrintMap))
 
   # Note session info is not tested [-8] as it varies from system
   # to system - most notably Travis
@@ -168,7 +168,7 @@ test_that('only one set of multiple lists allowed.', {
            covariate = list(UKAir, UKAir),
            process = OneHundredBackground,
            model = LogisticRegression,
-           output = SameTimePlaceMap)
+           output = PrintMap)
   }
 
 fnc2 <- function(){
@@ -176,7 +176,7 @@ fnc2 <- function(){
            covariate = list(UKAir, UKAir),
            process = list(OneHundredBackground,OneHundredBackground),
            model = LogisticRegression,
-           output = SameTimePlaceMap)
+           output = PrintMap)
   }
 
 fnc3 <- function(){
@@ -184,7 +184,7 @@ fnc3 <- function(){
            covariate = UKAir,
            process = OneHundredBackground,
            model = list(LogisticRegression,LogisticRegression),
-           output = list(SameTimePlaceMap, SameTimePlaceMap))
+           output = list(PrintMap, PrintMap))
   }
 
   expect_error(fnc1())
@@ -200,7 +200,7 @@ test_that('simple, crossvalidation workflow works.', {
                  covariate = UKAir,
                  process = BackgroundAndCrossvalid,
                  model = LogisticRegression,
-                 output = SameTimePlaceMap)
+                 output = PrintMap)
 
   expect_true(exists('workCross'))
   expect_equal(names(workCross), expected_names)
@@ -228,32 +228,32 @@ test_that('chains work.', {
                  covariate = UKAir,
                  process = OneHundredBackground,
                  model = LogisticRegression,
-                 output = SameTimePlaceMap)
+                 output = PrintMap)
 
   
   chain2 <- workflow(occurrence = UKAnophelesPlumbeus,
                  covariate = Chain(UKAir,UKAir),
                  process = OneHundredBackground,
                  model = LogisticRegression,
-                 output = SameTimePlaceMap)
+                 output = PrintMap)
   
   chain3 <- workflow(occurrence = UKAnophelesPlumbeus,
                      covariate = Chain(UKAir,UKAir),
                      process = OneHundredBackground,
                      model = LogisticRegression,
-                     output = Chain(SameTimePlaceMap, SameTimePlaceMap))
+                     output = Chain(PrintMap, PrintMap))
   
   chain4 <- workflow(occurrence = UKAnophelesPlumbeus,
                  covariate = UKAir,
                  process = OneHundredBackground,
                  model = LogisticRegression,
-                 output = Chain(SameTimePlaceMap, SameTimePlaceMap))
+                 output = Chain(PrintMap, PrintMap))
   
   chain5 <- workflow(occurrence = UKAnophelesPlumbeus,
                      covariate = UKAir,
                      process = Chain(OneHundredBackground, NoProcess),
                      model = LogisticRegression,
-                     output = SameTimePlaceMap)
+                     output = PrintMap)
   
   expect_true(exists('chain1'))
   expect_equal(dim(chain1$occurrence.output[[1]]), c(376, 5))
@@ -339,7 +339,7 @@ test_that('workflow with mix of syntax works.', {
                  covariate = 'UKAir',
                  process = BackgroundAndCrossvalid(k=2),
                  model = list(LogisticRegression, RandomForest),
-                 output = Chain('SameTimePlaceMap', 'SameTimePlaceMap'))
+                 output = Chain('PrintMap', 'PrintMap'))
 
   expect_true(exists('workSyn'))
   expect_equal(names(workSyn), expected_names) 

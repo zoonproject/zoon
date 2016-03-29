@@ -1,20 +1,20 @@
 ---
-title: "Interactive zoon usage (for devs)"
+title: "Interactive zoon usage (for developers)"
 author: "Tim Lucas"
 date: "`r Sys.Date()`"
 output:
-  html_document:
+  rmarkdown::html_vignette:
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{Interactive zoon usage}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  %\VignetteIndexEntry{Interactive zoon usage}
+  %\usepackage[utf8]{inputenc}
+  %\VignetteDepends{dismo,raster}
 ---
-
 
 ```{r setup, include=FALSE}
 library(knitr)
-opts_chunk$set(out.extra='style="display:block; margin: auto"', fig.align="center")
+opts_chunk$set(out.extra='style="display:block; margin: auto"', fig.align="center", fig.width=6, fig.height=6)
 ```
 
 # Using zoon modules interactively.
@@ -53,9 +53,9 @@ cov <- UKAir()
 ```
 
 
-We have to run `zoon:::ExtractAndCombData`. This combines the occurrence and raster data.
+We have to run `ExtractAndCombData`. This combines the occurrence and raster data.
 ```{r extract}
-data <- zoon:::ExtractAndCombData(oc, cov)
+data <- ExtractAndCombData(oc, cov)
 ```
 
 Next run the process and model modules. To chain process models, simply run each in turn with the output of one going into the next. The simple way to run model modules is to use the module function as below. If crossvalidation is important then you need to run the modules slightly differently (see below).
@@ -74,10 +74,10 @@ out <- PrintMap(model, cov)
 
 ## Cross and external validation
 
-Crossvalidation requires the modules to be run using the function `zoon:::RunModels` which runs the model on each fold of the crossvalidating data and predicts the remaining data. It also runs a model and predicts any external validation data.
+Crossvalidation requires the modules to be run using the function `RunModels` which runs the model on each fold of the crossvalidating data and predicts the remaining data. It also runs a model and predicts any external validation data.
 
 ```{r cross validation}
-modCrossvalid <- zoon:::RunModels(proc$df, 'LogisticRegression', list(), environment())
+modCrossvalid <- RunModels(proc$df, 'LogisticRegression', list(), environment())
 
 modelCrossvalid <- list(model = modCrossvalid$model, data = proc$df)
 

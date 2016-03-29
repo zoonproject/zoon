@@ -18,7 +18,7 @@
 #'               UKAir,
 #'               OneHundredBackground, 
 #'               LogisticRegression,
-#'               SameTimePlaceMap)
+#'               PrintMap)
 #'
 #' w2 <- ChangeWorkflow(w,
 #'                      output = PrintMap)

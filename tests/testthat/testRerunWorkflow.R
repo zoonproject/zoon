@@ -9,7 +9,7 @@ w1 <- workflow(UKAnophelesPlumbeus,
                UKAir, 
                OneHundredBackground,
                LogisticRegression,
-               SameTimePlaceMap,
+               PrintMap,
                forceReproducible = TRUE)
 
 test_that('RerunWorkflow simple test', {
@@ -78,7 +78,7 @@ test_that('RerunWorkflow test with Chains', {
                  UKAir, 
                  OneHundredBackground,
                  LogisticRegression,
-                 SameTimePlaceMap,
+                 PrintMap,
                  forceReproducible = TRUE)
   
   set.seed(1)
@@ -90,7 +90,7 @@ test_that('RerunWorkflow test with Chains', {
                   Chain(UKAir, UKAir), 
                   OneHundredBackground,
                   LogisticRegression,
-                  SameTimePlaceMap,
+                  PrintMap,
                   forceReproducible = TRUE)
   
   set.seed(1)
@@ -106,7 +106,7 @@ test_that('RerunWorkflow test with lists', {
                   UKAir, 
                   OneHundredBackground,
                   LogisticRegression,
-                  SameTimePlaceMap,
+                  PrintMap,
                   forceReproducible = TRUE)
 
   set.seed(1)
@@ -118,7 +118,7 @@ test_that('RerunWorkflow test with lists', {
                   list(UKAir, UKAir), 
                   OneHundredBackground,
                   LogisticRegression,
-                  SameTimePlaceMap,
+                  PrintMap,
                   forceReproducible = TRUE)
 
   set.seed(1)

@@ -18,7 +18,7 @@
 #'               UKAir,
 #'               OneHundredBackground, 
 #'               LogisticRegression,
-#'               SameTimePlaceMap)
+#'               PrintMap)
 #'
 #' RerunWorkflow(w)
 #'}
