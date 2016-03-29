@@ -567,7 +567,7 @@ Once we're happy with the module, we will hopefully upload it to the zoon reposi
 
 ## How to write a output module
 
-An output module is the last module in a zoon workflow and is an opportunity to summarise the model results, make predictions, or otherwise visualise the data or results. The input to output modules is a combination of the outputs of occurrence, covariate, process and model modules providing many possible output types.
+An output module is the last module in a zoon workflow and is an opportunity to summarise the model results, make predictions, or otherwise visualise the data or results. The input to output modules is a combination of the outputs of occurrence, process and model modules providing many possible output types.
 
 In this example we will create an output module that uses the model output to predict the species occurrence in a new location given by a user-provided raster.
 
