@@ -42,3 +42,14 @@ test_that('CheckModList works.', {
   expect_false(identical(attr(CheckModList(c), 'chain'), TRUE))
   
 })
+
+test_that('CheckModList errors correctly', {
+
+  a <- substitute('mod(para="pm")')
+  b <- substitute("list('mod1', 'mod2')")
+  grepl("[^\' | ^\"]", a) & grepl("[( | )]", a)
+
+  expect_error(CheckModList(a), 'If specifying module arguments please use the form')
+  expect_error(CheckModList(b), 'If specifying module arguments please use the form')
+
+})

@@ -26,7 +26,7 @@ ModuleHelp <- function(module){
     
   } else {
     modList <- GetModuleList()
-    closeMatches <- modList[agrep(module, modList, max.distance = 0.3)]
+    closeMatches <- unlist(modList)[agrep(module, unlist(modList), max.distance = 0.3)]
     if(length(closeMatches) == 0){
       stop("Can't find '", module, "' or any modules with closely matching names.") 
     } else if (length(closeMatches) == 1){
