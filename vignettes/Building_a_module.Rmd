@@ -792,7 +792,7 @@ In:
 - `model`: A `ZoonModel` object from a model module
 - `data`: A data.frame from a process module with the added column `predictions`
 
-* A `RasterLayer`, `RasterBrick` or `RasterStack` object named **`.ras`**, provided by the covariate module
+* A `RasterLayer`, `RasterBrick` or `RasterStack` object named **`.ras`**, provided by the process module
 
 Out: Anything!
 
