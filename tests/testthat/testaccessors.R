@@ -31,59 +31,59 @@ test_that('All accessor functions return objects of the right length and type', 
 
   # occurrence
   
-  expect_false(inherits(occurrence(work1), 'list'))
-  expect_true(inherits(occurrence(work1), 'data.frame'))
+  expect_false(inherits(Occurrence(work1), 'list'))
+  expect_true(inherits(Occurrence(work1), 'data.frame'))
 
-  expect_true(length(occurrence(work2)) == 2)
-  expect_true(inherits(occurrence(work2), 'list'))
+  expect_true(length(Occurrence(work2)) == 2)
+  expect_true(inherits(Occurrence(work2), 'list'))
 
 
 
   # covariate
   
-  expect_false(inherits(covariate(work1), 'list'))
-  expect_true(inherits(covariate(work1), 'RasterLayer'))
+  expect_false(inherits(Covariate(work1), 'list'))
+  expect_true(inherits(Covariate(work1), 'RasterLayer'))
 
-  expect_true(length(covariate(work3)) == 2)
-  expect_true(inherits(covariate(work3), 'list'))
+  expect_true(length(Covariate(work3)) == 2)
+  expect_true(inherits(Covariate(work3), 'list'))
 
 
   # process
   
-  expect_true(inherits(process(work1), 'list'))
-  expect_true(inherits(process(work1)[[1]], 'data.frame'))
-  expect_true(inherits(process(work1)[[2]], 'RasterLayer'))
+  expect_true(inherits(Process(work1), 'list'))
+  expect_true(inherits(Process(work1)[[1]], 'data.frame'))
+  expect_true(inherits(Process(work1)[[2]], 'RasterLayer'))
 
-  expect_true(length(process(work2)) == 2)
-  expect_true(inherits(process(work2), 'list'))
-  expect_true(inherits(process(work2)[[1]], 'list'))
-  expect_true(inherits(process(work2)[[2]], 'list'))
-  expect_true(inherits(process(work2)[[1]][[1]], 'data.frame'))
-  expect_true(inherits(process(work2)[[1]][[2]], 'RasterLayer'))
+  expect_true(length(Process(work2)) == 2)
+  expect_true(inherits(Process(work2), 'list'))
+  expect_true(inherits(Process(work2)[[1]], 'list'))
+  expect_true(inherits(Process(work2)[[2]], 'list'))
+  expect_true(inherits(Process(work2)[[1]][[1]], 'data.frame'))
+  expect_true(inherits(Process(work2)[[1]][[2]], 'RasterLayer'))
 
 
   # model
  
-  expect_true(inherits(model(work1), 'list'))
-  expect_true(inherits(model(work1)[[2]], 'data.frame'))
-  expect_true(inherits(model(work1)[[1]], 'zoonModel'))
+  expect_true(inherits(Model(work1), 'list'))
+  expect_true(inherits(Model(work1)[[2]], 'data.frame'))
+  expect_true(inherits(Model(work1)[[1]], 'zoonModel'))
 
-  expect_true(length(model(work2)) == 2)
-  expect_true(inherits(model(work2), 'list'))
-  expect_true(inherits(model(work2)[[1]], 'list'))
-  expect_true(inherits(model(work2)[[2]], 'list'))
-  expect_true(inherits(model(work2)[[1]][[2]], 'data.frame'))
-  expect_true(inherits(model(work2)[[1]][[1]], 'zoonModel'))
+  expect_true(length(Model(work2)) == 2)
+  expect_true(inherits(Model(work2), 'list'))
+  expect_true(inherits(Model(work2)[[1]], 'list'))
+  expect_true(inherits(Model(work2)[[2]], 'list'))
+  expect_true(inherits(Model(work2)[[1]][[2]], 'data.frame'))
+  expect_true(inherits(Model(work2)[[1]][[1]], 'zoonModel'))
 
 
   # output
   
-  expect_false(inherits(output(work1), 'list'))
-  expect_true(inherits(output(work1), 'RasterLayer'))
+  expect_false(inherits(Output(work1), 'list'))
+  expect_true(inherits(Output(work1), 'RasterLayer'))
 
-  expect_true(length(output(work3)) == 2)
-  expect_true(inherits(output(work3), 'list'))
-  expect_true(inherits(output(work3)[[1]], 'RasterLayer'))
+  expect_true(length(Output(work3)) == 2)
+  expect_true(inherits(Output(work3), 'list'))
+  expect_true(inherits(Output(work3)[[1]], 'RasterLayer'))
 
 
 })

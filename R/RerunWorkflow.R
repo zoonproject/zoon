@@ -234,7 +234,7 @@ RerunWorkflow <- function(workflow, from = NULL) {
   if (from <= 5) {
     tryCatch({
       output.output <- DoOutputModules(output.module, outputName, 
-                         covariate.module, covariate.output, model.output, e)
+                         process.module, process.output, model.output, e)
       output$report <- output.output
     },  
       error = function(cond){

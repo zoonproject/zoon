@@ -81,7 +81,7 @@ modCrossvalid <- RunModels(proc$df, 'LogisticRegression', list(), environment())
 
 modelCrossvalid <- list(model = modCrossvalid$model, data = proc$df)
 
-out <- PrintMap(modelCrossvalid, cov)
+out <- PrintMap(modelCrossvalid, proc$ras)
 ```
 
 ## Running workflows with list.
