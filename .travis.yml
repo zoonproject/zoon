@@ -35,18 +35,18 @@ env:
     - RVERSION=release
       NOT_CRAN=true
       R_CHECK_ARGS="--no-manual"
-      CRAN="http://cran.cnr.berkeley.edu/"
+      CRAN="http://cran.cnr.berkeley.edu"
     - RVERSION=release
       NOT_CRAN=false
       R_CHECK_ARGS="--no-manual --as-cran"
-      CRAN="http://cran.cnr.berkeley.edu/"
+      CRAN="http://cran.cnr.berkeley.edu"
     - RVERSION=devel
       NOT_CRAN=true
       R_CHECK_ARGS="--no-manual"
-      CRAN="http://cran.cnr.berkeley.edu/"
+      CRAN="http://cran.cnr.berkeley.edu"
     - RVERSION=devel
       NOT_CRAN=false
       R_CHECK_ARGS="--no-manual --as--cran"
-      CRAN="http://cran.cnr.berkeley.edu/"
+      CRAN="http://cran.cnr.berkeley.edu"
 
 
