@@ -91,10 +91,20 @@ test_that('All metadata given, and correct', {
                              title = 'test',
                              description = 'test',
                              author = 'tom',
-                             email = '',
+                             email = 'tom@tom.com',
                              dir = directory,
                              dataType = ''),
                  'dataType must be one of')
+  
+  expect_error(BuildModule(object = NewModule,
+                           type = 'model',
+                           title = 'test',
+                           description = 'test',
+                           author = 'tom',
+                           email = c('tom@tom.com', 'tim@tim.com'),
+                           dir = directory,
+                           dataType = 'abundance'),
+               'Please only give one email')
 })
 
 test_that('Module parameters', {
