@@ -9,6 +9,7 @@ r_packages:
  - testthat
  - gam
  - spocc
+ - rmarkdown
  
 # Add libv8 needed for running rgbif (in spocc)
 apt_packages:
