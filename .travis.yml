@@ -8,6 +8,10 @@ r_packages:
  - testthat
  - gam
  - spocc
+ 
+# Add libv8 needed for running rgbif (in spocc)
+apt_packages:
+ -libv8-dev 
 
 ## After success update the code coverage
 #after_success:
