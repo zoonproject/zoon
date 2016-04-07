@@ -23,7 +23,7 @@ after_success:
 notifications:
 email:
   recipients:
-    - tomaug@ceh.ac.uk
+    - zoonproject@gmail.com
   on_success: change
   on_failure: change
   
