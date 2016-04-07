@@ -16,29 +16,30 @@ apt_packages:
  - libv8-dev 
 
 ## After success update the code coverage
-#after_success:
-# - Rscript 'library(covr);codecov()'
-# 
+after_success:
+ - Rscript 'library(covr);codecov()'
+ 
 ## Email notification if the package pass status changes
-#notifications:
-#email:
-#  recipients:
-#    - tomaug@ceh.ac.uk
-#  on_success: change
-#  on_failure: change
-#  
+notifications:
+email:
+  recipients:
+    - tomaug@ceh.ac.uk
+  on_success: change
+  on_failure: change
+  
 ## Set up the matrix of different runs
-#env:
-#  matrix:
-#    - r: release
-#      not_cran: true
-#      r_check_args: "--no-manual"
-#    - r: release
-#      not_cran: false
-#      r_check_args: "--no-manual --as--cran"
-#    - r: devel
-#      not_cran: true
-#      r_check_args: "--no-manual"
-#    - r: devel
-#      not_cran: false
-#      r_check_args: "--no-manual --as--cran"
+env:
+  matrix:
+    - r: release
+      not_cran: true
+      r_check_args: "--no-manual"
+    - r: release
+      not_cran: false
+      r_check_args: "--no-manual --as--cran"
+    - r: devel
+      not_cran: true
+      r_check_args: "--no-manual"
+    - r: devel
+      not_cran: false
+      r_check_args: "--no-manual --as--cran"
+      
