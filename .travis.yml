@@ -18,7 +18,7 @@ apt_packages:
 
 ## After success update the code coverage
 after_success:
- - Rscript 'library(covr);codecov()'
+ - Rscript -e 'library(covr);codecov()'
  
 # Warnings dont fail build
 warnings_are_errors: false
