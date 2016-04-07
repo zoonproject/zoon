@@ -1,2 +1,35 @@
 language: r
 cache: packages
+
+# Install the suggested packages which
+# are needed for the vignette builds
+r_packages:
+ - knitr
+ - testthat
+ - gam
+ - spocc
+
+#after_success:
+# - Rscript 'library(covr);codecov()'
+# 
+#notifications:
+#email:
+#  recipients:
+#    - tomaug@ceh.ac.uk
+#  on_success: change
+#  on_failure: change
+#  
+#env:
+#  matrix:
+#    - r: release
+#      not_cran: true
+#      R_CHECK_ARGS="--no-manual"
+#    - r: release
+#      not_cran: false
+#      R_CHECK_ARGS="--no-manual --as-cran"
+#    - r: devel
+#      not_cran: true
+#      R_CHECK_ARGS="--no-manual"
+#    - r: devel
+#      not_cran: false
+#      R_CHECK_ARGS="--no-manual --as--cran"
