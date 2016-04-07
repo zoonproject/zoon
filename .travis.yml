@@ -10,6 +10,7 @@ r_packages:
  - gam
  - spocc
  - rmarkdown
+ - covr
  
 # Add libv8 needed for running rgbif (in spocc)
 apt_packages:
@@ -18,6 +19,9 @@ apt_packages:
 ## After success update the code coverage
 after_success:
  - Rscript 'library(covr);codecov()'
+ 
+# Warnings dont fail build
+warnings_are_errors: false
  
 ## Email notification if the package pass status changes
 notifications:
