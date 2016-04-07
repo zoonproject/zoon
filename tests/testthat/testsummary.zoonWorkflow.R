@@ -11,6 +11,6 @@ test_that('summary.zoonWorkflow tests', {
     
   sum_ret <- summary(work1)
   
-  expect_output(summary(work1), "Data summaries")
+  expect_output(print(sum_ret), "Data summaries")
 
 })
