@@ -11,7 +11,7 @@ test_that('print.zoonSummary tests', {
   
   sum_out <- capture.output(summary(work1))
   
-  expect_output(summary(work1), "Data summaries")
+  expect_output(print(sum_out), "Data summaries")
   
 })
 

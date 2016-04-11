@@ -81,9 +81,13 @@ test_that('plot.zoonWorkflow module not on repo', {
   
   LoadModule(module = file.path(directory, 'myMissing.R'))
   
-  # This line accounts for the fact that testing is done
-  # in a different environment
-  assign('myMissing', NamespaceModule, env = .GlobalEnv)
+#   NamespaceModule <- function(){
+#     return(myMissing)
+#   }
+#   
+#   # This line accounts for the fact that testing is done
+#   # in a different environment
+#   assign('myMissing', NamespaceModule, env = .GlobalEnv)
   
   work4 <- workflow(occurrence = UKAnophelesPlumbeus, 
                     covariate = UKAir,
@@ -94,6 +98,7 @@ test_that('plot.zoonWorkflow module not on repo', {
                                    NoProcess),
                     model = LogisticRegression,
                     output = PrintMap)
+  
   png(filename = file.path(directory, 'tempzoonWorkflow4.png'))
   expect_null(zoon:::plot.zoonWorkflow(work4))
   dev.off()

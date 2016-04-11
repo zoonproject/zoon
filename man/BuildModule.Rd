@@ -25,7 +25,7 @@ working directory.}
 
 \item{author}{(required) String giving the author(s) name(s)}
 
-\item{email}{(required) String giving the correspondance address for the module.}
+\item{email}{(required) String giving the correspondance address for the module (only give one address).}
 
 \item{paras}{A list of the form 
 list(parameterName = 'Parameter description.',

@@ -17,7 +17,7 @@
 #'    anotherParameter = 'Another descriptions.')
 #'    This is required if the module takes non-default arguements
 #' @param author (required) String giving the author(s) name(s)
-#' @param email (required) String giving the correspondance address for the module.
+#' @param email (required) String giving the correspondance address for the module (only give one address).
 #' @param dataType Character vector required for all module types except 'covariate'.
 #' Indicates the types of data that this module works with. Values can be any of
 #' 'presence-only', 'presence/absence', 'presence/background', 'abundance' or 'proportion'. For a occurrence
@@ -53,13 +53,19 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
     }
   }
   
+  # Check only one email address is given
+  if(length(email) > 1) stop('Please only give one email address for correspondence')
+  
+  # Collapse multiple authors
+  authors <- paste(author, collapse = ', ')
+  
   #Remove trailing '/' from dir
   dir <- gsub('/$', '', dir)
   
   Writeable(dir)
   
   # Is all meta information provided.
-  if(title == '' | description == '' | author == '' | email == '') {
+  if(title == '' | description == '' | authors == '' | email == '') {
     complete <- FALSE
   } else {
     complete <- TRUE
@@ -121,7 +127,7 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
                  "\n#'\n#' @details ", details,
                  "\n#'\n", paraDocs,
                  "\n#'\n#' @family ", type,
-                 "\n#'\n#' @author ", author, ', ', '\\email{', email, '}',
+                 "\n#'\n#' @author ", authors, ', ', '\\email{', email, '}',
                  dataType)
 
   # get and format the source code
