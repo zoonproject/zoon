@@ -20,7 +20,7 @@ apt_packages:
 after_success:
  - Rscript -e 'library(covr);codecov()'
  
-# Warnings dont fail build
+# Warnings don't fail build
 warnings_are_errors: false
  
 ## Email notification if the package pass status changes
