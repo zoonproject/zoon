@@ -5,7 +5,16 @@
 # If chained, we certainly need to apply over output modules,
 #   AND apply over covariate or model output.
 
+# Options are: 
+#   Output listed.
+#   Model listed (therefore model will have more outputs than process)
+#   Process, covariate or occurrence listed (model will have same number of
+#     outputs as process and list elements need to be matched.
+#
+#  Output Chained & model listed
+#  Output Chained & process, covariate or occurrence listed
 
+# FLOW:
 # Not Chained
 #   length(output) > 1 (output is a list)
 #   length(output) == 1 (output isn't a list)
@@ -29,9 +38,10 @@ DoOutputModules <- function(output.module, outputName, process.module,
                                 .ras = process.output[[1]]$ras),
                            x$paras), envir = e))
 
-    # Otherwise model may be parallel. If not, this will still run the 
-    #   single model ok.
     } else {
+      
+      #   Process, covariate or occurrence listed (model will have same number of
+      #     outputs as process and list elements need to be matched.
       if (length(process.output) == length(model.output)){
 
         # Create a paired list of model and process output
@@ -62,6 +72,8 @@ DoOutputModules <- function(output.module, outputName, process.module,
   # Chained
   } else {
 
+      #   Process, covariate or occurrence listed (model will have same number of
+      #     outputs as process and list elements need to be matched.
       if (length(process.output) == length(model.output)){
 
         # Create a paired list of model and process output
@@ -89,8 +101,6 @@ DoOutputModules <- function(output.module, outputName, process.module,
                                x$paras), envir = e)))    
 
         }
-
-    
   }
   return(output.output)
 }
