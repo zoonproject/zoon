@@ -35,4 +35,3 @@ test_that('ModuleHelp errors', {
   expect_error(ModuleHelp('Crissvalid'), "Can't find 'Crissvalid'. Did you mean one of")
 })
 
-
