@@ -406,3 +406,51 @@ test_that('workflow with mix of syntax works.', {
 #   
 # })
 ## add external validation dataset (fold == 0)
+
+
+test_that('Output understands which previous model was listed.', {
+
+# See issue 263 for discussion
+# https://github.com/zoonproject/zoon/issues/263
+
+# Create a local raster *with a differently named layer*
+#   The listed covariate tests above erroneously passed because we
+#   listed UKAir twice, so they had identical layer names.
+UKAirRas2 <- UKAirRas
+names(UKAirRas2) <- 'NewName'
+
+work1 <- workflow(occurrence = UKAnophelesPlumbeus,
+                  covariate  = list(LocalRaster(UKAirRas2), UKAir),
+                  process    = OneHundredBackground,
+                  model      = LogisticRegression,
+                  output     = PrintMap)
+
+work2 <- workflow(occurrence = UKAnophelesPlumbeus,
+                  covariate  = list(LocalRaster(UKAirRas2), UKAir),
+                  process    = OneHundredBackground,
+                  model      = LogisticRegression,
+                  output     = Chain(PrintMap, PrintMap))
+
+
+
+  expect_equivalent(sapply(work1, length)[-8], c(1, 2, 2, 2, 2, 1, 5, 5))
+
+  covarClasses1 <- unlist(lapply(work1[!names(work1) %in% 'session.info'], function(x) sapply(x, class)))
+
+  expect_equivalent(covarClasses1, c('data.frame','RasterLayer','RasterLayer','list',
+    'list','list','list','RasterLayer','RasterLayer', 'character',
+    'list','list','list','list','list',
+    'matrix','matrix','matrix','matrix','matrix'))
+ 
+
+
+  expect_equivalent(sapply(work2, length)[-8], c(1, 2, 2, 2, 2, 1, 5, 5))
+
+  covarClasses2 <- unlist(lapply(work2[!names(work2) %in% 'session.info'], function(x) sapply(x, class)))
+
+  expect_equivalent(covarClasses2, c('data.frame','RasterLayer','RasterLayer','list',
+    'list','list','list','list','list', 'character',
+    'list','list','list','list','list',
+    'matrix','matrix','matrix','matrix','matrix'))
+
+})
