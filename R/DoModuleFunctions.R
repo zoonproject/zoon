@@ -5,6 +5,27 @@
 # If chained, we certainly need to apply over output modules,
 #   AND apply over covariate or model output.
 
+# Options are: 
+#   Output listed.
+#   Model listed (therefore model will have more outputs than process)
+#   Process, covariate or occurrence listed (model will have same number of
+#     outputs as process and list elements need to be matched.
+#
+#  Output Chained & model listed
+#  Output Chained & process, covariate or occurrence listed
+
+# FLOW:
+# Not Chained
+#   length(output) > 1 (output is a list)
+#   length(output) == 1 (output isn't a list)
+#     length(process) == length(model) (process, covariate or occurrence is a list)
+#     length(process) != length(model) (model or nothing is a list)
+#
+# Is Chained
+#   length(process) == length(model) (process, covariate or occurrence is a list)
+#   length(process) != length(model) (model or nothing is a list)
+
+
 DoOutputModules <- function(output.module, outputName, process.module, 
                      process.output, model.output, e) {
   # Not chained
@@ -17,24 +38,69 @@ DoOutputModules <- function(output.module, outputName, process.module,
                                 .ras = process.output[[1]]$ras),
                            x$paras), envir = e))
 
-    # Otherwise model may be parallel. If not, this will still run the 
-    #   single model ok.
     } else {
-      output.output <- lapply(model.output, 
-                         function(x) do.call(outputName[[1]]$func, 
-                         c(list(.model = x,
-                                .ras = process.output[[1]]$ras),
-                           outputName[[1]]$paras), envir = e))
+      
+      #   Process, covariate or occurrence listed (model will have same number of
+      #     outputs as process and list elements need to be matched.
+      if (length(process.output) == length(model.output)){
+
+        # Create a paired list of model and process output
+        MP.output <- list()
+
+        for(i in 1:length(process.output)){
+          MP.output[[i]] <- list(model.output[[i]], process.output[[i]])
+        }
+
+        output.output <- lapply(MP.output,
+                                function(x) do.call(outputName[[1]]$func, 
+                                                    c(list(.model = x[[1]],
+                                                           .ras = x[[2]]$ras),
+                                                      outputName[[1]]$paras), envir = e))
+
+
+      } else { # there must be only one process output and multiple models
+
+          output.output <- lapply(model.output,
+                                  function(x) do.call(outputName[[1]]$func, 
+                                                      c(list(.model = x,
+                                                             .ras = process.output[[1]]$ras),
+                                                        outputName[[1]]$paras), envir = e))
+
+      }
+
     }
   # Chained
   } else {
-      output.output <- lapply(model.output, 
-                         function(y) lapply(outputName, 
-                           function(x) do.call(x$func, 
-                           c(list(.model = y,
-                                  .ras = process.output[[1]]$ras),
-                             x$paras), envir = e)))    
-    
+
+      #   Process, covariate or occurrence listed (model will have same number of
+      #     outputs as process and list elements need to be matched.
+      if (length(process.output) == length(model.output)){
+
+        # Create a paired list of model and process output
+        MP.output <- list()
+
+        for(i in 1:length(process.output)){
+          MP.output[[i]] <- list(model.output[[i]], process.output[[i]])
+        }
+
+        output.output <- lapply(MP.output, 
+                           function(x) lapply(outputName, 
+                             function(y) do.call(y$func, 
+                             c(list(.model = x[[1]],
+                                    .ras = x[[2]]$ras),
+                               y$paras), envir = e)))    
+
+
+      } else { # there must be only one process output and multiple models
+
+        output.output <- lapply(model.output, 
+                           function(y) lapply(outputName, 
+                             function(x) do.call(x$func, 
+                             c(list(.model = y,
+                                    .ras = process.output[[1]]$ras),
+                               x$paras), envir = e)))    
+
+        }
   }
   return(output.output)
 }

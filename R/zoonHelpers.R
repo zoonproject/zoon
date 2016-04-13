@@ -218,7 +218,7 @@ CheckModList <- function(x){
   # Should accept occurrence = 'module1', but NOT 
   #   occurrence = 'module1(k=2)', or occurrence = 'list(mod1, mod1)'
   if (inherits(x, 'character')){
-    if (grepl('[!#$%&*+,-/:;<>?@[\ ]^_`| ]', x)){
+    if (grepl("[^\' | ^\"]", x) & grepl("[( | )]", x)){
       stop(paste('If specifying module arguments please use the form',
                  'Module(para = 2), without quotes. No special characters should exist',
                  'in module names.'))
