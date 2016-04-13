@@ -339,6 +339,8 @@ ExtractAndCombData <- function(occurrence, ras){
   # combine with the occurrence data
   df <- cbind(occurrence, occurrenceCovariates)
   
+  # assign call_path attribute to this new object
+  attr(df, 'call_path') <- attr(occurrence, 'call_path')
   
   # Return as list of df and ras as required by process modules
   return(list(df=df, ras=ras))
