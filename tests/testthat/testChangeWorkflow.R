@@ -1,5 +1,7 @@
 context('Changing workflows')
 
+skip_on_cran()
+
 # Original run
 set.seed(1)
 w1 <- workflow(UKAnophelesPlumbeus,
@@ -9,6 +11,8 @@ w1 <- workflow(UKAnophelesPlumbeus,
                PrintMap)
 
 test_that('ChangeWorkflow errors', {
+  
+  skip_on_cran()
   
   expect_error(ChangeWorkflow(w1),
                'At least one module type must be changed')
@@ -21,6 +25,8 @@ test_that('ChangeWorkflow errors', {
 })
 
 test_that('Basic ChangeWorkflow works', {
+  
+  skip_on_cran()
 
   # Change model
   set.seed(1)
@@ -100,6 +106,8 @@ test_that('Basic ChangeWorkflow works', {
 
 test_that('ChangeWorkflow - Chains', {
   
+  skip_on_cran()
+  
   # Replace with a occurrence with chain
   set.seed(1)
   w8 <- workflow(Chain(UKAnophelesPlumbeus, UKAnophelesPlumbeus),
@@ -144,6 +152,8 @@ test_that('ChangeWorkflow - Chains', {
 
 test_that('ChangeWorkflow - Lists', {
   
+  skip_on_cran()
+  
   # Replace with a occurrence with chain
   set.seed(1)
   w13 <- workflow(list(UKAnophelesPlumbeus, UKAnophelesPlumbeus),
@@ -187,6 +197,8 @@ test_that('ChangeWorkflow - Lists', {
 })
 
 test_that('More complex syntax in remaining modules works', {
+  
+  skip_on_cran()
 
  # Test module with brackets + args
  set.seed(1)

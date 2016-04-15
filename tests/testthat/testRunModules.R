@@ -2,6 +2,7 @@ context('RunModules')
 
 # Having environment problems with this test.
 #test_that('RunModels function works correctly', {
+#  skip_on_cran()
 
 #  GetModule('LogisticRegression', forceReproducible = FALSE)
 

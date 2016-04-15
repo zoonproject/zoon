@@ -4,6 +4,8 @@ context('RerunWorkflow')
 # are not cached as this results in a change in the version number 
 # from x to 'local copy'
 
+skip_on_cran()
+
 set.seed(1)
 w1 <- workflow(UKAnophelesPlumbeus,
                UKAir, 
@@ -13,7 +15,8 @@ w1 <- workflow(UKAnophelesPlumbeus,
                forceReproducible = TRUE)
 
 test_that('RerunWorkflow simple test', {
-
+  skip_on_cran()
+  
   set.seed(1)
   w2 <- RerunWorkflow(w1)
   
@@ -23,6 +26,7 @@ test_that('RerunWorkflow simple test', {
 
 
 test_that('RerunWorkflow test error', {
+  skip_on_cran()
   
   set.seed(1)
   
@@ -35,6 +39,7 @@ test_that('RerunWorkflow test error', {
 
 
 test_that('RerunWorkflow test with NULLs', {
+  skip_on_cran()
   
   w3 <- w1 
   for(i in 1:5) w3[i] <- list(NULL)
@@ -72,6 +77,7 @@ test_that('RerunWorkflow test with NULLs', {
 
 
 test_that('RerunWorkflow test with Chains', {
+  skip_on_cran()
   
   set.seed(1)
   w13 <- workflow(Chain(UKAnophelesPlumbeus,UKAnophelesPlumbeus),
@@ -100,6 +106,7 @@ test_that('RerunWorkflow test with Chains', {
 })
 
 test_that('RerunWorkflow test with lists', {
+  skip_on_cran()
   
   set.seed(1)
   w17 <- workflow(list(UKAnophelesPlumbeus,UKAnophelesPlumbeus),
@@ -128,6 +135,7 @@ test_that('RerunWorkflow test with lists', {
 })
 
 test_that('RerunWorkflow test quoted modules', {
+  skip_on_cran()
   
   set.seed(1)
   w21 <- workflow(occurrence = "UKAnophelesPlumbeus",

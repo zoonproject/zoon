@@ -4,6 +4,7 @@ directory <- tempdir()
 
 test_that('plot.zoonWorkflow works', {
   
+  skip_on_cran()
   if (!capabilities('libcurl')) skip('skipping as libcurl not supported')  
   
   # Create a simple workflow to test on
@@ -51,6 +52,7 @@ test_that('plot.zoonWorkflow works', {
 
 test_that('plot.zoonWorkflow module not on repo', {
   
+  skip_on_cran()
   if (!capabilities('libcurl')) skip('skipping as libcurl not supported')  
   
   #missing module

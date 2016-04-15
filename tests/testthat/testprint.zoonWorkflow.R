@@ -1,13 +1,15 @@
 context('print.zoonWorkflow')
 
-set.seed(1)
-work1 <- workflow(occurrence = UKAnophelesPlumbeus,
-                  covariate = UKAir,
-                  process = OneHundredBackground,
-                  model = LogisticRegression,
-                  output = PrintMap)
-
 test_that('print.zoonWorkflow tests', {
+  
+  skip_on_cran()
+  
+  set.seed(1)
+  work1 <- workflow(occurrence = UKAnophelesPlumbeus,
+                    covariate = UKAir,
+                    process = OneHundredBackground,
+                    model = LogisticRegression,
+                    output = PrintMap)
   
   sum_out <- capture.output(print(work1))
   
