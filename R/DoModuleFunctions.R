@@ -5,6 +5,27 @@
 # If chained, we certainly need to apply over output modules,
 #   AND apply over covariate or model output.
 
+# Options are: 
+#   Output listed.
+#   Model listed (therefore model will have more outputs than process)
+#   Process, covariate or occurrence listed (model will have same number of
+#     outputs as process and list elements need to be matched.
+#
+#  Output Chained & model listed
+#  Output Chained & process, covariate or occurrence listed
+
+# FLOW:
+# Not Chained
+#   length(output) > 1 (output is a list)
+#   length(output) == 1 (output isn't a list)
+#     length(process) == length(model) (process, covariate or occurrence is a list)
+#     length(process) != length(model) (model or nothing is a list)
+#
+# Is Chained
+#   length(process) == length(model) (process, covariate or occurrence is a list)
+#   length(process) != length(model) (model or nothing is a list)
+
+
 DoOutputModules <- function(output.module, outputName, process.module, 
                      process.output, model.output, e) {
   
@@ -45,6 +66,7 @@ DoOutputModules <- function(output.module, outputName, process.module,
   if(!identical(attr(output.module, 'chain'), TRUE)){
     # if output is a list
     if (length(output.module) > 1){
+      
       # There must be only one model and process
       output.output <- lapply(outputName, FUN = DoOutputList, e = e,
                               model.output = model.output,
@@ -73,18 +95,40 @@ DoOutputModules <- function(output.module, outputName, process.module,
                                                     c(list(.model = x,
                                                            .ras = process.output[[1]]$ras),
                                                       outputName[[1]]$paras), envir = e))
-         
       }
     }
   # Chained
   } else {
-      output.output <- lapply(model.output, 
-                         function(y) lapply(outputName, 
-                           function(x) do.call(x$func, 
-                           c(list(.model = y,
-                                  .ras = process.output[[1]]$ras),
-                             x$paras), envir = e)))    
-    
+
+      #   Process, covariate or occurrence listed (model will have same number of
+      #     outputs as process and list elements need to be matched.
+      if (length(process.output) == length(model.output)){
+
+        # Create a paired list of model and process output
+        MP.output <- list()
+
+        for(i in 1:length(process.output)){
+          MP.output[[i]] <- list(model.output[[i]], process.output[[i]])
+        }
+
+        output.output <- lapply(MP.output, 
+                           function(x) lapply(outputName, 
+                             function(y) do.call(y$func, 
+                             c(list(.model = x[[1]],
+                                    .ras = x[[2]]$ras),
+                               y$paras), envir = e)))    
+
+
+      } else { # there must be only one process output and multiple models
+
+        output.output <- lapply(model.output, 
+                           function(y) lapply(outputName, 
+                             function(x) do.call(x$func, 
+                             c(list(.model = y,
+                                    .ras = process.output[[1]]$ras),
+                               x$paras), envir = e)))    
+
+        }
   }
   return(output.output)
 }
@@ -259,13 +303,13 @@ DoOccurrenceModule <- function(x, e){
   
 }
 
-# DoCovariateModule is for occurrence modules
+# DoCovariateModule is for covariate modules
 # and is very simple. x is the name of the module
 # (covariateName)
 DoCovariateModule <- function(x, e){
   
-  occurrence.output <- do.call(x$func, x$paras, envir = e)
-  attr(occurrence.output, 'call_path') <- list(covariate = as.character(x$module))
-  return(occurrence.output)
+  covariate.output <- do.call(x$func, x$paras, envir = e)
+  attr(covariate.output, 'call_path') <- list(covariate = as.character(x$module))
+  return(covariate.output)
   
 } 
