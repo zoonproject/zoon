@@ -148,10 +148,14 @@ RerunWorkflow <- function(workflow, from = NULL) {
   # Actually tryCatch here only tells user which module broke, nothing to save.
   if (from <= 1) {
     tryCatch({
-      occurrence.output <- lapply(occurrenceName, function(x) do.call(x$func, x$paras))
+      occurrence.output <- lapply(occurrenceName, FUN = DoOccurrenceModule, e)
       # Then bind together if the occurrence modules were chained
       if (identical(attr(occurrence.module, 'chain'), TRUE)){
         occurrence.output <- list(do.call(rbind, occurrence.output))
+        attr(occurrence.output[[1]], 'call_path') <- list(occurrence = paste('Chain(',
+                                                                             paste(lapply(occurrenceName, function(x) x$module),
+                                                                                   collapse = ', '),
+                                                                             ')', sep = ''))
       }
       output$occurrence.output <- occurrence.output
     },  
@@ -166,9 +170,13 @@ RerunWorkflow <- function(workflow, from = NULL) {
 
   if (from <= 2) {
     tryCatch({
-      covariate.output <- lapply(covariateName, function(x) do.call(x$func, x$paras))
+      covariate.output <- lapply(covariateName, FUN = DoCovariateModule, e)
       if (identical(attr(covariate.module, 'chain'), TRUE)){
         covariate.output <- list(do.call(raster::stack, covariate.output))
+        attr(covariate.output[[1]], 'call_path') <- list(covariate = paste('Chain(',
+                                                                           paste(lapply(covariateName, function(x) x$module),
+                                                                                 collapse = ', '),
+                                                                           ')', sep = ''))
       }
       output$covariate.output <- covariate.output
     },  
@@ -245,9 +253,4 @@ RerunWorkflow <- function(workflow, from = NULL) {
     output.output <- workflow$report
     output$report <- output.output
   }
-
 }
-
-
-
-

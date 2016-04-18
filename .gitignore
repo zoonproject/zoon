@@ -2,6 +2,8 @@ R/.R~
 *~
 .httr-oauth
 .Rproj.user
+zoon_package.Rproj
+.Rhistory
 
 # things in vignettes created when building
 vignettes/*.html

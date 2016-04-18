@@ -1,4 +1,4 @@
-context('LapplyGetyModule')
+context('LapplyGetModule')
 
 test_that('LapplyGetModule works correctly', {
   

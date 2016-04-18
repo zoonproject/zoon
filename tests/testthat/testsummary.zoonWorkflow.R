@@ -1,7 +1,8 @@
-test_that('summary.zoonWorkflow tests', {
+context('summary.zoonWorkflow')
 
-  context('summary.zoonWorkflow')
-  
+test_that('summary.zoonWorkflow tests', {
+  skip_on_cran()
+
   set.seed(1)
   work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                     covariate = UKAir,

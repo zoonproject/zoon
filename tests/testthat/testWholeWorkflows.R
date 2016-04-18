@@ -1,10 +1,12 @@
-context('Whole workflows.')
+context('Whole workflows')
 
 expected_names <- c('occurrence.output', 'covariate.output', 'process.output', 
       'model.output', 'report', 'call', 'call.list', 'session.info', 'module.versions') 
 
 test_that('simple, package data workflow works.', {
-
+  
+  skip_on_cran()
+  
   work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                  covariate = UKAir,
                  process = OneHundredBackground,
@@ -32,6 +34,9 @@ test_that('simple, package data workflow works.', {
 
 
 test_that('Check basic quoted workflow.', {
+  
+  skip_on_cran()
+  
   work1 <- workflow(occurrence = 'UKAnophelesPlumbeus',
                  covariate = 'UKAir',
                  process = 'OneHundredBackground',
@@ -58,6 +63,8 @@ test_that('Check basic quoted workflow.', {
 
 test_that('modules downloading data work', {
 
+   skip_on_cran()
+  
    work2 <- workflow(occurrence = SpOcc(species = 'Anopheles plumbeus',
                                         extent = c(-10, 10, 45, 65)),
                      covariate = UKAir,
@@ -88,6 +95,8 @@ test_that('modules downloading data work', {
 
 
 test_that('Workflows with lists of modules work.', {
+  
+  skip_on_cran()
   
   # Would like to remove some of the slow online database modules from here.
   # In fact I don't think the would pass cran.
@@ -162,6 +171,9 @@ test_that('Workflows with lists of modules work.', {
 })
 
 test_that('only one set of multiple lists allowed.', {
+  
+  skip_on_cran()
+  
   fnc1 <- function(){
     x <- workflow(occurrence = list(UKAnophelesPlumbeus,
                     UKAnophelesPlumbeus),
@@ -195,7 +207,9 @@ fnc3 <- function(){
 
 
 test_that('simple, crossvalidation workflow works.', {
-
+  
+  skip_on_cran()
+  
   workCross <- workflow(occurrence = UKAnophelesPlumbeus,
                  covariate = UKAir,
                  process = BackgroundAndCrossvalid,
@@ -219,10 +233,9 @@ test_that('simple, crossvalidation workflow works.', {
   
 })
 
-
-
-
 test_that('chains work.', {
+  
+  skip_on_cran()
   
   chain1 <- workflow(occurrence = Chain(UKAnophelesPlumbeus,UKAnophelesPlumbeus),
                  covariate = UKAir,
@@ -335,6 +348,9 @@ test_that('chains work.', {
 
 
 test_that('workflow with mix of syntax works.', {
+  
+  skip_on_cran()
+  
   workSyn <- workflow(occurrence = UKAnophelesPlumbeus,
                  covariate = 'UKAir',
                  process = BackgroundAndCrossvalid(k=2),
@@ -361,8 +377,11 @@ test_that('workflow with mix of syntax works.', {
 })
 
 
+
 # test_that('workflow with user defined cross validation', {
 #   
+#   skip_on_cran()
+#
 #   extent = c(-10, 10, 55, 65)
 #   
 #   reorderExtent <- extent[c(1, 3, 2, 4)]
@@ -410,28 +429,30 @@ test_that('workflow with mix of syntax works.', {
 
 test_that('Output understands which previous model was listed.', {
 
-# See issue 263 for discussion
-# https://github.com/zoonproject/zoon/issues/263
-
-# Create a local raster *with a differently named layer*
-#   The listed covariate tests above erroneously passed because we
-#   listed UKAir twice, so they had identical layer names.
-UKAirRas2 <- UKAirRas
-names(UKAirRas2) <- 'NewName'
-
-work1 <- workflow(occurrence = UKAnophelesPlumbeus,
-                  covariate  = list(LocalRaster(UKAirRas2), UKAir),
-                  process    = OneHundredBackground,
-                  model      = LogisticRegression,
-                  output     = PrintMap)
-
-work2 <- workflow(occurrence = UKAnophelesPlumbeus,
-                  covariate  = list(LocalRaster(UKAirRas2), UKAir),
-                  process    = OneHundredBackground,
-                  model      = LogisticRegression,
-                  output     = Chain(PrintMap, PrintMap))
-
-
+  skip_on_cran()
+  
+  # See issue 263 for discussion
+  # https://github.com/zoonproject/zoon/issues/263
+  
+  # Create a local raster *with a differently named layer*
+  #   The listed covariate tests above erroneously passed because we
+  #   listed UKAir twice, so they had identical layer names.
+  UKAirRas2 <<- UKAirRas
+  names(UKAirRas2) <- 'NewName'
+  
+  work1 <- workflow(occurrence = UKAnophelesPlumbeus,
+                    covariate  = list(LocalRaster(UKAirRas2), UKAir),
+                    process    = OneHundredBackground,
+                    model      = LogisticRegression,
+                    output     = PrintMap)
+  
+  work2 <- workflow(occurrence = UKAnophelesPlumbeus,
+                    covariate  = list(LocalRaster(UKAirRas2), UKAir),
+                    process    = OneHundredBackground,
+                    model      = LogisticRegression,
+                    output     = Chain(PrintMap, PrintMap))
+  
+  rm(list = c('UKAirRas2'))
 
   expect_equivalent(sapply(work1, length)[-8], c(1, 2, 2, 2, 2, 1, 5, 5))
 
@@ -454,3 +475,13 @@ work2 <- workflow(occurrence = UKAnophelesPlumbeus,
     'matrix','matrix','matrix','matrix','matrix'))
 
 })
+
+
+test_that('Running modules with parameters', {
+  
+  skip_on_cran()
+  
+  # I dont think we do this elsewhere
+  
+})
+  

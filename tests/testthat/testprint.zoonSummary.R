@@ -2,6 +2,8 @@ context('print.zoonSummary')
 
 test_that('print.zoonSummary tests', {
 
+  skip_on_cran()
+  
   set.seed(1)
   work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                     covariate = UKAir,
