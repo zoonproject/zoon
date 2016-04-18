@@ -160,7 +160,7 @@ test_that('Test call_path in a large number of variations', {
                        covariate  = UKAir,
                        process    = OneHundredBackground,
                        model      = LogisticRegression,
-                       output     = list(InteractiveMap, PerformanceMeasures))
+                       output     = list(SurfaceMap, PerformanceMeasures))
   
   expect_null(attr(Output(CP_work4)[[1]], 'call_path'))
   expect_equal(attr(Output(CP_work4)[[2]], 'call_path'),
