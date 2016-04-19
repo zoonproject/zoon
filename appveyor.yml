@@ -1,7 +1,4 @@
 # DO NOT CHANGE the "init" and "install" sections below
-environment:
-  R_CHECK_ARGS: --no-manual
-  NOT_CRAN: true
 
 # Download script file from GitHub
 init:
@@ -15,6 +12,24 @@ install:
 
 # Adapt as necessary starting from here
 
+environment:
+  global:
+    R_CHECK_ARGS: --no-manual
+  
+  matrix:
+  - NOT_CRAN: true
+    R_version: devel
+
+  - NOT_CRAN: false
+    R_version: devel
+
+  - NOT_CRAN: true
+    R_version: release
+
+  - NOT_CRAN: false
+    R_version: release
+
+
 build_script:
   - travis-tool.sh install_deps
 
@@ -23,3 +38,13 @@ test_script:
 
 on_failure:
   - travis-tool.sh dump_logs
+  
+notifications:
+  - provider: Email
+    to:
+      - tomaug@ceh.ac.uk
+    subject: 'r-appveyor build {{status}}'                  # optional
+    message: ""    # optional
+    on_build_success: false
+    on_build_failure: true
+    on_build_status_changed: true

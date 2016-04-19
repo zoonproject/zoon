@@ -1,6 +1,7 @@
 ![Zoon banner](https://github.com/zoonproject/blog/blob/master/zoon_top.png)
 
 [![Build Status](https://travis-ci.org/zoonproject/zoon.svg)](https://travis-ci.org/zoonproject/zoon)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/zoonproject/zoon?branch=master&svg=true)](https://ci.appveyor.com/project/zoonproject/zoon)
 [![codecov.io](https://codecov.io/github/zoonproject/zoon/coverage.svg?branch=master)](https://codecov.io/github/zoonproject/zoon?branch=master)
 [![cran version](http://www.r-pkg.org/badges/version/zoon)](http://cran.rstudio.com/web/packages/zoon) 
 [![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/zoon?)](https://github.com/metacran/cranlogs.app)
