@@ -245,6 +245,13 @@ CheckModList <- function(x){
     attr(ModuleList, 'chain') <- TRUE
     
     # If unquoted module w/ paras given: occurrence = Module1(k=2)
+  } else if (x[[1]] == 'Replicate'){
+    
+    listCall <- eval(x)
+    
+    ModuleList <- lapply(listCall, FormatModuleList) 
+
+    # If unquoted module w/ paras given: occurrence = Module1(k=2)
   } else if (identical(class(x[[1]]), 'name')){
     # Parameters
     paras <- as.list(x)
