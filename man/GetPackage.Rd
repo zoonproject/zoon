@@ -7,8 +7,7 @@
 GetPackage(package)
 }
 \arguments{
-\item{package}{The name of the package with or without
-quotes}
+\item{package}{A character vector of packages to load}
 }
 \description{
 Given a package name, either as a string or object,

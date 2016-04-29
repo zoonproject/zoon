@@ -100,7 +100,7 @@ Now that we have our function written we can test it very simply in a workflow l
 
 ```{r, fig.width = 5, fig.height = 5, warning = FALSE}
 workl1 <- workflow(occurrence = Lorem_ipsum_UK,
-                   covariate = UKBioclim,
+                   covariate = UKAir,
                    process = OneHundredBackground,
                    model = LogisticRegression,
                    output = PrintMap)
@@ -137,7 +137,7 @@ rm(list = 'Lorem_ipsum_UK')
 LoadModule(module = 'Lorem_ipsum_UK.R')
 
 work2 <- workflow(occurrence = Lorem_ipsum_UK,
-                  covariate = UKBioclim,
+                  covariate = UKAir,
                   process = OneHundredBackground,
                   model = LogisticRegression,
                   output = PrintMap)
@@ -382,9 +382,10 @@ rm(list = 'ClipOccurrence')
 # Load the module script
 LoadModule('ClipOccurrence.R')
 
-work7 <- workflow(occurrence = CWBZimbabwe,
-                  covariate = Bioclim(extent = c(31, 34, -22, -18)),
-                  process = ClipOccurrence(extent = c(32, 33, -21, -19)),
+work7 <- workflow(occurrence = AnophelesPlumbeus,
+                  covariate = UKAir,
+                  process = Chain(OneHundredBackground,
+                                  ClipOccurrence(extent = c(-5, 5, 50, 55))),
                   model = LogisticRegression,
                   output = PrintMap)
 ```
@@ -602,7 +603,7 @@ It is important to have default values for all user defined parameters so that y
 
 ```{r, eval = FALSE}
 # The first step is to load in the packages we need
-zoon::GetPackage(raster) 
+zoon::GetPackage("raster") 
   
 # Then extract the covariate values
 # from the user provided raster
@@ -640,7 +641,7 @@ Our function now looks like this:
 ```{r}
 PredictNewRasterMap <- function(.model, .ras, raster = .ras){
   
-  zoon::GetPackage(raster)
+  zoon::GetPackage("raster")
   
   # Extract the values from the user provided raster
   vals <- data.frame(getValues(raster))
