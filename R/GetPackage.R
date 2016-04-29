@@ -4,8 +4,7 @@
 #' load the package if it exists, else install it from
 #' CRAN and then load
 #' 
-#' @param package The name of the package with or without
-#' quotes
+#' @param package A character vector of packages to load
 #' @return NULL
 #' @importFrom utils install.packages
 #' @examples GetPackage('gam')
@@ -13,20 +12,23 @@
 
 GetPackage <- function (package) {
   
-  # convert to string if it isn't already
-  package <- as.character(substitute(package))
+  # Check pageage is a character
+  if(!inherits(x = package, what = 'character')) stop('package must be a character')
   
-  # try loading and install and load if that doesn't work
-  if (!require(package,
-               character.only = TRUE)) {
+  for(i in package){
     
-    # otherwise use install.packages
-    install.packages(package,
-                     repos = "http://cran.rstudio.com")
-
-    # now load the package
-    library(package,
-            character.only = TRUE)
+    # try loading and install and load if that doesn't work
+    if (!require(i,
+                 character.only = TRUE)) {
+      
+      # otherwise use install.packages
+      install.packages(i,
+                       repos = "http://cran.rstudio.com")
+  
+      # now load the package
+      library(i,
+              character.only = TRUE)
+    }
   }
 }
 
