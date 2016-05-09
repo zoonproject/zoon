@@ -368,7 +368,7 @@ test_that('workflow with mix of syntax works.', {
   expect_is((workSyn$model.output[[1]])$model, c('zoonModel'))
   expect_is((workSyn$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is((workSyn$model.output[[1]])$data, c('data.frame'))
-  expect_is(workSyn$report[[1]], 'list')
+  expect_is(workSyn$report[[1]], 'RasterLayer')
   expect_is(workSyn$session.info, 'sessionInfo')
   expect_is(workSyn$module.versions, 'list')
   expect_named(workSyn$module.versions, c("occurrence","covariate","process","model","output"))
