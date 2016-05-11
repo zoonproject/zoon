@@ -1,6 +1,6 @@
 ---
 title: "Basic zoon usage"
-author: "Tim Lucas"
+author: "Tim Lucas and Tom August"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
@@ -22,17 +22,22 @@ An Introduction to the **zoon** package
 
 **Zoon** is a package to aid reproducibility and between-model comparisons in species distribution modelling. Each step in an analysis is a 'module'. These modules will include: 
 
-* Data collection of **occurrence** and environmental **covariate** data from online databases. 
+* Data collections of **occurrence** and environmental **covariate** data from online databases or local files. 
 * **Process** steps such as removal of spatial autocorrelation in the data or generation of background pseudoabsences.
 * The fitting of **models**.
 * Model **output** including diagnostics, reports and vizualisation.
 
 
-
 Getting set up
 ----------------------------
 
-First install from github
+Zoon is on CRAN and can be insalled like this:
+```{r, eval = FALSE}
+install.packages('zoon')
+```
+
+
+Alternativly you can install the most up to date development version of Zoon from Github
 ```{r, eval = FALSE}
 library(devtools)
 install_github('zoonproject/zoon')
@@ -40,7 +45,7 @@ install_github('zoonproject/zoon')
 
 and load
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 library(zoon)
 ```
 
@@ -49,7 +54,7 @@ Basic usage
 
 A basic worklow is run using the `workflow` function. We must chose a module for each type: occurrence, covariate, process, model and output.
 
-```{r, warning = FALSE}
+```{r, warning = FALSE, message=FALSE}
 work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                   covariate  = UKAir,
                   process    = OneHundredBackground,
@@ -65,10 +70,24 @@ In this case we are using the following modules which do the following things:
 * `UKAnophelesPlumbeus`: Uses occurrence points of _Anopheles plumbeus_ in the UK collected from GBIF
 * `UKAir`: Uses NCEP air temperature data for the UK
 * `OneHundredBackground`: Randomly creates 100 pseudoabsence or background datapoints
-* `LogisticRegression`: Run a random forest to model the relationship between _A. plumbeus_ and air temperature
-* `PrintMap`: Predicts the model across the whole of the UK and prints to graphics device. 
+* `RandomForest`: Run a random forest to model the relationship between _A. plumbeus_ and air temperature
+* `PrintMap`: Predicts the model across the whole of the covariate dataset (`UKAir` in this case) and prints to graphics device. 
 
-For output we get an object of class "zoonWorkflow". This object is basically a big list with all the data, models and output we collected and created in our analysis.
+The object returned from the workflow function (`work1` in the above example) is an object of class `zoonWorkflow`. This object is a list with all the data, models and output we collected and created in our analysis.
+
+To access the output of a particular part of the workflow you can use the accessor functions which have the same names as the modules. For example if you want the data returned from the occurrence module you can use the `Occurrence()` accessor function
+
+```{r}
+# Use the Occurrence function to get occurrence module
+# output from the workflow object
+
+occ_out <- Occurrence(work1)
+
+head(occ_out)
+```
+
+To find out more about the elements returned from each module there is a summary at the end of the 'Building a Module' vignette. In this instance a data frame is returned showing all of the occurrence data that is returned by the occurrence module.
+
 
 Getting Help
 --------------
@@ -85,7 +104,6 @@ To find help on a specific module use
 ModuleHelp(LogisticRegression)
 ```     
 Note that you can't use `?` as the modules are held on a repository. Therefore the module documentation files are not included with the basic zoon install.
-
 
 
 More complex analyses
@@ -110,22 +128,23 @@ We are using an output module `PerformanceMeasures` which calculates a number of
 
 We might want to combine multiple modules in our analysis. For this we use the function Chain.
 
-```{r, warnings = FALSE}
+```{r, warning = FALSE}
 work3 <- workflow(occurrence = UKAnophelesPlumbeus,
                   covariate  = UKAir,
                   process    = Chain(OneHundredBackground, Crossvalidate),
                   model      = LogisticRegression,
                   output     = PerformanceMeasures)
 ```
-Here we drawing some pseudoabsence background points, and doing crossvalidation (which is the same as `work2`, but explicitely using the separate modules.)
+
+Here we draw some pseudoabsence background points, and do crossvalidation (which is the same as `work2`, but explicitely using the separate modules.)
 
 The effect of `Chain` depends on the module type:
 
-*`occurrence`: All data from chained modules are combined.
-*`covariate`: All raster data from chained modules are stacked.
-*`process`: The processes are run sequentially, the output of one going into the next.
-*`model`: Model modules cannot be chained.
-*`output`: Each output module that is chained is run separately on the output from other modules.
+* `occurrence`: All data from chained modules are combined.
+* `covariate`: All raster data from chained modules are stacked.
+* `process`: The processes are run sequentially, the output of one going into the next.
+* `model`: Model modules cannot be chained.
+* `output`: Each output module that is chained is run separately on the output from the other modules.
 
 `Chain` can be used on as many module type as is required.
 
@@ -145,14 +164,52 @@ str(work4, 1)
 
 Here, the analysis is split into two and both logistic regression and random forest (a machine learning algorithm) are used to model the data. Looking at the structure of the output we can see that the output from the first three modules are a list of length one. When the analysis splits into two, the output of the modules (in `work4$model.output` and `work4$report`) is then a list of length two. One for each branch of the split analysis.
 
+### Repeating a module multiple times
 
+If you want to repeat a module multiple times you can use `Replicate`. This can be useful when using modules that have a random process such as the creation of pseudoabsences.
+
+```{r, warning=FALSE}
+work5 <- workflow(occurrence = UKAnophelesPlumbeus,
+                  covariate  = UKAir,
+                  process    = Replicate(Background(n = 20), n = 3),
+                  model      = RandomForest,
+                  output     = PrintMap)
+```
+
+`Replicate` takes as its first arguement the module you want to repeat and as its second argument the number of times yo want to repeat it. Here we end up running our model three times for three different sets out background points
+
+### Auxillary information in a ZoonWorkflow
+
+A `ZoonWorkflow` object (such as `work5` above), has a number of auxillary elements to help you interpret its contents.
+
+```{r}
+# call gives the R call used to create the workflow
+work5$call
+
+# session.info gives the session info when the 
+# workflow was created
+work5$session.info
+
+# module versions lists the modules used at each
+# step and which version number they were
+work5$module.versions
+```
+
+When using lists in a workflow (as in `work4` above) the workflow becomes forked. For example when `work4` was created two models where run leading to two output maps. We can easily trace back the origins of any module output using the attribute `call_path`
+
+```{r}
+# work4 has two output maps, find the origins of the first
+# using the Output accessor function and the call_path
+# attribute
+attr(Output(work4)[[1]], which = 'call_path')
+```
 
 ### A larger example
 
 Here is an example of a larger analysis.
 
 ```{r, warning = FALSE, fig.height=12}
-work5 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari', 
+work6 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari', 
                                        extent = c(-10, 10, 45, 65)),
                                      SpOcc(species = 'Eresus sandaliatus', 
                                        extent = c(-10, 10, 45, 65))),
@@ -164,21 +221,21 @@ work5 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari',
                                  PerformanceMeasures)
          )
 
-# Take a look at the structure of hte workflow object
-str(work5, 1)
+# Take a look at the structure of the workflow object
+str(work6, 1)
 
 # Create some custom plots using the raster returned from 
-# the output module ($report)
+# the output module
 par(mfrow = c(2,1), mar = c(3,4,6,4))
-plot(work5$report[[1]][[1]], 
+plot(Output(work6)[[1]], 
      main = paste('Logistic Regression: AUC = ', 
-             round(work5$report[[1]][[2]]$auc, 2)),
+             round(Output(work6)[[2]]$auc, 2)),
      xlim = c(-10, 10))
-plot(work5$report[[2]][[1]],
+plot(Output(work6)[[3]],
   main = paste('Random forest: AUC = ', 
-             round(work5$report[[2]][[2]]$auc, 2)))
+             round(Output(work6)[[4]]$auc, 2)))
 ```
 
-Here we are collecting occurrence data for two species, _Eresus kollari_ and _E. sandaliatus_ and combining them (having presumably decided that this is ecologically appropriate.) We are using the air temperature data from NCEP again. We are sampling 100 pseudo absence points and running two fold crossvalidation.
+Here we are collecting occurrence data for two species, _Eresus kollari_ and _E. sandaliatus_ and combining them (having presumably decided that this is ecologically appropriate). We are using the air temperature data from NCEP again. We are sampling 100 pseudo absence points and running two fold crossvalidation.
 
-We run logistic regression and random forest on the data separately. We then predict the model back over the extent of our environmental data and calculate some measures of how good the models are. Collating the output into one plot we can see the very different forms of the models and can see that the random forest has a higher AUC (implying it predicts the data better.)
+We run logistic regression and random forest on the data separately. We then predict the model back over the extent of our environmental data and calculate some measures of how good the models are. Collating the output into one plot we can see the very different forms of the models and can see that the random forest has a higher AUC (implying it predicts the data better).

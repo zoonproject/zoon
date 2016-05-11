@@ -783,7 +783,11 @@ Out:  list with 2 elements
 ### Model
 In: data.frame from process called **.df**
 
-Out: A `ZoonModel` object (see the example above)
+Out: A `ZoonModel` object (built by the function `ZoonModel`). A list with three elements.
+
+- **`model`**: Your model object
+- **`code`**: A section of code that will use `model` [your model] and **`newdata`** [a new set of covariate data], to return a vector of predicted values, one for each row of `newdata`
+- **`packages`**: A vector of characters naming the packages needed to run `code`
 
 ### Output
 In:
