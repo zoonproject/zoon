@@ -10,7 +10,6 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Basic zoon usage}
   %\usepackage[utf8]{inputenc}
-  %\VignetteDepends{spocc,dismo,raster}
 ---
 
 
@@ -162,15 +161,44 @@ work2 <- workflow(occurrence = UKAnophelesPlumbeus,
 ```
 
 ```
+## Loading required package: SDMTools
+```
+
+```
+## also installing the dependencies 'R.oo', 'R.methodsS3', 'R.utils'
+```
+
+```
+## package 'R.oo' successfully unpacked and MD5 sums checked
+## package 'R.methodsS3' successfully unpacked and MD5 sums checked
+## package 'R.utils' successfully unpacked and MD5 sums checked
+## package 'SDMTools' successfully unpacked and MD5 sums checked
+## 
+## The downloaded binary packages are in
+## 	C:\Users\tomaug\AppData\Local\Temp\Rtmpw5yd18\downloaded_packages
+```
+
+```
+## 
+## Attaching package: 'SDMTools'
+```
+
+```
+## The following object is masked from 'package:raster':
+## 
+##     distance
+```
+
+```
 ## Model performance measures:
 ```
 
 ```
-## auc :  0.667290517467822
+## auc :  0.677731809824008
 ```
 
 ```
-## kappa :  0.464271488887118
+## kappa :  0.451218048721949
 ```
 
 ```
@@ -182,11 +210,11 @@ work2 <- workflow(occurrence = UKAnophelesPlumbeus,
 ```
 
 ```
-## specificity :  0.382716049382716
+## specificity :  0.37037037037037
 ```
 
 ```
-## proportionCorrect :  0.814126394052045
+## proportionCorrect :  0.810408921933085
 ```
 
 ```
@@ -216,11 +244,11 @@ work3 <- workflow(occurrence = UKAnophelesPlumbeus,
 ```
 
 ```
-## auc :  0.662693722090885
+## auc :  0.665418965064355
 ```
 
 ```
-## kappa :  0.424773048214646
+## kappa :  0.451218048721949
 ```
 
 ```
@@ -232,11 +260,11 @@ work3 <- workflow(occurrence = UKAnophelesPlumbeus,
 ```
 
 ```
-## specificity :  0.345679012345679
+## specificity :  0.37037037037037
 ```
 
 ```
-## proportionCorrect :  0.802973977695167
+## proportionCorrect :  0.810408921933085
 ```
 
 ```
@@ -329,7 +357,7 @@ work5$session.info
 ```
 
 ```
-## R version 3.2.3 (2015-12-10)
+## R version 3.3.0 (2016-05-03)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
 ## Running under: Windows 7 x64 (build 7601) Service Pack 1
 ## 
@@ -341,37 +369,26 @@ work5$session.info
 ## [5] LC_TIME=English_United Kingdom.1252    
 ## 
 ## attached base packages:
-## [1] splines   stats     graphics  grDevices utils     datasets  methods  
-## [8] base     
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] zoon_0.4.27         SDMTools_1.1-221    randomForest_4.6-12
-##  [4] gam_1.12            foreach_1.4.3       spocc_0.4.5        
-##  [7] MASS_7.3-45         dismo_1.0-15        knitr_1.12.3       
-## [10] raster_2.5-2        sp_1.2-3           
+## [1] SDMTools_1.1-221    randomForest_4.6-12 dismo_1.0-15       
+## [4] knitr_1.13          zoon_0.4.27         raster_2.5-2       
+## [7] sp_1.2-3           
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_0.12.4       rvertnet_0.4.4    lubridate_1.5.6  
-##  [4] lattice_0.20-33   assertthat_0.1    digest_0.6.9     
-##  [7] V8_1.0.1          R6_2.1.2          plyr_1.8.3       
-## [10] chron_2.3-47      evaluate_0.9      httr_1.1.0       
-## [13] rbison_0.4.8      ggplot2_2.1.0     curl_0.9.7       
-## [16] data.table_1.9.6  whisker_0.3-2     R.utils_2.3.0    
-## [19] R.oo_1.20.0       oai_0.2.0         rmarkdown_0.9.5  
-## [22] devtools_1.11.0   rgdal_1.1-8       stringr_1.0.0    
-## [25] RCurl_1.95-4.8    munsell_0.4.3     httpuv_1.3.3     
-## [28] htmltools_0.3.5   rgeos_0.3-19      geoaxe_0.1.0     
-## [31] roxygen2_5.0.1    codetools_0.2-14  XML_3.98-1.4     
-## [34] rgbif_0.9.3       crayon_1.3.1      dplyr_0.4.3      
-## [37] withr_1.0.1       bitops_1.0-6      R.methodsS3_1.7.1
-## [40] grid_3.2.3        jsonlite_0.9.19   gtable_0.2.0     
-## [43] DBI_0.4           magrittr_1.5      formatR_1.3      
-## [46] scales_0.4.0      stringi_1.0-1     mapproj_1.2-4    
-## [49] ridigbio_0.3.3    rebird_0.3.0      testthat_0.11.0  
-## [52] xml2_0.1.2        rfigshare_0.3.7   iterators_1.0.8  
-## [55] tools_3.2.3       RJSONIO_1.3-0     maps_3.1.0       
-## [58] parallel_3.2.3    yaml_2.1.13       colorspace_1.2-6 
-## [61] memoise_1.0.0
+##  [1] Rcpp_0.12.4       formatR_1.4       plyr_1.8.3       
+##  [4] R.methodsS3_1.7.1 R.utils_2.3.0     bitops_1.0-6     
+##  [7] tools_3.3.0       testthat_1.0.2    digest_0.6.9     
+## [10] memoise_1.0.0     evaluate_0.9      rfigshare_0.3.7  
+## [13] gtable_0.2.0      lattice_0.20-33   yaml_2.1.13      
+## [16] rgdal_1.1-9       withr_1.0.1       httr_1.1.0       
+## [19] stringr_1.0.0     roxygen2_5.0.1    devtools_1.11.1  
+## [22] grid_3.3.0        R6_2.1.2          XML_3.98-1.4     
+## [25] RJSONIO_1.3-0     ggplot2_2.1.0     magrittr_1.5     
+## [28] scales_0.4.0      colorspace_1.2-6  httpuv_1.3.3     
+## [31] stringi_1.0-1     RCurl_1.95-4.8    munsell_0.4.3    
+## [34] crayon_1.3.1      R.oo_1.20.0
 ```
 
 ```r
@@ -384,12 +401,12 @@ work5$module.versions
 ## $occurrence
 ##         [,1]                 
 ## module  "UKAnophelesPlumbeus"
-## version "local copy"         
+## version "1.0"                
 ## 
 ## $covariate
-##         [,1]        
-## module  "UKAir"     
-## version "local copy"
+##         [,1]   
+## module  "UKAir"
+## version "1.0"  
 ## 
 ## $process
 ##         [,1]         [,2]         [,3]        
@@ -402,9 +419,9 @@ work5$module.versions
 ## version "1.0"         
 ## 
 ## $output
-##         [,1]        
-## module  "PrintMap"  
-## version "local copy"
+##         [,1]      
+## module  "PrintMap"
+## version "1.1"
 ```
 
 When using lists in a workflow (as in `work4` above) the workflow becomes forked. For example when `work4` was created two models where run leading to two output maps. We can easily trace back the origins of any module output using the attribute `call_path`
@@ -454,6 +471,42 @@ work6 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari',
 ```
 
 ```
+## Loading required package: MASS
+```
+
+```
+## 
+## Attaching package: 'MASS'
+```
+
+```
+## The following objects are masked from 'package:raster':
+## 
+##     area, select
+```
+
+```
+## Loading required package: spocc
+```
+
+```
+## also installing the dependencies 'rbison', 'rebird', 'rvertnet', 'ridigbio', 'lubridate', 'tibble'
+```
+
+```
+## package 'rbison' successfully unpacked and MD5 sums checked
+## package 'rebird' successfully unpacked and MD5 sums checked
+## package 'rvertnet' successfully unpacked and MD5 sums checked
+## package 'ridigbio' successfully unpacked and MD5 sums checked
+## package 'lubridate' successfully unpacked and MD5 sums checked
+## package 'tibble' successfully unpacked and MD5 sums checked
+## package 'spocc' successfully unpacked and MD5 sums checked
+## 
+## The downloaded binary packages are in
+## 	C:\Users\tomaug\AppData\Local\Temp\Rtmpw5yd18\downloaded_packages
+```
+
+```
 ## Model performance measures:
 ```
 
@@ -462,7 +515,7 @@ work6 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari',
 ```
 
 ```
-## kappa :  -0.152941176470588
+## kappa :  -0.0165184243964424
 ```
 
 ```
@@ -474,11 +527,11 @@ work6 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari',
 ```
 
 ```
-## specificity :  0.876543209876543
+## specificity :  0.987654320987654
 ```
 
 ```
-## proportionCorrect :  0.591666666666667
+## proportionCorrect :  0.666666666666667
 ```
 
 ```
@@ -490,27 +543,27 @@ work6 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari',
 ```
 
 ```
-## auc :  0.901076289965179
+## auc :  0.87480215257993
 ```
 
 ```
-## kappa :  0.727767695099819
+## kappa :  0.683377308707124
 ```
 
 ```
-## omissions :  0.102564102564103
+## omissions :  0.0769230769230769
 ```
 
 ```
-## sensitivity :  0.897435897435897
+## sensitivity :  0.923076923076923
 ```
 
 ```
-## specificity :  0.864197530864197
+## specificity :  0.814814814814815
 ```
 
 ```
-## proportionCorrect :  0.875
+## proportionCorrect :  0.85
 ```
 
 ```

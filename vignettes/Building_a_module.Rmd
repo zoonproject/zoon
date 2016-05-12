@@ -10,7 +10,6 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Building modules}
   %\usepackage[utf8]{inputenc}
-  %\VignetteDepends{spocc,raster,dismo,gam}
 ---
 
 
@@ -669,6 +668,13 @@ work8 <- workflow(occurrence = UKAnophelesPlumbeus,
                   process  = OneHundredBackground,
                   model = GamGam,
                   output = PrintMap)
+```
+
+```
+## package 'gam' successfully unpacked and MD5 sums checked
+## 
+## The downloaded binary packages are in
+## 	C:\Users\tomaug\AppData\Local\Temp\Rtmpw5yd18\downloaded_packages
 ```
 
 <img src="building_mod7-1.png" title="plot of chunk building_mod7" alt="plot of chunk building_mod7" style="display:block; margin: auto" style="display: block; margin: auto;" />

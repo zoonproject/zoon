@@ -10,7 +10,6 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Interactive zoon usage}
   %\usepackage[utf8]{inputenc}
-  %\VignetteDepends{dismo,raster}
 ---
 
 

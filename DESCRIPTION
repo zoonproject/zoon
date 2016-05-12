@@ -19,9 +19,7 @@ Depends:
     R (>= 3.2.0)
 Suggests:
     knitr,
-    testthat,
-    gam,
-    spocc
+    testthat
 VignetteBuilder: knitr
 LazyData: TRUE
 URL: https://github.com/zoonproject/zoon
