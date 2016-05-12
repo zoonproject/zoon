@@ -114,7 +114,7 @@ workl1 <- workflow(occurrence = Lorem_ipsum_UK,
                    output = PrintMap)
 ```
 
-<img src="figure/unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" style="display:block; margin: auto" style="display: block; margin: auto;" />
+<img src="figure/unnamed_chunk_7_1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 This is a nice way to debug your function and ensure you are getting the results you expect.
 
