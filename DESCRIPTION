@@ -13,13 +13,13 @@ Imports:
     RCurl,
     dismo,
     rfigshare,
-    methods
+    methods,
+    testthat
 Depends:
     raster (>= 2.4-20),
     R (>= 3.2.0)
 Suggests:
-    knitr,
-    testthat
+    knitr
 VignetteBuilder: knitr
 LazyData: TRUE
 URL: https://github.com/zoonproject/zoon
