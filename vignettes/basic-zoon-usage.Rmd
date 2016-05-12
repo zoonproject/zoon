@@ -64,7 +64,7 @@ work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                   output     = PrintMap)
 ```
 
-<img src="figure/unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" style="display:block; margin: auto" style="display: block; margin: auto;" />
+<img src="basic_5-1.png" title="plot of chunk basic_5" alt="plot of chunk basic_5" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 ```r
 class(work1)
@@ -162,26 +162,11 @@ work2 <- workflow(occurrence = UKAnophelesPlumbeus,
 ```
 
 ```
-## Loading required package: SDMTools
-```
-
-```
-## 
-## Attaching package: 'SDMTools'
-```
-
-```
-## The following object is masked from 'package:raster':
-## 
-##     distance
-```
-
-```
 ## Model performance measures:
 ```
 
 ```
-## auc :  0.644733385868138
+## auc :  0.667290517467822
 ```
 
 ```
@@ -231,11 +216,11 @@ work3 <- workflow(occurrence = UKAnophelesPlumbeus,
 ```
 
 ```
-## auc :  0.661840031520883
+## auc :  0.662693722090885
 ```
 
 ```
-## kappa :  0.464271488887118
+## kappa :  0.424773048214646
 ```
 
 ```
@@ -247,11 +232,11 @@ work3 <- workflow(occurrence = UKAnophelesPlumbeus,
 ```
 
 ```
-## specificity :  0.382716049382716
+## specificity :  0.345679012345679
 ```
 
 ```
-## proportionCorrect :  0.814126394052045
+## proportionCorrect :  0.802973977695167
 ```
 
 ```
@@ -283,7 +268,7 @@ work4 <- workflow(occurrence = UKAnophelesPlumbeus,
                   output     = PrintMap)
 ```
 
-<img src="figure/unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display:block; margin: auto" style="display: block; margin: auto;" /><img src="figure/unnamed-chunk-11-2.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display:block; margin: auto" style="display: block; margin: auto;" />
+<img src="basic_11-1.png" title="plot of chunk basic_11" alt="plot of chunk basic_11" style="display:block; margin: auto" style="display: block; margin: auto;" /><img src="basic_11-2.png" title="plot of chunk basic_11" alt="plot of chunk basic_11" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 ```r
 str(work4, 1)
@@ -319,7 +304,7 @@ work5 <- workflow(occurrence = UKAnophelesPlumbeus,
                   output     = PrintMap)
 ```
 
-<img src="figure/unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" style="display:block; margin: auto" style="display: block; margin: auto;" /><img src="figure/unnamed-chunk-12-2.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" style="display:block; margin: auto" style="display: block; margin: auto;" /><img src="figure/unnamed-chunk-12-3.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" style="display:block; margin: auto" style="display: block; margin: auto;" />
+<img src="basic_12-1.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto" style="display: block; margin: auto;" /><img src="basic_12-2.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto" style="display: block; margin: auto;" /><img src="basic_12-3.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 `Replicate` takes as its first arguement the module you want to repeat and as its second argument the number of times yo want to repeat it. Here we end up running our model three times for three different sets out background points
 
@@ -356,24 +341,37 @@ work5$session.info
 ## [5] LC_TIME=English_United Kingdom.1252    
 ## 
 ## attached base packages:
-## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## [1] splines   stats     graphics  grDevices utils     datasets  methods  
+## [8] base     
 ## 
 ## other attached packages:
-## [1] SDMTools_1.1-221    randomForest_4.6-12 dismo_1.0-15       
-## [4] zoon_0.4.26         raster_2.5-2        sp_1.2-3           
-## [7] knitr_1.12.3       
+##  [1] zoon_0.4.27         SDMTools_1.1-221    randomForest_4.6-12
+##  [4] gam_1.12            foreach_1.4.3       spocc_0.4.5        
+##  [7] MASS_7.3-45         dismo_1.0-15        knitr_1.12.3       
+## [10] raster_2.5-2        sp_1.2-3           
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_0.12.4       magrittr_1.5      munsell_0.4.3    
-##  [4] colorspace_1.2-6  lattice_0.20-33   R6_2.1.2         
-##  [7] stringr_1.0.0     httr_1.1.0        plyr_1.8.3       
-## [10] tools_3.2.3       rgdal_1.1-8       grid_3.2.3       
-## [13] gtable_0.2.0      R.oo_1.20.0       yaml_2.1.13      
-## [16] rfigshare_0.3.7   RJSONIO_1.3-0     ggplot2_2.1.0    
-## [19] formatR_1.3       R.utils_2.3.0     bitops_1.0-6     
-## [22] RCurl_1.95-4.8    evaluate_0.8.3    stringi_1.0-1    
-## [25] R.methodsS3_1.7.1 scales_0.4.0      XML_3.98-1.4     
-## [28] httpuv_1.3.3
+##  [1] Rcpp_0.12.4       rvertnet_0.4.4    lubridate_1.5.6  
+##  [4] lattice_0.20-33   assertthat_0.1    digest_0.6.9     
+##  [7] V8_1.0.1          R6_2.1.2          plyr_1.8.3       
+## [10] chron_2.3-47      evaluate_0.9      httr_1.1.0       
+## [13] rbison_0.4.8      ggplot2_2.1.0     curl_0.9.7       
+## [16] data.table_1.9.6  whisker_0.3-2     R.utils_2.3.0    
+## [19] R.oo_1.20.0       oai_0.2.0         rmarkdown_0.9.5  
+## [22] devtools_1.11.0   rgdal_1.1-8       stringr_1.0.0    
+## [25] RCurl_1.95-4.8    munsell_0.4.3     httpuv_1.3.3     
+## [28] htmltools_0.3.5   rgeos_0.3-19      geoaxe_0.1.0     
+## [31] roxygen2_5.0.1    codetools_0.2-14  XML_3.98-1.4     
+## [34] rgbif_0.9.3       crayon_1.3.1      dplyr_0.4.3      
+## [37] withr_1.0.1       bitops_1.0-6      R.methodsS3_1.7.1
+## [40] grid_3.2.3        jsonlite_0.9.19   gtable_0.2.0     
+## [43] DBI_0.4           magrittr_1.5      formatR_1.3      
+## [46] scales_0.4.0      stringi_1.0-1     mapproj_1.2-4    
+## [49] ridigbio_0.3.3    rebird_0.3.0      testthat_0.11.0  
+## [52] xml2_0.1.2        rfigshare_0.3.7   iterators_1.0.8  
+## [55] tools_3.2.3       RJSONIO_1.3-0     maps_3.1.0       
+## [58] parallel_3.2.3    yaml_2.1.13       colorspace_1.2-6 
+## [61] memoise_1.0.0
 ```
 
 ```r
@@ -386,12 +384,12 @@ work5$module.versions
 ## $occurrence
 ##         [,1]                 
 ## module  "UKAnophelesPlumbeus"
-## version "1.0"                
+## version "local copy"         
 ## 
 ## $covariate
-##         [,1]   
-## module  "UKAir"
-## version "1.0"  
+##         [,1]        
+## module  "UKAir"     
+## version "local copy"
 ## 
 ## $process
 ##         [,1]         [,2]         [,3]        
@@ -404,9 +402,9 @@ work5$module.versions
 ## version "1.0"         
 ## 
 ## $output
-##         [,1]      
-## module  "PrintMap"
-## version "1.1"
+##         [,1]        
+## module  "PrintMap"  
+## version "local copy"
 ```
 
 When using lists in a workflow (as in `work4` above) the workflow becomes forked. For example when `work4` was created two models where run leading to two output maps. We can easily trace back the origins of any module output using the attribute `call_path`
@@ -456,34 +454,15 @@ work6 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari',
 ```
 
 ```
-## Loading required package: MASS
-```
-
-```
-## 
-## Attaching package: 'MASS'
-```
-
-```
-## The following objects are masked from 'package:raster':
-## 
-##     area, select
-```
-
-```
-## Loading required package: spocc
-```
-
-```
 ## Model performance measures:
 ```
 
 ```
-## auc :  0.563786008230453
+## auc :  0.580405191516303
 ```
 
 ```
-## kappa :  0
+## kappa :  -0.152941176470588
 ```
 
 ```
@@ -495,11 +474,11 @@ work6 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari',
 ```
 
 ```
-## specificity :  1
+## specificity :  0.876543209876543
 ```
 
 ```
-## proportionCorrect :  0.675
+## proportionCorrect :  0.591666666666667
 ```
 
 ```
@@ -511,11 +490,11 @@ work6 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari',
 ```
 
 ```
-## auc :  0.863564419119975
+## auc :  0.901076289965179
 ```
 
 ```
-## kappa :  0.632867132867133
+## kappa :  0.727767695099819
 ```
 
 ```
@@ -527,11 +506,11 @@ work6 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari',
 ```
 
 ```
-## specificity :  0.790123456790123
+## specificity :  0.864197530864197
 ```
 
 ```
-## proportionCorrect :  0.825
+## proportionCorrect :  0.875
 ```
 
 ```
@@ -571,7 +550,7 @@ plot(Output(work6)[[3]],
              round(Output(work6)[[4]]$auc, 2)))
 ```
 
-<img src="figure/unnamed-chunk-15-1.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" style="display:block; margin: auto" style="display: block; margin: auto;" />
+<img src="basic_15-1.png" title="plot of chunk basic_15" alt="plot of chunk basic_15" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 Here we are collecting occurrence data for two species, _Eresus kollari_ and _E. sandaliatus_ and combining them (having presumably decided that this is ecologically appropriate). We are using the air temperature data from NCEP again. We are sampling 100 pseudo absence points and running two fold crossvalidation.
 

@@ -11,3 +11,4 @@ zoonQuickStart.R
 code_of_conduct.md
 tests/testthat/*.pdf
 ^appveyor\.yml$
+vignette_prebuild

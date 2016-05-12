@@ -40,7 +40,7 @@ w <- workflow(UKAnophelesPlumbeus, UKAir, OneHundredBackground, LogisticRegressi
 ## Using all available cells (81) instead
 ```
 
-<img src="figure/noninteractive-1.png" title="plot of chunk noninteractive" alt="plot of chunk noninteractive" style="display:block; margin: auto" style="display: block; margin: auto;" />
+<img src="interactive_noninteractive-1.png" title="plot of chunk interactive_noninteractive" alt="plot of chunk interactive_noninteractive" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 It's worth noting that this is a simple workflow. Chaining modules will be fairly easy but depends on the module type. Workflows using list() are likely to not be easy. 
 
@@ -123,7 +123,7 @@ model <- list(model = mod, data = proc$df)
 out <- PrintMap(model, cov)
 ```
 
-<img src="figure/output-1.png" title="plot of chunk output" alt="plot of chunk output" style="display:block; margin: auto" style="display: block; margin: auto;" />
+<img src="interactive_output-1.png" title="plot of chunk interactive_output" alt="plot of chunk interactive_output" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 ## Cross and external validation
 
@@ -138,7 +138,7 @@ modelCrossvalid <- list(model = modCrossvalid$model, data = proc$df)
 out <- PrintMap(modelCrossvalid, proc$ras)
 ```
 
-<img src="figure/cross validation-1.png" title="plot of chunk cross validation" alt="plot of chunk cross validation" style="display:block; margin: auto" style="display: block; margin: auto;" />
+<img src="interactive_cross_validation-1.png" title="plot of chunk interactive_cross_validation" alt="plot of chunk interactive_cross_validation" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 ## Running workflows with list.
 

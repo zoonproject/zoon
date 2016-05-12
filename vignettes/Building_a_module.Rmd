@@ -114,7 +114,7 @@ workl1 <- workflow(occurrence = Lorem_ipsum_UK,
                    output = PrintMap)
 ```
 
-<img src="figure/unnamed_chunk_7_1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" style="display:block; margin: auto" style="display: block; margin: auto;" />
+<img src="building_occ6-1.png" title="plot of chunk building_occ6" alt="plot of chunk building_occ6" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 This is a nice way to debug your function and ensure you are getting the results you expect.
 
@@ -235,7 +235,7 @@ work3 <- workflow(occurrence = SpOcc(extent = c(111, 157, -46, -6),
                   output = PrintMap)
 ```
 
-<img src="figure/unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" style="display:block; margin: auto" style="display: block; margin: auto;" />
+<img src="building_cov4-1.png" title="plot of chunk building_cov4" alt="plot of chunk building_cov4" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 Once we are happy with the function we have written we need to use the `BuildModule` function to convert our function into a module by adding in the necessary metadata
 
@@ -308,7 +308,7 @@ work5 <- workflow(occurrence = UKAnophelesPlumbeus,
                   output     = PrintMap)
 ```
 
-<img src="figure/unnamed-chunk-16-1.png" title="plot of chunk unnamed-chunk-16" alt="plot of chunk unnamed-chunk-16" style="display:block; margin: auto" style="display: block; margin: auto;" />
+<img src="building_pro1-1.png" title="plot of chunk building_pro1" alt="plot of chunk building_pro1" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 ```r
 # The output from a process module is in the same format as the 
@@ -401,7 +401,7 @@ work6 <- workflow(occurrence = UKAnophelesPlumbeus,
                   output     = PrintMap)
 ```
 
-<img src="figure/unnamed-chunk-20-1.png" title="plot of chunk unnamed-chunk-20" alt="plot of chunk unnamed-chunk-20" style="display:block; margin: auto" style="display: block; margin: auto;" />
+<img src="building_pro5-1.png" title="plot of chunk building_pro5" alt="plot of chunk building_pro5" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 We can see that the data has been clipped to the extent we specified in the map printed by the output module.
 
@@ -478,7 +478,7 @@ work7 <- workflow(occurrence = AnophelesPlumbeus,
 ## 386 records downloaded
 ```
 
-<img src="figure/unnamed-chunk-22-1.png" title="plot of chunk unnamed-chunk-22" alt="plot of chunk unnamed-chunk-22" style="display:block; margin: auto" style="display: block; margin: auto;" />
+<img src="building_pro7-1.png" title="plot of chunk building_pro7" alt="plot of chunk building_pro7" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 Once we're happy with the module, we will hopefully upload it to the zoon repository. The repository is currently under development. Visit [the development pages](https://zoonproject.wordpress.com/) for more information.
 
@@ -671,7 +671,7 @@ work8 <- workflow(occurrence = UKAnophelesPlumbeus,
                   output = PrintMap)
 ```
 
-<img src="figure/unnamed-chunk-28-1.png" title="plot of chunk unnamed-chunk-28" alt="plot of chunk unnamed-chunk-28" style="display:block; margin: auto" style="display: block; margin: auto;" />
+<img src="building_mod7-1.png" title="plot of chunk building_mod7" alt="plot of chunk building_mod7" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 Once we're happy with the module, we will hopefully upload it to the zoon repository. The repository is currently under development. Visit [the development pages](https://zoonproject.wordpress.com/) for more information.
 
@@ -788,7 +788,7 @@ work10 <- workflow(occurrence = UKAnophelesPlumbeus,
                    output     = PredictNewRasterMap)
 ```
 
-<img src="figure/unnamed-chunk-35-1.png" title="plot of chunk unnamed-chunk-35" alt="plot of chunk unnamed-chunk-35" style="display:block; margin: auto" style="display: block; margin: auto;" />
+<img src="building_out7-1.png" title="plot of chunk building_out7" alt="plot of chunk building_out7" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 ```r
 # Now I'm going to run it with a different raster
@@ -811,7 +811,7 @@ work11 <- workflow(occurrence = UKAnophelesPlumbeus,
                    output     = PredictNewRasterMap(raster = cropped))
 ```
 
-<img src="figure/unnamed-chunk-35-2.png" title="plot of chunk unnamed-chunk-35" alt="plot of chunk unnamed-chunk-35" style="display:block; margin: auto" style="display: block; margin: auto;" />
+<img src="building_out7-2.png" title="plot of chunk building_out7" alt="plot of chunk building_out7" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 ```r
 # The prediction map should also be returned as a raster
@@ -884,7 +884,7 @@ work12 <- workflow(occurrence = CWBZimbabwe,
                                   PredictNewRasterMap(raster = cropped)))
 ```
 
-<img src="figure/unnamed-chunk-37-1.png" title="plot of chunk unnamed-chunk-37" alt="plot of chunk unnamed-chunk-37" style="display:block; margin: auto" style="display: block; margin: auto;" /><img src="figure/unnamed-chunk-37-2.png" title="plot of chunk unnamed-chunk-37" alt="plot of chunk unnamed-chunk-37" style="display:block; margin: auto" style="display: block; margin: auto;" />
+<img src="building_out9-1.png" title="plot of chunk building_out9" alt="plot of chunk building_out9" style="display:block; margin: auto" style="display: block; margin: auto;" /><img src="building_out9-2.png" title="plot of chunk building_out9" alt="plot of chunk building_out9" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 Once we're happy with the module, we will hopefully upload it to the zoon repository. The repository is currently under development. Visit [the development pages](https://zoonproject.wordpress.com/) for more information.
 <a id="ModIO"> </a>
