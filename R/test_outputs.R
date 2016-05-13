@@ -27,7 +27,7 @@ test_outputs <- function(roxy_parse, modulePath){
                                             'value',
                                             'type',
                                             'fold'), 
-                   info = "Some of the required columns are missing ('longitude', 'latitude', 'value', 'type', 'fold')")
+                   info = "Check your occurrence data has the correct column names in the correct order. See the 'Building a module' vignette for details")
       expect_is(occ_return$longitude, c('numeric', 'integer'), info = 'longitude must be a numeric or integer')
       expect_is(occ_return$latitude, c('numeric', 'integer'), info = 'latitude must be a numeric or integer')
       expect_is(occ_return$value, c('numeric', 'integer'), info = 'value must be a numeric or integer')

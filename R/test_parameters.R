@@ -4,6 +4,9 @@ test_parameters <- function(roxy_parse, defaultParams = NULL, modulePath){
   # Extract the parameters
   params <- formals(source(modulePath)$value)
   
+  # Create blank symbol to test against
+  blank <- formals(function(blank){})
+  
   test_that('Check parameter names', {
     
     # Extract names from tags
@@ -23,7 +26,7 @@ test_parameters <- function(roxy_parse, defaultParams = NULL, modulePath){
   test_that('Check default values', {
     
     # Expect that all non-default parameters have defaults
-    paramClasses <- lapply(params, function(x) class(x))
+    paramClasses <- lapply(params, function(x) identical(x, blank$blank))
     
     # Remove ellipsis
     paramClasses <- paramClasses[!names(paramClasses) %in% '...']
@@ -31,8 +34,8 @@ test_parameters <- function(roxy_parse, defaultParams = NULL, modulePath){
     # remove defaults
     if(!is.null(defaultParams)) paramClasses <- paramClasses[!names(paramClasses) %in% defaultParams]
     
-    expect_true(all(paramClasses != 'name'),
-                info = 'Parameters are missing default values')
-    
+    expect_true(!any(unlist(paramClasses)),
+                info = paste('Some parameters are missing default values:', names(unlist(paramClasses)[unlist(paramClasses)]))
+    )
   })
 }
