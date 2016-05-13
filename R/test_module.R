@@ -1,3 +1,4 @@
+#' @import roxygen2
 test_module <- function(modulePath){
 
   context(paste('Testing module', basename(gsub('.R$', '', modulePath))))

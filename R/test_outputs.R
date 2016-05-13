@@ -71,11 +71,14 @@ test_outputs <- function(roxy_parse, modulePath){
         
         if(grepl(data_type, data_types)){
           
-         if(data_type == "presence/absence") load(system.file("extdata", ".data_PA.rdata", package="zoon"))
-         if(data_type == "presence-only") load(system.file("extdata", '.data_PO.rdata', package="zoon"))
+         # visible binding
+         .data <- NULL  
+          
+         if(data_type == "presence/absence") load(system.file("extdata", "data_PA.rdata", package="zoon"))
+         if(data_type == "presence-only") load(system.file("extdata", 'data_PO.rdata', package="zoon"))
           
           suppressWarnings({
-          pro_return <- do.call(roxy_parse$name, args = list(.data = .data))
+            pro_return <- do.call(roxy_parse$name, args = list(.data = .data))
           })
 
           ## Check pro_return structure
@@ -124,8 +127,8 @@ test_outputs <- function(roxy_parse, modulePath){
         
         if(grepl(data_type, data_types)){
           
-          if(data_type == "presence/absence") load(system.file("extdata", '.data_PA.rdata', package="zoon"))
-          if(data_type == "presence/background") load(system.file("extdata", '.data_PB.rdata', package="zoon")) # basically the same as above but type == 'background'
+          if(data_type == "presence/absence") load(system.file("extdata", 'data_PA.rdata', package="zoon"))
+          if(data_type == "presence/background") load(system.file("extdata", 'data_PB.rdata', package="zoon")) # basically the same as above but type == 'background'
           
           suppressWarnings({
             mod_return <- do.call(roxy_parse$name, args = list(.df = .data$df))
@@ -160,8 +163,9 @@ test_outputs <- function(roxy_parse, modulePath){
           expect_is(mod_return$packages, 'character', '"packages" element of ZoonModel object returned from a model module should be a character object of package names')
           
           # Check these against available packages
-          cran_avail_packages <- unique(row.names(available.packages('http://cran.rstudio.com/src/contrib')))
-          base_installed_packages <- rownames(subset(as.data.frame(installed.packages()),Priority=="base"))
+          cran_avail_packages <- unique(row.names(utils::available.packages('http://cran.rstudio.com/src/contrib')))
+          inst_pck <- as.data.frame(utils::installed.packages())
+          base_installed_packages <- rownames(inst_pck[inst_pck$Priority=="base" & !is.na(inst_pck$Priority), ])
           avail_packages <- c(cran_avail_packages, base_installed_packages)
           not_avail <- mod_return$packages[!mod_return$packages %in% avail_packages]
           

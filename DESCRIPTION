@@ -14,7 +14,8 @@ Imports:
     dismo,
     rfigshare,
     methods,
-    testthat
+    testthat,
+    roxygen2
 Depends:
     raster (>= 2.4-20),
     R (>= 3.2.0)

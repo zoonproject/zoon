@@ -161,7 +161,7 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
   # Run checks if requested
   if(check){
     cat('Starting checks...')
-    zoon:::test_module(fpath)
+    test_module(fpath)
     cat('done\n')
   }
   
