@@ -77,7 +77,8 @@ test_that('plot.zoonWorkflow module not on repo', {
              author = 'tom',
              email = 'tom@tom.com',
              dir = directory,
-             dataType = 'abundance')
+             dataType = 'abundance',
+             check = FALSE)
   
   rm(myMissing)
   

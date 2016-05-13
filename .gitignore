@@ -14,3 +14,6 @@ vignettes/cache
 
 # outputs from testing
 tests/testthat/*.pdf
+
+# Vignette pre-build folder
+vignette_prebuild

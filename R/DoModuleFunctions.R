@@ -45,16 +45,35 @@ DoOutputModules <- function(output.module, outputName, process.module,
     
   } 
   
-  DoOutputNotList <- function(x, outputName, e){
+  DoOutputPairedList <- function(x, outputName, e){
     
     output.output <- do.call(outputName[[1]]$func, 
                              c(list(.model = x[[1]],
                                     .ras = x[[2]]$ras),
+                             outputName[[1]]$paras),
+                             envir = e)
+
+    if(!is.null(output.output)){
+      
+      attr(output.output, 'call_path') <- c(attr(x[[1]], 'call_path'),
+                                            output = as.character(outputName[[1]]$module))
+    }
+    
+    return(output.output)
+    
+  } 
+  
+  DoOutputModelList <- function(x, outputName, process.output, e){
+    
+    output.output <- do.call(outputName[[1]]$func, 
+                             c(list(.model = x,
+                                    .ras = process.output[[1]]$ras),
                                outputName[[1]]$paras),
                              envir = e)
     
     if(!is.null(output.output)){
-      attr(output.output, 'call_path') <- c(attr(x[[1]], 'call_path'),
+      
+      attr(output.output, 'call_path') <- c(attr(x, 'call_path'),
                                             output = as.character(outputName[[1]]$module))
     }
     
@@ -85,16 +104,16 @@ DoOutputModules <- function(output.module, outputName, process.module,
           MP.output[[i]] <- list(model.output[[i]], process.output[[i]])
         }
         
-        output.output <- lapply(MP.output, FUN = DoOutputNotList, 
+        output.output <- lapply(MP.output, FUN = DoOutputPairedList, 
                                 e = e, outputName = outputName)
         
       } else { # there must be only one process output and multiple models
        
         output.output <- lapply(model.output,
-                                function(x) do.call(outputName[[1]]$func, 
-                                                    c(list(.model = x,
-                                                           .ras = process.output[[1]]$ras),
-                                                      outputName[[1]]$paras), envir = e))
+                                FUN = DoOutputModelList,
+                                e = e,
+                                process.output = process.output,
+                                outputName = outputName)
       }
     }
   # Chained
@@ -113,22 +132,26 @@ DoOutputModules <- function(output.module, outputName, process.module,
 
         output.output <- lapply(MP.output, 
                            function(x) lapply(outputName, 
-                             function(y) do.call(y$func, 
-                             c(list(.model = x[[1]],
-                                    .ras = x[[2]]$ras),
-                               y$paras), envir = e)))    
-
+                             function(y){
+                               output.output <- DoOutputPairedList(x = x,
+                                                                   outputName = list(y),
+                                                                   e = e)
+                             } 
+                           )
+                          )
 
       } else { # there must be only one process output and multiple models
 
-        output.output <- lapply(model.output, 
+        output.output <- unlist(lapply(model.output, 
                            function(y) lapply(outputName, 
-                             function(x) do.call(x$func, 
-                             c(list(.model = y,
-                                    .ras = process.output[[1]]$ras),
-                               x$paras), envir = e)))    
-
-        }
+                             function(x){
+                               output.output <- DoOutputList(x = x,
+                                                             model.output = list(y), 
+                                                             process.output = process.output,
+                                                             e = e)
+                             })
+                                ), recursive = FALSE)
+                              }
   }
   return(output.output)
 }
@@ -245,16 +268,8 @@ DoProcessModules <- function(process.module, processName, data, e){
   
   if (!identical(attr(process.module, 'chain'), TRUE)){
     if (length(processName) > 1){
-#       process.output <- lapply(processName, 
-#                                function(x) do.call(x$func, 
-#                                                    c(list(.data = data[[1]]), x$paras), 
-#                                                    envir = e))
       process.output <- lapply(processName, FUN = DoProcessList, e = e)
     } else {
-#       process.output <- lapply(data,
-#                                function(x) do.call(processName[[1]]$func, 
-#                                                    c(list(.data = x), processName[[1]]$paras), 
-#                                                    envir = e))
       process.output <- lapply(data, FUN = DoProcessNotList, e = e)
     }
   } else { 

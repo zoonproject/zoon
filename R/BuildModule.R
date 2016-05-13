@@ -6,7 +6,7 @@
 #'
 #' @param object A function that will be made into a module file.
 #' @param dir The directory to put the module into (defaults to the
-#'      working directory.
+#'      working directory).
 #' @param type A string that defines the type of module. Possible module types
 #'      are occurrence, covariate, process, model, diagnostic and output.
 #' @param title A short description of the module.
@@ -25,16 +25,19 @@
 #' should indicate the type of data they will work with. If the module works with
 #' multiple types they can be supplied in a vector, e.g. c('presence-only',
 #' 'presence/absence') 
+#' @param check Logical indicating if the module should be run through checks
+#' once it has been built. Defaults to TRUE.
 #'
 #' @return Name of the module. Outputs a file
 #' @name BuildModule
 #' @import methods
+#' @import testthat
 #' @importFrom utils capture.output
 #' @export
 
 BuildModule <- function(object, type, dir='.', title = '',  description = '',
                         details = '', author = '', email = '', paras = NULL,
-                        dataType = NULL){
+                        dataType = NULL, check = TRUE){
   
   # Check object is a function
   if(!is(object, 'function')) stop('object must be a function')
@@ -121,6 +124,13 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
   if(!is.null(dataType)) dataType <- paste0("\n#'\n#' @section Data type: ",
                                             paste(dataType, collapse = ', '))
         
+  # Add place holder for the version as this will be decided
+  # on submission to the website
+  version <- "\n#'\n#' @section Version: 0"
+  
+  # Give this as the current date
+  submitted <- paste("\n#'\n#' @section Date submitted: ", Sys.Date())
+  
   docs <- paste0("#' @name ", obj,
                  "\n#'\n#' @title ", title,
                  "\n#'\n#' @description ", description,
@@ -128,7 +138,12 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
                  "\n#'\n", paraDocs,
                  "\n#'\n#' @family ", type,
                  "\n#'\n#' @author ", authors, ', ', '\\email{', email, '}',
-                 dataType)
+                 dataType,
+                 version,
+                 submitted)
+  
+  
+  
 
   # get and format the source code
   src <- capture.output(dput(object))
@@ -142,6 +157,13 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
   
   # add a final line break
   cat('\n', file = fpath, append = TRUE)
+  
+  # Run checks if requested
+  if(check){
+    cat('Starting checks...')
+    test_module(fpath)
+    cat('done\n')
+  }
   
   return(obj)
 }
