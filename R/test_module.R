@@ -12,7 +12,7 @@ test_module <- function(modulePath){
     test_that(paste('Check roxy_parse', moduleName),{
       
       # Check roxy_parse is good
-      expect_is(roxy_parse, 'list')
+      expect_is(roxy_parse, 'list', info = 'Your function appears to the empty, or not a function')
       
     })
     
