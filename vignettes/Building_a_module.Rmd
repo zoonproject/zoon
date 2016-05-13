@@ -1,7 +1,7 @@
 ---
 title: "Building modules"
 author: "Tom August & Tim Lucas"
-date: '2016-05-12'
+date: '2016-05-13'
 output:
   rmarkdown::html_vignette:
     keep_md: yes
@@ -51,7 +51,7 @@ out <- read.csv(URL)
 head(out)
 ```
 
-Now it is time to think about how we return our data. The output format for occurrence modules is very important. If you do not ensure that the format is correct then your module will not work properly when entered into a workflow. An occurrence module must return a data.frame with the columns longitude, latitude, value, type and fold, the details are given at [the end of this document](#occIO)
+Now it is time to think about how we return our data. The output format for occurrence modules is very important. If you do not ensure that the format is correct then your module will not work properly when entered into a workflow. An occurrence module must return a data.frame with the columns longitude, latitude, value, type and fold, the details are given at [the end of this document](#occIO). The order of these columns is important.
 
 Our occurrence data does not have all of these columns so we need to add them. Here is what our data currently look like.
 
@@ -71,7 +71,7 @@ So we need to do a little reformatting
 
 ```r
 # Keep only Lat Long columns
-out <- out[, c("latitude", "longitude")]
+out <- out[, c("longitude", "latitude")]
 
 # Add in the columns we dont have
 out$value <- 1 # all our data are presences
@@ -91,7 +91,7 @@ Lorem_ipsum_UK <- function(){
   # Get data
   URL <- "https://ndownloader.figshare.com/files/2519918"
   out <- read.csv(URL)
-  out <- out[, c("latitude", "longitude")]
+  out <- out[, c("longitude", "latitude")]
   
   # Add in the columns we dont have
   out$value <- 1 # all our data are presences
@@ -133,6 +133,10 @@ BuildModule(Lorem_ipsum_UK,
             author = 'A.B. Ceidi',
             email = 'ABCD@anemail.com',
             dataType = 'presence-only')
+```
+
+```
+## Starting checks...done
 ```
 
 ```
@@ -257,6 +261,10 @@ BuildModule(AustraliaAir,
                          'you wish to return. This can include any number of',
                          "the following: 'air','hgt','rhum','shum','omega',",
                          "'uwnd','vwnd'")))
+```
+
+```
+## Starting checks...done
 ```
 
 ```
@@ -429,6 +437,10 @@ BuildModule(ClipOccurrence,
             dataType = c('presence-only', 'presence/absence',
                          'presence/background', 'abundance',
                          'proportion'))
+```
+
+```
+## Starting checks...done
 ```
 
 ```
@@ -642,6 +654,10 @@ BuildModule(object = GamGam,
 ```
 
 ```
+## Starting checks...done
+```
+
+```
 ## [1] "GamGam"
 ```
 
@@ -668,13 +684,6 @@ work8 <- workflow(occurrence = UKAnophelesPlumbeus,
                   process  = OneHundredBackground,
                   model = GamGam,
                   output = PrintMap)
-```
-
-```
-## package 'gam' successfully unpacked and MD5 sums checked
-## 
-## The downloaded binary packages are in
-## 	C:\Users\tomaug\AppData\Local\Temp\Rtmpw5yd18\downloaded_packages
 ```
 
 <img src="building_mod7-1.png" title="plot of chunk building_mod7" alt="plot of chunk building_mod7" style="display:block; margin: auto" style="display: block; margin: auto;" />
@@ -858,6 +867,10 @@ BuildModule(PredictNewRasterMap,
 ```
 
 ```
+## Starting checks...done
+```
+
+```
 ## [1] "PredictNewRasterMap"
 ```
 
@@ -904,7 +917,7 @@ The default input arguments and return values of modules are strict. However, an
 
 *In*: No default inputs
 
-*Out*: `data.frame` with column names:
+*Out*: `data.frame` with column names (in this order):
 
 * `longitude`: The longitude of the observation.
 * `latitude`: The latitude of the observation.
