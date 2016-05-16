@@ -1,19 +1,17 @@
 context('Changing workflows')
 
-skip_on_cran()
-
-# Original run
-set.seed(1)
-w1 <- workflow(UKAnophelesPlumbeus,
-               UKAir, 
-               OneHundredBackground,
-               LogisticRegression,
-               PrintMap)
-
 test_that('ChangeWorkflow errors', {
   
   skip_on_cran()
-  
+
+  # Original run
+  set.seed(1)
+  w1 <- workflow(UKAnophelesPlumbeus,
+                 UKAir, 
+                 OneHundredBackground,
+                 LogisticRegression,
+                 PrintMap)
+    
   expect_error(ChangeWorkflow(w1),
                'At least one module type must be changed')
   
@@ -28,6 +26,14 @@ test_that('Basic ChangeWorkflow works', {
   
   skip_on_cran()
 
+  # Original run
+  set.seed(1)
+  w1 <- workflow(UKAnophelesPlumbeus,
+                 UKAir, 
+                 OneHundredBackground,
+                 LogisticRegression,
+                 PrintMap)
+  
   # Change model
   set.seed(1)
   w2 <- workflow(UKAnophelesPlumbeus,
@@ -108,6 +114,14 @@ test_that('ChangeWorkflow - Chains', {
   
   skip_on_cran()
   
+  # Original run
+  set.seed(1)
+  w1 <- workflow(UKAnophelesPlumbeus,
+                 UKAir, 
+                 OneHundredBackground,
+                 LogisticRegression,
+                 PrintMap)
+  
   # Replace with a occurrence with chain
   set.seed(1)
   w8 <- workflow(Chain(UKAnophelesPlumbeus, UKAnophelesPlumbeus),
@@ -153,6 +167,14 @@ test_that('ChangeWorkflow - Chains', {
 test_that('ChangeWorkflow - Lists', {
   
   skip_on_cran()
+  
+  # Original run
+  set.seed(1)
+  w1 <- workflow(UKAnophelesPlumbeus,
+                 UKAir, 
+                 OneHundredBackground,
+                 LogisticRegression,
+                 PrintMap)
   
   # Replace with a occurrence with chain
   set.seed(1)
@@ -200,24 +222,32 @@ test_that('More complex syntax in remaining modules works', {
   
   skip_on_cran()
 
- # Test module with brackets + args
- set.seed(1)
- w18 <- workflow(UKAnophelesPlumbeus,
+  # Original run
+  set.seed(1)
+  w1 <- workflow(UKAnophelesPlumbeus,
                  UKAir, 
-                 BackgroundAndCrossvalid(k=2),
+                 OneHundredBackground,
                  LogisticRegression,
                  PrintMap)
-
- set.seed(1)
- w19 <- ChangeWorkflow(w18, occurrence = UKAnophelesPlumbeus)
-
- expect_true(all.equal(w18[!names(w18) %in% 'session.info'],
-                       w19[!names(w19) %in% 'session.info']))
-
- set.seed(1)
- w20 <- ChangeWorkflow(w1, process = BackgroundAndCrossvalid(k = 2))
- 
- expect_true(all.equal(w20[!names(w20) %in% 'session.info'],
-                       w18[!names(w18) %in% 'session.info']))
- 
+  
+   # Test module with brackets + args
+   set.seed(1)
+   w18 <- workflow(UKAnophelesPlumbeus,
+                   UKAir, 
+                   BackgroundAndCrossvalid(k=2),
+                   LogisticRegression,
+                   PrintMap)
+  
+   set.seed(1)
+   w19 <- ChangeWorkflow(w18, occurrence = UKAnophelesPlumbeus)
+  
+   expect_true(all.equal(w18[!names(w18) %in% 'session.info'],
+                         w19[!names(w19) %in% 'session.info']))
+  
+   set.seed(1)
+   w20 <- ChangeWorkflow(w1, process = BackgroundAndCrossvalid(k = 2))
+   
+   expect_true(all.equal(w20[!names(w20) %in% 'session.info'],
+                         w18[!names(w18) %in% 'session.info']))
+   
 })

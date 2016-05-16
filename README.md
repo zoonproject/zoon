@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/zoonproject/zoon.svg)](https://travis-ci.org/zoonproject/zoon)
 [![codecov.io](https://codecov.io/github/zoonproject/zoon/coverage.svg?branch=master)](https://codecov.io/github/zoonproject/zoon?branch=master)
-[![cran version](http://www.r-pkg.org/badges/version/zoon)](http://cran.rstudio.com/web/packages/zoon) 
+[![cran version](http://www.r-pkg.org/badges/version/zoon)](https://cran.rstudio.com/web/packages/zoon) 
 [![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/zoon?)](https://github.com/metacran/cranlogs.app)
 
 Zoön is a package for the reproducible and shareable analysis of species distribution models with a focus on the ability to compare between models and diagnostic output of models.
@@ -61,7 +61,7 @@ Pull requests are always welcome, though please let us know what you're developi
 
 We are committed to making Zoön an inclusive project that the whole research community can contribute to and benefit from it and ask all contributers (including the Zoön development team) to stick to [a code of conduct](https://github.com/zoonproject/zoon/blob/master/code_of_conduct.md)
 
-We are using the [Google style guide](https://google-styleguide.googlecode.com/svn/trunk/Rguide.xml) with the exception that function description goes before the function name, not inside the function definition. We are using [roxygen2](http://cran.r-project.org/web/packages/roxygen2/vignettes/roxygen2.html) to document the package. Try to keep function names as verbs.
+We are using the [Google style guide](https://google.github.io/styleguide/Rguide.xml) with the exception that function description goes before the function name, not inside the function definition. We are using [roxygen2](https://cran.r-project.org/web/packages/roxygen2/vignettes/roxygen2.html) to document the package. Try to keep function names as verbs.
 
 
 ![Zoon banner](https://github.com/zoonproject/blog/blob/master/zoon.jpg)
