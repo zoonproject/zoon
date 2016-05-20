@@ -4,18 +4,17 @@ context('RerunWorkflow')
 # are not cached as this results in a change in the version number 
 # from x to 'local copy'
 
-skip_on_cran()
-
-set.seed(1)
-w1 <- workflow(UKAnophelesPlumbeus,
-               UKAir, 
-               OneHundredBackground,
-               LogisticRegression,
-               PrintMap,
-               forceReproducible = TRUE)
 
 test_that('RerunWorkflow simple test', {
   skip_on_cran()
+  
+  set.seed(1)
+  w1 <- workflow(UKAnophelesPlumbeus,
+                 UKAir, 
+                 OneHundredBackground,
+                 LogisticRegression,
+                 PrintMap,
+                 forceReproducible = TRUE)
   
   set.seed(1)
   w2 <- RerunWorkflow(w1)
@@ -26,7 +25,15 @@ test_that('RerunWorkflow simple test', {
 
 
 test_that('RerunWorkflow test error', {
+  
   skip_on_cran()
+  set.seed(1)
+  w1 <- workflow(UKAnophelesPlumbeus,
+                 UKAir, 
+                 OneHundredBackground,
+                 LogisticRegression,
+                 PrintMap,
+                 forceReproducible = TRUE)
   
   set.seed(1)
   
@@ -39,7 +46,16 @@ test_that('RerunWorkflow test error', {
 
 
 test_that('RerunWorkflow test with NULLs', {
+  
   skip_on_cran()
+  
+  set.seed(1)
+  w1 <- workflow(UKAnophelesPlumbeus,
+                 UKAir, 
+                 OneHundredBackground,
+                 LogisticRegression,
+                 PrintMap,
+                 forceReproducible = TRUE)
   
   w3 <- w1 
   for(i in 1:5) w3[i] <- list(NULL)
@@ -77,6 +93,7 @@ test_that('RerunWorkflow test with NULLs', {
 
 
 test_that('RerunWorkflow test with Chains', {
+  
   skip_on_cran()
   
   set.seed(1)
