@@ -147,9 +147,8 @@ test_outputs <- function(roxy_parse, modulePath){
           # code is a charachter and can be parsed and checked
           expect_is(mod_return$code, 'character', info = 'The "code" element returned by a model module must be a character (see ?ZoonModel for details)')
           
-          newdata <- as.data.frame(.data$df[, 6:ncol(.data$df)])
-          names(newdata) <- names(.data$df)[6:ncol(.data$df)]
-          
+          newdata <- .data$df[, 6:ncol(.data$df), drop = FALSE]
+
           predicted_vals <- ZoonPredict(zoonModel = mod_return,
                                         newdata = newdata)
           

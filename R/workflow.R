@@ -192,8 +192,6 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
     }
   )
 
-
-
   # Do process modules
   
   tryCatch({  
