@@ -64,8 +64,7 @@ test_that('plot.zoonWorkflow module not on repo', {
       noccurrence <- nrow(occurrence)
       
       df <- occurrence
-      names(df)[6:ncol(df)] <- names(ras)
-      
+
       return(list(df=df, ras=ras))
       
   }
@@ -84,13 +83,13 @@ test_that('plot.zoonWorkflow module not on repo', {
   
   LoadModule(module = file.path(directory, 'myMissing.R'))
   
-#   NamespaceModule <- function(){
-#     return(myMissing)
-#   }
-#   
-#   # This line accounts for the fact that testing is done
-#   # in a different environment
-#   assign('myMissing', NamespaceModule, env = .GlobalEnv)
+  # NamespaceModule <- function(){
+  #   return(myMissing)
+  # }
+  # 
+  # # This line accounts for the fact that testing is done
+  # # in a different environment
+  # assign('myMissing', NamespaceModule, env = .GlobalEnv)
   
   work4 <- workflow(occurrence = UKAnophelesPlumbeus, 
                     covariate = UKAir,

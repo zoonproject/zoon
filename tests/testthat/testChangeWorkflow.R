@@ -148,11 +148,14 @@ test_that('ChangeWorkflow - Chains', {
   
   set.seed(1)
   w11 <- ChangeWorkflow(w1,
-                       covariate = Chain(UKAir, UKAir)
-                       )
+                        covariate = Chain(UKAir, UKAir)
+                        )
   
   expect_true(all.equal(w10[!names(w10) %in% 'session.info'],
-                        w11[!names(w11) %in% 'session.info']))
+                        w11[!names(w11) %in% 'session.info']),
+              info = paste(all.equal(w10[!names(w10) %in% 'session.info'],
+                                     w11[!names(w11) %in% 'session.info']),
+                           collapse = ' *** '))
   
   # Replace a chain with a non-chain
   set.seed(1)
