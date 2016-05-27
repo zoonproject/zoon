@@ -13,7 +13,7 @@ test_that('Check returns list with all the names', {
   
   x <- ZoonCitation('LogisticRegression')
 
-  names <- c("title", "name", "authors", "year",
+  names <- c("title", "name", "authors",
              "date_submitted", "note", "email",
              "url")
   
