@@ -156,8 +156,18 @@ RunModels <- function(df, modelFunction, paras, workEnv){
   k <- length(unique(df$fold)[unique(df$fold) != 0])
   
   # Init. output dataframe with predictions column
-  dfOut <- cbind(df[, 1:5], predictions = NA, df[,6:NCOL(df)])
-  names(dfOut)[7:ncol(dfOut)] <- names(df)[6:ncol(df)]
+  # Old versions of modules dont use this attribute 
+  ## REMOVE ONCE MODULES UPDATED ##
+  if('covCols' %in% names(attributes(df))){
+    dfOut <- cbind(df[!colnames(df) %in% attr(df, 'covCols')],
+                   predictions = NA,
+                   df[colnames(df) %in% attr(df, 'covCols')])
+  } else {
+    
+    dfOut <- cbind(df[, 1:5], predictions = NA, df[,6:NCOL(df)])
+    names(dfOut)[7:ncol(dfOut)] <- names(df)[6:ncol(df)]
+    
+  }
   
   # We don't know that they want cross validation.
   # If they do, k>1, then run model k times and predict out of bag
@@ -168,8 +178,17 @@ RunModels <- function(df, modelFunction, paras, workEnv){
                                             paras),
                            envir = workEnv)
       
-      pred <- ZoonPredict(modelFold,
-                          newdata = df[df$fold == i, 6:NCOL(df), drop = FALSE])
+      # Old versions of modules dont use this attribute 
+      ## REMOVE ONCE MODULES UPDATED ##
+      if('covCols' %in% names(attributes(df))){
+        pred <- ZoonPredict(modelFold,
+                            newdata = df[df$fold == i,
+                                         attr(df, 'covCols'),
+                                         drop = FALSE])
+      } else {
+        pred <- ZoonPredict(modelFold,
+                            newdata = df[df$fold == i, 6:NCOL(df), drop = FALSE])
+      }
       
       dfOut$predictions[df$fold == i] <- pred 
       
@@ -183,8 +202,17 @@ RunModels <- function(df, modelFunction, paras, workEnv){
   # If external validation dataset exists, predict that;.
   if(0 %in% df$fold){
     
-    pred <- ZoonPredict(m,
-                        newdata = df[df$fold == 0, 6:NCOL(df), drop = FALSE])
+    # Old versions of modules dont use this attribute 
+    ## REMOVE ONCE MODULES UPDATED ##
+    if('covCols' %in% names(attributes(df))){
+      pred <- ZoonPredict(m,
+                          newdata = df[df$fold == 0,
+                                       attr(df, 'covCols'),
+                                       drop = FALSE])
+    } else {
+      pred <- ZoonPredict(m,
+                          newdata = df[df$fold == 0, 6:NCOL(df), drop = FALSE])
+    }
     
     dfOut$predictions[df$fold == 0] <- pred 
     
@@ -341,13 +369,16 @@ ExtractAndCombData <- function(occurrence, ras){
   
   # extract covariates from lat long values in df.
   occurrenceCovariates <- as.matrix(raster::extract(ras, occurrence[, c('longitude', 'latitude')]))
-  names(occurrenceCovariates) <- names(ras)  
+  colnames(occurrenceCovariates) <- names(ras)  
   
   # combine with the occurrence data
   df <- cbind(occurrence, occurrenceCovariates)
   
   # assign call_path attribute to this new object
   attr(df, 'call_path') <- attr(occurrence, 'call_path')
+  
+  # record the covariate column names
+  attr(df, 'covCols') <- names(ras)
   
   # Return as list of df and ras as required by process modules
   return(list(df=df, ras=ras))

@@ -1,7 +1,7 @@
 ---
 title: "Basic zoon usage"
 author: "Tim Lucas and Tom August"
-date: "2016-05-13"
+date: "2016-05-26"
 output:
   rmarkdown::html_vignette:
     toc: yes
@@ -165,11 +165,11 @@ work2 <- workflow(occurrence = UKAnophelesPlumbeus,
 ```
 
 ```
-## auc :  0.668505384817442
+## auc :  0.660132650380877
 ```
 
 ```
-## kappa :  0.464271488887118
+## kappa :  0.411378555798687
 ```
 
 ```
@@ -181,11 +181,11 @@ work2 <- workflow(occurrence = UKAnophelesPlumbeus,
 ```
 
 ```
-## specificity :  0.382716049382716
+## specificity :  0.333333333333333
 ```
 
 ```
-## proportionCorrect :  0.814126394052045
+## proportionCorrect :  0.799256505576208
 ```
 
 ```
@@ -215,11 +215,11 @@ work3 <- workflow(occurrence = UKAnophelesPlumbeus,
 ```
 
 ```
-## auc :  0.662496716574731
+## auc :  0.657505910165485
 ```
 
 ```
-## kappa :  0.451218048721949
+## kappa :  0.397867404664035
 ```
 
 ```
@@ -231,11 +231,11 @@ work3 <- workflow(occurrence = UKAnophelesPlumbeus,
 ```
 
 ```
-## specificity :  0.37037037037037
+## specificity :  0.320987654320988
 ```
 
 ```
-## proportionCorrect :  0.810408921933085
+## proportionCorrect :  0.795539033457249
 ```
 
 ```
@@ -345,9 +345,9 @@ work5$session.info
 ## 
 ## other attached packages:
 ##  [1] gam_1.12            foreach_1.4.3       spocc_0.5.0        
-##  [4] MASS_7.3-45         SDMTools_1.1-221    randomForest_4.6-12
-##  [7] dismo_1.0-15        zoon_0.4.27         raster_2.5-2       
-## [10] sp_1.2-3            knitr_1.13         
+##  [4] MASS_7.3-45         SDMTools_1.1-221    knitr_1.13         
+##  [7] zoon_0.5            testthat_1.0.2      randomForest_4.6-12
+## [10] dismo_1.0-15        raster_2.5-2        sp_1.2-3           
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] Rcpp_0.12.4       rvertnet_0.4.4    lubridate_1.5.6  
@@ -355,22 +355,23 @@ work5$session.info
 ##  [7] V8_1.0.1          R6_2.1.2          plyr_1.8.3       
 ## [10] chron_2.3-47      evaluate_0.9      httr_1.1.0       
 ## [13] rbison_0.4.8      ggplot2_2.1.0     lazyeval_0.1.10  
-## [16] curl_0.9.7        data.table_1.9.6  whisker_0.3-2    
-## [19] R.utils_2.3.0     R.oo_1.20.0       oai_0.2.0        
-## [22] rmarkdown_0.9.6   rgdal_1.1-9       stringr_1.0.0    
-## [25] RCurl_1.95-4.8    munsell_0.4.3     httpuv_1.3.3     
-## [28] rgeos_0.3-19      htmltools_0.3.5   geoaxe_0.1.0     
-## [31] tibble_1.0        roxygen2_5.0.1    codetools_0.2-14 
-## [34] XML_3.98-1.4      rgbif_0.9.3       crayon_1.3.1     
-## [37] dplyr_0.4.3       bitops_1.0-6      R.methodsS3_1.7.1
-## [40] grid_3.3.0        jsonlite_0.9.20   gtable_0.2.0     
-## [43] DBI_0.4-1         magrittr_1.5      formatR_1.4      
-## [46] scales_0.4.0      stringi_1.0-1     mapproj_1.2-4    
-## [49] ridigbio_0.3.3    rebird_0.3.0      testthat_1.0.2   
-## [52] xml2_0.1.2        rfigshare_0.3.7   iterators_1.0.8  
-## [55] tools_3.3.0       RJSONIO_1.3-0     maps_3.1.0       
-## [58] parallel_3.3.0    yaml_2.1.13       colorspace_1.2-6 
-## [61] memoise_1.0.0
+## [16] curl_0.9.7        rstudioapi_0.5    data.table_1.9.6 
+## [19] whisker_0.3-2     R.utils_2.3.0     R.oo_1.20.0      
+## [22] oai_0.2.0         rmarkdown_0.9.6   devtools_1.11.1  
+## [25] rgdal_1.1-9       stringr_1.0.0     RCurl_1.95-4.8   
+## [28] munsell_0.4.3     httpuv_1.3.3      rgeos_0.3-19     
+## [31] htmltools_0.3.5   geoaxe_0.1.0      tibble_1.0       
+## [34] roxygen2_5.0.1    codetools_0.2-14  XML_3.98-1.4     
+## [37] rgbif_0.9.3       crayon_1.3.1      dplyr_0.4.3      
+## [40] withr_1.0.1       bitops_1.0-6      R.methodsS3_1.7.1
+## [43] grid_3.3.0        jsonlite_0.9.20   gtable_0.2.0     
+## [46] DBI_0.4-1         magrittr_1.5      formatR_1.4      
+## [49] scales_0.4.0      stringi_1.0-1     mapproj_1.2-4    
+## [52] ridigbio_0.3.3    rebird_0.3.0      xml2_0.1.2       
+## [55] rfigshare_0.3.7   iterators_1.0.8   tools_3.3.0      
+## [58] RJSONIO_1.3-0     maps_3.1.0        rsconnect_0.4.2.2
+## [61] parallel_3.3.0    yaml_2.1.13       colorspace_1.2-6 
+## [64] memoise_1.0.0
 ```
 
 ```r
@@ -383,12 +384,12 @@ work5$module.versions
 ## $occurrence
 ##         [,1]                 
 ## module  "UKAnophelesPlumbeus"
-## version "1.0"                
+## version "local copy"         
 ## 
 ## $covariate
-##         [,1]   
-## module  "UKAir"
-## version "1.0"  
+##         [,1]        
+## module  "UKAir"     
+## version "local copy"
 ## 
 ## $process
 ##         [,1]         [,2]         [,3]        
@@ -401,9 +402,9 @@ work5$module.versions
 ## version "1.0"         
 ## 
 ## $output
-##         [,1]      
-## module  "PrintMap"
-## version "1.1"
+##         [,1]        
+## module  "PrintMap"  
+## version "local copy"
 ```
 
 When using lists in a workflow (as in `work4` above) the workflow becomes forked. For example when `work4` was created two models where run leading to two output maps. We can easily trace back the origins of any module output using the attribute `call_path`
@@ -457,11 +458,11 @@ work6 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari',
 ```
 
 ```
-## auc :  0.569325735992403
+## auc :  0.54099398543843
 ```
 
 ```
-## kappa :  0
+## kappa :  -0.048689138576779
 ```
 
 ```
@@ -473,11 +474,11 @@ work6 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari',
 ```
 
 ```
-## specificity :  1
+## specificity :  0.962962962962963
 ```
 
 ```
-## proportionCorrect :  0.675
+## proportionCorrect :  0.65
 ```
 
 ```
@@ -489,27 +490,27 @@ work6 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari',
 ```
 
 ```
-## auc :  0.896011396011396
+## auc :  0.849635960747072
 ```
 
 ```
-## kappa :  0.607508532423208
+## kappa :  0.493006993006993
 ```
 
 ```
-## omissions :  0.0769230769230769
+## omissions :  0.205128205128205
 ```
 
 ```
-## sensitivity :  0.923076923076923
+## sensitivity :  0.794871794871795
 ```
 
 ```
-## specificity :  0.753086419753086
+## specificity :  0.740740740740741
 ```
 
 ```
-## proportionCorrect :  0.808333333333333
+## proportionCorrect :  0.758333333333333
 ```
 
 ```
