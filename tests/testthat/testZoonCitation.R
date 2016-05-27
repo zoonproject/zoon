@@ -9,7 +9,7 @@ test_that('Check error if not found', {
   
 })
 
-testthat('Check returns list with all the names', {
+test_that('Check returns list with all the names', {
   
   x <- ZoonCitation('LogisticRegression')
 
