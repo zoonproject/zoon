@@ -7,7 +7,7 @@ test_module <- function(modulePath){
     
     moduleName <- basename(gsub('.R$', '', modulePath))
     
-    roxy_parse <- roxygen2:::parse_file(modulePath, environment())[[1]]
+    roxy_parse <- ZoonModuleParse(modulePath)
     
     ## GENERIC TESTS
     test_that(paste('Check roxy_parse', moduleName),{
