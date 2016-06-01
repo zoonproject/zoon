@@ -2,13 +2,29 @@
 # (within a context)
 test_outputs <- function(roxy_parse, modulePath){
 
+  # create enviromnet for zoon to find variables
+  pos <- 1
+  en <- as.environment(pos)
+
+  # Appease CRAN
+  # The modules in these checks appear to have no global definition
+  # I get around this by assigning them all to NULL here and then loading 
+  # them in. using forcereproducile = TRUE is not an option as this does
+  # not allow me to use the module under test
+  Background <- BackgroundAndCrossvalid <- CarolinaWrenPA <- NULL
+  CarolinaWrenRasters <- Clean <- Crossvalidate <- LogisticRegression <- NULL
+  NCEP <- NaiveRandomPresence <- NoProcess <- PerformanceMeasures <- NULL
+  PrintMap <- RandomForest <- UKAir <- UKAnophelesPlumbeus <- NULL
+  
+  LoadModule('Background'); LoadModule('BackgroundAndCrossvalid')
+  LoadModule('CarolinaWrenPA'); LoadModule('CarolinaWrenRasters')
+  LoadModule('Clean'); LoadModule('Crossvalidate'); LoadModule('LogisticRegression')
+  LoadModule('NCEP'); LoadModule('NaiveRandomPresence'); LoadModule('NoProcess')
+  LoadModule('PerformanceMeasures'); LoadModule('PrintMap'); LoadModule('RandomForest')
+  LoadModule('UKAir'); LoadModule('UKAnophelesPlumbeus')
+  
   test_that('Check output formats',{ 
     
-    # download.file sends tonnes of stuff to my console
-    # it is used internally in a number of modules
-    # This is a naughty fix to shut it up (I tried everything)
-    formals(download.file)$quiet <- TRUE
-  
     ## OCCURRENCE MODULES ##
     if(roxy_parse$family == 'occurrence'){
       
@@ -38,7 +54,7 @@ test_outputs <- function(roxy_parse, modulePath){
       # Assign function
       OccurrenceModule <- source(modulePath)$value
       # this line is needed to  it to the global env. where zoon looks
-      assign('OccurrenceModule', OccurrenceModule, env = .GlobalEnv)
+      assign('OccurrenceModule', OccurrenceModule, envir = en)
       
       # Get the data types
       sections <- roxy_parse[grepl('section', names(roxy_parse))]
@@ -53,7 +69,7 @@ test_outputs <- function(roxy_parse, modulePath){
       myExtent <- c(xmin, xmax, ymin, ymax)
       
       # We have to do this so that zoon can find it
-      assign('myExtent', myExtent, env = .GlobalEnv)
+      assign('myExtent', myExtent, envir = en)
       
       for(data_type in data_types){
         
@@ -66,7 +82,8 @@ test_outputs <- function(roxy_parse, modulePath){
                                                    extent = myExtent),
                                   process = Background(n = 70),
                                   model = LogisticRegression,
-                                  output = PrintMap),
+                                  output = PrintMap,
+                                  forceReproducible = FALSE),
                     'zoonWorkflow',
                     info = 'The occurrence module did not work in a standard workflow')
           
@@ -77,7 +94,8 @@ test_outputs <- function(roxy_parse, modulePath){
                                                    extent = myExtent),
                                   process = Background(n = 70),
                                   model = LogisticRegression,
-                                  output = PrintMap),
+                                  output = PrintMap,
+                                  forceReproducible = FALSE),
                     'zoonWorkflow',
                     info = 'The occurrence module did not work when chained in a workflow')
           
@@ -89,7 +107,8 @@ test_outputs <- function(roxy_parse, modulePath){
                                                    extent = myExtent),
                                   process = BackgroundAndCrossvalid,
                                   model = LogisticRegression,
-                                  output = PerformanceMeasures),
+                                  output = PerformanceMeasures,
+                                  forceReproducible = FALSE),
                     'zoonWorkflow',
                     info = 'The occurrence module did not work when listed in a workflow with crossvalidation')
           
@@ -102,7 +121,8 @@ test_outputs <- function(roxy_parse, modulePath){
                                                    extent = myExtent),
                                   process = NoProcess,
                                   model = LogisticRegression,
-                                  output = PrintMap),
+                                  output = PrintMap,
+                                  forceReproducible = FALSE),
                     'zoonWorkflow',
                     info = 'The occurrence module did not work in a standard workflow')
           
@@ -116,7 +136,8 @@ test_outputs <- function(roxy_parse, modulePath){
                                                    extent = myExtent),
                                   process = NoProcess,
                                   model = LogisticRegression,
-                                  output = PrintMap),
+                                  output = PrintMap,
+                                  forceReproducible = FALSE),
                     'zoonWorkflow',
                     info = 'The occurrence module did not work when chained in a workflow')
           
@@ -129,7 +150,8 @@ test_outputs <- function(roxy_parse, modulePath){
                                                    extent = myExtent),
                                   process = Crossvalidate,
                                   model = LogisticRegression,
-                                  output = PerformanceMeasures),
+                                  output = PerformanceMeasures,
+                                  forceReproducible = FALSE),
                     'zoonWorkflow',
                     info = 'The occurrence module did not work when listed in a workflow with crossvalidation')
   
@@ -167,7 +189,7 @@ test_outputs <- function(roxy_parse, modulePath){
       # Assign function
       CovariateModule <- source(modulePath)$value
       # this line is needed to  it to the global env. where zoon looks
-      assign('CovariateModule', CovariateModule, env = .GlobalEnv)
+      assign('CovariateModule', CovariateModule, envir = en)
       
       expect_is(extent(cov_return), "Extent",
                 info = 'An extent could not be obtained from the object returned by the covariate module')
@@ -175,7 +197,7 @@ test_outputs <- function(roxy_parse, modulePath){
       myExtent <- as.vector(extent(cov_return))
       
       # We have to do this so that zoon can find it
-      assign('myExtent', myExtent, env = .GlobalEnv)
+      assign('myExtent', myExtent, envir = en)
       
       # Normal
       expect_is(w <- workflow(occurrence = NaiveRandomPresence(extent = myExtent,
@@ -183,7 +205,8 @@ test_outputs <- function(roxy_parse, modulePath){
                               covariate = CovariateModule,
                               process = Background(n = 70),
                               model = LogisticRegression,
-                              output = PrintMap),
+                              output = PrintMap,
+                              forceReproducible = FALSE),
                 'zoonWorkflow',
                 info = 'The covariate module did not work in a standard workflow')
       
@@ -193,7 +216,8 @@ test_outputs <- function(roxy_parse, modulePath){
                               covariate = Chain(CovariateModule, CovariateModule),
                               process = Background(n = 70),
                               model = LogisticRegression,
-                              output = PrintMap),
+                              output = PrintMap,
+                              forceReproducible = FALSE),
                 'zoonWorkflow',
                 info = 'The covariate module did not work when chained in a workflow')
       
@@ -203,7 +227,8 @@ test_outputs <- function(roxy_parse, modulePath){
                               covariate = list(CovariateModule, CovariateModule),
                               process = BackgroundAndCrossvalid,
                               model = LogisticRegression,
-                              output = PrintMap),
+                              output = PrintMap,
+                              forceReproducible = FALSE),
                 'zoonWorkflow',
                 info = 'The covariate module did not work when listed in a workflow with crossvalidation')
       
@@ -222,7 +247,7 @@ test_outputs <- function(roxy_parse, modulePath){
       # assign the module
       ProcessModule <- source(modulePath)$value
       # this line is needed to  it to the global env. where zoon looks
-      assign('ProcessModule', ProcessModule, env = .GlobalEnv)
+      assign('ProcessModule', ProcessModule, envir = en)
       
       for(data_type in c("presence/absence", "presence-only")){
         
@@ -271,7 +296,8 @@ test_outputs <- function(roxy_parse, modulePath){
                                     covariate = CarolinaWrenRasters,
                                     process = ProcessModule,
                                     model = LogisticRegression,
-                                    output = PrintMap),
+                                    output = PrintMap,
+                                    forceReproducible = FALSE),
                       'zoonWorkflow',
                       info = 'The process module did not work in a standard workflow')
             
@@ -281,7 +307,8 @@ test_outputs <- function(roxy_parse, modulePath){
                                     process = Chain(Background(n = 70),
                                                     ProcessModule),
                                     model = LogisticRegression,
-                                    output = PrintMap),
+                                    output = PrintMap,
+                                    forceReproducible = FALSE),
                       'zoonWorkflow',
                       info = 'The process module did not work in a chain workflow')
             
@@ -291,7 +318,8 @@ test_outputs <- function(roxy_parse, modulePath){
                                     process = list(Crossvalidate,
                                                     ProcessModule),
                                     model = LogisticRegression,
-                                    output = PrintMap),
+                                    output = PrintMap,
+                                    forceReproducible = FALSE),
                       'zoonWorkflow',
                       info = 'The process module did not work in a list workflow')
             
@@ -303,17 +331,19 @@ test_outputs <- function(roxy_parse, modulePath){
                                     covariate = UKAir,
                                     process = ProcessModule,
                                     model = RandomForest,
-                                    output = PrintMap),
+                                    output = PrintMap,
+                                    forceReproducible = FALSE),
                       'zoonWorkflow',
                       info = 'The process module did not work in a standard workflow')
             
             # Chain
             expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
                                     covariate = UKAir,
-                                    process = list(Clean,
+                                    process = list(NoProcess,
                                                ProcessModule),
                                     model = RandomForest,
-                                    output = PrintMap),
+                                    output = PrintMap,
+                                    forceReproducible = FALSE),
                       'zoonWorkflow',
                       info = 'The process module did not work in a chain workflow')
             
@@ -323,7 +353,8 @@ test_outputs <- function(roxy_parse, modulePath){
                                     process = list(NoProcess,
                                                    ProcessModule),
                                     model = RandomForest,
-                                    output = PrintMap),
+                                    output = PrintMap,
+                                    forceReproducible = FALSE),
                       'zoonWorkflow',
                       info = 'The process module did not work in a list workflow')
           }
@@ -344,7 +375,7 @@ test_outputs <- function(roxy_parse, modulePath){
       # assign the module
       ModelModule <- source(modulePath)$value
       # this line is needed to  it to the global env. where zoon looks
-      assign('ModelModule', ModelModule, env = .GlobalEnv)
+      assign('ModelModule', ModelModule, envir = en)
       
       if(length(data_types) > 0){
       
@@ -403,27 +434,30 @@ test_outputs <- function(roxy_parse, modulePath){
             # normal
             expect_is(w <- workflow(occurrence = CarolinaWrenPA,
                                     covariate = CarolinaWrenRasters,
-                                    process = Clean,
+                                    process = NoProcess,
                                     model = ModelModule,
-                                    output = PrintMap),
+                                    output = PrintMap,
+                                    forceReproducible = FALSE),
                       'zoonWorkflow',
                       info = 'The model module did not work in a standard workflow')
             
             # Chained
             expect_is(w <- workflow(occurrence = CarolinaWrenPA,
                                     covariate = CarolinaWrenRasters,
-                                    process = Chain(Clean, NoProcess),
+                                    process = Chain(NoProcess, NoProcess),
                                     model = ModelModule,
-                                    output = PrintMap),
+                                    output = PrintMap,
+                                    forceReproducible = FALSE),
                       'zoonWorkflow',
                       info = 'The model module did not work in a chain workflow')
             
             # list
             expect_is(w <- workflow(occurrence = CarolinaWrenPA,
                                     covariate = CarolinaWrenRasters,
-                                    process = Clean,
+                                    process = NoProcess,
                                     model = list(ModelModule, ModelModule),
-                                    output = PrintMap),
+                                    output = PrintMap,
+                                    forceReproducible = FALSE),
                       'zoonWorkflow',
                       info = 'The process module did not work in a list workflow')
             
@@ -432,7 +466,8 @@ test_outputs <- function(roxy_parse, modulePath){
                                     covariate = CarolinaWrenRasters,
                                     process = Crossvalidate,
                                     model = list(ModelModule, ModelModule),
-                                    output = PerformanceMeasures),
+                                    output = PerformanceMeasures,
+                                    forceReproducible = FALSE),
                       'zoonWorkflow',
                       info = 'The process module did not work in a crossvalidation workflow')
             
@@ -444,17 +479,19 @@ test_outputs <- function(roxy_parse, modulePath){
                                     covariate = UKAir,
                                     process = Background(n = 70),
                                     model = ModelModule,
-                                    output = PrintMap),
+                                    output = PrintMap,
+                                    forceReproducible = FALSE),
                       'zoonWorkflow',
                       info = 'The process module did not work in a standard workflow')
             
             # Chain
             expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
                                     covariate = UKAir,
-                                    process = list(Clean,
+                                    process = list(NoProcess,
                                                    Background(n = 70)),
                                     model = ModelModule,
-                                    output = PrintMap),
+                                    output = PrintMap,
+                                    forceReproducible = FALSE),
                       'zoonWorkflow',
                       info = 'The process module did not work in a chain workflow')
             
@@ -463,7 +500,8 @@ test_outputs <- function(roxy_parse, modulePath){
                                     covariate = UKAir,
                                     process = Background(n = 70),
                                     model = list(ModelModule, ModelModule),
-                                    output = PrintMap),
+                                    output = PrintMap,
+                                    forceReproducible = FALSE),
                       'zoonWorkflow',
                       info = 'The process module did not work in a list workflow')
             
@@ -472,7 +510,8 @@ test_outputs <- function(roxy_parse, modulePath){
                                     covariate = UKAir,
                                     process = Chain(Background(n = 70), Crossvalidate),
                                     model = ModelModule,
-                                    output = PerformanceMeasures),
+                                    output = PerformanceMeasures,
+                                    forceReproducible = FALSE),
                       'zoonWorkflow',
                       info = 'The process module did not work in a crossvalidation workflow')
           }
@@ -494,7 +533,7 @@ test_outputs <- function(roxy_parse, modulePath){
       # assign the module
       OutputModule <- source(modulePath)$value
       # this line is needed to  it to the global env. where zoon looks
-      assign('OutputModule', OutputModule, env = .GlobalEnv)
+      assign('OutputModule', OutputModule, envir = en)
       
       
       ## ADD IN TEST OF OUTPUTS IF WE DECIDE THEY SHOULD CHAIN ##

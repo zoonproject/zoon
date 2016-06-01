@@ -21,7 +21,7 @@ test_that('simple, package data workflow works.', {
   expect_equal(dim(work1$covariate.output[[1]]), c(9,9,1))
   expect_equal(names(work1$process.output[[1]]$df), 
     c('value', 'type', 'fold', 'longitude',   'latitude',   'layer'))
-  expect_equal(dim(work1$process.output[[1]][[1]]),  c(269, 6))
+  expect_equal(dim(work1$process.output[[1]][[1]]),  c(258, 6))
   expect_is((work1$model.output[[1]])$model, c('zoonModel'))
   expect_is((work1$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is((work1$model.output[[1]])$data, c('data.frame'))
@@ -39,7 +39,7 @@ test_that('Check basic quoted workflow.', {
   
   work1 <- workflow(occurrence = 'UKAnophelesPlumbeus',
                  covariate = 'UKAir',
-                 process = 'Background(n = 70)',
+                 process = 'Background',
                  model = 'LogisticRegression',
                  output = 'PrintMap')
 
@@ -274,7 +274,7 @@ test_that('chains work.', {
   expect_equal(dim(chain1$covariate.output[[1]]), c(9,9,1))
   expect_equal(names(chain1$process.output[[1]]$df), 
     c('value', 'type', 'fold', 'longitude', 'latitude', 'layer'))
-  expect_equal(dim(chain1$process.output[[1]]$df),  c(457, 6))
+  expect_equal(dim(chain1$process.output[[1]]$df),  c(446, 6))
   expect_is((chain1$model.output[[1]])$model, c('zoonModel'))
   expect_is((chain1$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(chain1$report[[1]], 'RasterLayer') 
@@ -289,7 +289,7 @@ test_that('chains work.', {
   expect_equal(dim(chain2$covariate.output[[1]]), c(9,9,2))
   expect_equal(names(chain2$process.output[[1]]$df), 
     c('value', 'type', 'fold', 'longitude', 'latitude', 'layer.1', 'layer.2'))
-  expect_equal(dim(chain2$process.output[[1]]$df),  c(269, 7))
+  expect_equal(dim(chain2$process.output[[1]]$df),  c(258, 7))
   expect_is((chain2$model.output[[1]])$model, c('zoonModel'))
   expect_is((chain2$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(chain2$report[[1]], 'RasterLayer')  
@@ -304,7 +304,7 @@ test_that('chains work.', {
   expect_equal(dim(chain3$covariate.output[[1]]), c(9,9,2))
   expect_equal(names(chain3$process.output[[1]]$df), 
                c('value', 'type', 'fold', 'longitude', 'latitude', 'layer.1', 'layer.2'))
-  expect_equal(dim(chain3$process.output[[1]]$df),  c(269, 7))
+  expect_equal(dim(chain3$process.output[[1]]$df),  c(258, 7))
   expect_is((chain3$model.output[[1]])$model, c('zoonModel'))
   expect_is((chain3$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(chain3$report[[1]], 'list')  
@@ -319,7 +319,7 @@ test_that('chains work.', {
   expect_equal(dim(chain4$covariate.output[[1]]), c(9,9,1))
   expect_equal(names(chain4$process.output[[1]]$df), 
     c('value', 'type', 'fold', 'longitude', 'latitude', 'layer'))
-  expect_equal(dim(chain4$process.output[[1]]$df),  c(269, 6))
+  expect_equal(dim(chain4$process.output[[1]]$df),  c(258, 6))
   expect_is((chain4$model.output[[1]])$model, c('zoonModel'))
   expect_is((chain4$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(chain4$report[[1]], 'list')  
@@ -334,7 +334,7 @@ test_that('chains work.', {
   expect_equal(dim(chain5$covariate.output[[1]]), c(9,9,1))
   expect_equal(names(chain5$process.output[[1]]$df), 
                c('value', 'type', 'fold', 'longitude', 'latitude', 'layer'))
-  expect_equal(dim(chain5$process.output[[1]]$df),  c(269, 6))
+  expect_equal(dim(chain5$process.output[[1]]$df),  c(258, 6))
   expect_is((chain5$model.output[[1]])$model, c('zoonModel'))
   expect_is((chain5$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(chain5$report[[1]], 'RasterLayer')  
