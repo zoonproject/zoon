@@ -11,7 +11,7 @@ test_that('RerunWorkflow simple test', {
   set.seed(1)
   w1 <- workflow(UKAnophelesPlumbeus,
                  UKAir, 
-                 OneHundredBackground,
+                 Background(n = 70),
                  LogisticRegression,
                  PrintMap,
                  forceReproducible = TRUE)
@@ -30,7 +30,7 @@ test_that('RerunWorkflow test error', {
   set.seed(1)
   w1 <- workflow(UKAnophelesPlumbeus,
                  UKAir, 
-                 OneHundredBackground,
+                 Background(n = 70),
                  LogisticRegression,
                  PrintMap,
                  forceReproducible = TRUE)
@@ -52,7 +52,7 @@ test_that('RerunWorkflow test with NULLs', {
   set.seed(1)
   w1 <- workflow(UKAnophelesPlumbeus,
                  UKAir, 
-                 OneHundredBackground,
+                 Background(n = 70),
                  LogisticRegression,
                  PrintMap,
                  forceReproducible = TRUE)
@@ -99,7 +99,7 @@ test_that('RerunWorkflow test with Chains', {
   set.seed(1)
   w13 <- workflow(Chain(UKAnophelesPlumbeus,UKAnophelesPlumbeus),
                  UKAir, 
-                 OneHundredBackground,
+                 Background(n = 70),
                  LogisticRegression,
                  PrintMap,
                  forceReproducible = TRUE)
@@ -111,7 +111,7 @@ test_that('RerunWorkflow test with Chains', {
   set.seed(1)
   w15 <- workflow(Chain(UKAnophelesPlumbeus,UKAnophelesPlumbeus),
                   Chain(UKAir, UKAir), 
-                  OneHundredBackground,
+                  Background(n = 70),
                   LogisticRegression,
                   PrintMap,
                   forceReproducible = TRUE)
@@ -128,7 +128,7 @@ test_that('RerunWorkflow test with lists', {
   set.seed(1)
   w17 <- workflow(list(UKAnophelesPlumbeus,UKAnophelesPlumbeus),
                   UKAir, 
-                  OneHundredBackground,
+                  Background(n = 70),
                   LogisticRegression,
                   PrintMap,
                   forceReproducible = TRUE)
@@ -140,7 +140,7 @@ test_that('RerunWorkflow test with lists', {
   set.seed(1)
   w19 <- workflow(UKAnophelesPlumbeus,
                   list(UKAir, UKAir), 
-                  OneHundredBackground,
+                  Background(n = 70),
                   LogisticRegression,
                   PrintMap,
                   forceReproducible = TRUE)
@@ -157,7 +157,7 @@ test_that('RerunWorkflow test quoted modules', {
   set.seed(1)
   w21 <- workflow(occurrence = "UKAnophelesPlumbeus",
                   covariate  = UKAir,
-                  process    = OneHundredBackground,
+                  process    = Background(n = 70),
                   model      = RandomForest,
                   output     = PrintMap,
                   forceReproducible = TRUE)

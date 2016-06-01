@@ -9,7 +9,7 @@ test_that('simple, package data workflow works.', {
   
   work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                  covariate = UKAir,
-                 process = OneHundredBackground,
+                 process = Background(n = 70),
                  model = LogisticRegression,
                  output = PrintMap)
 
@@ -39,7 +39,7 @@ test_that('Check basic quoted workflow.', {
   
   work1 <- workflow(occurrence = 'UKAnophelesPlumbeus',
                  covariate = 'UKAir',
-                 process = 'OneHundredBackground',
+                 process = 'Background(n = 70)',
                  model = 'LogisticRegression',
                  output = 'PrintMap')
 
@@ -68,7 +68,7 @@ test_that('modules downloading data work', {
    work2 <- workflow(occurrence = SpOcc(species = 'Anopheles plumbeus',
                                         extent = c(-10, 10, 45, 65)),
                      covariate = UKAir,
-                     process = OneHundredBackground,
+                     process = Background(n = 70),
                      model = RandomForest, 
                      output = PrintMap)
    
@@ -104,32 +104,32 @@ test_that('Workflows with lists of modules work.', {
                          SpOcc(species = 'Anopheles plumbeus', 
                            extent = c(-10, 10, 45, 65))),
                          covariate = UKAir,
-                         process = OneHundredBackground,
+                         process = Background(n = 70),
                          model = LogisticRegression,
                          output = PrintMap)
 
   workCovarList <- workflow(occurrence = UKAnophelesPlumbeus,
                      covariate = list(UKAir, UKAir),
-                     process = OneHundredBackground,
+                     process = Background(n = 70),
                      model = LogisticRegression,
                      output = PrintMap)
 
   # There's only 1 appropriate process module at the moment!
   workProcessList <- workflow(occurrence = UKAnophelesPlumbeus,
                        covariate = UKAir,
-                       process = list(OneHundredBackground, OneHundredBackground),
+                       process = list(Background(n = 70), Background(n = 70)),
                        model = LogisticRegression,
                        output = PrintMap)
 
   workModelList <- workflow(occurrence = UKAnophelesPlumbeus,
                      covariate = UKAir,
-                     process = OneHundredBackground,
+                     process = Background(n = 70),
                      model = list(LogisticRegression, RandomForest),
                      output = PrintMap)
 
   workOutputList <- workflow(occurrence = UKAnophelesPlumbeus,
                      covariate = UKAir,
-                     process = OneHundredBackground,
+                     process = Background(n = 70),
                      model = LogisticRegression,
                      output = list(PrintMap, PrintMap))
 
@@ -178,7 +178,7 @@ test_that('only one set of multiple lists allowed.', {
     x <- workflow(occurrence = list(UKAnophelesPlumbeus,
                     UKAnophelesPlumbeus),
            covariate = list(UKAir, UKAir),
-           process = OneHundredBackground,
+           process = Background(n = 70),
            model = LogisticRegression,
            output = PrintMap)
   }
@@ -186,7 +186,7 @@ test_that('only one set of multiple lists allowed.', {
 fnc2 <- function(){
     x <- workflow(occurrence = UKAnophelesPlumbeus,
            covariate = list(UKAir, UKAir),
-           process = list(OneHundredBackground,OneHundredBackground),
+           process = list(Background(n = 70),Background(n = 70)),
            model = LogisticRegression,
            output = PrintMap)
   }
@@ -194,7 +194,7 @@ fnc2 <- function(){
 fnc3 <- function(){
     x <- workflow(occurrence = UKAnophelesPlumbeus,
            covariate = UKAir,
-           process = OneHundredBackground,
+           process = Background(n = 70),
            model = list(LogisticRegression,LogisticRegression),
            output = list(PrintMap, PrintMap))
   }
@@ -239,32 +239,32 @@ test_that('chains work.', {
   
   chain1 <- workflow(occurrence = Chain(UKAnophelesPlumbeus,UKAnophelesPlumbeus),
                  covariate = UKAir,
-                 process = OneHundredBackground,
+                 process = Background(n = 70),
                  model = LogisticRegression,
                  output = PrintMap)
 
   
   chain2 <- workflow(occurrence = UKAnophelesPlumbeus,
                  covariate = Chain(UKAir,UKAir),
-                 process = OneHundredBackground,
+                 process = Background(n = 70),
                  model = LogisticRegression,
                  output = PrintMap)
   
   chain3 <- workflow(occurrence = UKAnophelesPlumbeus,
                      covariate = Chain(UKAir,UKAir),
-                     process = OneHundredBackground,
+                     process = Background(n = 70),
                      model = LogisticRegression,
                      output = Chain(PrintMap, PrintMap))
   
   chain4 <- workflow(occurrence = UKAnophelesPlumbeus,
                  covariate = UKAir,
-                 process = OneHundredBackground,
+                 process = Background(n = 70),
                  model = LogisticRegression,
                  output = Chain(PrintMap, PrintMap))
   
   chain5 <- workflow(occurrence = UKAnophelesPlumbeus,
                      covariate = UKAir,
-                     process = Chain(OneHundredBackground, NoProcess),
+                     process = Chain(Background(n = 70), NoProcess),
                      model = LogisticRegression,
                      output = PrintMap)
   
@@ -442,13 +442,13 @@ test_that('Output understands which previous model was listed.', {
   
   work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                     covariate  = list(LocalRaster(UKAirRas2), UKAir),
-                    process    = OneHundredBackground,
+                    process    = Background(n = 70),
                     model      = LogisticRegression,
                     output     = PrintMap)
   
   work2 <- workflow(occurrence = UKAnophelesPlumbeus,
                     covariate  = list(LocalRaster(UKAirRas2), UKAir),
-                    process    = OneHundredBackground,
+                    process    = Background(n = 70),
                     model      = LogisticRegression,
                     output     = Chain(PrintMap, PrintMap))
   

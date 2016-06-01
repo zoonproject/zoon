@@ -8,7 +8,7 @@ test_that('ChangeWorkflow errors', {
   set.seed(1)
   w1 <- workflow(UKAnophelesPlumbeus,
                  UKAir, 
-                 OneHundredBackground,
+                 Background(n = 70),
                  LogisticRegression,
                  PrintMap)
     
@@ -30,7 +30,7 @@ test_that('Basic ChangeWorkflow works', {
   set.seed(1)
   w1 <- workflow(UKAnophelesPlumbeus,
                  UKAir, 
-                 OneHundredBackground,
+                 Background(n = 70),
                  LogisticRegression,
                  PrintMap)
   
@@ -38,7 +38,7 @@ test_that('Basic ChangeWorkflow works', {
   set.seed(1)
   w2 <- workflow(UKAnophelesPlumbeus,
                  UKAir, 
-                 OneHundredBackground,
+                 Background(n = 70),
                  RandomForest,
                  PrintMap)
 
@@ -48,7 +48,7 @@ test_that('Basic ChangeWorkflow works', {
   expect_true(all.equal(w1[!names(w1) %in% 'session.info'],
                         w3[!names(w3) %in% 'session.info']))
   expect_true(identical(w2$call,
-    "workflow(occurrence = UKAnophelesPlumbeus, covariate = UKAir, process = OneHundredBackground, model = RandomForest, output = PrintMap, forceReproducible = FALSE)"))
+    "workflow(occurrence = UKAnophelesPlumbeus, covariate = UKAir, process = Background(n = 70), model = RandomForest, output = PrintMap, forceReproducible = FALSE)"))
 
   
   # Change Process, model and output
@@ -61,7 +61,7 @@ test_that('Basic ChangeWorkflow works', {
 
   set.seed(1)
   w5 <- ChangeWorkflow(w4,
-                       process = OneHundredBackground, 
+                       process = Background(n = 70), 
                        model = LogisticRegression, 
                        output = PrintMap)
   expect_true(all.equal(w1[!names(w1) %in% 'session.info'],
@@ -75,7 +75,7 @@ test_that('Basic ChangeWorkflow works', {
                    "/dev/null"))
   w6 <- workflow(AnophelesPlumbeus,
                  UKBioclim, 
-                 OneHundredBackground,
+                 Background(n = 70),
                  LogisticRegression,
                  PrintMap,
                  forceReproducible = TRUE)
@@ -99,7 +99,7 @@ test_that('Basic ChangeWorkflow works', {
   set.seed(1)
   w7a <- workflow(UKAnophelesPlumbeus,
                   UKAir, 
-                  OneHundredBackground,
+                  Background(n = 70),
                   LogisticRegression,
                   PerformanceMeasures)
   set.seed(1)
@@ -118,7 +118,7 @@ test_that('ChangeWorkflow - Chains', {
   set.seed(1)
   w1 <- workflow(UKAnophelesPlumbeus,
                  UKAir, 
-                 OneHundredBackground,
+                 Background(n = 70),
                  LogisticRegression,
                  PrintMap)
   
@@ -126,7 +126,7 @@ test_that('ChangeWorkflow - Chains', {
   set.seed(1)
   w8 <- workflow(Chain(UKAnophelesPlumbeus, UKAnophelesPlumbeus),
                  UKAir, 
-                 OneHundredBackground,
+                 Background(n = 70),
                  LogisticRegression,
                  PrintMap)
   
@@ -142,7 +142,7 @@ test_that('ChangeWorkflow - Chains', {
   set.seed(1)
   w10 <- workflow(UKAnophelesPlumbeus,
                   Chain(UKAir, UKAir), 
-                  OneHundredBackground,
+                  Background(n = 70),
                   LogisticRegression,
                   PrintMap)
   
@@ -175,7 +175,7 @@ test_that('ChangeWorkflow - Lists', {
   set.seed(1)
   w1 <- workflow(UKAnophelesPlumbeus,
                  UKAir, 
-                 OneHundredBackground,
+                 Background(n = 70),
                  LogisticRegression,
                  PrintMap)
   
@@ -183,7 +183,7 @@ test_that('ChangeWorkflow - Lists', {
   set.seed(1)
   w13 <- workflow(list(UKAnophelesPlumbeus, UKAnophelesPlumbeus),
                  UKAir, 
-                 OneHundredBackground,
+                 Background(n = 70),
                  LogisticRegression,
                  PrintMap)
   
@@ -199,7 +199,7 @@ test_that('ChangeWorkflow - Lists', {
   set.seed(1)
   w15 <- workflow(UKAnophelesPlumbeus,
                   list(UKAir, UKAir), 
-                  OneHundredBackground,
+                  Background(n = 70),
                   LogisticRegression,
                   PrintMap)
   
@@ -229,7 +229,7 @@ test_that('More complex syntax in remaining modules works', {
   set.seed(1)
   w1 <- workflow(UKAnophelesPlumbeus,
                  UKAir, 
-                 OneHundredBackground,
+                 Background(n = 70),
                  LogisticRegression,
                  PrintMap)
   
