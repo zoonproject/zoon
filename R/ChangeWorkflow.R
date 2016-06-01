@@ -16,7 +16,7 @@
 #'@examples \dontrun{
 #' w <- workflow(UKAnophelesPlumbeus,
 #'               UKAir,
-#'               OneHundredBackground, 
+#'               Background(n = 70), 
 #'               LogisticRegression,
 #'               PrintMap)
 #'

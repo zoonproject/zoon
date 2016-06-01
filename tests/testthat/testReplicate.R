@@ -21,7 +21,7 @@ test_that('Replicate workflow tests', {
   
   work2 <- workflow(occurrence = Replicate(UKAnophelesPlumbeus, 3),
                  covariate = UKAir,
-                 process = OneHundredBackground,
+                 process = Background(n=70),
                  model = LogisticRegression,
                  output = SameTimePlaceMap)
   

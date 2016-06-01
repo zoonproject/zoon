@@ -18,7 +18,7 @@
 #'\dontrun{
 #'work1 <- workflow(occurrence = UKAnophelesPlumbeus,
 #'                  covariate  = UKAir,
-#'                  process    = OneHundredBackground,
+#'                  process    = Background(n = 70),
 #'                  model      = list(LogisticRegression, LogisticRegression),
 #'                  output     = PrintMap)
 #'

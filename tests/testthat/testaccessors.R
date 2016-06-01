@@ -8,7 +8,7 @@ test_that('All accessor functions return objects of the right length and type', 
   # All length 1 (therefore not lists of length 1)
   work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                     covariate  = UKAir,
-                    process    = OneHundredBackground,
+                    process    = Background(n=70),
                     model      = LogisticRegression,
                     output     = PrintMap)
 
@@ -16,7 +16,7 @@ test_that('All accessor functions return objects of the right length and type', 
   # All length 2 except covariate
   work2 <- workflow(occurrence = list(UKAnophelesPlumbeus, UKAnophelesPlumbeus),
                     covariate  = UKAir,
-                    process    = OneHundredBackground,
+                    process    = Background(n=70),
                     model      = LogisticRegression,
                     output     = PrintMap)
 
@@ -24,7 +24,7 @@ test_that('All accessor functions return objects of the right length and type', 
   # All length 2 expect occurrence
   work3 <- workflow(occurrence = UKAnophelesPlumbeus,
                     covariate  = list(UKAir, UKAir),
-                    process    = OneHundredBackground,
+                    process    = Background(n=70),
                     model      = LogisticRegression,
                     output     = PrintMap)
 

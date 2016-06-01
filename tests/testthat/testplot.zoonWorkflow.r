@@ -10,7 +10,7 @@ test_that('plot.zoonWorkflow works', {
   # Create a simple workflow to test on
   work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                     covariate = UKAir,
-                    process = OneHundredBackground,
+                    process = Background(n = 70),
                     model = LogisticRegression,
                     output = PrintMap)
   png(filename = file.path(directory, 'tempzoonWorkflow1.png'))
@@ -24,7 +24,7 @@ test_that('plot.zoonWorkflow works', {
                                       SpOcc(species = 'Anopheles plumbeus', 
                                             extent = c(-10, 10, 45, 65))),
                     covariate = UKAir,
-                    process = OneHundredBackground,
+                    process = Background(n = 70),
                     model = LogisticRegression,
                     output = PrintMap)
   png(filename = file.path(directory, 'tempzoonWorkflow2.png'))
@@ -38,7 +38,7 @@ test_that('plot.zoonWorkflow works', {
                                       SpOcc(species = 'Anopheles plumbeus', 
                                             extent = c(-10, 10, 45, 65))),
                     covariate = UKAir,
-                    process = OneHundredBackground,
+                    process = Background(n = 70),
                     model = LogisticRegression,
                     output = PrintMap)
   png(filename = file.path(directory, 'tempzoonWorkflow3.png'))
@@ -94,8 +94,8 @@ test_that('plot.zoonWorkflow module not on repo', {
   work4 <- workflow(occurrence = UKAnophelesPlumbeus, 
                     covariate = UKAir,
                     process = list(myMissing,
-                                   OneHundredBackground,
-                                   OneThousandBackground,
+                                   Background(n = 20),
+                                   Background(n = 70),
                                    myMissing,
                                    NoProcess),
                     model = LogisticRegression,

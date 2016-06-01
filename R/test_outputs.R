@@ -283,7 +283,7 @@ test_outputs <- function(roxy_parse, modulePath){
                                     model = LogisticRegression,
                                     output = PrintMap),
                       'zoonWorkflow',
-                      info = 'The process module did not work in a standard workflow')
+                      info = 'The process module did not work in a chain workflow')
             
             # list + crossvalidated
             expect_is(w <- workflow(occurrence = CarolinaWrenPA,
@@ -293,7 +293,7 @@ test_outputs <- function(roxy_parse, modulePath){
                                     model = LogisticRegression,
                                     output = PrintMap),
                       'zoonWorkflow',
-                      info = 'The process module did not work in a standard workflow')
+                      info = 'The process module did not work in a list workflow')
             
             
           } else if(data_type == "presence-only"){
@@ -315,7 +315,7 @@ test_outputs <- function(roxy_parse, modulePath){
                                     model = RandomForest,
                                     output = PrintMap),
                       'zoonWorkflow',
-                      info = 'The process module did not work in a chain')
+                      info = 'The process module did not work in a chain workflow')
             
             # list
             expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
@@ -325,7 +325,7 @@ test_outputs <- function(roxy_parse, modulePath){
                                     model = RandomForest,
                                     output = PrintMap),
                       'zoonWorkflow',
-                      info = 'The process module did not work in a standard workflow')
+                      info = 'The process module did not work in a list workflow')
           }
         }
       }
@@ -340,6 +340,11 @@ test_outputs <- function(roxy_parse, modulePath){
       # Run the module with defaults
       sections <- roxy_parse[grepl('section', names(roxy_parse))]
       data_types <- gsub('Data type: ', '', sections[grepl('Data type: ', sections)])
+      
+      # assign the module
+      ModelModule <- source(modulePath)$value
+      # this line is needed to  it to the global env. where zoon looks
+      assign('ModelModule', ModelModule, env = .GlobalEnv)
       
       if(length(data_types) > 0){
       
@@ -391,9 +396,138 @@ test_outputs <- function(roxy_parse, modulePath){
           
           expect_true(length(not_avail) == 0, info = paste('Not all packages specified in your model module are available on cran. Could not find:',
                                                            paste(not_avail, collapse = ', ')))
+          
+          ## Try it in some workflows
+          if(data_type == "presence/absence"){
+            
+            # normal
+            expect_is(w <- workflow(occurrence = CarolinaWrenPA,
+                                    covariate = CarolinaWrenRasters,
+                                    process = Clean,
+                                    model = ModelModule,
+                                    output = PrintMap),
+                      'zoonWorkflow',
+                      info = 'The model module did not work in a standard workflow')
+            
+            # Chained
+            expect_is(w <- workflow(occurrence = CarolinaWrenPA,
+                                    covariate = CarolinaWrenRasters,
+                                    process = Chain(Clean, NoProcess),
+                                    model = ModelModule,
+                                    output = PrintMap),
+                      'zoonWorkflow',
+                      info = 'The model module did not work in a chain workflow')
+            
+            # list
+            expect_is(w <- workflow(occurrence = CarolinaWrenPA,
+                                    covariate = CarolinaWrenRasters,
+                                    process = Clean,
+                                    model = list(ModelModule, ModelModule),
+                                    output = PrintMap),
+                      'zoonWorkflow',
+                      info = 'The process module did not work in a list workflow')
+            
+            # crossvalidate
+            expect_is(w <- workflow(occurrence = CarolinaWrenPA,
+                                    covariate = CarolinaWrenRasters,
+                                    process = Crossvalidate,
+                                    model = list(ModelModule, ModelModule),
+                                    output = PerformanceMeasures),
+                      'zoonWorkflow',
+                      info = 'The process module did not work in a crossvalidation workflow')
+            
+            
+          } else if(data_type == "presence/background"){
+            
+            # Norm
+            expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
+                                    covariate = UKAir,
+                                    process = Background(n = 70),
+                                    model = ModelModule,
+                                    output = PrintMap),
+                      'zoonWorkflow',
+                      info = 'The process module did not work in a standard workflow')
+            
+            # Chain
+            expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
+                                    covariate = UKAir,
+                                    process = list(Clean,
+                                                   Background(n = 70)),
+                                    model = ModelModule,
+                                    output = PrintMap),
+                      'zoonWorkflow',
+                      info = 'The process module did not work in a chain workflow')
+            
+            # list
+            expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
+                                    covariate = UKAir,
+                                    process = Background(n = 70),
+                                    model = list(ModelModule, ModelModule),
+                                    output = PrintMap),
+                      'zoonWorkflow',
+                      info = 'The process module did not work in a list workflow')
+            
+            # crossvalidate
+            expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
+                                    covariate = UKAir,
+                                    process = Chain(Background(n = 70), Crossvalidate),
+                                    model = ModelModule,
+                                    output = PerformanceMeasures),
+                      'zoonWorkflow',
+                      info = 'The process module did not work in a crossvalidation workflow')
+          }
           }
         }
       }
+    }
+    
+    ## OUTPUT MODULES ##
+    if(roxy_parse$family == 'output'){
+      
+      # Load the script
+      source(modulePath) 
+      
+      # Run the module with defaults
+      sections <- roxy_parse[grepl('section', names(roxy_parse))]
+      data_types <- gsub('Data type: ', '', sections[grepl('Data type: ', sections)])
+      
+      # assign the module
+      OutputModule <- source(modulePath)$value
+      # this line is needed to  it to the global env. where zoon looks
+      assign('OutputModule', OutputModule, env = .GlobalEnv)
+      
+      
+      ## ADD IN TEST OF OUTPUTS IF WE DECIDE THEY SHOULD CHAIN ##
+      
+      ## At the moment output modules are expected to work with 
+      ## all data types
+        
+      # normal
+      expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
+                              covariate = UKAir,
+                              process = Background(n = 70),
+                              model = LogisticRegression,
+                              output = OutputModule),
+                'zoonWorkflow',
+                info = 'The output module did not work in a standard workflow')
+      
+      # # Chained
+      # expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
+      #                         covariate = UKAir,
+      #                         process = Background(n = 70),
+      #                         model = LogisticRegression,
+      #                         output = Chain(OutputModule, OutputModule)),
+      #           'zoonWorkflow',
+      #           info = 'The output module did not work in a chain workflow')
+      
+      # list + crossvalidated
+      expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
+                              covariate = UKAir,
+                              process = Background(n = 70),
+                              model = LogisticRegression,
+                              output = list(OutputModule, OutputModule)),
+                'zoonWorkflow',
+                info = 'The process module did not work in a list workflow')
     }
   })
 }
