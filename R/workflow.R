@@ -139,7 +139,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   class(output) <- 'zoonWorkflow'
   
   # whether exiting on error, or successful completion, return this
-  on.exit(return (output))
+  on.exit(return(output))
   
   tryCatch({
     occurrence.output <- lapply(occurrenceName, FUN = DoOccurrenceModule, e = e)

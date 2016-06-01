@@ -33,7 +33,115 @@ test_outputs <- function(roxy_parse, modulePath){
       expect_is(occ_return$value, c('numeric', 'integer'), info = 'value must be a numeric or integer')
       expect_is(occ_return$type, 'character', info = 'type must be a character')
       expect_is(occ_return$fold, c('numeric', 'integer'), info = 'info must be a numeric or integer')
+      
+      ## Check it in a few workflows
+      # Assign function
+      OccurrenceModule <- source(modulePath)$value
+      # this line is needed to  it to the global env. where zoon looks
+      assign('OccurrenceModule', OccurrenceModule, env = .GlobalEnv)
+      
+      # Get the data types
+      sections <- roxy_parse[grepl('section', names(roxy_parse))]
+      data_types <- trimws(strsplit(gsub('Data type: ', '', sections[grepl('Data type: ', sections)]),
+                                    split = ',')[[1]])
+      
+      xmin <- floor(min(occ_return$longitude, na.rm = TRUE))
+      xmax <- ceiling(max(occ_return$longitude, na.rm = TRUE))
+      ymin <- floor(min(occ_return$longitude, na.rm = TRUE))
+      ymax <- ceiling(min(occ_return$longitude, na.rm = TRUE))
+      
+      myExtent <- c(xmin, xmax, ymin, ymax)
+      
+      # We have to do this so that zoon can find it
+      assign('myExtent', myExtent, env = .GlobalEnv)
+      
+      for(data_type in data_types){
+        
+        # Presence only
+        if(data_type == "presence-only"){ 
+          
+          # test normal
+          expect_is(w <- workflow(occurrence = OccurrenceModule,
+                                  covariate = NCEP(variables = 'air',
+                                                   extent = myExtent),
+                                  process = OneHundredBackground,
+                                  model = LogisticRegression,
+                                  output = PrintMap),
+                    'zoonWorkflow',
+                    info = 'The occurrence module did not work in a standard workflow')
+          
+          # test Chain
+          expect_is(w <- workflow(occurrence = Chain(OccurrenceModule,
+                                                     OccurrenceModule),
+                                  covariate = NCEP(variables = 'air',
+                                                   extent = myExtent),
+                                  process = OneHundredBackground,
+                                  model = LogisticRegression,
+                                  output = PrintMap),
+                    'zoonWorkflow',
+                    info = 'The occurrence module did not work when chained in a workflow')
+          
 
+          # test list + crossvalidation
+          expect_is(w <- workflow(occurrence = list(OccurrenceModule,
+                                                    OccurrenceModule),
+                                  covariate = NCEP(variables = 'air',
+                                                   extent = myExtent),
+                                  process = BackgroundAndCrossvalid,
+                                  model = LogisticRegression,
+                                  output = PerformanceMeasures),
+                    'zoonWorkflow',
+                    info = 'The occurrence module did not work when listed in a workflow with crossvalidation')
+          
+          
+        } else if(data_type == "presence/absence"){
+          
+          # test normal
+          expect_is(w <- workflow(occurrence = OccurrenceModule,
+                                  covariate = NCEP(variables = 'air',
+                                                   extent = myExtent),
+                                  process = NoProcess,
+                                  model = LogisticRegression,
+                                  output = PrintMap),
+                    'zoonWorkflow',
+                    info = 'The occurrence module did not work in a standard workflow')
+          
+          # test this
+          Occurrence(w)
+          
+          # test Chain
+          expect_is(w <- workflow(occurrence = Chain(OccurrenceModule,
+                                                     OccurrenceModule),
+                                  covariate = NCEP(variables = 'air',
+                                                   extent = myExtent),
+                                  process = NoProcess,
+                                  model = LogisticRegression,
+                                  output = PrintMap),
+                    'zoonWorkflow',
+                    info = 'The occurrence module did not work when chained in a workflow')
+          
+          
+          
+          # test list + crossvalidation
+          expect_is(w <- workflow(occurrence = list(OccurrenceModule,
+                                                    OccurrenceModule),
+                                  covariate = NCEP(variables = 'air',
+                                                   extent = myExtent),
+                                  process = Crossvalidate,
+                                  model = LogisticRegression,
+                                  output = PerformanceMeasures),
+                    'zoonWorkflow',
+                    info = 'The occurrence module did not work when listed in a workflow with crossvalidation')
+  
+        } ## Add tests for proportion and abundance ##
+        
+        
+        # create a modules that creates a random number of
+        # presence points
+        
+      }
+      
+      
     }
     
     ## COVARIATE MODULES ##
@@ -55,6 +163,50 @@ test_outputs <- function(roxy_parse, modulePath){
       # Check raster returned is as expected
       expect_is(cov_return, c('RasterLayer', 'RasterStack', 'RasterBrick'), info = 'Covariate module output must be either a RasterLayer or a RasterStack')
       
+      ## Check it in a few workflows
+      # Assign function
+      CovariateModule <- source(modulePath)$value
+      # this line is needed to  it to the global env. where zoon looks
+      assign('CovariateModule', CovariateModule, env = .GlobalEnv)
+      
+      expect_is(extent(cov_return), "Extent",
+                info = 'An extent could not be obtained from the object returned by the covariate module')
+      
+      myExtent <- as.vector(extent(cov_return))
+      
+      # We have to do this so that zoon can find it
+      assign('myExtent', myExtent, env = .GlobalEnv)
+      
+      # Normal
+      expect_is(w <- workflow(occurrence = NaiveRandomPresence(extent = myExtent,
+                                                               seed = 123),
+                              covariate = CovariateModule,
+                              process = OneHundredBackground,
+                              model = LogisticRegression,
+                              output = PrintMap),
+                'zoonWorkflow',
+                info = 'The covariate module did not work in a standard workflow')
+      
+      # Chain
+      expect_is(w <- workflow(occurrence = NaiveRandomPresence(extent = myExtent,
+                                                               seed = 123),
+                              covariate = Chain(CovariateModule, CovariateModule),
+                              process = OneHundredBackground,
+                              model = LogisticRegression,
+                              output = PrintMap),
+                'zoonWorkflow',
+                info = 'The covariate module did not work when chained in a workflow')
+      
+      # List + crossvalidate
+      expect_is(w <- workflow(occurrence = NaiveRandomPresence(extent = myExtent,
+                                                               seed = 123),
+                              covariate = list(CovariateModule, CovariateModule),
+                              process = BackgroundAndCrossvalid,
+                              model = LogisticRegression,
+                              output = PrintMap),
+                'zoonWorkflow',
+                info = 'The covariate module did not work when listed in a workflow with crossvalidation')
+      
     }
     
     ## PROCESS MODULES ##
@@ -66,6 +218,11 @@ test_outputs <- function(roxy_parse, modulePath){
       # Run the module with defaults
       sections <- roxy_parse[grepl('section', names(roxy_parse))]
       data_types <- gsub('Data type: ', '', sections[grepl('Data type: ', sections)])
+      
+      # assign the module
+      ProcessModule <- source(modulePath)$value
+      # this line is needed to  it to the global env. where zoon looks
+      assign('ProcessModule', ProcessModule, env = .GlobalEnv)
       
       for(data_type in c("presence/absence", "presence-only")){
         
@@ -106,6 +263,70 @@ test_outputs <- function(roxy_parse, modulePath){
           # Check raster returned is as expected
           expect_is(pro_return$ras, c('RasterLayer', 'RasterStack', 'RasterBrick'), info = 'The "ras" element returned by a process module must be either a RasterLayer or a RasterStack')
           
+          ## Try it in some workflows
+          if(data_type == "presence/absence"){
+            
+            # normal
+            expect_is(w <- workflow(occurrence = CarolinaWrenPA,
+                                    covariate = CarolinaWrenRasters,
+                                    process = ProcessModule,
+                                    model = LogisticRegression,
+                                    output = PrintMap),
+                      'zoonWorkflow',
+                      info = 'The process module did not work in a standard workflow')
+            
+            # Chained
+            expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
+                                    covariate = UKAir,
+                                    process = Chain(OneHundredBackground,
+                                                    ProcessModule),
+                                    model = LogisticRegression,
+                                    output = PrintMap),
+                      'zoonWorkflow',
+                      info = 'The process module did not work in a standard workflow')
+            
+            # list + crossvalidated
+            expect_is(w <- workflow(occurrence = CarolinaWrenPA,
+                                    covariate = CarolinaWrenRasters,
+                                    process = list(Crossvalidate,
+                                                    ProcessModule),
+                                    model = LogisticRegression,
+                                    output = PrintMap),
+                      'zoonWorkflow',
+                      info = 'The process module did not work in a standard workflow')
+            
+            
+          } else if(data_type == "presence-only"){
+            
+            # Norm
+            expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
+                                    covariate = UKAir,
+                                    process = ProcessModule,
+                                    model = RandomForest,
+                                    output = PrintMap),
+                      'zoonWorkflow',
+                      info = 'The process module did not work in a standard workflow')
+            
+            # Chain
+            expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
+                                    covariate = UKAir,
+                                    process = list(Clean,
+                                               ProcessModule),
+                                    model = RandomForest,
+                                    output = PrintMap),
+                      'zoonWorkflow',
+                      info = 'The process module did not work in a chain')
+            
+            # list
+            expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
+                                    covariate = UKAir,
+                                    process = list(NoProcess,
+                                                   ProcessModule),
+                                    model = RandomForest,
+                                    output = PrintMap),
+                      'zoonWorkflow',
+                      info = 'The process module did not work in a standard workflow')
+          }
         }
       }
     }
