@@ -1,3 +1,9 @@
+#' @import maxlike
+#' @importFrom scrubr coord_impossible coord_incomplete coord_unlikely
+#' @importFrom RNCEP NCEP.gather
+#' @importFrom SDMTools auc confusion.matrix
+#' @import randomForest
+#' 
 # A function for testing the outputs conform to the expected
 # (within a context)
 test_outputs <- function(roxy_parse, modulePath){
