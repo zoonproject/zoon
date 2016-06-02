@@ -3,6 +3,7 @@
 #' @importFrom RNCEP NCEP.gather
 #' @importFrom SDMTools auc confusion.matrix
 #' @import randomForest
+#' @import raster
 #' 
 # A function for testing the outputs conform to the expected
 # (within a context)
