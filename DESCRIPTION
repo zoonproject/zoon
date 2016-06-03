@@ -16,9 +16,6 @@ Imports:
     methods,
     testthat,
     roxygen2,
-    maxlike,
-    scrubr,
-    RNCEP, 
     SDMTools,
     randomForest
 Depends:

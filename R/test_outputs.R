@@ -1,9 +1,5 @@
-#' @import maxlike
-#' @importFrom scrubr coord_impossible coord_incomplete coord_unlikely
-#' @importFrom RNCEP NCEP.gather
 #' @importFrom SDMTools auc confusion.matrix
 #' @import randomForest
-#' @import raster
 #' 
 # A function for testing the outputs conform to the expected
 # (within a context)
@@ -18,29 +14,28 @@ test_outputs <- function(roxy_parse, modulePath){
   # I get around this by assigning them all to NULL here and then loading 
   # them in. using forcereproducile = TRUE is not an option as this does
   # not allow me to use the module under test
-  Background <- BackgroundAndCrossvalid <- CarolinaWrenPA <- NULL
-  CarolinaWrenRasters <- Clean <- Crossvalidate <- LogisticRegression <- NULL
-  NCEP <- NaiveRandomPresence <- NoProcess <- PerformanceMeasures <- NULL
-  PrintMap <- RandomForest <- UKAir <- UKAnophelesPlumbeus <- NULL
   
-  LoadModule('Background'); LoadModule('BackgroundAndCrossvalid')
-  LoadModule('CarolinaWrenPA'); LoadModule('CarolinaWrenRasters')
-  LoadModule('Clean'); LoadModule('Crossvalidate'); LoadModule('LogisticRegression')
-  LoadModule('NCEP'); LoadModule('NaiveRandomPresence'); LoadModule('NoProcess')
-  LoadModule('PerformanceMeasures'); LoadModule('PrintMap'); LoadModule('RandomForest')
-  LoadModule('UKAir'); LoadModule('UKAnophelesPlumbeus')
-  
-  test_that('Check output formats',{ 
+  test_that('Check OCCURRENCE output formats',{ 
     
     ## OCCURRENCE MODULES ##
     if(roxy_parse$family == 'occurrence'){
+      
+      Background <- BackgroundAndCrossvalid <- NULL
+      NaiveRandomRaster <- Crossvalidate <- LogisticRegression <- NULL
+      NoProcess <- PrintMap <- NULL
+      
+      ## Move these to the sections where they are needed
+      LoadModule('Background'); LoadModule('BackgroundAndCrossvalid')
+      LoadModule('Crossvalidate'); LoadModule('LogisticRegression')
+      LoadModule('NaiveRandomRaster');LoadModule('NoProcess')
+      LoadModule('PrintMap')
       
       # Load the script
       source(modulePath) 
       
       # Run the module with defaults
       suppressWarnings({
-      occ_return <- do.call(roxy_parse$name, args = list())
+        occ_return <- do.call(roxy_parse$name, args = list())
       })
       
       # Check the data.frame returned is as expected
@@ -70,8 +65,8 @@ test_outputs <- function(roxy_parse, modulePath){
       
       xmin <- floor(min(occ_return$longitude, na.rm = TRUE))
       xmax <- ceiling(max(occ_return$longitude, na.rm = TRUE))
-      ymin <- floor(min(occ_return$longitude, na.rm = TRUE))
-      ymax <- ceiling(min(occ_return$longitude, na.rm = TRUE))
+      ymin <- floor(min(occ_return$latitude, na.rm = TRUE))
+      ymax <- ceiling(max(occ_return$latitude, na.rm = TRUE))
       
       myExtent <- c(xmin, xmax, ymin, ymax)
       
@@ -85,8 +80,9 @@ test_outputs <- function(roxy_parse, modulePath){
           
           # test normal
           expect_is(w <- workflow(occurrence = OccurrenceModule,
-                                  covariate = NCEP(variables = 'air',
-                                                   extent = myExtent),
+                                  covariate = NaiveRandomRaster(extent = myExtent,
+                                                                res = 0.5,
+                                                                seed = 123),
                                   process = Background(n = 70),
                                   model = LogisticRegression,
                                   output = PrintMap,
@@ -97,8 +93,9 @@ test_outputs <- function(roxy_parse, modulePath){
           # test Chain
           expect_is(w <- workflow(occurrence = Chain(OccurrenceModule,
                                                      OccurrenceModule),
-                                  covariate = NCEP(variables = 'air',
-                                                   extent = myExtent),
+                                  covariate = NaiveRandomRaster(extent = myExtent,
+                                                                res = 0.5,
+                                                                seed = 123),
                                   process = Background(n = 70),
                                   model = LogisticRegression,
                                   output = PrintMap,
@@ -110,8 +107,9 @@ test_outputs <- function(roxy_parse, modulePath){
           # test list + crossvalidation
           expect_is(w <- workflow(occurrence = list(OccurrenceModule,
                                                     OccurrenceModule),
-                                  covariate = NCEP(variables = 'air',
-                                                   extent = myExtent),
+                                  covariate = NaiveRandomRaster(extent = myExtent,
+                                                                res = 0.5,
+                                                                seed = 123),
                                   process = BackgroundAndCrossvalid,
                                   model = LogisticRegression,
                                   output = PerformanceMeasures,
@@ -122,59 +120,64 @@ test_outputs <- function(roxy_parse, modulePath){
           
         } else if(data_type == "presence/absence"){
           
-          # test normal
-          expect_is(w <- workflow(occurrence = OccurrenceModule,
-                                  covariate = NCEP(variables = 'air',
-                                                   extent = myExtent),
-                                  process = NoProcess,
-                                  model = LogisticRegression,
-                                  output = PrintMap,
-                                  forceReproducible = FALSE),
-                    'zoonWorkflow',
-                    info = 'The occurrence module did not work in a standard workflow')
-          
-          # test this
-          Occurrence(w)
-          
-          # test Chain
-          expect_is(w <- workflow(occurrence = Chain(OccurrenceModule,
-                                                     OccurrenceModule),
-                                  covariate = NCEP(variables = 'air',
-                                                   extent = myExtent),
-                                  process = NoProcess,
-                                  model = LogisticRegression,
-                                  output = PrintMap,
-                                  forceReproducible = FALSE),
-                    'zoonWorkflow',
-                    info = 'The occurrence module did not work when chained in a workflow')
-          
-          
-          
-          # test list + crossvalidation
-          expect_is(w <- workflow(occurrence = list(OccurrenceModule,
-                                                    OccurrenceModule),
-                                  covariate = NCEP(variables = 'air',
-                                                   extent = myExtent),
-                                  process = Crossvalidate,
-                                  model = LogisticRegression,
-                                  output = PerformanceMeasures,
-                                  forceReproducible = FALSE),
-                    'zoonWorkflow',
-                    info = 'The occurrence module did not work when listed in a workflow with crossvalidation')
+            # test normal
+            expect_is(w <- workflow(occurrence = OccurrenceModule,
+                          covariate = NaiveRandomRaster(extent = myExtent,
+                                                        res = 0.5,
+                                                        seed = 123),
+                          process = NoProcess,
+                          model = LogisticRegression,
+                          output = PrintMap,
+                          forceReproducible = FALSE),
+            'zoonWorkflow',
+            info = 'The occurrence module did not work in a standard workflow')
   
+            # test Chain
+            expect_is(w <- workflow(occurrence = Chain(OccurrenceModule,
+                                                       OccurrenceModule),
+                                    covariate = NaiveRandomRaster(extent = myExtent,
+                                                                  res = 0.5,
+                                                                  seed = 123),
+                                    process = NoProcess,
+                                    model = LogisticRegression,
+                                    output = PrintMap,
+                                    forceReproducible = FALSE),
+                      'zoonWorkflow',
+                      info = 'The occurrence module did not work when chained in a workflow')
+  
+  
+  
+            # test list + crossvalidation
+            expect_is(w <- workflow(occurrence = list(OccurrenceModule,
+                                                      OccurrenceModule),
+                                    covariate = NaiveRandomRaster(extent = myExtent,
+                                                                  res = 0.5,
+                                                                  seed = 123),
+                                    process = Crossvalidate,
+                                    model = LogisticRegression,
+                                    output = PerformanceMeasures,
+                                    forceReproducible = FALSE),
+                      'zoonWorkflow',
+                      info = 'The occurrence module did not work when listed in a workflow with crossvalidation')
+
         } ## Add tests for proportion and abundance ##
-        
-        
-        # create a modules that creates a random number of
-        # presence points
-        
       }
-      
-      
     }
+  })
+  
+  test_that('Check COVARIATE output formats',{ 
     
     ## COVARIATE MODULES ##
     if(roxy_parse$family == 'covariate'){
+      
+      Background <- BackgroundAndCrossvalid <- NULL
+      LogisticRegression <- NaiveRandomPresence <- NULL
+      PrintMap <- NULL
+      
+      ## Move these to the sections where they are needed
+      LoadModule('Background'); LoadModule('BackgroundAndCrossvalid')
+      LoadModule('LogisticRegression'); LoadModule('NaiveRandomPresence');
+      LoadModule('PrintMap')
       
       # Load the script
       source(modulePath) 
@@ -240,9 +243,25 @@ test_outputs <- function(roxy_parse, modulePath){
                 info = 'The covariate module did not work when listed in a workflow with crossvalidation')
       
     }
+  })
+  
+  
+  test_that('Check PROCESS output formats',{ 
     
     ## PROCESS MODULES ##
     if(roxy_parse$family == 'process'){
+      
+      Background <- NaiveRandomPresenceAbsence <- NULL
+      NaiveRandomRaster <- Crossvalidate <- LogisticRegression <- NULL
+      NoProcess <- NULL
+      PrintMap <- RandomForest <- UKAir <- UKAnophelesPlumbeus <- NULL
+      
+      ## Move these to the sections where they are needed
+      LoadModule('Background'); LoadModule('NaiveRandomPresenceAbsence')
+      LoadModule('Crossvalidate'); LoadModule('LogisticRegression')
+      LoadModule('NaiveRandomRaster'); LoadModule('NoProcess')
+      LoadModule('PrintMap'); LoadModule('RandomForest')
+      LoadModule('UKAir'); LoadModule('UKAnophelesPlumbeus')
       
       # Load the script
       source(modulePath) 
@@ -299,8 +318,8 @@ test_outputs <- function(roxy_parse, modulePath){
           if(data_type == "presence/absence"){
             
             # normal
-            expect_is(w <- workflow(occurrence = CarolinaWrenPA,
-                                    covariate = CarolinaWrenRasters,
+            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence,
+                                    covariate = NaiveRandomRaster,
                                     process = ProcessModule,
                                     model = LogisticRegression,
                                     output = PrintMap,
@@ -320,8 +339,8 @@ test_outputs <- function(roxy_parse, modulePath){
                       info = 'The process module did not work in a chain workflow')
             
             # list + crossvalidated
-            expect_is(w <- workflow(occurrence = CarolinaWrenPA,
-                                    covariate = CarolinaWrenRasters,
+            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence,
+                                    covariate = NaiveRandomRaster,
                                     process = list(Crossvalidate,
                                                     ProcessModule),
                                     model = LogisticRegression,
@@ -368,9 +387,22 @@ test_outputs <- function(roxy_parse, modulePath){
         }
       }
     }
+  })
+  
+  test_that('Check MODEL output formats',{ 
   
     ## MODEL MODULES ##
     if(roxy_parse$family == 'model'){
+      
+      Background <- NaiveRandomRaster <- Crossvalidate <- NULL
+      NaiveRandomPresenceAbsence <- NoProcess <- PerformanceMeasures <- NULL
+      PrintMap <- UKAir <- UKAnophelesPlumbeus <- NULL
+      
+      ## Move these to the sections where they are needed
+      LoadModule('Background'); LoadModule('Crossvalidate')
+      LoadModule('NaiveRandomRaster'); LoadModule('NaiveRandomPresenceAbsence')
+      LoadModule('NoProcess'); LoadModule('PerformanceMeasures');
+      LoadModule('PrintMap'); LoadModule('UKAir'); LoadModule('UKAnophelesPlumbeus')
       
       # Load the script
       source(modulePath) 
@@ -439,8 +471,8 @@ test_outputs <- function(roxy_parse, modulePath){
           if(data_type == "presence/absence"){
             
             # normal
-            expect_is(w <- workflow(occurrence = CarolinaWrenPA,
-                                    covariate = CarolinaWrenRasters,
+            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence,
+                                    covariate = NaiveRandomRaster,
                                     process = NoProcess,
                                     model = ModelModule,
                                     output = PrintMap,
@@ -449,8 +481,8 @@ test_outputs <- function(roxy_parse, modulePath){
                       info = 'The model module did not work in a standard workflow')
             
             # Chained
-            expect_is(w <- workflow(occurrence = CarolinaWrenPA,
-                                    covariate = CarolinaWrenRasters,
+            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence,
+                                    covariate = NaiveRandomRaster,
                                     process = Chain(NoProcess, NoProcess),
                                     model = ModelModule,
                                     output = PrintMap,
@@ -459,8 +491,8 @@ test_outputs <- function(roxy_parse, modulePath){
                       info = 'The model module did not work in a chain workflow')
             
             # list
-            expect_is(w <- workflow(occurrence = CarolinaWrenPA,
-                                    covariate = CarolinaWrenRasters,
+            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence,
+                                    covariate = NaiveRandomRaster,
                                     process = NoProcess,
                                     model = list(ModelModule, ModelModule),
                                     output = PrintMap,
@@ -469,8 +501,8 @@ test_outputs <- function(roxy_parse, modulePath){
                       info = 'The process module did not work in a list workflow')
             
             # crossvalidate
-            expect_is(w <- workflow(occurrence = CarolinaWrenPA,
-                                    covariate = CarolinaWrenRasters,
+            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence,
+                                    covariate = NaiveRandomRaster,
                                     process = Crossvalidate,
                                     model = list(ModelModule, ModelModule),
                                     output = PerformanceMeasures,
@@ -526,9 +558,20 @@ test_outputs <- function(roxy_parse, modulePath){
         }
       }
     }
+  })
+  
+  
+  test_that('Check OUTPUT output formats',{ 
     
     ## OUTPUT MODULES ##
     if(roxy_parse$family == 'output'){
+      
+      Background <- LogisticRegression <- NULL
+      UKAir <- UKAnophelesPlumbeus <- NULL
+      
+      ## Move these to the sections where they are needed
+      LoadModule('Background'); LoadModule('LogisticRegression')
+      LoadModule('UKAir'); LoadModule('UKAnophelesPlumbeus')
       
       # Load the script
       source(modulePath) 
