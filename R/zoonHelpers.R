@@ -361,6 +361,16 @@ FormatModuleList <- function(x){
 
 ExtractAndCombData <- function(occurrence, ras){
   
+  # Check for rows in the occurrence data that have missing data
+  NArows <- apply(occurrence[,c('longitude', 'latitude')],
+                  1,
+                  function(x) any(is.na(x)))
+  
+  if(any(NArows)){
+    warning(sum(NArows), ' row(s) of occurrence data have NA values for latitude/longitude and will be removed')
+    occurrence <- occurrence[!NArows, ]
+  }
+  
   # Check that all points are within the raster
   bad.coords <- is.na(cellFromXY(ras,
                                  occurrence[,c('longitude', 'latitude')]))

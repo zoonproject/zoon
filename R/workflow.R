@@ -29,7 +29,7 @@
 #'
 #'work1 <- workflow(occurrence = UKAnophelesPlumbeus,
 #'                 covariate = UKAir,
-#'                 process = OneHundredBackground,
+#'                 process = Background(n = 70),
 #'                 model = LogisticRegression,
 #'                 output = SameTimePlaceMap)
 #'
@@ -139,7 +139,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   class(output) <- 'zoonWorkflow'
   
   # whether exiting on error, or successful completion, return this
-  on.exit(return (output))
+  on.exit(return(output))
   
   tryCatch({
     occurrence.output <- lapply(occurrenceName, FUN = DoOccurrenceModule, e = e)

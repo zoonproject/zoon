@@ -97,7 +97,7 @@ test_module <- function(modulePath){
     }
   }) #time
   
-  expect_true(time['elapsed'] < 60,
+  expect_true(time['elapsed'] < 120,
               info = paste('Module tests should not take a long time, yours took', time['elapsed'], 'seconds, please change your defualt values so that test workflow runs do not take too long'))
   
 }

@@ -6,7 +6,7 @@ test_that('summary.zoonWorkflow tests', {
   set.seed(1)
   work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                     covariate = UKAir,
-                    process = OneHundredBackground,
+                    process = Background(n=70),
                     model = LogisticRegression,
                     output = PrintMap)
     

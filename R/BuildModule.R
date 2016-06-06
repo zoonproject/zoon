@@ -115,7 +115,7 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
 
   # Sort out parameter formating.
   paraNames <- names(paras)
-  paraDocs <- paste(sapply(paraNames, function(x) paste("#' @param", x, paras[x])), collapse="#'\n")
+  paraDocs <- paste(sapply(paraNames, function(x) paste("\n#'\n#' @param", x, paras[x])), collapse="")
 
   # Roxygen2 uses @ as a tag. So have to double it.
   email <- gsub('@', '@@', email)
@@ -135,7 +135,7 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
                  "\n#'\n#' @title ", title,
                  "\n#'\n#' @description ", description,
                  "\n#'\n#' @details ", details,
-                 "\n#'\n", paraDocs,
+                 paraDocs,
                  "\n#'\n#' @family ", type,
                  "\n#'\n#' @author ", authors, ', ', '\\email{', email, '}',
                  dataType,

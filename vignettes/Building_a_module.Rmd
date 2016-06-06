@@ -1,7 +1,7 @@
 ---
 title: "Building modules"
 author: "Tom August & Tim Lucas"
-date: '2016-05-27'
+date: '2016-06-06'
 output:
   rmarkdown::html_vignette:
     keep_md: yes
@@ -133,7 +133,11 @@ BuildModule(Lorem_ipsum_UK,
 ```
 
 ```
-## Starting checks...done
+## Starting checks...
+```
+
+```
+## done
 ```
 
 ```
@@ -251,7 +255,11 @@ BuildModule(AustraliaAir,
 ```
 
 ```
-## Starting checks...done
+## Starting checks...
+```
+
+```
+## done
 ```
 
 ```
@@ -481,7 +489,11 @@ BuildModule(ClipOccurrence,
 ```
 
 ```
-## Starting checks...done
+## Starting checks...
+```
+
+```
+## done
 ```
 
 ```
@@ -694,7 +706,11 @@ BuildModule(object = GamGam,
 ```
 
 ```
-## Starting checks...done
+## Starting checks...
+```
+
+```
+## done
 ```
 
 ```
@@ -908,7 +924,11 @@ BuildModule(PredictNewRasterMap,
 ```
 
 ```
-## Starting checks...done
+## Starting checks...
+```
+
+```
+## done
 ```
 
 ```
