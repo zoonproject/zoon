@@ -17,13 +17,12 @@ LoadModule <- function(module){
   
   # module must be a string 
   
+  # URL to module in user's favourite repo & branch
+  zoonURL <- sprintf('%s/%s/R/%s.R',
+                     options('zoonRepo'),
+                     options('zoonRepoBranch'),
+                     module)
   
-  # Create url that matches zoon repo
-  # .sha will vary based on whether this is pegged to a specific version of
-  # modules
-  zoonURL <- 
-    sprintf('https://raw.githubusercontent.com/zoonproject/modules/%s/R/%s.R',
-            .sha, module)
   # If module is a path, load module
   if (file.exists(module)){
     txt <- parse(text = paste(readLines(module), collapse="\n"))
@@ -70,10 +69,13 @@ LoadModule <- function(module){
 #@name GetModule
 
 GetModule <- function(module, forceReproducible){
-  zoonURL <- 
-    paste0('https://raw.githubusercontent.com/zoonproject/modules/master/R/',
-           module, '.R')
   
+  # URL to module in user's favourite repo & branch
+  zoonURL <- sprintf('%s/%s/R/%s.R',
+                     options('zoonRepo'),
+                     options('zoonRepoBranch'),
+                     module)
+
   # If the module is in global namespace, use that function
   #   unless forceReproduce is TRUE, in which case we want to get from repo.
   #   
