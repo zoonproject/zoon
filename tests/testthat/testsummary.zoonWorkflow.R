@@ -1,16 +1,17 @@
-test_that('summary.zoonWorkflow tests', {
+context('summary.zoonWorkflow')
 
-  context('summary.zoonWorkflow')
-  
+test_that('summary.zoonWorkflow tests', {
+  skip_on_cran()
+
   set.seed(1)
   work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                     covariate = UKAir,
-                    process = OneHundredBackground,
+                    process = Background(n=70),
                     model = LogisticRegression,
                     output = PrintMap)
     
   sum_ret <- summary(work1)
   
-  expect_output(summary(work1), "Data summaries")
+  expect_output(print(sum_ret), "Data summaries")
 
 })

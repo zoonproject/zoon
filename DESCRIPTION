@@ -1,7 +1,8 @@
 Package: zoon
 Type: Package
 Title: Reproducible, Accessible & Shareable Species Distribution Modelling
-Version: 0.4.24
+Version: 0.5
+Date: 2016-05-16
 Author: Tim Lucas, Nick Golding, Tom August, Greg McInerny, Emiel van Loon
 Maintainer: Tom August <tomaug@ceh.ac.uk>
 Description: Reproducible and remixable species distribution modelling. The
@@ -12,15 +13,16 @@ Imports:
     RCurl,
     dismo,
     rfigshare,
-    methods
+    methods,
+    testthat,
+    roxygen2,
+    SDMTools,
+    randomForest
 Depends:
     raster (>= 2.4-20),
     R (>= 3.2.0)
 Suggests:
-    knitr,
-    testthat,
-    gam,
-    spocc
+    knitr
 VignetteBuilder: knitr
 LazyData: TRUE
 URL: https://github.com/zoonproject/zoon

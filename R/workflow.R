@@ -29,7 +29,7 @@
 #'
 #'work1 <- workflow(occurrence = UKAnophelesPlumbeus,
 #'                 covariate = UKAir,
-#'                 process = OneHundredBackground,
+#'                 process = Background(n = 70),
 #'                 model = LogisticRegression,
 #'                 output = SameTimePlaceMap)
 #'
@@ -139,13 +139,17 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   class(output) <- 'zoonWorkflow'
   
   # whether exiting on error, or successful completion, return this
-  on.exit(return (output))
+  on.exit(return(output))
   
   tryCatch({
-    occurrence.output <- lapply(occurrenceName, function(x) do.call(x$func, x$paras))
+    occurrence.output <- lapply(occurrenceName, FUN = DoOccurrenceModule, e = e)
     # Then bind together if the occurrence modules were chained
     if (identical(attr(occurrence.module, 'chain'), TRUE)){
       occurrence.output <- list(do.call(rbind, occurrence.output))
+      attr(occurrence.output[[1]], 'call_path') <- list(occurrence = paste('Chain(',
+                                                    paste(lapply(occurrenceName, function(x) x$module),
+                                                          collapse = ', '),
+                                                    ')', sep = ''))
     }
     output$occurrence.output <- occurrence.output
   },  
@@ -155,9 +159,14 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   )
 
   tryCatch({
-    covariate.output <- lapply(covariateName, function(x) do.call(x$func, x$paras))
+    #covariate.output <- lapply(covariateName, function(x) do.call(x$func, x$paras))
+    covariate.output <- lapply(covariateName, FUN = DoCovariateModule, e = e)
     if (identical(attr(covariate.module, 'chain'), TRUE)){
       covariate.output <- list(do.call(raster::stack, covariate.output))
+      attr(covariate.output[[1]], 'call_path') <- list(covariate = paste('Chain(',
+                                                                           paste(lapply(covariateName, function(x) x$module),
+                                                                                 collapse = ', '),
+                                                                           ')', sep = ''))
     }
     output$covariate.output <- covariate.output
   },  
@@ -182,8 +191,6 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
       ErrorModule(cond, 3, e)
     }
   )
-
-
 
   # Do process modules
   
@@ -220,8 +227,4 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
       ErrorModule(cond, 5, e)
     }
   )
-
-
 }
-
-

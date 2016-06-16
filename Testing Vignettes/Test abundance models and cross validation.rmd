@@ -1,0 +1,222 @@
+---
+title: "CrossValidation Testing"
+author: "James Campbell"
+date: "May 16, 2016"
+output: html_document
+---
+
+### Load Zoon
+```{r,warning=F,message=F}
+require(devtools)
+#install_github(repo = 'RTbecard/zoon',ref = 'observationCovariates',force = T)
+require(zoon)
+require(knitr)
+```
+
+
+### Load modified modules
+```{r,warning=F,message=F}
+## Load modified versions of modules which work with the updates
+path = '/home/james/Dropbox/RStudio/zoon/'
+source(paste0(path,'Modified Modules/GLM.R'))
+source(paste0(path,'Modified Modules/PerformanceMeasures.R'))
+source(paste0(path,'Modified Modules/Crossvalidate.R'))
+source(paste0(path,'Modified Modules/PrintMap.R'))
+source(paste0(path,'Modified Modules/LogisticRegression.R'))
+source(paste0(path,'Modified Modules/mgcv.R'))
+source(paste0(path,'Modified Modules/GBM.R'))
+source(paste0(path,'Modified Modules/RandomForest.R'))
+source(paste0(path,'Modified Modules/NMixture.R'))
+source(paste0(path,'Modified Modules/ObsCovariates.R'))
+```
+
+### Create BBS dataset
+
+Create a data set containing all Chipping Sparrow observations accross the east coast of the United States for the year 2011.  We'll sum the observations from all 50 stops for each route to simplify our dataset and remove overlapping lat/lon coordinates.
+
+```{r,warning=F,message=F}
+## Install pullBBS
+install_github(repo = 'RTbecard/pullBBS',build_vignettes=F,force = T)
+require(pullBBS)
+
+## Download route data
+routes <- pullBBS(year = c(2009,2010,2011),country = c(840),
+                  region = c(25,27,80,63,88,90,59,72,18,77,18,47,61,58,44,87),
+                  AOU = c(5600),useCache = T)
+routes.long <- WideToLongBBS(routes = routes)
+head(routes.long)
+
+stop.1 <- subset(routes.long,Stop == 1)
+
+## Show data
+plotBBS(routes = stop.1, year = 2011,markerSize = 3)
+
+
+## Only use first stop from every route
+length(which(stop.1$year == 2011))
+
+
+## Get extents for study region (for defining the extent of the Bioclim module)
+studyRegion <- c(min(stop.1$Longi) - 5,max(stop.1$Longi) + 5,min(stop.1$Lati) - 5,max(stop.1$Lati) + 5)
+
+## Format dataset for zoon
+occurence.df <- data.frame(long = stop.1$Longi, lat = stop.1$Lati, value = stop.1$Observations, fold = 1, type = 'abundance',stringsAsFactors = F);
+summary(occurence.df)
+str(occurence.df)
+
+## Write abundance data
+FileName.abundance <- 'BBS-CHSP-US-2011-Poisson.csv'
+write.csv(occurence.df,file = FileName.abundance)
+
+## Convert to presence/absence data
+occurence.df.binomial <- occurence.df
+occurence.df.binomial$value[occurence.df.binomial$value != 0] = 1
+summary(occurence.df.binomial)
+
+FileName.occurrence <- 'BBS-CHSP-US-2011-Binomial.csv'
+write.csv(occurence.df.binomial,file = FileName.occurrence)
+```
+
+
+## Run models
+
+Here we'll test the models with the abundance data from Boreal Breeding Survey using 10-fold cross validation.  We'll test out our additional metrics `root mean squared error` and `pearson` and `spearman rank` coefficients which have been added to Zoon.
+
+I've modified the `PerformanceMeasures` module to add these metrics in when an abundance data set it detected.
+
+### GLM
+
+Test normal presence/absence model:
+```{r,warning=F}
+## Test presence/absence data
+test.1.a <- workflow(occurrence = LocalOccurrenceData(filename = FileName.occurrence,occurrenceType = 'presence/absence',
+                                                    columns = c(lat = "lat",long = "long",value = "value")),
+                    covariate = Bioclim(extent = studyRegion,resolution = 2.5),
+                    process = Crossvalidate,
+                    model = GLM(family = 'binomial'),
+                    output = PerformanceMeasures)
+
+## Test abundance
+test.1.c <- workflow(occurrence = LocalOccurrenceData(filename = FileName.abundance,occurrenceType = 'abundance',
+                                                    columns = c(lat = "lat",long = "long",value = "value")),
+                    covariate = Bioclim(extent = studyRegion,resolution = 2.5),
+                    process = Crossvalidate,
+                    model = GLM(family = 'poisson'),
+                    output = PerformanceMeasures)
+```
+
+### GAM
+
+Test normal presence/absence model:
+```{r,warning=F}
+## Test presence/absence data
+test.2.a <- workflow(occurrence = LocalOccurrenceData(filename = FileName.occurrence,occurrenceType = 'presence/absence',
+                                                    columns = c(lat = "lat",long = "long",value = "value")),
+                    covariate = Bioclim(extent = studyRegion,resolution = 2.5),
+                    process = Crossvalidate,
+                    model = mgcv,
+                    output = PerformanceMeasures)
+
+## Test abundance
+test.2.c <- workflow(occurrence = LocalOccurrenceData(filename = FileName.abundance,occurrenceType = 'abundance',
+                                                     columns = c(lat = "lat",long = "long",value = "value")),
+                     covariate = Bioclim(extent = studyRegion,resolution = 2.5),
+                     process = Crossvalidate,
+                     model = mgcv(family = 'poisson'),
+                     output = PerformanceMeasures)
+```
+
+
+### GBM
+
+Test normal presence/absence model:
+```{r,warning=F}
+## Test presence/absence data
+test.3.a <- workflow(occurrence = LocalOccurrenceData(filename = FileName.occurrence,occurrenceType = 'presence/absence',
+                                                    columns = c(lat = "lat",long = "long",value = "value")),
+                    covariate = Bioclim(extent = studyRegion,resolution = 2.5),
+                    process = Crossvalidate,
+                    model = GBM,
+                    output = PerformanceMeasures)
+
+## Test abundance
+test.3.c <- workflow(occurrence = LocalOccurrenceData(filename = FileName.abundance,occurrenceType = 'abundance',
+                                                    columns = c(lat = "lat",long = "long",value = "value")),
+                    covariate = Bioclim(extent = studyRegion,resolution = 2.5),
+                    process = Crossvalidate,
+                    model = GBM(family = 'poisson'),
+                    output = PerformanceMeasures)
+```
+
+### Random Forest
+
+Test normal presence/absence model:
+```{r,warning=F}
+## Test presence/absence data
+test.4.a <- workflow(occurrence = LocalOccurrenceData(filename = FileName.occurrence,occurrenceType = 'presence/absence',
+                                                    columns = c(lat = "lat",long = "long",value = "value")),
+                    covariate = Bioclim(extent = studyRegion,resolution = 2.5),
+                    process = Crossvalidate,
+                    model = RandomForest,
+                    output = PerformanceMeasures)
+
+## Test abundance
+test.4.c <- workflow(occurrence = LocalOccurrenceData(filename = FileName.abundance,occurrenceType = 'abundance',
+                                                    columns = c(lat = "lat",long = "long",value = "value")),
+                    covariate = Bioclim(extent = studyRegion,resolution = 2.5),
+                    process = Crossvalidate,
+                    model = RandomForest,
+                    output = PerformanceMeasures)
+```
+
+### N-Mixture
+
+Test normal presence/absence model:
+```{r,warning=F}
+
+## Test abundance
+test.5.c <- workflow(occurrence = LocalOccurrenceData(filename = FileName.abundance,occurrenceType = 'abundance',
+                                                    columns = c(lat = "lat",long = "long",value = "value")),
+                    covariate = Bioclim(extent = studyRegion,resolution = 2.5),
+                    process = Chain(
+                      ObsCovariates(filename = 'stop.1',columns = c('StartTemp','StartWind','StartTime')),
+                      Crossvalidate),
+                    model = NMixture,
+                    output = PerformanceMeasures)
+str(test.5.c$model.output)
+test.5.c$model.output[[1]]$model
+
+
+test.5.d <- workflow(occurrence = LocalOccurrenceData(filename = FileName.abundance,occurrenceType = 'abundance',
+                                                    columns = c(lat = "lat",long = "long",value = "value")),
+                    covariate = Bioclim(extent = studyRegion,resolution = 2.5),
+                    process = ObsCovariates(filename = 'stop.1',columns = c('StartTemp','StartWind','StartTime')),
+                    model = NMixture,
+                    output = PrintMap(showSamples = F))
+
+```
+
+## Comparison of Models
+### Occurrence
+```{r}
+results.occurrence <- data.frame(
+      AUC = c(test.1.a$report[[1]][[1]],test.2.a$report[[1]][[1]],test.3.a$report[[1]][[1]],test.4.a$report[[1]][[1]]),
+      Kappa = c(test.1.a$report[[1]][[2]],test.2.a$report[[1]][[2]],test.3.a$report[[1]][[2]],test.4.a$report[[1]][[2]]),
+      ProportionCorrect = c(test.1.a$report[[1]][[6]],test.2.a$report[[1]][[6]],test.3.a$report[[1]][[6]],test.4.a$report[[1]][[6]]),
+      row.names = c('GLM','GAM','GBM','RandomForest')
+    )
+
+kable(results.occurrence)
+```
+
+### Abundance
+```{r}
+results.abundance <- data.frame(
+  RMSE = c(test.1.c$report[[1]][[1]],test.2.c$report[[1]][[1]],test.3.c$report[[1]][[1]],test.4.c$report[[1]][[1]],test.5.c$report[[1]][[1]]),
+  Pearson = c(test.1.c$report[[1]][[2]],test.2.c$report[[1]][[2]],test.3.c$report[[1]][[2]],test.4.c$report[[1]][[2]],test.5.c$report[[1]][[2]]),
+  Spearman = c(test.1.c$report[[1]][[3]],test.2.c$report[[1]][[3]],test.3.c$report[[1]][[3]],test.4.c$report[[1]][[3]],test.5.c$report[[1]][[3]]),
+  row.names = c('GLM','GAM','GBM','RandomForest','N-Mixture')
+)
+
+kable(results.abundance)
+```

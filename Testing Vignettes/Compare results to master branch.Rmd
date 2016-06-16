@@ -1,0 +1,105 @@
+---
+title: "Testing obsCovs"
+author: "James Campbell"
+date: "March 29, 2016"
+output: html_document
+---
+
+To test this fork, we'll run some workflows using both the origional zoop package and the forked version with observation covariate support.  The results of each workflow will be saved and then compared at the end of the document.
+
+### Run workflows from official repo
+
+```{r,warning=F,message=F}
+require(devtools)
+install_github(repo = 'zoonproject/zoon',ref = 'master')
+require(zoon)
+
+## Load package assert that (workaround for bug in LocalRaster module)
+require(assertthat) 
+
+## clear workspace
+rm(list = ls())
+
+## Logistic regression
+test.1.a <- workflow(occurrence = UKAnophelesPlumbeus,
+                  covariate = UKAir,
+                  process = OneHundredBackground(seed = 1),
+                  model = LogisticRegression,
+                  output = PerformanceMeasures)
+
+
+## Cross Validation + Chains
+test.2.a <- workflow(occurrence = UKAnophelesPlumbeus,
+                  covariate = UKBioclim,
+                  process = Chain(OneHundredBackground(seed = 1), Crossvalidate),
+                  model = LogisticRegression,
+                  output = PerformanceMeasures)
+
+## Print map
+test.3.a <- workflow(occurrence = UKAnophelesPlumbeus,
+                  covariate = UKBioclim,
+                  process = OneHundredBackground(seed = 1),
+                  model = LogisticRegression,
+                  output = PrintMap)
+```
+
+
+### Run workflows from observationCovariates branch
+
+Install the modified fork of zoon with covariate support.
+
+```{r}
+## Load branch for obseravtion level covariate support
+install_github(repo = 'RTbecard/zoon',ref = 'observationCovariates',force = T)
+require(zoon)
+```
+
+The following Modules have been modified to be compatable with the new branch, thus we will load them into the workspace to be used in the zoon workflow.
+
+```{r}
+## Load modified versions of modules which work with the updates
+debugSource('Modified Modules/OneHundredBackground.R')
+debugSource('Modified Modules/LogisticRegression.R')
+debugSource('Modified Modules/PerformanceMeasures.R')
+debugSource('Modified Modules/Crossvalidate.R')
+debugSource('Modified Modules/PrintMap.R')
+```
+
+```{r,warning=F,message=F}
+## Logistic regression
+test.1.b <- workflow(occurrence = UKAnophelesPlumbeus,
+                  covariate = UKAir,
+                  process = OneHundredBackground(seed = 1),
+                  model = LogisticRegression,
+                  output = PerformanceMeasures)
+
+## Cross Validation + Chains
+test.2.b <- workflow(occurrence = UKAnophelesPlumbeus,
+                  covariate = UKBioclim,
+                  process = Chain(OneHundredBackground(seed = 1), Crossvalidate),
+                  model = LogisticRegression,
+                  output = PerformanceMeasures)
+
+
+## Print map
+test.3.b <- workflow(occurrence = UKAnophelesPlumbeus,
+                  covariate = UKBioclim,
+                  process = OneHundredBackground(seed = 1),
+                  model = LogisticRegression,
+                  output = PrintMap)
+```
+
+### Comapre results between branches
+
+Now we'll compare the outputs of each workflow side by side to verify they are the same.
+
+```{r}
+test.1.a$report
+test.1.b$report
+
+test.2.a$report
+test.2.b$report
+
+spplot(test.3.a$report[[1]])
+spplot(test.3.b$report[[1]])
+```

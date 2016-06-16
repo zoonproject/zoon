@@ -1,48 +1,49 @@
-## Sample .travis.yml file for use with metacran/r-builder
-## See https://github.com/metacran/r-builder for details.
-
-language: c
+language: r
+cache: packages
 sudo: required
 
-before_install:
-  - curl -OL https://raw.githubusercontent.com/metacran/r-builder/master/pkg-build.sh
-  - chmod 755 pkg-build.sh
-  - ./pkg-build.sh bootstrap
+# Install the suggested packages which
+# are needed for the vignette builds
+r_packages:
+ - knitr
+ - testthat
+ - gam
+ - spocc
+ - rmarkdown
+ - covr
+ 
+# Add libv8 needed for running rgbif (in spocc)
+apt_packages:
+ - libv8-dev 
 
-install:
-  - sudo apt-get install -y libv8-dev curl libcurl4-openssl-dev
-  - ./pkg-build.sh install_deps
-  - ./pkg-build.sh install_r covr
-
-script:
-  - travis_wait ./pkg-build.sh run_tests
-
-after_failure:
-  - ./pkg-build.sh dump_logs
-
+## After success update the code coverage
 after_success:
- - ./pkg-build.sh run_script -e 'library(covr);codecov()'
-
+ - Rscript -e 'library(covr);codecov()'
+ 
+# Warnings don't fail build
+warnings_are_errors: false
+ 
+## Email notification if the package pass status changes
 notifications:
-  email:
-    recipients:
-      - zoonproject@gmail.com
-    on_success: change
-    on_failure: change
-
+email:
+  recipients:
+    - zoonproject@gmail.com
+  on_success: change
+  on_failure: change
+  
+## Set up the matrix of different runs
 env:
   matrix:
-    - RVERSION=release
-      NOT_CRAN=true
-      R_CHECK_ARGS="--no-manual"
-    - RVERSION=release
-      NOT_CRAN=false
-      R_CHECK_ARGS="--no-manual --as-cran"
-    - RVERSION=devel
-      NOT_CRAN=true
-      R_CHECK_ARGS="--no-manual"
-    - RVERSION=devel
-      NOT_CRAN=false
-      R_CHECK_ARGS="--no-manual --as--cran"
-
-
+    - r: release
+      not_cran: true
+      r_check_args: "--no-manual"
+    - r: release
+      not_cran: false
+      r_check_args: "--no-manual --as--cran"
+    - r: devel
+      not_cran: true
+      r_check_args: "--no-manual"
+    - r: devel
+      not_cran: false
+      r_check_args: "--no-manual --as--cran"
+      

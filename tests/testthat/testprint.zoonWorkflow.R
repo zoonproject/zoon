@@ -1,20 +1,22 @@
 context('print.zoonWorkflow')
 
-set.seed(1)
-work1 <- workflow(occurrence = UKAnophelesPlumbeus,
-                  covariate = UKAir,
-                  process = OneHundredBackground,
-                  model = LogisticRegression,
-                  output = PrintMap)
-
 test_that('print.zoonWorkflow tests', {
+  
+  skip_on_cran()
+  
+  set.seed(1)
+  work1 <- workflow(occurrence = UKAnophelesPlumbeus,
+                    covariate = UKAir,
+                    process = Background(n = 70),
+                    model = LogisticRegression,
+                    output = PrintMap)
   
   sum_out <- capture.output(print(work1))
   
   expect_identical(sum_out,
                    c("zoonWorkflow Object", "===================",
                      "",
-                     "Call: workflow(occurrence = UKAnophelesPlumbeus, covariate = UKAir, process = OneHundredBackground, model = LogisticRegression, output = PrintMap, forceReproducible = FALSE) "
+                     "Call: workflow(occurrence = UKAnophelesPlumbeus, covariate = UKAir, process = Background(n = 70), model = LogisticRegression, output = PrintMap, forceReproducible = FALSE) "
                    ))
 })
 

@@ -1,0 +1,206 @@
+---
+title: "N-Mixture Models"
+author: "James Campbell"
+date: "April 1, 2016"
+output: html_document
+---
+
+Here we'll test the `observationCovariates` branch of zoon with the both Royle's N-Mixture and models and Dail's generalized version for open popualtions.  We'll use a simualated dataset based on the Santa Cruze covariate dataset included in the `unmarked` package.
+
+### Create simulated dataset for testing
+
+We'll create a simulated dataset for Scrub Jay density on Santa Cruz island.  Using a simulated data set will allow us to directly compare our model predictions to the *real* density values for the population.
+
+First, we'll load covariate values from the `cruz` dataset in the `unmarked` package and convert them into a raster stack for use in `zoon`.
+
+```{r,warning=F,message=F}
+require(devtools)
+## Install obs coveariate fork
+install_github(repo = 'RTbecard/zoon',ref = 'observationCovariates',force = T)
+require(raster)
+require(unmarked)
+require(zoon)
+
+## Load covariates from unmarked package
+covariateData <- cruz
+head(covariateData)
+
+## Convert covariates into raster stack object
+proj <- CRS('+proj=utm +zone=11 +ellps=WGS84')
+covariateData.spdf <- SpatialPixelsDataFrame(points = covariateData[,c(1,2)],proj4string = proj,data = covariateData[,3:5])
+
+site.covariates <- stack(raster(covariateData.spdf,layer = 'forest'),
+                         raster(covariateData.spdf,layer = 'chaparral'))
+
+## Project to decimal degrees
+site.covariates <- projectRaster(from = site.covariates,crs = CRS('+proj=longlat +ellps=WGS84'))
+
+spplot(subset(site.covariates,subset = 'forest'), main = 'forest')
+spplot(subset(site.covariates,subset = 'chaparral'), main = 'chaparral')
+```
+
+Here we'll create a simulated dataset of detections to use in the analysis.  The file `simData.R` holds a function which will create detection and density values based on the assumptions of the N-Mixture models.  We'll create raster of simulated Scrub Jay density as a function of the island covariates we just loaded.
+
+Each site will have 3 visits.  For this dataset, we're simulating a **closed population**, so each visit will calculate the detection probability for the site density which remains constant accross multiple visits.  The covariate `forest` will affect the site density while `chaparral` will affect the detections probabilities.
+
+```{r,warning=F,message=F}
+## Load simulated desnity function
+source('simData.R')
+
+## Calculate transformed coefficients for model
+a0 <- log(0.8) - log(1 + 0.8) #Logit transformation for detection coefficients
+a1 <- 1
+b0 <- log(3) # Log transform for Poisson transformation
+b1 <- 1
+
+## Calculate site density for entire island (where each pixel is a site)
+len <- length(subset(site.covariates,subset = 'forest'))
+## Generate simulated population
+abundance <- simData(R = len, T = 5, b0 = b0,b1 = b1,a0 = a0,a1 = a1,
+                     cov.d = subset(site.covariates,subset = 'forest')@data@values,
+                      cov.p = subset(site.covariates,subset = 'chaparral')@data@values)
+
+## Convert to raster object for plotting
+scrubJay.dens <- raster(x = matrix(abundance$Density,
+                             nrow = subset(site.covariates,subset = 'forest')@nrows,
+                             ncol = subset(site.covariates,subset = 'forest')@ncols,byrow = T),
+                         template = subset(site.covariates,subset = 'chaparral'))
+spplot(scrubJay.dens,main = 'Simulated Scrub Jay Density')
+```
+
+We'll subset 200 random sites from our simulated dataset and convert this to an `occurence` data frame for use in zoon.
+
+```{r,warning=F,message=F}
+sites.to.subset <- 200
+# Get non NA raster indicies
+idx <- which(!is.na(abundance$Detections[,1]))
+# Create index for subsetting points from non-NA locations
+idx.sub <- sample(idx,replace = F,size = sites.to.subset)
+
+# Get lat/lon coords for selected sites
+coords <- xyFromCell(site.covariates,cell = idx.sub)
+
+## Convert to occurence data.frame
+occurence <- data.frame(longitude = coords[,1],
+                        latitude = coords[,2],
+                        value = c(abundance$Detections[idx.sub,1],
+                                  abundance$Detections[idx.sub,2],
+                                  abundance$Detections[idx.sub,3],
+                                  abundance$Detections[idx.sub,4],
+                                  abundance$Detections[idx.sub,5]),
+                        type = 'abundance', 
+                        chaparral = values(subset(site.covariates,subset = 'chaparral'))[idx.sub],
+                        forest = values(subset(site.covariates,subset = 'forest'))[idx.sub])
+
+## Check simulated data set
+# The first 5 records for each set should have the same covariate info and locations
+# but different detection values
+for(i in 0:(3-1)){
+  print(occurence[(1+i*sites.to.subset):(5+i*sites.to.subset),])
+}
+
+## Write to file
+write.csv(occurence,file = 'occurence.csv')
+```
+
+### Create model outside zoon
+
+We'll first create a model using the normal workflow for the `unmarked` package.  We can comapre this to the `zoon` output to verify that it is correct.
+
+```{r,warning=F,message=F}
+## Create unmarked data.frame
+umdf <- unmarkedFramePCount(y = abundance$Detections[idx.sub,], 
+                    siteCovs = data.frame(forest = values(site.covariates$forest)[idx.sub]),
+                    obsCovs = list(chaparral = as.data.frame(matrix(values(site.covariates$chaparral)[idx.sub],nrow = length(idx.sub),ncol = 5,byrow = F))))
+## Create N-Mixture model
+m <- pcount(~chaparral~forest,data = umdf,mixture = 'P')
+```
+
+We'll run the `backTransform` function on our covariate rasters to generate model predicitons for the entire island.
+
+The `for` loop is necessary to avoid crashing when trying to predict large datasets.
+
+```{r}
+## Predict new values
+covs <- as.matrix(cbind(const = 1, data.frame(forest = values(site.covariates$forest))))
+## Must use loop, as r crashes with too large a dataset in backTransform
+buf <- 200 # number of rows to predict on each iteration
+n <- length(covs[,1])
+
+require(tictoc) #package for measuring runtimes
+
+tic()
+for(i in seq(from = 1, by = buf,to = n)){
+  if(i == 1){
+    pred.transformed <- linearComb(m,covs[1:min(buf,n),,drop = F],type = 'state')
+    pred <- backTransform(pred.transformed)@estimate
+  }else{
+    pred.transformed <- linearComb(m,covs[i:min(i+buf-1,n),,drop = F],type = 'state')
+    pred <- append(pred,backTransform(pred.transformed)@estimate)
+  }
+}
+toc() # Use the tictoc package to record runtime for loop
+```
+
+Now we'll plot the model result to a map with the same color scale used by `zoon` for comparsion.
+
+```{r}
+template <-subset(site.covariates,subset = 'forest')
+predicted <- raster(x = matrix(pred,nrow = template@nrows, ncol = template@ncols,byrow = T), template = template)
+
+cls <- colorRampPalette(c('#e0f3db', '#a8ddb5', '#4eb3d3', '#08589e'))(10)
+spplot(predicted,
+       main = 'Predicted Scrub Jay Density (unmarked)',
+       col.regions=cls,cuts=length(cls)-1,
+       scales = list(draw = TRUE))
+```
+
+Now we'll estimate the individual detection and site density coefficients
+
+```{r}
+backTransform(linearComb(m,c(1,0),type = 'det'))
+backTransform(linearComb(m,c(1,0),type = 'state'))
+```
+
+### Run data in the zoon workflow
+
+We'll now rerun the model within zoon and compare the resulting SDM map to our previous one.  We'll have to load a few modified modules which have been modified to be compatable with our branch.
+
+```{r,warning=F,message=F}
+## Load modified modules
+source('Modified\ Modules/NMixture.R')
+source('Modified\ Modules/ObsCovariates.R')
+source('Modified\ Modules/PrintMap.R')
+
+## Save site covariates as raster
+forest <- subset(site.covariates,subset = 'forest')
+
+## Load N-Mixture module
+test.1 <- workflow(occurrence = LocalOccurrenceData(filename = 'occurence.csv',
+                                                    occurrenceType = 'abundance',
+                                                    columns=c(long = 'longitude', lat = 'latitude', value = 'value')),
+                  covariate = LocalRaster('forest'),
+                  process = ObsCovariates(filename = 'occurence.csv',columns = c('chaparral')),
+                  model = NMixture,
+                  output = PrintMap)
+
+## Plot results
+spplot(test.1$report[[1]],
+       main = 'Predicted Scrub Jay Density (zoon)',
+       col.regions=cls,cuts=length(cls)-1,
+       scales = list(draw = TRUE))
+```
+
+Finally, we can estimate show the estiamted model parameters and comapre them to our simulated data.
+
+```{r,warning=F,message=F}
+model.1 <- test.1$model.output[[1]]$model$model
+model.1.estimates <- model.1@estimates
+
+backTransform(linearComb(model.1,c(1,0),type = 'state'))
+backTransform(linearComb(model.1,c(1,0),type = 'det'))
+```
+
+### Open populations
+
+In progress....

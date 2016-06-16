@@ -14,7 +14,8 @@ test_that('Simplest case should build', {
                       author = 'tom',
                       email = 'tom@tom.com',
                       dir = directory,
-                      dataType = 'abundance') 
+                      dataType = 'abundance',
+                      check = FALSE) 
 
   expect_is(build, "character")
   
@@ -33,7 +34,8 @@ test_that('All metadata given, and correct', {
                            author = 'tom',
                            email = 'tom@tom.com',
                            dir = directory,
-                           dataType = 'abundance'),
+                           dataType = 'abundance',
+                           check = FALSE),
                'type must be one of')
   
   expect_error(BuildModule(object = NewModule,
@@ -43,7 +45,8 @@ test_that('All metadata given, and correct', {
                            author = 'tom',
                            email = 'tom@tom.com',
                            dir = directory,
-                           dataType = 'abundance'),
+                           dataType = 'abundance',
+                           check = FALSE),
                'type must be one of')
   
   expect_warning(BuildModule(object = NewModule,
@@ -53,7 +56,8 @@ test_that('All metadata given, and correct', {
                            author = 'tom',
                            email = 'tom@tom.com',
                            dir = directory,
-                           dataType = 'abundance'),
+                           dataType = 'abundance',
+                           check = FALSE),
                'Information not complete')  
   
   expect_warning(BuildModule(object = NewModule,
@@ -63,7 +67,8 @@ test_that('All metadata given, and correct', {
                              author = 'tom',
                              email = 'tom@tom.com',
                              dir = directory,
-                             dataType = 'abundance'),
+                             dataType = 'abundance',
+                             check = FALSE),
                  'Information not complete') 
   
   expect_warning(BuildModule(object = NewModule,
@@ -73,7 +78,8 @@ test_that('All metadata given, and correct', {
                              author = '',
                              email = 'tom@tom.com',
                              dir = directory,
-                             dataType = 'abundance'),
+                             dataType = 'abundance',
+                             check = FALSE),
                  'Information not complete') 
   
   expect_warning(BuildModule(object = NewModule,
@@ -83,7 +89,8 @@ test_that('All metadata given, and correct', {
                              author = 'tom',
                              email = '',
                              dir = directory,
-                             dataType = 'abundance'),
+                             dataType = 'abundance',
+                             check = FALSE),
                  'Information not complete')
   
   expect_error(BuildModule(object = NewModule,
@@ -91,10 +98,22 @@ test_that('All metadata given, and correct', {
                              title = 'test',
                              description = 'test',
                              author = 'tom',
-                             email = '',
+                             email = 'tom@tom.com',
                              dir = directory,
-                             dataType = ''),
+                             dataType = '',
+                             check = FALSE),
                  'dataType must be one of')
+  
+  expect_error(BuildModule(object = NewModule,
+                           type = 'model',
+                           title = 'test',
+                           description = 'test',
+                           author = 'tom',
+                           email = c('tom@tom.com', 'tim@tim.com'),
+                           dir = directory,
+                           dataType = 'abundance',
+                           check = FALSE),
+               'Please only give one email')
 })
 
 test_that('Module parameters', {
@@ -108,7 +127,8 @@ test_that('Module parameters', {
                              author = 'tom',
                              email = 'tom@tom.com',
                              dir = directory,
-                             dataType = 'abundance'),
+                             dataType = 'abundance',
+                             check = FALSE),
                  'Information not complete')
   
   NewModule3 <- function(){}
@@ -120,10 +140,11 @@ test_that('Module parameters', {
                              author = 'tom',
                              email = 'tom@tom.com',
                              dir = directory,
-                             dataType = 'abundance'),
+                             dataType = 'abundance',
+                             check = FALSE),
                  'Your model module does not contain the default arguements')
   
-  expect_warning(BuildModule(object = NewModule2,
+    expect_warning(BuildModule(object = NewModule2,
                              type = 'model',
                              title = 'test',
                              description = 'test',
@@ -132,9 +153,11 @@ test_that('Module parameters', {
                                           tom = 'that'),
                              email = 'tom@tom.com',
                              dir = directory,
-                             dataType = 'abundance'),
+                             dataType = 'abundance',
+                             check = FALSE),
                  'Parameter descriptions for defaults')
 })
+
   
 test_that('Misc tests', {
   
@@ -145,7 +168,8 @@ test_that('Misc tests', {
                              author = 'tom',
                              email = 'tom@tom.com',
                              dir = 'thisdoesnotexist',
-                             dataType = 'abundance'),
+                             dataType = 'abundance',
+                           check = FALSE),
                  'directory is not writeable')
   
 })

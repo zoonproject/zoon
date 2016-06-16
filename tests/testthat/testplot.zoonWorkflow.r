@@ -4,12 +4,13 @@ directory <- tempdir()
 
 test_that('plot.zoonWorkflow works', {
   
+  skip_on_cran()
   if (!capabilities('libcurl')) skip('skipping as libcurl not supported')  
   
   # Create a simple workflow to test on
   work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                     covariate = UKAir,
-                    process = OneHundredBackground,
+                    process = Background(n = 70),
                     model = LogisticRegression,
                     output = PrintMap)
   png(filename = file.path(directory, 'tempzoonWorkflow1.png'))
@@ -23,7 +24,7 @@ test_that('plot.zoonWorkflow works', {
                                       SpOcc(species = 'Anopheles plumbeus', 
                                             extent = c(-10, 10, 45, 65))),
                     covariate = UKAir,
-                    process = OneHundredBackground,
+                    process = Background(n = 70),
                     model = LogisticRegression,
                     output = PrintMap)
   png(filename = file.path(directory, 'tempzoonWorkflow2.png'))
@@ -37,7 +38,7 @@ test_that('plot.zoonWorkflow works', {
                                       SpOcc(species = 'Anopheles plumbeus', 
                                             extent = c(-10, 10, 45, 65))),
                     covariate = UKAir,
-                    process = OneHundredBackground,
+                    process = Background(n = 70),
                     model = LogisticRegression,
                     output = PrintMap)
   png(filename = file.path(directory, 'tempzoonWorkflow3.png'))
@@ -51,6 +52,7 @@ test_that('plot.zoonWorkflow works', {
 
 test_that('plot.zoonWorkflow module not on repo', {
   
+  skip_on_cran()
   if (!capabilities('libcurl')) skip('skipping as libcurl not supported')  
   
   #missing module
@@ -62,8 +64,7 @@ test_that('plot.zoonWorkflow module not on repo', {
       noccurrence <- nrow(occurrence)
       
       df <- occurrence
-      names(df)[6:ncol(df)] <- names(ras)
-      
+
       return(list(df=df, ras=ras))
       
   }
@@ -75,25 +76,31 @@ test_that('plot.zoonWorkflow module not on repo', {
              author = 'tom',
              email = 'tom@tom.com',
              dir = directory,
-             dataType = 'abundance')
+             dataType = 'abundance',
+             check = FALSE)
   
   rm(myMissing)
   
   LoadModule(module = file.path(directory, 'myMissing.R'))
   
-  # This line accounts for the fact that testing is done
-  # in a different environment
-  assign('myMissing', NamespaceModule, env = .GlobalEnv)
+  # NamespaceModule <- function(){
+  #   return(myMissing)
+  # }
+  # 
+  # # This line accounts for the fact that testing is done
+  # # in a different environment
+  # assign('myMissing', NamespaceModule, env = .GlobalEnv)
   
   work4 <- workflow(occurrence = UKAnophelesPlumbeus, 
                     covariate = UKAir,
                     process = list(myMissing,
-                                   OneHundredBackground,
-                                   OneThousandBackground,
+                                   Background(n = 20),
+                                   Background(n = 70),
                                    myMissing,
                                    NoProcess),
                     model = LogisticRegression,
                     output = PrintMap)
+  
   png(filename = file.path(directory, 'tempzoonWorkflow4.png'))
   expect_null(zoon:::plot.zoonWorkflow(work4))
   dev.off()

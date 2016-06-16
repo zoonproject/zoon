@@ -6,7 +6,7 @@
 #'
 #' @param object A function that will be made into a module file.
 #' @param dir The directory to put the module into (defaults to the
-#'      working directory.
+#'      working directory).
 #' @param type A string that defines the type of module. Possible module types
 #'      are occurrence, covariate, process, model, diagnostic and output.
 #' @param title A short description of the module.
@@ -17,7 +17,7 @@
 #'    anotherParameter = 'Another descriptions.')
 #'    This is required if the module takes non-default arguements
 #' @param author (required) String giving the author(s) name(s)
-#' @param email (required) String giving the correspondance address for the module.
+#' @param email (required) String giving the correspondance address for the module (only give one address).
 #' @param dataType Character vector required for all module types except 'covariate'.
 #' Indicates the types of data that this module works with. Values can be any of
 #' 'presence-only', 'presence/absence', 'presence/background', 'abundance' or 'proportion'. For a occurrence
@@ -25,16 +25,19 @@
 #' should indicate the type of data they will work with. If the module works with
 #' multiple types they can be supplied in a vector, e.g. c('presence-only',
 #' 'presence/absence') 
+#' @param check Logical indicating if the module should be run through checks
+#' once it has been built. Defaults to TRUE.
 #'
 #' @return Name of the module. Outputs a file
 #' @name BuildModule
 #' @import methods
+#' @import testthat
 #' @importFrom utils capture.output
 #' @export
 
 BuildModule <- function(object, type, dir='.', title = '',  description = '',
                         details = '', author = '', email = '', paras = NULL,
-                        dataType = NULL){
+                        dataType = NULL, check = TRUE){
   
   # Check object is a function
   if(!is(object, 'function')) stop('object must be a function')
@@ -53,13 +56,19 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
     }
   }
   
+  # Check only one email address is given
+  if(length(email) > 1) stop('Please only give one email address for correspondence')
+  
+  # Collapse multiple authors
+  authors <- paste(author, collapse = ', ')
+  
   #Remove trailing '/' from dir
   dir <- gsub('/$', '', dir)
   
   Writeable(dir)
   
   # Is all meta information provided.
-  if(title == '' | description == '' | author == '' | email == '') {
+  if(title == '' | description == '' | authors == '' | email == '') {
     complete <- FALSE
   } else {
     complete <- TRUE
@@ -106,7 +115,7 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
 
   # Sort out parameter formating.
   paraNames <- names(paras)
-  paraDocs <- paste(sapply(paraNames, function(x) paste("#' @param", x, paras[x])), collapse="#'\n")
+  paraDocs <- paste(sapply(paraNames, function(x) paste("\n#'\n#' @param", x, paras[x])), collapse="")
 
   # Roxygen2 uses @ as a tag. So have to double it.
   email <- gsub('@', '@@', email)
@@ -115,14 +124,26 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
   if(!is.null(dataType)) dataType <- paste0("\n#'\n#' @section Data type: ",
                                             paste(dataType, collapse = ', '))
         
+  # Add place holder for the version as this will be decided
+  # on submission to the website
+  version <- "\n#'\n#' @section Version: 0"
+  
+  # Give this as the current date
+  submitted <- paste("\n#'\n#' @section Date submitted: ", Sys.Date())
+  
   docs <- paste0("#' @name ", obj,
                  "\n#'\n#' @title ", title,
                  "\n#'\n#' @description ", description,
                  "\n#'\n#' @details ", details,
-                 "\n#'\n", paraDocs,
+                 paraDocs,
                  "\n#'\n#' @family ", type,
-                 "\n#'\n#' @author ", author, ', ', '\\email{', email, '}',
-                 dataType)
+                 "\n#'\n#' @author ", authors, ', ', '\\email{', email, '}',
+                 dataType,
+                 version,
+                 submitted)
+  
+  
+  
 
   # get and format the source code
   src <- capture.output(dput(object))
@@ -136,6 +157,13 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
   
   # add a final line break
   cat('\n', file = fpath, append = TRUE)
+  
+  # Run checks if requested
+  if(check){
+    cat('Starting checks...')
+    test_module(fpath)
+    cat('done\n')
+  }
   
   return(obj)
 }

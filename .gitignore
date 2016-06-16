@@ -2,12 +2,14 @@ R/.R~
 *~
 .httr-oauth
 .Rproj.user
-# things in vignettes created when building
-vignettes/*.html
-vignettes/*.md
-vignettes/*.R
-vignettes/figure
-vignettes/cache
-# outputs from testing
-tests/testthat/*.pdf
+.Rdata
+.Rhistory
+=======
+zoon_package.Rproj
+.Rhistory
+
 testing.r
+=======
+
+# Vignette pre-build folder
+vignette_prebuild

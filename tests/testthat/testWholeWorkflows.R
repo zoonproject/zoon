@@ -1,13 +1,15 @@
-context('Whole workflows.')
+context('Whole workflows')
 
 expected_names <- c('occurrence.output', 'covariate.output', 'process.output', 
       'model.output', 'report', 'call', 'call.list', 'session.info', 'module.versions') 
 
 test_that('simple, package data workflow works.', {
-
+  
+  skip_on_cran()
+  
   work1 <- workflow(occurrence = UKAnophelesPlumbeus,
                  covariate = UKAir,
-                 process = OneHundredBackground,
+                 process = Background(n = 70),
                  model = LogisticRegression,
                  output = PrintMap)
 
@@ -19,7 +21,7 @@ test_that('simple, package data workflow works.', {
   expect_equal(dim(work1$covariate.output[[1]]), c(9,9,1))
   expect_equal(names(work1$process.output[[1]]$df), 
     c('value', 'type', 'fold', 'longitude',   'latitude',   'layer'))
-  expect_equal(dim(work1$process.output[[1]][[1]]),  c(269, 6))
+  expect_equal(dim(work1$process.output[[1]][[1]]),  c(258, 6))
   expect_is((work1$model.output[[1]])$model, c('zoonModel'))
   expect_is((work1$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is((work1$model.output[[1]])$data, c('data.frame'))
@@ -32,9 +34,12 @@ test_that('simple, package data workflow works.', {
 
 
 test_that('Check basic quoted workflow.', {
+  
+  skip_on_cran()
+  
   work1 <- workflow(occurrence = 'UKAnophelesPlumbeus',
                  covariate = 'UKAir',
-                 process = 'OneHundredBackground',
+                 process = 'Background',
                  model = 'LogisticRegression',
                  output = 'PrintMap')
 
@@ -58,10 +63,12 @@ test_that('Check basic quoted workflow.', {
 
 test_that('modules downloading data work', {
 
+   skip_on_cran()
+  
    work2 <- workflow(occurrence = SpOcc(species = 'Anopheles plumbeus',
                                         extent = c(-10, 10, 45, 65)),
                      covariate = UKAir,
-                     process = OneHundredBackground,
+                     process = Background(n = 70),
                      model = RandomForest, 
                      output = PrintMap)
    
@@ -89,38 +96,40 @@ test_that('modules downloading data work', {
 
 test_that('Workflows with lists of modules work.', {
   
+  skip_on_cran()
+  
   # Would like to remove some of the slow online database modules from here.
   # In fact I don't think the would pass cran.
    workOccurList <- workflow(occurrence = list(UKAnophelesPlumbeus, 
                          SpOcc(species = 'Anopheles plumbeus', 
                            extent = c(-10, 10, 45, 65))),
                          covariate = UKAir,
-                         process = OneHundredBackground,
+                         process = Background(n = 70),
                          model = LogisticRegression,
                          output = PrintMap)
 
   workCovarList <- workflow(occurrence = UKAnophelesPlumbeus,
                      covariate = list(UKAir, UKAir),
-                     process = OneHundredBackground,
+                     process = Background(n = 70),
                      model = LogisticRegression,
                      output = PrintMap)
 
   # There's only 1 appropriate process module at the moment!
   workProcessList <- workflow(occurrence = UKAnophelesPlumbeus,
                        covariate = UKAir,
-                       process = list(OneHundredBackground, OneHundredBackground),
+                       process = list(Background(n = 70), Background(n = 70)),
                        model = LogisticRegression,
                        output = PrintMap)
 
   workModelList <- workflow(occurrence = UKAnophelesPlumbeus,
                      covariate = UKAir,
-                     process = OneHundredBackground,
+                     process = Background(n = 70),
                      model = list(LogisticRegression, RandomForest),
                      output = PrintMap)
 
   workOutputList <- workflow(occurrence = UKAnophelesPlumbeus,
                      covariate = UKAir,
-                     process = OneHundredBackground,
+                     process = Background(n = 70),
                      model = LogisticRegression,
                      output = list(PrintMap, PrintMap))
 
@@ -162,11 +171,14 @@ test_that('Workflows with lists of modules work.', {
 })
 
 test_that('only one set of multiple lists allowed.', {
+  
+  skip_on_cran()
+  
   fnc1 <- function(){
     x <- workflow(occurrence = list(UKAnophelesPlumbeus,
                     UKAnophelesPlumbeus),
            covariate = list(UKAir, UKAir),
-           process = OneHundredBackground,
+           process = Background(n = 70),
            model = LogisticRegression,
            output = PrintMap)
   }
@@ -174,7 +186,7 @@ test_that('only one set of multiple lists allowed.', {
 fnc2 <- function(){
     x <- workflow(occurrence = UKAnophelesPlumbeus,
            covariate = list(UKAir, UKAir),
-           process = list(OneHundredBackground,OneHundredBackground),
+           process = list(Background(n = 70),Background(n = 70)),
            model = LogisticRegression,
            output = PrintMap)
   }
@@ -182,7 +194,7 @@ fnc2 <- function(){
 fnc3 <- function(){
     x <- workflow(occurrence = UKAnophelesPlumbeus,
            covariate = UKAir,
-           process = OneHundredBackground,
+           process = Background(n = 70),
            model = list(LogisticRegression,LogisticRegression),
            output = list(PrintMap, PrintMap))
   }
@@ -195,7 +207,9 @@ fnc3 <- function(){
 
 
 test_that('simple, crossvalidation workflow works.', {
-
+  
+  skip_on_cran()
+  
   workCross <- workflow(occurrence = UKAnophelesPlumbeus,
                  covariate = UKAir,
                  process = BackgroundAndCrossvalid,
@@ -219,39 +233,38 @@ test_that('simple, crossvalidation workflow works.', {
   
 })
 
-
-
-
 test_that('chains work.', {
+  
+  skip_on_cran()
   
   chain1 <- workflow(occurrence = Chain(UKAnophelesPlumbeus,UKAnophelesPlumbeus),
                  covariate = UKAir,
-                 process = OneHundredBackground,
+                 process = Background(n = 70),
                  model = LogisticRegression,
                  output = PrintMap)
 
   
   chain2 <- workflow(occurrence = UKAnophelesPlumbeus,
                  covariate = Chain(UKAir,UKAir),
-                 process = OneHundredBackground,
+                 process = Background(n = 70),
                  model = LogisticRegression,
                  output = PrintMap)
   
   chain3 <- workflow(occurrence = UKAnophelesPlumbeus,
                      covariate = Chain(UKAir,UKAir),
-                     process = OneHundredBackground,
+                     process = Background(n = 70),
                      model = LogisticRegression,
                      output = Chain(PrintMap, PrintMap))
   
   chain4 <- workflow(occurrence = UKAnophelesPlumbeus,
                  covariate = UKAir,
-                 process = OneHundredBackground,
+                 process = Background(n = 70),
                  model = LogisticRegression,
                  output = Chain(PrintMap, PrintMap))
   
   chain5 <- workflow(occurrence = UKAnophelesPlumbeus,
                      covariate = UKAir,
-                     process = Chain(OneHundredBackground, NoProcess),
+                     process = Chain(Background(n = 70), NoProcess),
                      model = LogisticRegression,
                      output = PrintMap)
   
@@ -261,7 +274,7 @@ test_that('chains work.', {
   expect_equal(dim(chain1$covariate.output[[1]]), c(9,9,1))
   expect_equal(names(chain1$process.output[[1]]$df), 
     c('value', 'type', 'fold', 'longitude', 'latitude', 'layer'))
-  expect_equal(dim(chain1$process.output[[1]]$df),  c(457, 6))
+  expect_equal(dim(chain1$process.output[[1]]$df),  c(446, 6))
   expect_is((chain1$model.output[[1]])$model, c('zoonModel'))
   expect_is((chain1$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(chain1$report[[1]], 'RasterLayer') 
@@ -276,7 +289,7 @@ test_that('chains work.', {
   expect_equal(dim(chain2$covariate.output[[1]]), c(9,9,2))
   expect_equal(names(chain2$process.output[[1]]$df), 
     c('value', 'type', 'fold', 'longitude', 'latitude', 'layer.1', 'layer.2'))
-  expect_equal(dim(chain2$process.output[[1]]$df),  c(269, 7))
+  expect_equal(dim(chain2$process.output[[1]]$df),  c(258, 7))
   expect_is((chain2$model.output[[1]])$model, c('zoonModel'))
   expect_is((chain2$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(chain2$report[[1]], 'RasterLayer')  
@@ -291,7 +304,7 @@ test_that('chains work.', {
   expect_equal(dim(chain3$covariate.output[[1]]), c(9,9,2))
   expect_equal(names(chain3$process.output[[1]]$df), 
                c('value', 'type', 'fold', 'longitude', 'latitude', 'layer.1', 'layer.2'))
-  expect_equal(dim(chain3$process.output[[1]]$df),  c(269, 7))
+  expect_equal(dim(chain3$process.output[[1]]$df),  c(258, 7))
   expect_is((chain3$model.output[[1]])$model, c('zoonModel'))
   expect_is((chain3$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(chain3$report[[1]], 'list')  
@@ -306,7 +319,7 @@ test_that('chains work.', {
   expect_equal(dim(chain4$covariate.output[[1]]), c(9,9,1))
   expect_equal(names(chain4$process.output[[1]]$df), 
     c('value', 'type', 'fold', 'longitude', 'latitude', 'layer'))
-  expect_equal(dim(chain4$process.output[[1]]$df),  c(269, 6))
+  expect_equal(dim(chain4$process.output[[1]]$df),  c(258, 6))
   expect_is((chain4$model.output[[1]])$model, c('zoonModel'))
   expect_is((chain4$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(chain4$report[[1]], 'list')  
@@ -321,7 +334,7 @@ test_that('chains work.', {
   expect_equal(dim(chain5$covariate.output[[1]]), c(9,9,1))
   expect_equal(names(chain5$process.output[[1]]$df), 
                c('value', 'type', 'fold', 'longitude', 'latitude', 'layer'))
-  expect_equal(dim(chain5$process.output[[1]]$df),  c(269, 6))
+  expect_equal(dim(chain5$process.output[[1]]$df),  c(258, 6))
   expect_is((chain5$model.output[[1]])$model, c('zoonModel'))
   expect_is((chain5$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is(chain5$report[[1]], 'RasterLayer')  
@@ -335,6 +348,9 @@ test_that('chains work.', {
 
 
 test_that('workflow with mix of syntax works.', {
+  
+  skip_on_cran()
+  
   workSyn <- workflow(occurrence = UKAnophelesPlumbeus,
                  covariate = 'UKAir',
                  process = BackgroundAndCrossvalid(k=2),
@@ -352,7 +368,7 @@ test_that('workflow with mix of syntax works.', {
   expect_is((workSyn$model.output[[1]])$model, c('zoonModel'))
   expect_is((workSyn$model.output[[1]])$model$model, c('glm', 'lm'))
   expect_is((workSyn$model.output[[1]])$data, c('data.frame'))
-  expect_is(workSyn$report[[1]], 'list')
+  expect_is(workSyn$report[[1]], 'RasterLayer')
   expect_is(workSyn$session.info, 'sessionInfo')
   expect_is(workSyn$module.versions, 'list')
   expect_named(workSyn$module.versions, c("occurrence","covariate","process","model","output"))
@@ -361,8 +377,11 @@ test_that('workflow with mix of syntax works.', {
 })
 
 
+
 # test_that('workflow with user defined cross validation', {
 #   
+#   skip_on_cran()
+#
 #   extent = c(-10, 10, 55, 65)
 #   
 #   reorderExtent <- extent[c(1, 3, 2, 4)]
@@ -406,3 +425,63 @@ test_that('workflow with mix of syntax works.', {
 #   
 # })
 ## add external validation dataset (fold == 0)
+
+
+test_that('Output understands which previous model was listed.', {
+
+  skip_on_cran()
+  
+  # See issue 263 for discussion
+  # https://github.com/zoonproject/zoon/issues/263
+  
+  # Create a local raster *with a differently named layer*
+  #   The listed covariate tests above erroneously passed because we
+  #   listed UKAir twice, so they had identical layer names.
+  UKAirRas2 <<- UKAirRas
+  names(UKAirRas2) <- 'NewName'
+  
+  work1 <- workflow(occurrence = UKAnophelesPlumbeus,
+                    covariate  = list(LocalRaster(UKAirRas2), UKAir),
+                    process    = Background(n = 70),
+                    model      = LogisticRegression,
+                    output     = PrintMap)
+  
+  work2 <- workflow(occurrence = UKAnophelesPlumbeus,
+                    covariate  = list(LocalRaster(UKAirRas2), UKAir),
+                    process    = Background(n = 70),
+                    model      = LogisticRegression,
+                    output     = Chain(PrintMap, PrintMap))
+  
+  rm(list = c('UKAirRas2'))
+
+  expect_equivalent(sapply(work1, length)[-8], c(1, 2, 2, 2, 2, 1, 5, 5))
+
+  covarClasses1 <- unlist(lapply(work1[!names(work1) %in% 'session.info'], function(x) sapply(x, class)))
+
+  expect_equivalent(covarClasses1, c('data.frame','RasterLayer','RasterLayer','list',
+    'list','list','list','RasterLayer','RasterLayer', 'character',
+    'list','list','list','list','list',
+    'matrix','matrix','matrix','matrix','matrix'))
+ 
+
+
+  expect_equivalent(sapply(work2, length)[-8], c(1, 2, 2, 2, 2, 1, 5, 5))
+
+  covarClasses2 <- unlist(lapply(work2[!names(work2) %in% 'session.info'], function(x) sapply(x, class)))
+
+  expect_equivalent(covarClasses2, c('data.frame','RasterLayer','RasterLayer','list',
+    'list','list','list','list','list', 'character',
+    'list','list','list','list','list',
+    'matrix','matrix','matrix','matrix','matrix'))
+
+})
+
+
+test_that('Running modules with parameters', {
+  
+  skip_on_cran()
+  
+  # I dont think we do this elsewhere
+  
+})
+  

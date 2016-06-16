@@ -4,16 +4,18 @@ context('RerunWorkflow')
 # are not cached as this results in a change in the version number 
 # from x to 'local copy'
 
-set.seed(1)
-w1 <- workflow(UKAnophelesPlumbeus,
-               UKAir, 
-               OneHundredBackground,
-               LogisticRegression,
-               PrintMap,
-               forceReproducible = TRUE)
 
 test_that('RerunWorkflow simple test', {
-
+  skip_on_cran()
+  
+  set.seed(1)
+  w1 <- workflow(UKAnophelesPlumbeus,
+                 UKAir, 
+                 Background(n = 70),
+                 LogisticRegression,
+                 PrintMap,
+                 forceReproducible = TRUE)
+  
   set.seed(1)
   w2 <- RerunWorkflow(w1)
   
@@ -24,10 +26,19 @@ test_that('RerunWorkflow simple test', {
 
 test_that('RerunWorkflow test error', {
   
+  skip_on_cran()
+  set.seed(1)
+  w1 <- workflow(UKAnophelesPlumbeus,
+                 UKAir, 
+                 Background(n = 70),
+                 LogisticRegression,
+                 PrintMap,
+                 forceReproducible = TRUE)
+  
   set.seed(1)
   
-  expect_error(w2 <- RerunWorkflow(w1, from = 'a'), regexp = 'Error : from')
-  expect_error(w2 <- RerunWorkflow(w1, from = 6), regexp = 'Error : from')
+  expect_error(w2 <- RerunWorkflow(w1, from = 'a'), regexp = 'from \\%in\\% c\\(1\\:5\\) is not TRUE')
+  expect_error(w2 <- RerunWorkflow(w1, from = 6), regexp = 'from \\%in\\% c\\(1\\:5\\) is not TRUE')
   
   # You cannot re-run a workflow with 
   
@@ -35,6 +46,16 @@ test_that('RerunWorkflow test error', {
 
 
 test_that('RerunWorkflow test with NULLs', {
+  
+  skip_on_cran()
+  
+  set.seed(1)
+  w1 <- workflow(UKAnophelesPlumbeus,
+                 UKAir, 
+                 Background(n = 70),
+                 LogisticRegression,
+                 PrintMap,
+                 forceReproducible = TRUE)
   
   w3 <- w1 
   for(i in 1:5) w3[i] <- list(NULL)
@@ -73,10 +94,12 @@ test_that('RerunWorkflow test with NULLs', {
 
 test_that('RerunWorkflow test with Chains', {
   
+  skip_on_cran()
+  
   set.seed(1)
   w13 <- workflow(Chain(UKAnophelesPlumbeus,UKAnophelesPlumbeus),
                  UKAir, 
-                 OneHundredBackground,
+                 Background(n = 70),
                  LogisticRegression,
                  PrintMap,
                  forceReproducible = TRUE)
@@ -88,7 +111,7 @@ test_that('RerunWorkflow test with Chains', {
   set.seed(1)
   w15 <- workflow(Chain(UKAnophelesPlumbeus,UKAnophelesPlumbeus),
                   Chain(UKAir, UKAir), 
-                  OneHundredBackground,
+                  Background(n = 70),
                   LogisticRegression,
                   PrintMap,
                   forceReproducible = TRUE)
@@ -100,11 +123,12 @@ test_that('RerunWorkflow test with Chains', {
 })
 
 test_that('RerunWorkflow test with lists', {
+  skip_on_cran()
   
   set.seed(1)
   w17 <- workflow(list(UKAnophelesPlumbeus,UKAnophelesPlumbeus),
                   UKAir, 
-                  OneHundredBackground,
+                  Background(n = 70),
                   LogisticRegression,
                   PrintMap,
                   forceReproducible = TRUE)
@@ -116,7 +140,7 @@ test_that('RerunWorkflow test with lists', {
   set.seed(1)
   w19 <- workflow(UKAnophelesPlumbeus,
                   list(UKAir, UKAir), 
-                  OneHundredBackground,
+                  Background(n = 70),
                   LogisticRegression,
                   PrintMap,
                   forceReproducible = TRUE)
@@ -128,11 +152,12 @@ test_that('RerunWorkflow test with lists', {
 })
 
 test_that('RerunWorkflow test quoted modules', {
+  skip_on_cran()
   
   set.seed(1)
   w21 <- workflow(occurrence = "UKAnophelesPlumbeus",
                   covariate  = UKAir,
-                  process    = OneHundredBackground,
+                  process    = Background(n = 70),
                   model      = RandomForest,
                   output     = PrintMap,
                   forceReproducible = TRUE)
