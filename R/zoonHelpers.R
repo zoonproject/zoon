@@ -380,7 +380,7 @@ ExtractAndCombData <- function(occurrence, ras){
   }
   
   # extract covariates from lat long values in df.
-  occurrenceCovariates <- as.matrix(raster::extract(ras, occurrence[, c('longitude', 'latitude')]))
+  occurrenceCovariates <- matrix(raster::extract(ras, occurrence[, c('longitude', 'latitude')]), ncol = ras@data@nlayers)
   colnames(occurrenceCovariates) <- names(ras)  
   
   # combine with the occurrence data
