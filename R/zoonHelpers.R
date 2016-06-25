@@ -379,12 +379,30 @@ ExtractAndCombData <- function(occurrence, ras){
     warning ('Some occurrence points are outside the raster extent and have been removed before modelling')
   }
   
-  # extract covariates from lat long values in df.
-  occurrenceCovariates <- matrix(raster::extract(ras, occurrence[, c('longitude', 'latitude')]), ncol = ras@data@nlayers)
-  colnames(occurrenceCovariates) <- names(ras)  
+  ## extract covariates from lat long values in df (skip if )
+  # Define number of raster layers (check if RasterLayer vs RasterStack)
+  if(class(ras) == "RasterLayer"){layers = 1}else{layers = ras@data@nlayers} 
+  # Extract coords
+  if(NROW(occurrence) == 0){
+    occurrenceCovariates <- matrix(nrow = 0,ncol = layers)
+  }else{
+    occurrenceCovariates <- as.matrix(raster::extract(ras, occurrence[, c('longitude', 'latitude')])) 
+  }
+  colnames(occurrenceCovariates) <- names(ras) 
   
-  # combine with the occurrence data
-  df <- cbind(occurrence, occurrenceCovariates)
+  attr(occurrence,'detectCovs') <- 'testVar'
+  
+  # combine with the occurrence data (while preserving previously defined attributes)
+  cbind.zoon <- function(a,b){
+    ## This function allows cbind to preserve the origional attributes of object a
+    attr.list <- attributes(a) # Extract attribute list
+    appended.frame <- cbind(a,b) # append dataframe
+    attr.list$names <- attr(appended.frame,which = 'names') # update names in attribute list
+    attributes(appended.frame) <- attr.list # set attributes for appended dataframe
+    return(appended.frame)
+  }
+  
+  df <- cbind.zoon(occurrence, occurrenceCovariates)
   
   # assign call_path attribute to this new object
   attr(df, 'call_path') <- attr(occurrence, 'call_path')
