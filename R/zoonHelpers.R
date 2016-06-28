@@ -390,8 +390,6 @@ ExtractAndCombData <- function(occurrence, ras){
   }
   colnames(occurrenceCovariates) <- names(ras) 
   
-  attr(occurrence,'detectCovs') <- 'testVar'
-  
   # combine with the occurrence data (while preserving previously defined attributes)
   cbind.zoon <- function(a,b){
     ## This function allows cbind to preserve the origional attributes of object a
