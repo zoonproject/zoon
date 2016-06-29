@@ -75,7 +75,7 @@ GetModule <- function(module, forceReproducible){
                      options('zoonRepo'),
                      options('zoonRepoBranch'),
                      module)
-
+  
   # If the module is in global namespace, use that function
   #   unless forceReproduce is TRUE, in which case we want to get from repo.
   #   
@@ -161,11 +161,9 @@ RunModels <- function(df, modelFunction, paras, workEnv){
   # Old versions of modules dont use this attribute 
   ## REMOVE ONCE MODULES UPDATED ##
   if('covCols' %in% names(attributes(df))){
-    dfOut <- cbind(df[!colnames(df) %in% attr(df, 'covCols')],
-                   predictions = NA,
-                   df[colnames(df) %in% attr(df, 'covCols')])
+    dfOut <- cbind.zoon(subset.columns.zoon(df,!colnames(df) %in% attr(df, 'covCols')),
+                        cbind(predictions = NA, df[colnames(df) %in% attr(df, 'covCols')]))
   } else {
-    
     dfOut <- cbind(df[, 1:5], predictions = NA, df[,6:NCOL(df)])
     names(dfOut)[7:ncol(dfOut)] <- names(df)[6:ncol(df)]
     
@@ -184,9 +182,8 @@ RunModels <- function(df, modelFunction, paras, workEnv){
       ## REMOVE ONCE MODULES UPDATED ##
       if('covCols' %in% names(attributes(df))){
         pred <- ZoonPredict(modelFold,
-                            newdata = df[df$fold == i,
-                                         attr(df, 'covCols'),
-                                         drop = FALSE])
+                            newdata = subset.columns.zoon(df[df$fold == i,],
+                                                          attr(df, 'covCols')))
       } else {
         pred <- ZoonPredict(modelFold,
                             newdata = df[df$fold == i, 6:NCOL(df), drop = FALSE])
@@ -208,9 +205,8 @@ RunModels <- function(df, modelFunction, paras, workEnv){
     ## REMOVE ONCE MODULES UPDATED ##
     if('covCols' %in% names(attributes(df))){
       pred <- ZoonPredict(m,
-                          newdata = df[df$fold == 0,
-                                       attr(df, 'covCols'),
-                                       drop = FALSE])
+                          newdata = subset.columns.zoon(df[df$fold == 0,],
+                                                        attr(df, 'covCols')))
     } else {
       pred <- ZoonPredict(m,
                           newdata = df[df$fold == 0, 6:NCOL(df), drop = FALSE])
@@ -280,7 +276,7 @@ CheckModList <- function(x){
     listCall <- eval(x)
     
     ModuleList <- lapply(listCall, FormatModuleList) 
-
+    
     # If unquoted module w/ paras given: occurrence = Module1(k=2)
   } else if (identical(class(x[[1]]), 'name')){
     # Parameters
