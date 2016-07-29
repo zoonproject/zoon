@@ -375,6 +375,13 @@ ExtractAndCombData <- function(occurrence, ras){
     warning ('Some occurrence points are outside the raster extent and have been removed before modelling')
   }
   
+  ## If raster is empty, return unmodified df and ras objects
+  ## (This is useful for creating simulated datasets which fill
+  # the empty cells of the raster as a process module)
+  if(length(ras@layers) == 0){
+    return(list(df=occurrence, ras=ras))
+  }
+  
   ## extract covariates from lat long values in df (skip if )
   # Define number of raster layers (check if RasterLayer vs RasterStack)
   if(class(ras) == "RasterLayer"){layers = 1}else{layers = ras@data@nlayers} 
