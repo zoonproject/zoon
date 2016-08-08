@@ -90,7 +90,7 @@ GetModule <- function(module, forceReproducible){
   
   # getURL returns "Not Found" if no webpage found.
   #   Use this to avoid two web call.s
-  if(rawText == "Not Found") {
+  if(grepl("^404: Not Found", rawText)) {
     stop(paste('Cannot find "', module, 
                '". Check that the module is on the zoon repository or in the global namespace.'))
   }
