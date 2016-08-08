@@ -375,8 +375,17 @@ ExtractAndCombData <- function(occurrence, ras){
   bad.coords <- is.na(cellFromXY(ras,
                                  occurrence[,c('longitude', 'latitude')]))
   if(any(bad.coords)){
+    nr_before <- nrow(occurrence)
     occurrence <- occurrence[!bad.coords, ]
-    warning ('Some occurrence points are outside the raster extent and have been removed before modelling')
+    nr_after <- nrow(occurrence)
+    
+    if(nr_after > 0){
+      warning (paste(nr_before - nr_after,
+                     'occurrence points are outside the raster extent and have been removed before modelling leaving',
+                     nr_after, 'occurrence points'))
+    } else if(nr_after == 0) {
+      stop(paste('All occurrence points are outside the raster extent. Try changing your extent'))
+    }
   }
   
   # extract covariates from lat long values in df.
