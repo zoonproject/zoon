@@ -80,8 +80,8 @@ GetModule <- function(module, forceReproducible){
   #   unless forceReproduce is TRUE, in which case we want to get from repo.
   #   
   # Get module from zoonURL otherwise.
-  if (exists(module) & !forceReproducible){
-    assign(module, eval(parse(text = module)),  envir = parent.frame(4))
+  if (exists(module, where = ".GlobalEnv", mode = "function", inherits = FALSE) & !forceReproducible){
+    assign(module, eval(parse(text = module), envir = globalenv()),  envir = parent.frame(4))
     attr(module, 'version') <- 'local copy'
     return(module)
   } else {

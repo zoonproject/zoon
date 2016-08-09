@@ -9,6 +9,7 @@
 #' Given a \code{zoonModel} object returned by a model
 #' module using the function \code{ZoonModel}, make a prediction to
 #' a new dataframe. Values returned must be on the response scale
+#' (e.g. probabilities of presence).
 #' For an example, see the source code for the module \code{mgcv}.
 #' 
 #' 
