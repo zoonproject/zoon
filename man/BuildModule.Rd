@@ -9,7 +9,9 @@ BuildModule(object, type, dir = ".", title = "", description = "",
   dataType = NULL, check = TRUE)
 }
 \arguments{
-\item{object}{A function that will be made into a module file.}
+\item{object}{A function that will be made into a module file. It is good
+practise to ensure your function does not have the same name as a base
+function, another module, or other common functions.}
 
 \item{type}{A string that defines the type of module. Possible module types
 are occurrence, covariate, process, model, diagnostic and output.}
@@ -29,7 +31,7 @@ working directory).}
 
 \item{paras}{A list of the form 
 list(parameterName = 'Parameter description.',
-anotherParameter = 'Another descriptions.')
+anotherParameter = 'Another description.')
 This is required if the module takes non-default arguements}
 
 \item{dataType}{Character vector required for all module types except 'covariate'.
@@ -44,7 +46,8 @@ multiple types they can be supplied in a vector, e.g. c('presence-only',
 once it has been built. Defaults to TRUE.}
 }
 \value{
-Name of the module. Outputs a file
+Name of the module. AS a side effect outputs a .R file to the directory
+specified.
 }
 \description{
 Turn a function in the namespace into a module.

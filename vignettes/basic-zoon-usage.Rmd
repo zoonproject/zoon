@@ -1,9 +1,9 @@
 ---
 title: "Basic zoon usage"
 author: "Tim Lucas and Tom August"
-date: "2016-06-06"
+date: "2016-08-09"
 output:
-  rmarkdown::html_vignette:
+  html_document:
     toc: yes
     keep_md: yes
 vignette: >
@@ -172,35 +172,18 @@ work2 <- workflow(occurrence = UKAnophelesPlumbeus,
 ```
 
 ```
-## Model performance measures:
-```
-
-```
-## auc :  0.665386130811663
-```
-
-```
-## kappa :  0.411378555798687
-```
-
-```
-## omissions :  0
-```
-
-```
-## sensitivity :  1
-```
-
-```
-## specificity :  0.333333333333333
-```
-
-```
-## proportionCorrect :  0.799256505576208
+## Loading required package: SDMTools
 ```
 
 ```
 ## 
+## Attaching package: 'SDMTools'
+```
+
+```
+## The following object is masked from 'package:raster':
+## 
+##     distance
 ```
 
 Here we are providing an argument to the module `BackgroundAndCrossvalid`. We are setting `k` (the number of cross validation folds) to 2.
@@ -219,38 +202,6 @@ work3 <- workflow(occurrence = UKAnophelesPlumbeus,
                   process    = Chain(OneHundredBackground, Crossvalidate),
                   model      = LogisticRegression,
                   output     = PerformanceMeasures)
-```
-
-```
-## Model performance measures:
-```
-
-```
-## auc :  0.666896506435514
-```
-
-```
-## kappa :  0.464271488887118
-```
-
-```
-## omissions :  0
-```
-
-```
-## sensitivity :  1
-```
-
-```
-## specificity :  0.382716049382716
-```
-
-```
-## proportionCorrect :  0.814126394052045
-```
-
-```
-## 
 ```
 
 Here we draw some pseudoabsence background points, and do crossvalidation (which is the same as `work2`, but explicitely using the separate modules.)
@@ -351,36 +302,28 @@ work5$session.info
 ## [5] LC_TIME=English_United Kingdom.1252    
 ## 
 ## attached base packages:
-## [1] splines   stats     graphics  grDevices utils     datasets  methods  
-## [8] base     
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] gam_1.12            foreach_1.4.3       spocc_0.5.0        
-##  [4] MASS_7.3-45         SDMTools_1.1-221    randomForest_4.6-12
-##  [7] dismo_1.0-15        knitr_1.13          zoon_0.5           
-## [10] raster_2.5-2        sp_1.2-3           
+## [1] SDMTools_1.1-221    randomForest_4.6-12 dismo_1.0-15       
+## [4] zoon_0.5            raster_2.5-2        sp_1.2-3           
+## [7] knitr_1.13         
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_0.12.5       rvertnet_0.4.4    lubridate_1.5.6  
-##  [4] lattice_0.20-33   assertthat_0.1    digest_0.6.9     
-##  [7] V8_1.0.1          R6_2.1.2          plyr_1.8.3       
-## [10] chron_2.3-47      evaluate_0.9      httr_1.1.0       
-## [13] rbison_0.4.8      ggplot2_2.1.0     curl_0.9.7       
-## [16] data.table_1.9.6  whisker_0.3-2     R.utils_2.3.0    
-## [19] R.oo_1.20.0       oai_0.2.0         rgdal_1.1-10     
-## [22] stringr_1.0.0     RCurl_1.95-4.8    munsell_0.4.3    
-## [25] httpuv_1.3.3      rgeos_0.3-19      geoaxe_0.1.0     
-## [28] tibble_1.0        roxygen2_5.0.1    codetools_0.2-14 
-## [31] XML_3.98-1.4      rgbif_0.9.3       crayon_1.3.1     
-## [34] dplyr_0.4.3       bitops_1.0-6      R.methodsS3_1.7.1
-## [37] grid_3.3.0        jsonlite_0.9.20   gtable_0.2.0     
-## [40] DBI_0.4-1         magrittr_1.5      formatR_1.4      
-## [43] scales_0.4.0      stringi_1.1.1     mapproj_1.2-4    
-## [46] ridigbio_0.3.3    rebird_0.3.0      testthat_1.0.2   
-## [49] xml2_0.1.2        rfigshare_0.3.7   iterators_1.0.8  
-## [52] tools_3.3.0       RJSONIO_1.3-0     maps_3.1.0       
-## [55] rsconnect_0.4.3   parallel_3.3.0    yaml_2.1.13      
-## [58] colorspace_1.2-6  memoise_1.0.0
+##  [1] Rcpp_0.12.5       formatR_1.4       plyr_1.8.4       
+##  [4] iterators_1.0.8   R.methodsS3_1.7.1 bitops_1.0-6     
+##  [7] R.utils_2.3.0     tools_3.3.0       testthat_1.0.2   
+## [10] digest_0.6.9      memoise_1.0.0     evaluate_0.9     
+## [13] rfigshare_0.3.7   gtable_0.2.0      lattice_0.20-33  
+## [16] foreach_1.4.3     rgdal_1.1-10      yaml_2.1.13      
+## [19] httr_1.1.0        stringr_1.0.0     roxygen2_5.0.1   
+## [22] grid_3.3.0        R6_2.1.2          XML_3.98-1.4     
+## [25] rmarkdown_1.0     RJSONIO_1.3-0     ggplot2_2.1.0    
+## [28] magrittr_1.5      codetools_0.2-14  splines_3.3.0    
+## [31] scales_0.4.0      htmltools_0.3.5   rsconnect_0.4.3  
+## [34] colorspace_1.2-6  httpuv_1.3.3      stringi_1.1.1    
+## [37] RCurl_1.95-4.8    munsell_0.4.3     gam_1.12         
+## [40] crayon_1.3.1      R.oo_1.20.0
 ```
 
 ```r
@@ -463,67 +406,22 @@ work6 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari',
 ```
 
 ```
-## Model performance measures:
-```
-
-```
-## auc :  0.533554922443811
-```
-
-```
-## kappa :  -0.048689138576779
-```
-
-```
-## omissions :  1
-```
-
-```
-## sensitivity :  0
-```
-
-```
-## specificity :  0.962962962962963
-```
-
-```
-## proportionCorrect :  0.65
+## Loading required package: MASS
 ```
 
 ```
 ## 
+## Attaching package: 'MASS'
 ```
 
 ```
-## Model performance measures:
-```
-
-```
-## auc :  0.888255777144666
-```
-
-```
-## kappa :  0.608938547486033
-```
-
-```
-## omissions :  0.230769230769231
-```
-
-```
-## sensitivity :  0.769230769230769
-```
-
-```
-## specificity :  0.851851851851852
-```
-
-```
-## proportionCorrect :  0.825
-```
-
-```
+## The following objects are masked from 'package:raster':
 ## 
+##     area, select
+```
+
+```
+## Loading required package: spocc
 ```
 
 ```r
