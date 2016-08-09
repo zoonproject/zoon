@@ -4,7 +4,9 @@
 #'Will later add functions to upload module to figshare etc.
 #'And add testing that the module name is unique.
 #'
-#' @param object A function that will be made into a module file.
+#' @param object A function that will be made into a module file. It is good
+#'      practise to ensure your function does not have the same name as a base
+#'      function, another module, or other common functions.
 #' @param dir The directory to put the module into (defaults to the
 #'      working directory).
 #' @param type A string that defines the type of module. Possible module types
@@ -14,7 +16,7 @@
 #' @param details (optional) A single string giving details of the module.
 #' @param paras A list of the form 
 #'    list(parameterName = 'Parameter description.',
-#'    anotherParameter = 'Another descriptions.')
+#'    anotherParameter = 'Another description.')
 #'    This is required if the module takes non-default arguements
 #' @param author (required) String giving the author(s) name(s)
 #' @param email (required) String giving the correspondance address for the module (only give one address).
@@ -28,7 +30,8 @@
 #' @param check Logical indicating if the module should be run through checks
 #' once it has been built. Defaults to TRUE.
 #'
-#' @return Name of the module. Outputs a file
+#' @return Name of the module. AS a side effect outputs a .R file to the directory
+#' specified.
 #' @name BuildModule
 #' @import methods
 #' @import testthat
