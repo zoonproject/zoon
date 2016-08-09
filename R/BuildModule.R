@@ -145,11 +145,9 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
                  version,
                  submitted)
   
-  
-  
 
   # get and format the source code
-  src <- capture.output(dput(object))
+  src <- capture.output(dput(object, control = 'useSource'))
   src[1] <- sprintf('%s <- %s', obj, src[1])
   src <- paste0(src, collapse = '\n')
 
