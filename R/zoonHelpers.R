@@ -75,7 +75,7 @@ GetModule <- function(module, forceReproducible){
                      options('zoonRepo'),
                      options('zoonRepoBranch'),
                      module)
-
+  
   # If the module is in global namespace, use that function
   #   unless forceReproduce is TRUE, in which case we want to get from repo.
   #   
@@ -161,11 +161,9 @@ RunModels <- function(df, modelFunction, paras, workEnv){
   # Old versions of modules dont use this attribute 
   ## REMOVE ONCE MODULES UPDATED ##
   if('covCols' %in% names(attributes(df))){
-    dfOut <- cbind(df[!colnames(df) %in% attr(df, 'covCols')],
-                   predictions = NA,
-                   df[colnames(df) %in% attr(df, 'covCols')])
+    dfOut <- cbind.zoon(subset.columns.zoon(df,!colnames(df) %in% attr(df, 'covCols')),
+                        cbind(predictions = NA, df[colnames(df) %in% attr(df, 'covCols')]))
   } else {
-    
     dfOut <- cbind(df[, 1:5], predictions = NA, df[,6:NCOL(df)])
     names(dfOut)[7:ncol(dfOut)] <- names(df)[6:ncol(df)]
     
@@ -184,9 +182,8 @@ RunModels <- function(df, modelFunction, paras, workEnv){
       ## REMOVE ONCE MODULES UPDATED ##
       if('covCols' %in% names(attributes(df))){
         pred <- ZoonPredict(modelFold,
-                            newdata = df[df$fold == i,
-                                         attr(df, 'covCols'),
-                                         drop = FALSE])
+                            newdata = subset.columns.zoon(df[df$fold == i,],
+                                                          attr(df, 'covCols')))
       } else {
         pred <- ZoonPredict(modelFold,
                             newdata = df[df$fold == i, 6:NCOL(df), drop = FALSE])
@@ -208,9 +205,8 @@ RunModels <- function(df, modelFunction, paras, workEnv){
     ## REMOVE ONCE MODULES UPDATED ##
     if('covCols' %in% names(attributes(df))){
       pred <- ZoonPredict(m,
-                          newdata = df[df$fold == 0,
-                                       attr(df, 'covCols'),
-                                       drop = FALSE])
+                          newdata = subset.columns.zoon(df[df$fold == 0,],
+                                                        attr(df, 'covCols')))
     } else {
       pred <- ZoonPredict(m,
                           newdata = df[df$fold == 0, 6:NCOL(df), drop = FALSE])
@@ -280,7 +276,7 @@ CheckModList <- function(x){
     listCall <- eval(x)
     
     ModuleList <- lapply(listCall, FormatModuleList) 
-
+    
     # If unquoted module w/ paras given: occurrence = Module1(k=2)
   } else if (identical(class(x[[1]]), 'name')){
     # Parameters
@@ -379,12 +375,35 @@ ExtractAndCombData <- function(occurrence, ras){
     warning ('Some occurrence points are outside the raster extent and have been removed before modelling')
   }
   
-  # extract covariates from lat long values in df.
-  occurrenceCovariates <- as.matrix(raster::extract(ras, occurrence[, c('longitude', 'latitude')]))
-  colnames(occurrenceCovariates) <- names(ras)  
+  ## If raster is empty, return unmodified df and ras objects
+  ## (This is useful for creating simulated datasets which fill
+  # the empty cells of the raster as a process module)
+  if(length(ras@layers) == 0){
+    return(list(df=occurrence, ras=ras))
+  }
   
-  # combine with the occurrence data
-  df <- cbind(occurrence, occurrenceCovariates)
+  ## extract covariates from lat long values in df (skip if )
+  # Define number of raster layers (check if RasterLayer vs RasterStack)
+  if(class(ras) == "RasterLayer"){layers = 1}else{layers = ras@data@nlayers} 
+  # Extract coords
+  if(NROW(occurrence) == 0){
+    occurrenceCovariates <- matrix(nrow = 0,ncol = layers)
+  }else{
+    occurrenceCovariates <- as.matrix(raster::extract(ras, occurrence[, c('longitude', 'latitude')])) 
+  }
+  colnames(occurrenceCovariates) <- names(ras) 
+  
+  # combine with the occurrence data (while preserving previously defined attributes)
+  cbind.zoon <- function(a,b){
+    ## This function allows cbind to preserve the origional attributes of object a
+    attr.list <- attributes(a) # Extract attribute list
+    appended.frame <- cbind(a,b) # append dataframe
+    attr.list$names <- attr(appended.frame,which = 'names') # update names in attribute list
+    attributes(appended.frame) <- attr.list # set attributes for appended dataframe
+    return(appended.frame)
+  }
+  
+  df <- cbind.zoon(occurrence, occurrenceCovariates)
   
   # assign call_path attribute to this new object
   attr(df, 'call_path') <- attr(occurrence, 'call_path')
