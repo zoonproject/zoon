@@ -375,33 +375,14 @@ ExtractAndCombData <- function(occurrence, ras){
     warning ('Some occurrence points are outside the raster extent and have been removed before modelling')
   }
   
-  ## If raster is empty, return unmodified df and ras objects
-  ## (This is useful for creating simulated datasets which fill
-  # the empty cells of the raster as a process module)
-  if(length(ras@layers) == 0){
+  # extract covariates from lat long values in df.
+  ras.values <- raster::extract(ras, occurrence[, c('longitude', 'latitude')])
+  if(is.null(ras.values)){
+    ## if no data extracted from raster, skip extract and combine and return origional df and ras objects
     return(list(df=occurrence, ras=ras))
   }
-  
-  ## extract covariates from lat long values in df (skip if )
-  # Define number of raster layers (check if RasterLayer vs RasterStack)
-  if(class(ras) == "RasterLayer"){layers = 1}else{layers = ras@data@nlayers} 
-  # Extract coords
-  if(NROW(occurrence) == 0){
-    occurrenceCovariates <- matrix(nrow = 0,ncol = layers)
-  }else{
-    occurrenceCovariates <- as.matrix(raster::extract(ras, occurrence[, c('longitude', 'latitude')])) 
-  }
-  colnames(occurrenceCovariates) <- names(ras) 
-  
-  # combine with the occurrence data (while preserving previously defined attributes)
-  cbind.zoon <- function(a,b){
-    ## This function allows cbind to preserve the origional attributes of object a
-    attr.list <- attributes(a) # Extract attribute list
-    appended.frame <- cbind(a,b) # append dataframe
-    attr.list$names <- attr(appended.frame,which = 'names') # update names in attribute list
-    attributes(appended.frame) <- attr.list # set attributes for appended dataframe
-    return(appended.frame)
-  }
+  occurrenceCovariates <- as.matrix(ras.values)
+  colnames(occurrenceCovariates) <- names(ras)  
   
   df <- cbind.zoon(occurrence, occurrenceCovariates)
   
