@@ -378,11 +378,11 @@ ExtractAndCombData <- function(occurrence, ras){
   # extract covariates from lat long values in df.
   ras.values <- raster::extract(ras, occurrence[, c('longitude', 'latitude')])
   if(is.null(ras.values)){
-    ## if no data extracted from raster, skip extract and combine and return origional df and ras objects
-    return(list(df=occurrence, ras=ras))
+    occurrenceCovariates <- NULL
+  }else{
+    occurrenceCovariates <- as.matrix(ras.values)
+    colnames(occurrenceCovariates) <- names(ras)  
   }
-  occurrenceCovariates <- as.matrix(ras.values)
-  colnames(occurrenceCovariates) <- names(ras)  
   
   df <- cbind.zoon(occurrence, occurrenceCovariates)
   
