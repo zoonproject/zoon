@@ -1,9 +1,9 @@
 ---
 title: "Interactive zoon usage (for developers)"
 author: "Tim Lucas"
-date: "2016-06-06"
+date: "2016-08-09"
 output:
-  rmarkdown::html_vignette:
+  html_document:
     toc: yes
     keep_md: yes
 vignette: >
