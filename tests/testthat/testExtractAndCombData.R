@@ -12,6 +12,11 @@ test_that('ExtractAndCombData works.', {
   outOfExtentData <- head(AplumbeusOcc)
   outOfExtentData$longitude <- -20
   
-  expect_error(ExtractAndCombData(outOfExtentData, UKAirRas))
+  expect_warning(ExtractAndCombData(outOfExtentData, UKAirRas))
+  
+  # test that attributes are carried though
+  attr(AplumbeusOcc, 'testing') <- list(1:5, 'test')
+  y <- ExtractAndCombData(head(AplumbeusOcc), UKAirRas)
+  expect_equal(list(1:5, 'test'), attr(y$df, 'testing'))
   
 })
