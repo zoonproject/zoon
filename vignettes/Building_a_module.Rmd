@@ -1,9 +1,9 @@
 ---
 title: "Building modules"
 author: "Tom August & Tim Lucas"
-date: '2016-06-06'
+date: '2016-08-09'
 output:
-  rmarkdown::html_vignette:
+  html_document:
     keep_md: yes
     toc: yes
 vignette: >

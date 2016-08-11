@@ -80,8 +80,8 @@ GetModule <- function(module, forceReproducible){
   #   unless forceReproduce is TRUE, in which case we want to get from repo.
   #   
   # Get module from zoonURL otherwise.
-  if (exists(module) & !forceReproducible){
-    assign(module, eval(parse(text = module)),  envir = parent.frame(4))
+  if (exists(module, where = ".GlobalEnv", mode = "function", inherits = FALSE) & !forceReproducible){
+    assign(module, eval(parse(text = module), envir = globalenv()),  envir = parent.frame(4))
     attr(module, 'version') <- 'local copy'
     return(module)
   } else {
@@ -90,7 +90,7 @@ GetModule <- function(module, forceReproducible){
   
   # getURL returns "Not Found" if no webpage found.
   #   Use this to avoid two web call.s
-  if(rawText == "Not Found") {
+  if(grepl("^404: Not Found", rawText)) {
     stop(paste('Cannot find "', module, 
                '". Check that the module is on the zoon repository or in the global namespace.'))
   }
@@ -371,14 +371,24 @@ ExtractAndCombData <- function(occurrence, ras){
   bad.coords <- is.na(cellFromXY(ras,
                                  occurrence[,c('longitude', 'latitude')]))
   if(any(bad.coords)){
+    nr_before <- nrow(occurrence)
     occurrence <- occurrence[!bad.coords, ]
-    warning ('Some occurrence points are outside the raster extent and have been removed before modelling')
+    nr_after <- nrow(occurrence)
+    
+    if(nr_after > 0){
+      warning (paste(nr_before - nr_after,
+                     'occurrence points are outside the raster extent and have been removed before modelling leaving',
+                     nr_after, 'occurrence points'))
+    } else if(nr_after == 0) {
+      warning(paste('All occurrence points are outside the raster extent. Try changing your raster.'))
+    }
   }
   
   # extract covariates from lat long values in df.
   ras.values <- raster::extract(ras, occurrence[, c('longitude', 'latitude')])
   if(is.null(ras.values)){
     occurrenceCovariates <- NULL
+    warning('Locations in the occurrence data did not match your raster so no covariate data were extracted. This is only a good idea if you are creating simulated data in the process module')
   }else{
     occurrenceCovariates <- as.matrix(ras.values)
     colnames(occurrenceCovariates) <- names(ras)  
