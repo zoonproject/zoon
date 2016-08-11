@@ -380,7 +380,7 @@ ExtractAndCombData <- function(occurrence, ras){
                      'occurrence points are outside the raster extent and have been removed before modelling leaving',
                      nr_after, 'occurrence points'))
     } else if(nr_after == 0) {
-      stop(paste('All occurrence points are outside the raster extent. Try changing your extent'))
+      warning(paste('All occurrence points are outside the raster extent. Try changing your raster.'))
     }
   }
   
@@ -388,6 +388,7 @@ ExtractAndCombData <- function(occurrence, ras){
   ras.values <- raster::extract(ras, occurrence[, c('longitude', 'latitude')])
   if(is.null(ras.values)){
     occurrenceCovariates <- NULL
+    warning('Locations in the occurrence data did not match your raster so no covariate data were extracted. This is only a good idea if you are creating simulated data in the process module')
   }else{
     occurrenceCovariates <- as.matrix(ras.values)
     colnames(occurrenceCovariates) <- names(ras)  

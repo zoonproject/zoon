@@ -24,7 +24,7 @@ cbind.zoon <- function(a,b){
 #' defined attributes of the parent data.frame.
 #' 
 #'@param df The dataframe of which you'd like to subset columns from
-#'@param columns A string vector of columns which you'd like to extract.
+#'@param columns A vector of column names (character) of indexs (numeric) which you'd like to keep
 #'@name subset.columns.zoon
 #'@export
 subset.columns.zoon <- function(df,columns){

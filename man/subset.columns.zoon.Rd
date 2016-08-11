@@ -9,7 +9,7 @@ subset.columns.zoon(df, columns)
 \arguments{
 \item{df}{The dataframe of which you'd like to subset columns from}
 
-\item{columns}{A string vector of columns which you'd like to extract.}
+\item{columns}{A vector of column names (character) of indexs (numeric) which you'd like to keep}
 }
 \description{
 Extract a subset of columns from a data.frame, while preserving the user 
