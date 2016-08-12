@@ -2,15 +2,15 @@
 ##Functions for manipulating data.frame objects while preserving user specified attributes##
 ############################################################################################
 
-#' cbind.zoon
+#' cbindZoon
 #'
 # The user defined attributes from data.frame a will be preserved cbind'ing data.frame b.
 #' 
 #'@param a The dataframe of which you'd like preserve the user defined attributes
 #'@param b The dataframe which you'd like to append to a.
-#'@name cbind.zoon
+#'@name cbindZoon
 #'@export
-cbind.zoon <- function(a,b){
+cbindZoon <- function(a,b){
   attr.list <- attributes(a) # Extract attribute list
   appended.frame <- cbind(a,b) # append dataframe
   attr.list$names <- attr(appended.frame,which = 'names') # update names in attribute list
@@ -18,16 +18,16 @@ cbind.zoon <- function(a,b){
   return(appended.frame)
 }
 
-#' subset.columns.zoon
+#' subsetColumnsZoon
 #'
 #' Extract a subset of columns from a data.frame, while preserving the user 
 #' defined attributes of the parent data.frame.
 #' 
 #'@param df The dataframe of which you'd like to subset columns from
 #'@param columns A vector of column names (character) of indexs (numeric) which you'd like to keep
-#'@name subset.columns.zoon
+#'@name subsetColumnsZoon
 #'@export
-subset.columns.zoon <- function(df,columns){
+subsetColumnsZoon <- function(df,columns){
   attr.list <- attributes(df) # Extract attribute list
   output <- df[,columns,drop = F] # subset dataframe
   

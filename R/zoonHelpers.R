@@ -161,7 +161,7 @@ RunModels <- function(df, modelFunction, paras, workEnv){
   # Old versions of modules dont use this attribute 
   ## REMOVE ONCE MODULES UPDATED ##
   if('covCols' %in% names(attributes(df))){
-    dfOut <- cbind.zoon(subset.columns.zoon(df,!colnames(df) %in% attr(df, 'covCols')),
+    dfOut <- cbindZoon(subsetColumnsZoon(df,!colnames(df) %in% attr(df, 'covCols')),
                         cbind(predictions = NA, df[colnames(df) %in% attr(df, 'covCols')]))
   } else {
     dfOut <- cbind(df[, 1:5], predictions = NA, df[,6:NCOL(df)])
@@ -182,7 +182,7 @@ RunModels <- function(df, modelFunction, paras, workEnv){
       ## REMOVE ONCE MODULES UPDATED ##
       if('covCols' %in% names(attributes(df))){
         pred <- ZoonPredict(modelFold,
-                            newdata = subset.columns.zoon(df[df$fold == i,],
+                            newdata = subsetColumnsZoon(df[df$fold == i,],
                                                           attr(df, 'covCols')))
       } else {
         pred <- ZoonPredict(modelFold,
@@ -205,7 +205,7 @@ RunModels <- function(df, modelFunction, paras, workEnv){
     ## REMOVE ONCE MODULES UPDATED ##
     if('covCols' %in% names(attributes(df))){
       pred <- ZoonPredict(m,
-                          newdata = subset.columns.zoon(df[df$fold == 0,],
+                          newdata = subsetColumnsZoon(df[df$fold == 0,],
                                                         attr(df, 'covCols')))
     } else {
       pred <- ZoonPredict(m,
@@ -394,7 +394,7 @@ ExtractAndCombData <- function(occurrence, ras){
     colnames(occurrenceCovariates) <- names(ras)  
   }
   
-  df <- cbind.zoon(occurrence, occurrenceCovariates)
+  df <- cbindZoon(occurrence, occurrenceCovariates)
   
   # assign call_path attribute to this new object
   attr(df, 'call_path') <- attr(occurrence, 'call_path')

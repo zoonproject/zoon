@@ -1,6 +1,6 @@
-context('cbind.zoon')
+context('cbindZoon')
 
-test_that('cbind.zoon testing', {
+test_that('cbindZoon testing', {
   
   # create data.frames
   a <- data.frame(1:10, letters[1:10])
@@ -12,8 +12,8 @@ test_that('cbind.zoon testing', {
   # we expect cbind to drop the attributes
   expect_true(is.null(attr(cbind(a,b), 'test')))
   
-  # we expect cbind.zoon to keep the attributes
-  expect_equal(attr(cbind.zoon(a,b), 'test'), TRUE)
-  expect_equal(attr(cbind.zoon(a,b), 'test1'), 1:3)
+  # we expect cbindZoon to keep the attributes
+  expect_equal(attr(cbindZoon(a,b), 'test'), TRUE)
+  expect_equal(attr(cbindZoon(a,b), 'test1'), 1:3)
   
 })
