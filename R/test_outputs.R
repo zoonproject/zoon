@@ -498,7 +498,7 @@ test_outputs <- function(roxy_parse, modulePath){
                                     output = PrintMap,
                                     forceReproducible = FALSE),
                       'zoonWorkflow',
-                      info = 'The process module did not work in a list workflow')
+                      info = 'The model module did not work in a list workflow')
             
             # crossvalidate
             expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence,
@@ -521,18 +521,18 @@ test_outputs <- function(roxy_parse, modulePath){
                                     output = PrintMap,
                                     forceReproducible = FALSE),
                       'zoonWorkflow',
-                      info = 'The process module did not work in a standard workflow')
+                      info = 'The model module did not work in a standard workflow')
             
             # Chain
             expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
                                     covariate = UKAir,
-                                    process = list(NoProcess,
+                                    process = list(Background(n = 20),
                                                    Background(n = 70)),
                                     model = ModelModule,
                                     output = PrintMap,
                                     forceReproducible = FALSE),
                       'zoonWorkflow',
-                      info = 'The process module did not work in a chain workflow')
+                      info = 'The model module did not work in a chain workflow')
             
             # list
             expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
@@ -542,7 +542,7 @@ test_outputs <- function(roxy_parse, modulePath){
                                     output = PrintMap,
                                     forceReproducible = FALSE),
                       'zoonWorkflow',
-                      info = 'The process module did not work in a list workflow')
+                      info = 'The model module did not work in a list workflow')
             
             # crossvalidate
             expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
@@ -552,7 +552,7 @@ test_outputs <- function(roxy_parse, modulePath){
                                     output = PerformanceMeasures,
                                     forceReproducible = FALSE),
                       'zoonWorkflow',
-                      info = 'The process module did not work in a crossvalidation workflow')
+                      info = 'The model module did not work in a crossvalidation workflow')
           }
           }
         }
