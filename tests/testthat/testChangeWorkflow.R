@@ -74,7 +74,7 @@ test_that('Basic ChangeWorkflow works', {
                    "NUL",
                    "/dev/null"))
   w6 <- workflow(AnophelesPlumbeus,
-                 UKBioclim, 
+                 NaiveRandomRaster, 
                  Background(n = 70),
                  LogisticRegression,
                  PrintMap,
