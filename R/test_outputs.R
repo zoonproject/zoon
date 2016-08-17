@@ -15,7 +15,7 @@ test_outputs <- function(roxy_parse, modulePath){
   # them in. using forcereproducile = TRUE is not an option as this does
   # not allow me to use the module under test
   
-  test_that('Check OCCURRENCE output formats',{ 
+  test_that(paste('Check OCCURRENCE output formats for', basename(modulePath)),{ 
     
     ## OCCURRENCE MODULES ##
     if(roxy_parse$family == 'occurrence'){
@@ -165,7 +165,7 @@ test_outputs <- function(roxy_parse, modulePath){
     }
   })
   
-  test_that('Check COVARIATE output formats',{ 
+  test_that(paste('Check COVARIATE output formats for', basename(modulePath)),{ 
     
     ## COVARIATE MODULES ##
     if(roxy_parse$family == 'covariate'){
@@ -249,7 +249,7 @@ test_outputs <- function(roxy_parse, modulePath){
   })
   
   
-  test_that('Check PROCESS output formats',{ 
+  test_that(paste('Check PROCESS output formats for', basename(modulePath)),{ 
     
     ## PROCESS MODULES ##
     if(roxy_parse$family == 'process'){
@@ -392,7 +392,7 @@ test_outputs <- function(roxy_parse, modulePath){
     }
   })
   
-  test_that('Check MODEL output formats',{ 
+  test_that(paste('Check MODEL output formats for', basename(modulePath)),{ 
   
     ## MODEL MODULES ##
     if(roxy_parse$family == 'model'){
@@ -564,7 +564,7 @@ test_outputs <- function(roxy_parse, modulePath){
   })
   
   
-  test_that('Check OUTPUT output formats',{ 
+  test_that(paste('Check OUTPUT output formats for', basename(modulePath)),{ 
     
     ## OUTPUT MODULES ##
     if(roxy_parse$family == 'output'){
