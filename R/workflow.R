@@ -2,11 +2,11 @@
 #' Run a full workflow.
 #'
 #' This is the main function of zoon. The arguments should specify at least five
-#'   modules, at least one of each type.
-#'   If modules do not have any arguments to be specific (or defaults are being
-#'   used then simply give the names of the module. If arguments are needed 
-#'   give the modules in the form of a function 
-#'   e.g. occurrence = AModule(para1 = 2, para2 = 'detail')
+#' modules, at least one of each type.
+#' If modules do not have any arguments to be specific (or defaults are being
+#' used) then simply give the names of the module. If arguments are needed 
+#' give the modules in the form of a function 
+#' e.g. occurrence = AModule(para1 = 2, para2 = 'detail')
 #'
 #' @param occurrence Occurrence module to be used.
 #' @param covariate  Covariate module to be used.
@@ -17,9 +17,8 @@
 #'  from the online repo. This ensure the analysis is reproducible.
 #'
 #' @return A list with the results of each module and a copy of the
-#'  code used to execute the workflow (what's there now should be source-able
-#'  though I'm sure there is a much neater approach than the one I took - the
-#'  ultimate aim would be a much nicer way of enhancing reproducibility).
+#'  code used to execute the workflow. If the workflow fails a partial
+#'  list is saved to a temporary file for debugging.
 #' @export
 #' @name workflow
 #' @importFrom utils sessionInfo
@@ -35,8 +34,11 @@
 #'
 #'str(work1, 1)
 #'
-#'work2 <- workflow(UKAnophelesPlumbeus, UKAir, OneHundredBackground,   
-#'           RandomForest, PrintMap)
+#'work2 <- workflow(UKAnophelesPlumbeus,
+#'                  UKAir,
+#'                  OneHundredBackground,   
+#'                  RandomForest,
+#'                  PrintMap)
 #'
 #'}
 
@@ -139,7 +141,15 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   class(output) <- 'zoonWorkflow'
   
   # whether exiting on error, or successful completion, return this
-  on.exit(return(output))
+  on.exit(expr = {
+    tempf <- tempfile(fileext = '.rdata')
+    save(output, file = tempf)
+    message(paste('The process failed. The partially completed workflow has been',
+              ' saved as a temporary file. Load the partially completed workflow named "output" by',
+              ' using load("',
+              normalizePath(tempf, winslash = '/'), '")',
+              sep = ''))
+  })
   
   tryCatch({
     occurrence.output <- lapply(occurrenceName, FUN = DoOccurrenceModule, e = e)
@@ -203,7 +213,6 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
     }
   )
   
-  
   # Model module
   tryCatch({
     model.output <- DoModelModules(model.module, modelName, process.output, e)
@@ -227,4 +236,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
       ErrorModule(cond, 5, e)
     }
   )
+  
+  on.exit()
+  return(output)
 }
