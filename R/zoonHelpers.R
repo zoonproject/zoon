@@ -389,7 +389,10 @@ ExtractAndCombData <- function(occurrence, ras){
   if(is.null(ras.values)){
     occurrenceCovariates <- NULL
     warning('Locations in the occurrence data did not match your raster so no covariate data were extracted. This is only a good idea if you are creating simulated data in the process module')
-  }else{
+  } else {
+    if(length(is.na(ras.values)) > 0){
+      warning('Some extracted covariate values are NA. This may cause issues for some models')
+    }
     occurrenceCovariates <- as.matrix(ras.values)
     colnames(occurrenceCovariates) <- names(ras)  
   }
@@ -508,8 +511,7 @@ ErrorModule <- function(cond, mod, e){
   message('Caught errors:\n',  cond)
   message()
   # Where did workflow break and where is the progress stored?
-  x <- paste("Stopping workflow due to error in", module, "module.\n", 
-             "Workflow progress will be returned.")
+  x <- paste("Stopping workflow due to error in", module, "module.\n")
   # Throw error. The call for this error is meaningless so don't print it.
   stop(x, call. = FALSE)
 }
