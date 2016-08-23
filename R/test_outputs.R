@@ -15,7 +15,7 @@ test_outputs <- function(roxy_parse, modulePath){
   # them in. using forcereproducile = TRUE is not an option as this does
   # not allow me to use the module under test
   
-  test_that('Check OCCURRENCE output formats',{ 
+  test_that(paste('Check OCCURRENCE output formats for', basename(modulePath)),{ 
     
     ## OCCURRENCE MODULES ##
     if(roxy_parse$family == 'occurrence'){
@@ -165,7 +165,7 @@ test_outputs <- function(roxy_parse, modulePath){
     }
   })
   
-  test_that('Check COVARIATE output formats',{ 
+  test_that(paste('Check COVARIATE output formats for', basename(modulePath)),{ 
     
     ## COVARIATE MODULES ##
     if(roxy_parse$family == 'covariate'){
@@ -211,6 +211,7 @@ test_outputs <- function(roxy_parse, modulePath){
       
       # Normal
       expect_is(w <- workflow(occurrence = NaiveRandomPresence(extent = myExtent,
+                                                               n = 1000,
                                                                seed = 123),
                               covariate = CovariateModule,
                               process = Background(n = 70),
@@ -222,6 +223,7 @@ test_outputs <- function(roxy_parse, modulePath){
       
       # Chain
       expect_is(w <- workflow(occurrence = NaiveRandomPresence(extent = myExtent,
+                                                               n = 1000,
                                                                seed = 123),
                               covariate = Chain(CovariateModule, CovariateModule),
                               process = Background(n = 70),
@@ -233,6 +235,7 @@ test_outputs <- function(roxy_parse, modulePath){
       
       # List + crossvalidate
       expect_is(w <- workflow(occurrence = NaiveRandomPresence(extent = myExtent,
+                                                               n = 1000,
                                                                seed = 123),
                               covariate = list(CovariateModule, CovariateModule),
                               process = BackgroundAndCrossvalid,
@@ -246,7 +249,7 @@ test_outputs <- function(roxy_parse, modulePath){
   })
   
   
-  test_that('Check PROCESS output formats',{ 
+  test_that(paste('Check PROCESS output formats for', basename(modulePath)),{ 
     
     ## PROCESS MODULES ##
     if(roxy_parse$family == 'process'){
@@ -318,7 +321,7 @@ test_outputs <- function(roxy_parse, modulePath){
           if(data_type == "presence/absence"){
             
             # normal
-            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence,
+            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
                                     covariate = NaiveRandomRaster,
                                     process = ProcessModule,
                                     model = LogisticRegression,
@@ -339,7 +342,7 @@ test_outputs <- function(roxy_parse, modulePath){
                       info = 'The process module did not work in a chain workflow')
             
             # list + crossvalidated
-            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence,
+            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
                                     covariate = NaiveRandomRaster,
                                     process = list(Crossvalidate,
                                                     ProcessModule),
@@ -389,7 +392,7 @@ test_outputs <- function(roxy_parse, modulePath){
     }
   })
   
-  test_that('Check MODEL output formats',{ 
+  test_that(paste('Check MODEL output formats for', basename(modulePath)),{ 
   
     ## MODEL MODULES ##
     if(roxy_parse$family == 'model'){
@@ -471,7 +474,7 @@ test_outputs <- function(roxy_parse, modulePath){
           if(data_type == "presence/absence"){
             
             # normal
-            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence,
+            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
                                     covariate = NaiveRandomRaster,
                                     process = NoProcess,
                                     model = ModelModule,
@@ -481,7 +484,7 @@ test_outputs <- function(roxy_parse, modulePath){
                       info = 'The model module did not work in a standard workflow')
             
             # Chained
-            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence,
+            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
                                     covariate = NaiveRandomRaster,
                                     process = Chain(NoProcess, NoProcess),
                                     model = ModelModule,
@@ -491,7 +494,7 @@ test_outputs <- function(roxy_parse, modulePath){
                       info = 'The model module did not work in a chain workflow')
             
             # list
-            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence,
+            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
                                     covariate = NaiveRandomRaster,
                                     process = NoProcess,
                                     model = list(ModelModule, ModelModule),
@@ -501,7 +504,7 @@ test_outputs <- function(roxy_parse, modulePath){
                       info = 'The model module did not work in a list workflow')
             
             # crossvalidate
-            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence,
+            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
                                     covariate = NaiveRandomRaster,
                                     process = Crossvalidate,
                                     model = list(ModelModule, ModelModule),
@@ -561,7 +564,7 @@ test_outputs <- function(roxy_parse, modulePath){
   })
   
   
-  test_that('Check OUTPUT output formats',{ 
+  test_that(paste('Check OUTPUT output formats for', basename(modulePath)),{ 
     
     ## OUTPUT MODULES ##
     if(roxy_parse$family == 'output'){

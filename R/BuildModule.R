@@ -20,6 +20,7 @@
 #'    This is required if the module takes non-default arguements
 #' @param author (required) String giving the author(s) name(s)
 #' @param email (required) String giving the correspondance address for the module (only give one address).
+#' @param version (optional) Numeric giving the version number. Default 0.1.
 #' @param dataType Character vector required for all module types except 'covariate'.
 #' Indicates the types of data that this module works with. Values can be any of
 #' 'presence-only', 'presence/absence', 'presence/background', 'abundance' or 'proportion'. For a occurrence
@@ -39,8 +40,8 @@
 #' @export
 
 BuildModule <- function(object, type, dir='.', title = '',  description = '',
-                        details = '', author = '', email = '', paras = NULL,
-                        dataType = NULL, check = TRUE){
+                        details = '', author = '', email = '', version = 0.1,
+                        paras = NULL, dataType = NULL, check = TRUE){
   
   # Check object is a function
   if(!is(object, 'function')) stop('object must be a function')
@@ -127,9 +128,10 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
   if(!is.null(dataType)) dataType <- paste0("\n#'\n#' @section Data type: ",
                                             paste(dataType, collapse = ', '))
         
-  # Add place holder for the version as this will be decided
-  # on submission to the website
-  version <- "\n#'\n#' @section Version: 0"
+  # Version number. his will be checked by the website
+  # on submission
+  if(!inherits(version, 'numeric')) stop('Version must be numeric')
+  version <- paste("\n#'\n#' @section Version:", version)
   
   # Give this as the current date
   submitted <- paste("\n#'\n#' @section Date submitted: ", Sys.Date())

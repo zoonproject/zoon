@@ -5,7 +5,7 @@
 \title{BuildModule}
 \usage{
 BuildModule(object, type, dir = ".", title = "", description = "",
-  details = "", author = "", email = "", paras = NULL,
+  details = "", author = "", email = "", version = 0.1, paras = NULL,
   dataType = NULL, check = TRUE)
 }
 \arguments{
@@ -28,6 +28,8 @@ working directory).}
 \item{author}{(required) String giving the author(s) name(s)}
 
 \item{email}{(required) String giving the correspondance address for the module (only give one address).}
+
+\item{version}{(optional) Numeric giving the version number. Default 0.1.}
 
 \item{paras}{A list of the form 
 list(parameterName = 'Parameter description.',

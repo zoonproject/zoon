@@ -7,7 +7,7 @@ test_parameters <- function(roxy_parse, defaultParams = NULL, modulePath){
   # Create blank symbol to test against
   blank <- formals(function(blank){})
   
-  test_that('Check parameter names', {
+  test_that(paste('Check parameter names for', basename(modulePath)), {
     
     # Extract names from tags
     paramNames <- unlist(lapply(roxy_parse[names(roxy_parse) == 'param'],
@@ -23,7 +23,7 @@ test_parameters <- function(roxy_parse, defaultParams = NULL, modulePath){
     
   })
   
-  test_that('Check default values', {
+  test_that(paste('Check default values for', basename(modulePath)), {
     
     # Expect that all non-default parameters have defaults
     paramClasses <- lapply(params, function(x) identical(x, blank$blank))
