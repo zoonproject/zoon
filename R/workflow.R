@@ -209,7 +209,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
     output$process.output <- process.output
   },  
     error = function(cond){
-      ErrorModule(cond, 3, e)
+      ErrorModule(cond, 4, e)
     }
   )
   
@@ -219,7 +219,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
     output$model.output <- model.output
   },  
     error = function(cond){
-      ErrorModule(cond, 4, e)
+      ErrorModule(cond, 5, e)
     }
   )    
   #output module
@@ -233,7 +233,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
     output$report <- output.output
   },  
     error = function(cond){
-      ErrorModule(cond, 5, e)
+      ErrorModule(cond, 6, e)
     }
   )
   

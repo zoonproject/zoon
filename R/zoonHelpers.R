@@ -500,18 +500,19 @@ SplitCall <- function(call){
 ErrorModule <- function(cond, mod, e){
   
   # Select the module type using numeric mod argument
-  module <- c('occurrence',
-              'covariate',
-              'process',
-              'model',
-              'output')[mod]
+  module <- c('occurrence module.',
+              'covariate module.',
+              'ExtractAndCombData, a function that combines occurrence and covariate data.',
+              'process module.',
+              'model module.',
+              'output module.')[mod]
   
   # Give useful messages.
-  # What were the errors that were caught be tryCatch.
+  # What were the errors that were caught by tryCatch.
   message('Caught errors:\n',  cond)
   message()
   # Where did workflow break and where is the progress stored?
-  x <- paste("Stopping workflow due to error in", module, "module.\n")
+  x <- paste("Stopping workflow due to error in", module, "\n")
   # Throw error. The call for this error is meaningless so don't print it.
   stop(x, call. = FALSE)
 }
