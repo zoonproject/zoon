@@ -7,7 +7,7 @@ test_that('GetPackage', {
   t <- 3
   expect_error(zoon::GetPackage(t), 'package must be a character')
   
-  rncep <- try(zoon::GetPackage('RNCEP'), silent = TRUE)
-  expect_null(rncep, info = 'GetPackage has failed with "RNCEP"')
+  rncep <- try(zoon::GetPackage('lme4'), silent = TRUE)
+  expect_null(rncep, info = 'GetPackage has failed with "lme4"')
   
 })
