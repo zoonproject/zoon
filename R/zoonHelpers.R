@@ -681,3 +681,39 @@ GetModuleVersion <- function(rawText){
   substr(VersionLine, Start, nchar(VersionLine))    
 
 }
+
+
+# tryCatchModule
+#
+# This function runs a call to a module in testing and handles
+# error that may occur in a way to make debugging easier
+
+tryCatchModule <- function(expr, code_chunk, fun = roxy_parse$name, debug = TRUE){
+  tryCatch(expr = expr,
+           error = function(err, func = fun, debug_f = debug){
+             error_message <- paste('\nYour module failed to run with default parameters\n',
+                        'ERROR:', err,
+                        '\nYou can debug this error by running the following code chunk',
+                        '\n===========\n',
+                        ifelse(test = debug_f, yes = paste0('debugonce(', func, ')\n'), no = ''),
+                        code_chunk,
+                        '\n===========')
+             class(error_message) <- 'moduleError'
+             return(error_message)
+           })
+}
+
+# tryCatchWorkflow
+#
+# This function runs a workflow in testing and handles
+# error that may occur in a way to make debugging easier
+
+tryCatchWorkflow <- function(expr, placeholder, fun = roxy_parse$name){
+  
+  code_temp <- paste(trimws(capture.output(print(substitute(expr)))), collapse = '')
+  code_chunk <- gsub(placeholder, fun, trimws(gsub('[{}]', '', code_temp)))
+  
+  tryCatchModule(expr = expr, code_chunk = code_chunk,
+                 fun = fun, debug = FALSE)
+  
+}

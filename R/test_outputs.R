@@ -27,17 +27,18 @@ test_outputs <- function(roxy_parse, modulePath){
       ## Move these to the sections where they are needed
       LoadModule('Background'); LoadModule('BackgroundAndCrossvalid')
       LoadModule('Crossvalidate'); LoadModule('LogisticRegression')
-      LoadModule('NaiveRandomRaster');LoadModule('NoProcess')
+      LoadModule('NaiveRandomRaster'); LoadModule('NoProcess')
       LoadModule('PrintMap')
       
       # Load the script
       source(modulePath) 
       
       # Run the module with defaults
-      suppressWarnings({
-        occ_return <- do.call(roxy_parse$name, args = list())
-      })
-      
+      occ_return <- tryCatchModule(expr = {occ_return <- do.call(roxy_parse$name, args = list())},
+                     code_chunk = paste0(roxy_parse$name, '()'),
+                     fun = roxy_parse$name)
+      if(inherits(occ_return, what = 'moduleError')) stop(occ_return)
+
       # Check the data.frame returned is as expected
       expect_is(occ_return, 'data.frame', info = 'Occurrence modules must return a data.frame')
       expect_named(occ_return, expected = c('longitude',
@@ -79,85 +80,109 @@ test_outputs <- function(roxy_parse, modulePath){
         if(data_type == "presence-only"){ 
           
           # test normal
-          expect_is(w <- workflow(occurrence = OccurrenceModule,
-                                  covariate = NaiveRandomRaster(extent = myExtent,
-                                                                res = 0.5,
-                                                                seed = 123),
-                                  process = Background(n = 70),
-                                  model = LogisticRegression,
-                                  output = PrintMap,
-                                  forceReproducible = FALSE),
-                    'zoonWorkflow',
+          w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = OccurrenceModule,
+                                                      covariate = NaiveRandomRaster(extent = myExtent,
+                                                                                    res = 0.5,
+                                                                                    seed = 123),
+                                                      process = Background(n = 70),
+                                                      model = LogisticRegression,
+                                                      output = PrintMap,
+                                                      forceReproducible = FALSE)},
+                                placeholder = 'OccurrenceModule',
+                                fun = roxy_parse$name)
+          if(inherits(w, what = 'moduleError')) stop(w)
+          
+          expect_is(w, 'zoonWorkflow',
                     info = 'The occurrence module did not work in a standard workflow')
           
           # test Chain
-          expect_is(w <- workflow(occurrence = Chain(OccurrenceModule,
-                                                     OccurrenceModule),
-                                  covariate = NaiveRandomRaster(extent = myExtent,
-                                                                res = 0.5,
-                                                                seed = 123),
-                                  process = Background(n = 70),
-                                  model = LogisticRegression,
-                                  output = PrintMap,
-                                  forceReproducible = FALSE),
-                    'zoonWorkflow',
+          w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = Chain(OccurrenceModule,
+                                                                         OccurrenceModule),
+                                                      covariate = NaiveRandomRaster(extent = myExtent,
+                                                                                    res = 0.5,
+                                                                                    seed = 123),
+                                                      process = Background(n = 70),
+                                                      model = LogisticRegression,
+                                                      output = PrintMap,
+                                                      forceReproducible = FALSE)},
+                                placeholder = 'OccurrenceModule',
+                                fun = roxy_parse$name)
+          if(inherits(w, what = 'moduleError')) stop(w)
+          
+          expect_is(w, 'zoonWorkflow',
                     info = 'The occurrence module did not work when chained in a workflow')
           
 
           # test list + crossvalidation
-          expect_is(w <- workflow(occurrence = list(OccurrenceModule,
-                                                    OccurrenceModule),
-                                  covariate = NaiveRandomRaster(extent = myExtent,
-                                                                res = 0.5,
-                                                                seed = 123),
-                                  process = BackgroundAndCrossvalid,
-                                  model = LogisticRegression,
-                                  output = PerformanceMeasures,
-                                  forceReproducible = FALSE),
-                    'zoonWorkflow',
+          w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = list(OccurrenceModule,
+                                                                        OccurrenceModule),
+                                                      covariate = NaiveRandomRaster(extent = myExtent,
+                                                                                    res = 0.5,
+                                                                                    seed = 123),
+                                                      process = BackgroundAndCrossvalid,
+                                                      model = LogisticRegression,
+                                                      output = PerformanceMeasures,
+                                                      forceReproducible = FALSE)},
+                                placeholder = 'OccurrenceModule',
+                                fun = roxy_parse$name)
+          if(inherits(w, what = 'moduleError')) stop(w)
+          
+          expect_is(w, 'zoonWorkflow',
                     info = 'The occurrence module did not work when listed in a workflow with crossvalidation')
           
           
         } else if(data_type == "presence/absence"){
           
             # test normal
-            expect_is(w <- workflow(occurrence = OccurrenceModule,
-                          covariate = NaiveRandomRaster(extent = myExtent,
-                                                        res = 0.5,
-                                                        seed = 123),
-                          process = NoProcess,
-                          model = LogisticRegression,
-                          output = PrintMap,
-                          forceReproducible = FALSE),
-            'zoonWorkflow',
-            info = 'The occurrence module did not work in a standard workflow')
+            w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = OccurrenceModule,
+                                                        covariate = NaiveRandomRaster(extent = myExtent,
+                                                                                      res = 0.5,
+                                                                                      seed = 123),
+                                                        process = NoProcess,
+                                                        model = LogisticRegression,
+                                                        output = PrintMap,
+                                                        forceReproducible = FALSE)},
+                                  placeholder = 'OccurrenceModule',
+                                  fun = roxy_parse$name)
+            if(inherits(w, what = 'moduleError')) stop(w)
+          
+            expect_is(w, 'zoonWorkflow',
+                      info = 'The occurrence module did not work in a standard workflow')
   
             # test Chain
-            expect_is(w <- workflow(occurrence = Chain(OccurrenceModule,
-                                                       OccurrenceModule),
-                                    covariate = NaiveRandomRaster(extent = myExtent,
-                                                                  res = 0.5,
-                                                                  seed = 123),
-                                    process = NoProcess,
-                                    model = LogisticRegression,
-                                    output = PrintMap,
-                                    forceReproducible = FALSE),
-                      'zoonWorkflow',
+            w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = Chain(OccurrenceModule,
+                                                                           OccurrenceModule),
+                                                        covariate = NaiveRandomRaster(extent = myExtent,
+                                                                                      res = 0.5,
+                                                                                      seed = 123),
+                                                        process = NoProcess,
+                                                        model = LogisticRegression,
+                                                        output = PrintMap,
+                                                        forceReproducible = FALSE)},
+                                  placeholder = 'OccurrenceModule',
+                                  fun = roxy_parse$name)
+            if(inherits(w, what = 'moduleError')) stop(w)
+          
+            expect_is(w, 'zoonWorkflow',
                       info = 'The occurrence module did not work when chained in a workflow')
   
   
   
             # test list + crossvalidation
-            expect_is(w <- workflow(occurrence = list(OccurrenceModule,
-                                                      OccurrenceModule),
-                                    covariate = NaiveRandomRaster(extent = myExtent,
-                                                                  res = 0.5,
-                                                                  seed = 123),
-                                    process = Crossvalidate,
-                                    model = LogisticRegression,
-                                    output = PerformanceMeasures,
-                                    forceReproducible = FALSE),
-                      'zoonWorkflow',
+            w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = list(OccurrenceModule,
+                                                                          OccurrenceModule),
+                                                        covariate = NaiveRandomRaster(extent = myExtent,
+                                                                                      res = 0.5,
+                                                                                      seed = 123),
+                                                        process = Crossvalidate,
+                                                        model = LogisticRegression,
+                                                        output = PerformanceMeasures,
+                                                        forceReproducible = FALSE)},
+                                  placeholder = 'OccurrenceModule',
+                                  fun = roxy_parse$name)
+            if(inherits(w, what = 'moduleError')) stop(w)
+            
+            expect_is(w, 'zoonWorkflow',
                       info = 'The occurrence module did not work when listed in a workflow with crossvalidation')
 
         } ## Add tests for proportion and abundance ##
@@ -183,10 +208,11 @@ test_outputs <- function(roxy_parse, modulePath){
       source(modulePath) 
       
       # Run the module with defaults
-      suppressWarnings({
-      cov_return <- do.call(roxy_parse$name, args = list())
-      })
-      
+      cov_return <- tryCatchModule(expr = {cov_return <- do.call(roxy_parse$name, args = list())},
+                                   code_chunk = paste0(roxy_parse$name, '()'),
+                                   fun = roxy_parse$name)
+      if(inherits(cov_return, what = 'moduleError')) stop(cov_return)
+
       # Check projection
       expect_true(all(grepl("+proj=longlat", projection(cov_return)),
                       grepl("+ellps=WGS84", projection(cov_return))),
@@ -210,39 +236,51 @@ test_outputs <- function(roxy_parse, modulePath){
       assign('myExtent', myExtent, envir = en)
       
       # Normal
-      expect_is(w <- workflow(occurrence = NaiveRandomPresence(extent = myExtent,
-                                                               n = 1000,
-                                                               seed = 123),
-                              covariate = CovariateModule,
-                              process = Background(n = 70),
-                              model = LogisticRegression,
-                              output = PrintMap,
-                              forceReproducible = FALSE),
-                'zoonWorkflow',
+      w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = NaiveRandomPresence(extent = myExtent,
+                                                                                   n = 1000,
+                                                                                   seed = 123),
+                                                  covariate = CovariateModule,
+                                                  process = Background(n = 70),
+                                                  model = LogisticRegression,
+                                                  output = PrintMap,
+                                                  forceReproducible = FALSE)},
+                            placeholder = 'CovariateModule',
+                            fun = roxy_parse$name)
+      if(inherits(w, what = 'moduleError')) stop(w)
+      
+      expect_is(w, 'zoonWorkflow',
                 info = 'The covariate module did not work in a standard workflow')
       
       # Chain
-      expect_is(w <- workflow(occurrence = NaiveRandomPresence(extent = myExtent,
-                                                               n = 1000,
-                                                               seed = 123),
-                              covariate = Chain(CovariateModule, CovariateModule),
-                              process = Background(n = 70),
-                              model = LogisticRegression,
-                              output = PrintMap,
-                              forceReproducible = FALSE),
-                'zoonWorkflow',
+      w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = NaiveRandomPresence(extent = myExtent,
+                                                                                   n = 1000,
+                                                                                   seed = 123),
+                                                  covariate = Chain(CovariateModule, CovariateModule),
+                                                  process = Background(n = 70),
+                                                  model = LogisticRegression,
+                                                  output = PrintMap,
+                                                  forceReproducible = FALSE)},
+                            placeholder = 'CovariateModule',
+                            fun = roxy_parse$name)
+      if(inherits(w, what = 'moduleError')) stop(w)
+      
+      expect_is(w, 'zoonWorkflow',
                 info = 'The covariate module did not work when chained in a workflow')
       
       # List + crossvalidate
-      expect_is(w <- workflow(occurrence = NaiveRandomPresence(extent = myExtent,
-                                                               n = 1000,
-                                                               seed = 123),
-                              covariate = list(CovariateModule, CovariateModule),
-                              process = BackgroundAndCrossvalid,
-                              model = LogisticRegression,
-                              output = PrintMap,
-                              forceReproducible = FALSE),
-                'zoonWorkflow',
+      w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = NaiveRandomPresence(extent = myExtent,
+                                                                                   n = 1000,
+                                                                                   seed = 123),
+                                                  covariate = list(CovariateModule, CovariateModule),
+                                                  process = BackgroundAndCrossvalid,
+                                                  model = LogisticRegression,
+                                                  output = PrintMap,
+                                                  forceReproducible = FALSE)},
+                            placeholder = 'CovariateModule',
+                            fun = roxy_parse$name)
+      if(inherits(w, what = 'moduleError')) stop(w)
+      
+      expect_is(w, 'zoonWorkflow',
                 info = 'The covariate module did not work when listed in a workflow with crossvalidation')
       
     }
@@ -282,16 +320,26 @@ test_outputs <- function(roxy_parse, modulePath){
         
         if(grepl(data_type, data_types)){
           
-         # visible binding
-         .data <- NULL  
+          # visible binding
+          .data <- NULL  
+           
+          # Choose file to load
+          if(data_type == "presence/absence"){
+            loadExpr <- substitute(load(system.file("extdata", "data_PA.rdata", package="zoon")))
+          } else if(data_type == "presence-only"){
+            loadExpr <- substitute(load(system.file("extdata", 'data_PO.rdata', package="zoon")))
+          } 
           
-         if(data_type == "presence/absence") load(system.file("extdata", "data_PA.rdata", package="zoon"))
-         if(data_type == "presence-only") load(system.file("extdata", 'data_PO.rdata', package="zoon"))
+          # run load expression
+          eval(loadExpr)
           
-          suppressWarnings({
-            pro_return <- do.call(roxy_parse$name, args = list(.data = .data))
-          })
-
+          # Run the module with defaults
+          pro_return <- tryCatchModule(expr = {pro_return <- do.call(roxy_parse$name, args = list(.data = .data))},
+                                       code_chunk = paste(capture.output(print(loadExpr)),
+                                                          '\n', paste0(roxy_parse$name, '(.data = .data)')),
+                                       fun = roxy_parse$name)
+          if(inherits(pro_return, what = 'moduleError')) stop(pro_return)
+          
           ## Check pro_return structure
           expect_is(pro_return, 'list', info = 'The object returned from a process module must be a list')
           expect_named(pro_return, expected = c('df', 'ras'), info = 'The elements of the list returned from a process module must be named "df" and "ras"')
@@ -321,70 +369,95 @@ test_outputs <- function(roxy_parse, modulePath){
           if(data_type == "presence/absence"){
             
             # normal
-            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
-                                    covariate = NaiveRandomRaster,
-                                    process = ProcessModule,
-                                    model = LogisticRegression,
-                                    output = PrintMap,
-                                    forceReproducible = FALSE),
-                      'zoonWorkflow',
+            w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
+                                                        covariate = NaiveRandomRaster,
+                                                        process = ProcessModule,
+                                                        model = LogisticRegression,
+                                                        output = PrintMap,
+                                                        forceReproducible = FALSE)},
+                                  placeholder = 'ProcessModule',
+                                  fun = roxy_parse$name)
+            if(inherits(w, what = 'moduleError')) stop(w)
+            
+            
+            expect_is(w, 'zoonWorkflow',
                       info = 'The process module did not work in a standard workflow')
             
             # Chained
-            expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
-                                    covariate = UKAir,
-                                    process = Chain(Background(n = 70),
-                                                    ProcessModule),
-                                    model = LogisticRegression,
-                                    output = PrintMap,
-                                    forceReproducible = FALSE),
-                      'zoonWorkflow',
+            w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = UKAnophelesPlumbeus,
+                                                        covariate = UKAir,
+                                                        process = Chain(Background(n = 70),
+                                                                        ProcessModule),
+                                                        model = LogisticRegression,
+                                                        output = PrintMap,
+                                                        forceReproducible = FALSE)},
+                                  placeholder = 'ProcessModule',
+                                  fun = roxy_parse$name)
+            if(inherits(w, what = 'moduleError')) stop(w)
+            
+            expect_is(w, 'zoonWorkflow',
                       info = 'The process module did not work in a chain workflow')
             
             # list + crossvalidated
-            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
-                                    covariate = NaiveRandomRaster,
-                                    process = list(Crossvalidate,
-                                                    ProcessModule),
-                                    model = LogisticRegression,
-                                    output = PrintMap,
-                                    forceReproducible = FALSE),
-                      'zoonWorkflow',
+            w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
+                                                        covariate = NaiveRandomRaster,
+                                                        process = list(Crossvalidate,
+                                                                       ProcessModule),
+                                                        model = LogisticRegression,
+                                                        output = PrintMap,
+                                                        forceReproducible = FALSE)},
+                                  placeholder = 'ProcessModule',
+                                  fun = roxy_parse$name)
+            if(inherits(w, what = 'moduleError')) stop(w)
+            
+            expect_is(w, 'zoonWorkflow',
                       info = 'The process module did not work in a list workflow')
             
             
           } else if(data_type == "presence-only"){
             
             # Norm
-            expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
-                                    covariate = UKAir,
-                                    process = ProcessModule,
-                                    model = RandomForest,
-                                    output = PrintMap,
-                                    forceReproducible = FALSE),
-                      'zoonWorkflow',
+            w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = UKAnophelesPlumbeus,
+                                                        covariate = UKAir,
+                                                        process = ProcessModule,
+                                                        model = RandomForest,
+                                                        output = PrintMap,
+                                                        forceReproducible = FALSE)},
+                                  placeholder = 'ProcessModule',
+                                  fun = roxy_parse$name)
+            if(inherits(w, what = 'moduleError')) stop(w)
+            
+            expect_is(w, 'zoonWorkflow',
                       info = 'The process module did not work in a standard workflow')
             
             # Chain
-            expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
-                                    covariate = UKAir,
-                                    process = list(NoProcess,
-                                               ProcessModule),
-                                    model = RandomForest,
-                                    output = PrintMap,
-                                    forceReproducible = FALSE),
-                      'zoonWorkflow',
+            w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = UKAnophelesPlumbeus,
+                                                        covariate = UKAir,
+                                                        process = list(NoProcess,
+                                                                       ProcessModule),
+                                                        model = RandomForest,
+                                                        output = PrintMap,
+                                                        forceReproducible = FALSE)},
+                                  placeholder = 'ProcessModule',
+                                  fun = roxy_parse$name)
+            if(inherits(w, what = 'moduleError')) stop(w)
+            
+            expect_is(w, 'zoonWorkflow',
                       info = 'The process module did not work in a chain workflow')
             
             # list
-            expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
-                                    covariate = UKAir,
-                                    process = list(NoProcess,
-                                                   ProcessModule),
-                                    model = RandomForest,
-                                    output = PrintMap,
-                                    forceReproducible = FALSE),
-                      'zoonWorkflow',
+            w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = UKAnophelesPlumbeus,
+                                                        covariate = UKAir,
+                                                        process = list(NoProcess,
+                                                                       ProcessModule),
+                                                        model = RandomForest,
+                                                        output = PrintMap,
+                                                        forceReproducible = FALSE)},
+                                  placeholder = 'ProcessModule',
+                                  fun = roxy_parse$name)
+            if(inherits(w, what = 'moduleError')) stop(w)
+            
+            expect_is(w, 'zoonWorkflow',
                       info = 'The process module did not work in a list workflow')
           }
         }
@@ -426,12 +499,22 @@ test_outputs <- function(roxy_parse, modulePath){
         
         if(grepl(data_type, data_types)){
           
-          if(data_type == "presence/absence") load(system.file("extdata", 'data_PA.rdata', package="zoon"))
-          if(data_type == "presence/background") load(system.file("extdata", 'data_PB.rdata', package="zoon")) # basically the same as above but type == 'background'
+          # Choose file to load
+          if(data_type == "presence/absence"){
+            loadExpr <- substitute(load(system.file("extdata", 'data_PA.rdata', package="zoon")))
+          } else if(data_type == "presence/background"){
+            loadExpr <- substitute(load(system.file("extdata", 'data_PB.rdata', package="zoon")))
+          } 
           
-          suppressWarnings({
-            mod_return <- do.call(roxy_parse$name, args = list(.df = .data$df))
-          })
+          # run load expression
+          eval(loadExpr)
+          
+          # Run the module with defaults
+          mod_return <- tryCatchModule(expr = {mod_return <- do.call(roxy_parse$name, args = list(.df = .data$df))},
+                                       code_chunk = paste(capture.output(print(loadExpr)),
+                                                          '\n', paste0(roxy_parse$name, '(.df = .data$df)')),
+                                       fun = roxy_parse$name)
+          if(inherits(mod_return, what = 'moduleError')) stop(mod_return)
           
           ## Check mod_return structure
           expect_is(mod_return, 'zoonModel', info = "The object returned from a model module must be a 'zoonModel' object. See '?ZoonModel' for more details")
@@ -474,87 +557,119 @@ test_outputs <- function(roxy_parse, modulePath){
           if(data_type == "presence/absence"){
             
             # normal
-            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
-                                    covariate = NaiveRandomRaster,
-                                    process = NoProcess,
-                                    model = ModelModule,
-                                    output = PrintMap,
-                                    forceReproducible = FALSE),
-                      'zoonWorkflow',
+            w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
+                                                        covariate = NaiveRandomRaster,
+                                                        process = NoProcess,
+                                                        model = ModelModule,
+                                                        output = PrintMap,
+                                                        forceReproducible = FALSE)},
+                                  placeholder = 'ModelModule',
+                                  fun = roxy_parse$name)
+            if(inherits(w, what = 'moduleError')) stop(w)
+            
+            expect_is(w, 'zoonWorkflow',
                       info = 'The model module did not work in a standard workflow')
             
             # Chained
-            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
-                                    covariate = NaiveRandomRaster,
-                                    process = Chain(NoProcess, NoProcess),
-                                    model = ModelModule,
-                                    output = PrintMap,
-                                    forceReproducible = FALSE),
-                      'zoonWorkflow',
+            w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
+                                                        covariate = NaiveRandomRaster,
+                                                        process = Chain(NoProcess, NoProcess),
+                                                        model = ModelModule,
+                                                        output = PrintMap,
+                                                        forceReproducible = FALSE)},
+                                  placeholder = 'ModelModule',
+                                  fun = roxy_parse$name)
+            if(inherits(w, what = 'moduleError')) stop(w)
+            
+            expect_is(w, 'zoonWorkflow',
                       info = 'The model module did not work in a chain workflow')
             
             # list
-            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
-                                    covariate = NaiveRandomRaster,
-                                    process = NoProcess,
-                                    model = list(ModelModule, ModelModule),
-                                    output = PrintMap,
-                                    forceReproducible = FALSE),
-                      'zoonWorkflow',
+            w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
+                                                        covariate = NaiveRandomRaster,
+                                                        process = NoProcess,
+                                                        model = list(ModelModule, ModelModule),
+                                                        output = PrintMap,
+                                                        forceReproducible = FALSE)},
+                                  placeholder = 'ModelModule',
+                                  fun = roxy_parse$name)
+            if(inherits(w, what = 'moduleError')) stop(w)
+            
+            expect_is(w, 'zoonWorkflow',
                       info = 'The model module did not work in a list workflow')
             
             # crossvalidate
-            expect_is(w <- workflow(occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
-                                    covariate = NaiveRandomRaster,
-                                    process = Crossvalidate,
-                                    model = list(ModelModule, ModelModule),
-                                    output = PerformanceMeasures,
-                                    forceReproducible = FALSE),
-                      'zoonWorkflow',
+            w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
+                                                        covariate = NaiveRandomRaster,
+                                                        process = Crossvalidate,
+                                                        model = list(ModelModule, ModelModule),
+                                                        output = PerformanceMeasures,
+                                                        forceReproducible = FALSE)},
+                                  placeholder = 'ModelModule',
+                                  fun = roxy_parse$name)
+            if(inherits(w, what = 'moduleError')) stop(w)
+            
+            expect_is(w, 'zoonWorkflow',
                       info = 'The process module did not work in a crossvalidation workflow')
             
             
           } else if(data_type == "presence/background"){
             
             # Norm
-            expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
-                                    covariate = UKAir,
-                                    process = Background(n = 70),
-                                    model = ModelModule,
-                                    output = PrintMap,
-                                    forceReproducible = FALSE),
-                      'zoonWorkflow',
+            w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = UKAnophelesPlumbeus,
+                                                        covariate = UKAir,
+                                                        process = Background(n = 70),
+                                                        model = ModelModule,
+                                                        output = PrintMap,
+                                                        forceReproducible = FALSE)},
+                                  placeholder = 'ModelModule',
+                                  fun = roxy_parse$name)
+            if(inherits(w, what = 'moduleError')) stop(w)
+            
+            expect_is(w, 'zoonWorkflow',
                       info = 'The model module did not work in a standard workflow')
             
             # Chain
-            expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
-                                    covariate = UKAir,
-                                    process = list(Background(n = 20),
-                                                   Background(n = 70)),
-                                    model = ModelModule,
-                                    output = PrintMap,
-                                    forceReproducible = FALSE),
-                      'zoonWorkflow',
+            w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = UKAnophelesPlumbeus,
+                                                        covariate = UKAir,
+                                                        process = list(Background(n = 20),
+                                                                       Background(n = 70)),
+                                                        model = ModelModule,
+                                                        output = PrintMap,
+                                                        forceReproducible = FALSE)},
+                                  placeholder = 'ModelModule',
+                                  fun = roxy_parse$name)
+            if(inherits(w, what = 'moduleError')) stop(w)
+            
+            expect_is(w, 'zoonWorkflow',
                       info = 'The model module did not work in a chain workflow')
             
             # list
-            expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
-                                    covariate = UKAir,
-                                    process = Background(n = 70),
-                                    model = list(ModelModule, ModelModule),
-                                    output = PrintMap,
-                                    forceReproducible = FALSE),
-                      'zoonWorkflow',
+            w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = UKAnophelesPlumbeus,
+                                                        covariate = UKAir,
+                                                        process = Background(n = 70),
+                                                        model = list(ModelModule, ModelModule),
+                                                        output = PrintMap,
+                                                        forceReproducible = FALSE)},
+                                  placeholder = 'ModelModule',
+                                  fun = roxy_parse$name)
+            if(inherits(w, what = 'moduleError')) stop(w)
+            
+            expect_is(w, 'zoonWorkflow',
                       info = 'The model module did not work in a list workflow')
             
             # crossvalidate
-            expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
-                                    covariate = UKAir,
-                                    process = Chain(Background(n = 70), Crossvalidate),
-                                    model = ModelModule,
-                                    output = PerformanceMeasures,
-                                    forceReproducible = FALSE),
-                      'zoonWorkflow',
+            w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = UKAnophelesPlumbeus,
+                                                        covariate = UKAir,
+                                                        process = Chain(Background(n = 70), Crossvalidate),
+                                                        model = ModelModule,
+                                                        output = PerformanceMeasures,
+                                                        forceReproducible = FALSE)},
+                                  placeholder = 'ModelModule',
+                                  fun = roxy_parse$name)
+            if(inherits(w, what = 'moduleError')) stop(w)
+            
+            expect_is(w, 'zoonWorkflow',
                       info = 'The model module did not work in a crossvalidation workflow')
           }
           }
@@ -594,13 +709,18 @@ test_outputs <- function(roxy_parse, modulePath){
       ## At the moment output modules are expected to work with 
       ## all data types
         
+      # Run the module with defaults
+      w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = UKAnophelesPlumbeus,
+                                           covariate = UKAir,
+                                           process = Background(n = 70),
+                                           model = LogisticRegression,
+                                           output = OutputModule)},
+                            placeholder = 'OutputModule',
+                            fun = roxy_parse$name)
+      if(inherits(w, what = 'moduleError')) stop(w)
+      
       # normal
-      expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
-                              covariate = UKAir,
-                              process = Background(n = 70),
-                              model = LogisticRegression,
-                              output = OutputModule),
-                'zoonWorkflow',
+      expect_is(w, 'zoonWorkflow',
                 info = 'The output module did not work in a standard workflow')
       
       # # Chained
@@ -613,12 +733,16 @@ test_outputs <- function(roxy_parse, modulePath){
       #           info = 'The output module did not work in a chain workflow')
       
       # list + crossvalidated
-      expect_is(w <- workflow(occurrence = UKAnophelesPlumbeus,
-                              covariate = UKAir,
-                              process = Background(n = 70),
-                              model = LogisticRegression,
-                              output = list(OutputModule, OutputModule)),
-                'zoonWorkflow',
+      w <- tryCatchWorkflow(expr = {w <- workflow(occurrence = UKAnophelesPlumbeus,
+                                                  covariate = UKAir,
+                                                  process = Background(n = 70),
+                                                  model = LogisticRegression,
+                                                  output = OutputModule)},
+                            placeholder = 'OutputModule',
+                            fun = roxy_parse$name)
+      if(inherits(w, what = 'moduleError')) stop(w)
+      
+      expect_is(w, 'zoonWorkflow',
                 info = 'The process module did not work in a list workflow')
     }
   })
