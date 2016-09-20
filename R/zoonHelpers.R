@@ -710,7 +710,7 @@ tryCatchModule <- function(expr, code_chunk, fun = roxy_parse$name, debug = TRUE
 
 tryCatchWorkflow <- function(expr, placeholder, fun = roxy_parse$name){
   
-  code_temp <- paste(trimws(capture.output(print(substitute(expr)))), collapse = '')
+  code_temp <- paste0(trimws(capture.output(print(substitute(expr)))), collapse = '')
   code_chunk <- gsub(placeholder, fun, trimws(gsub('[{}]', '', code_temp)))
   
   tryCatchModule(expr = expr, code_chunk = code_chunk,

@@ -28,8 +28,11 @@ ZoonPredict <- function(zoonModel, newdata) {
   }
   
   # get required packages
-  require (zoonModel$packages,
-           character.only = TRUE)
+  if(!is.null(zoonModel$packages)){
+    require (zoonModel$packages,
+             character.only = TRUE)
+  }
+
   
   # define prediction function using module code
   fun_text <- sprintf('fun <- function (model, newdata) {%s}',
