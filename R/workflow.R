@@ -22,6 +22,7 @@
 #' @export
 #' @name workflow
 #' @importFrom utils sessionInfo
+#' @importFrom plyr rbind.fill
 #' @examples 
 #'# run a workflow, using the logistic regression model
 #'\dontrun{
@@ -155,7 +156,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
     occurrence.output <- lapply(occurrenceName, FUN = DoOccurrenceModule, e = e)
     # Then bind together if the occurrence modules were chained
     if (identical(attr(occurrence.module, 'chain'), TRUE)){
-      occurrence.output <- list(do.call(rbind, occurrence.output))
+      occurrence.output <- list(do.call(rbind.fill, occurrence.output))
       attr(occurrence.output[[1]], 'call_path') <- list(occurrence = paste('Chain(',
                                                     paste(lapply(occurrenceName, function(x) x$module),
                                                           collapse = ', '),
