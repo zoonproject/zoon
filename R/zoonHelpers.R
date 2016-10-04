@@ -35,8 +35,15 @@ LoadModule <- function(module){
     txt <- parse( text = getURL(module, ssl.verifypeer=FALSE))
     # Otherwise throw error.
   } else {
-    stop(paste('Cannot find "', module, 
-               '". Check the file path or URL exist'))
+    modList <- GetModuleList()
+    closeMatches <- unlist(modList)[agrep(module, unlist(modList), max.distance = 0.3)]
+    if(length(closeMatches) == 0){
+      stop("Can't find '", module, "' or any modules with closely matching names.") 
+    } else if (length(closeMatches) == 1){
+      stop("Can't find '", module, "'. Did you mean '", closeMatches, "'?")
+    } else {
+      stop("Can't find '", module, "'. Did you mean one of '", paste(closeMatches, collapse="', "), "'?")
+    }
   }
   # Load to global environment
   eval(txt, envir = globalenv())
@@ -390,8 +397,8 @@ ExtractAndCombData <- function(occurrence, ras){
     occurrenceCovariates <- NULL
     warning('Locations in the occurrence data did not match your raster so no covariate data were extracted. This is only a good idea if you are creating simulated data in the process module')
   } else {
-    if(length(is.na(ras.values)) > 0){
-      warning('Some extracted covariate values are NA. This may cause issues for some models')
+    if(sum(is.na(ras.values)) > 0){
+      warning(paste(sum(is.na(ras.values)), 'extracted covariate values are NA. This may cause issues for some models'))
     }
     occurrenceCovariates <- as.matrix(ras.values)
     colnames(occurrenceCovariates) <- names(ras)  
