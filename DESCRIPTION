@@ -17,7 +17,9 @@ Imports:
     testthat,
     roxygen2,
     SDMTools,
-    randomForest
+    randomForest,
+    rgdal,
+    plyr
 Depends:
     raster (>= 2.4-20),
     R (>= 3.2.0)
