@@ -1,4 +1,4 @@
-![Zoon banner](https://raw.githubusercontent.com/zoonproject/blog/master/zoon_top.png)
+![Zoon banner](https://raw.githubusercontent.com/goldingn/zoon/master/settings/images/zoon_top.png)
 [![Build Status](https://travis-ci.org/zoonproject/zoon.svg)](https://travis-ci.org/zoonproject/zoon)
 [![codecov.io](https://codecov.io/github/zoonproject/zoon/coverage.svg?branch=master)](https://codecov.io/github/zoonproject/zoon?branch=master)
 [![cran version](http://www.r-pkg.org/badges/version/zoon)](https://cran.rstudio.com/web/packages/zoon) 
@@ -63,5 +63,5 @@ We are committed to making Zoön an inclusive project that the whole research co
 We are using the [Google style guide](https://google.github.io/styleguide/Rguide.xml) with the exception that function description goes before the function name, not inside the function definition. We are using [roxygen2](https://cran.r-project.org/web/packages/roxygen2/vignettes/roxygen2.html) to document the package. Try to keep function names as verbs.
 
 
-![Zoon banner](https://raw.githubusercontent.com/zoonproject/blog/master/zoon.jpg)
+![Zoon banner](https://raw.githubusercontent.com/goldingn/zoon/master/settings/images/zoon_bottom.jpg)
 
