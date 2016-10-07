@@ -1,6 +1,0 @@
-inst/doc/*.html linguist-vendored
-inst/doc/*.R linguist-vendored
-* text=auto
-data/* binary
-src/* text=lf
-R/* text=lf
