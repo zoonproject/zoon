@@ -4,7 +4,7 @@
 set -e # Exit with nonzero exit code if anything fails
 
 SOURCE_BRANCH="master"
-TARGET_BRANCH="gh-pages"
+TARGET_BRANCH="master"
 
 function doCompile {
   # run pkgdown, put results in 'out' directory, and don't paste the results of the examples
