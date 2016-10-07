@@ -173,6 +173,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
     #covariate.output <- lapply(covariateName, function(x) do.call(x$func, x$paras))
     covariate.output <- lapply(covariateName, FUN = DoCovariateModule, e = e)
     if (identical(attr(covariate.module, 'chain'), TRUE)){
+      covariate.output <- CombineRasters(covariate.output)
       covariate.output <- list(do.call(raster::stack, covariate.output))
       attr(covariate.output[[1]], 'call_path') <- list(covariate = paste('Chain(',
                                                                            paste(lapply(covariateName, function(x) x$module),
