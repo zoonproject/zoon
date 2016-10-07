@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference. zoon</title>
+<title>Home. zoon</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -21,8 +21,8 @@
 
 
 <!-- pkgdown -->
-<link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script>
+<link href="pkgdown.css" rel="stylesheet">
+<script src="pkgdown.js"></script>
 
 <!-- mathjax -->
 <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
@@ -45,18 +45,18 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">zoon</a>
+      <a class="navbar-brand" href="index.html">zoon</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">Home</a>
+  <a href="index.html">Home</a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="articles/index.html">Articles</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -73,80 +73,42 @@
       
       </header>
 
-      <div class="page-header">
-  <h1>Function reference <small>version&nbsp;0.5.1</small></h1>
-</div>
-
-<div class="row">
+      <div class="row">
   <div class="col-md-9">
-    <div class="section ">
-      <h2>All functions</h2>
-      <p class="section-desc"></p>
+    
+<p><img src="https://raw.githubusercontent.com/zoonproject/blog/master/zoon_top.png" alt="Zoon banner"><a href="https://travis-ci.org/zoonproject/zoon"><img src="https://travis-ci.org/zoonproject/zoon.svg" alt="Build Status"></a> <a href="https://codecov.io/github/zoonproject/zoon?branch=master"><img src="https://codecov.io/github/zoonproject/zoon/coverage.svg?branch=master" alt="codecov.io"></a> <a href="https://cran.rstudio.com/web/packages/zoon"><img src="http://www.r-pkg.org/badges/version/zoon" alt="cran version"></a> <a href="https://github.com/metacran/cranlogs.app"><img src="http://cranlogs.r-pkg.org/badges/zoon?" alt="rstudio mirror downloads"></a></p>
+<p>Zo&ouml;n is a package for the reproducible and shareable analysis of species distribution models with a focus on the ability to compare between models and diagnostic output of models.</p>
+<p>An overview of the project can be found <a href="http://www.2020science.net/research/species-distribution-modelling.html">here</a>. There is a blog to keep collaborators up to date with progress. This can be found <a href="http://zoonproject.wordpress.com">here</a></p>
+<p>Zo&ouml;n is still being developed. Feel free to clone and use the code, open issues, let us know what you want etc. But don&rsquo;t expect much functionality from the package yet. If you would like to add functionality, please start writing modules!</p>
+<h3 id="basic-usage">Basic usage</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(zoon)
 
-      <dl class="dl-horizontal">
-        <dt><a href="AplumbeusOcc.html">AplumbeusOcc</a></dt>
-        <dd>UK occurrence data for Anopheles plumbeus as taken from GBIF</dd>
-        <dt><a href="BuildModule.html">BuildModule</a></dt>
-        <dd>BuildModule</dd>
-        <dt><a href="cbindZoon.html">cbindZoon</a></dt>
-        <dd>cbindZoon</dd>
-        <dt><a href="Chain.html">Chain</a></dt>
-        <dd>Chain modules together</dd>
-        <dt><a href="ChangeWorkflow.html">ChangeWorkflow</a></dt>
-        <dd>Change a workflow and rerun.</dd>
-        <dt><a href="CWBZim.html">CWBZim</a></dt>
-        <dd>Presence/absence of the coffee white stem borer in Zimbabwe 2003</dd>
-        <dt><a href="ExtractAndCombData.html">ExtractAndCombData</a></dt>
-        <dd>ExtractAndCombData</dd>
-        <dt><a href="FrescaloBias.html">FrescaloBias</a></dt>
-        <dd>Example bias raster for plants in England</dd>
-        <dt><a href="GetMaxEnt.html">GetMaxEnt</a></dt>
-        <dd>Get MaxEnt</dd>
-        <dt><a href="GetModuleList.html">GetModuleList</a></dt>
-        <dd>GetModuleList</dd>
-        <dt><a href="GetPackage.html">GetPackage</a></dt>
-        <dd>Helper to install (if needed) and load a package</dd>
-        <dt><a href="LoadModule.html">LoadModule</a></dt>
-        <dd>A function to load a module function from url or disk.</dd>
-        <dt><a href="ModuleHelp.html">ModuleHelp</a></dt>
-        <dd>ModuleHelp</dd>
-        <dt><a href="Occurrence.html">Covariate</a></dt><dt><a href="Occurrence.html">Model</a></dt><dt><a href="Occurrence.html">Occurrence</a></dt><dt><a href="Occurrence.html">Output</a></dt><dt><a href="Occurrence.html">Process</a></dt>
-        <dd>Accessor functions for getting module outputs from a workflow object</dd>
-        <dt><a href="plot.zoonWorkflow.html">plot.zoonWorkflow</a></dt>
-        <dd>Plot a schematic illustration of a zoon workflow structure.</dd>
-        <dt><a href="print.zoonCitation.html">print.zoonCitation</a></dt>
-        <dd>A function to print zoonCitation</dd>
-        <dt><a href="print.zoonWorkflow.html">print.zoonWorkflow</a></dt>
-        <dd>A function to print a zoonWorkflow object</dd>
-        <dt><a href="Replicate.html">Replicate</a></dt>
-        <dd>A function to replicate a module multiple times</dd>
-        <dt><a href="RerunWorkflow.html">RerunWorkflow</a></dt>
-        <dd>Rerun a workflow object.</dd>
-        <dt><a href="RunModels.html">RunModels</a></dt>
-        <dd>RunModels</dd>
-        <dt><a href="subsetColumnsZoon.html">subsetColumnsZoon</a></dt>
-        <dd>subsetColumnsZoon</dd>
-        <dt><a href="summary.zoonWorkflow.html">summary.zoonWorkflow</a></dt>
-        <dd>A function to summarize the output of a zoon workflow</dd>
-        <dt><a href="UKAirRas.html">UKAirRas</a></dt>
-        <dd>UK Air temperature raster layer.</dd>
-        <dt><a href="workflow.html">workflow</a></dt>
-        <dd>Run a full workflow.</dd>
-        <dt><a href="zoon.html">zoon</a></dt><dt><a href="zoon.html">zoon-package</a></dt>
-        <dd>Zoon: A package for comparing multple SDM models, good model diagnostics
-</dd>
-        <dt><a href="ZoonCitation.html">ZoonCitation</a></dt>
-        <dd>ZoonCitation</dd>
-        <dt><a href="ZoonFigshare.html">ZoonFigshare</a></dt>
-        <dd>ZoonFigshare</dd>
-        <dt><a href="ZoonModel.html">ZoonModel</a></dt>
-        <dd>ZoonModel</dd>
-        <dt><a href="ZoonModuleParse.html">ZoonModuleParse</a></dt>
-        <dd>Parse a module file to read roxygen tags</dd>
-        <dt><a href="ZoonPredict.html">ZoonPredict</a></dt>
-        <dd>ZoonPredict</dd>
-      </dl>
-    </div>
+<span class="co"># Run a workflow, specifying one module of each type.</span>
+work1 &lt;-<span class="st"> </span><span class="kw"><a href="reference/workflow.html">workflow</a></span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
+                  <span class="dt">covariate  =</span> UKAir,
+                  <span class="dt">process    =</span> OneHundredBackground,
+                  <span class="dt">model      =</span> LogisticRegression,
+                  <span class="dt">output     =</span> PrintMap)
+
+<span class="co"># Get a list of modules</span>
+<span class="kw"><a href="reference/GetModuleList.html">GetModuleList</a></span>()
+
+<span class="co"># Get help on a module</span>
+<span class="kw"><a href="reference/ModuleHelp.html">ModuleHelp</a></span>(LogisticRegression)</code></pre></div>
+<h3 id="installation">Installation</h3>
+<p>Zo&ouml;n is now on CRAN, so you can install the stable(ish) version directly from R with:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">'zoon'</span>)</code></pre></div>
+<p>you can also install the most recent development version of the package straight from GitHub using the <code>devtools</code> package:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools::<span class="kw">install_github</span>(<span class="st">"zoonproject/zoon"</span>)</code></pre></div>
+<h3 id="contributing-modules">Contributing modules</h3>
+<p>Zo&ouml;n has a modular structure, and we are hoping for user submitted modules. This allows Zo&ouml;n to keep up to date with the fast-moving SDM field in a way a package maintained by a small team of developers can&rsquo;t. Modules are simple R scripts containing a single function and some metadata. They are currently kept <a href="https://github.com/zoonproject/modules">here</a>. The inputs and outputs of each module type are controlled. A brief description can be found at the end of the Build a module vignette. The function <code>BuildModule</code> is used to turn a function in an R session into a module.</p>
+<p>Please note, Zo&ouml;n is still being developed. We would love you to contribute modules, but can&rsquo;t yet guarantee that there won&rsquo;t be major changes that might break modules. We will try to fix user submitted modules if we break them.</p>
+<h3 id="notes-for-collaborators">Notes for collaborators</h3>
+<p>We welcome collaboration and input anyone who&rsquo;d like to get involved! If you have any comments, suggestions or you spot any bugs or errors, please let us know via <a href="https://github.com/zoonproject/zoon/issues">the issue tracker</a>. Pull requests are always welcome, though please let us know what you&rsquo;re developing first so we plan how to integrate it into the main package.</p>
+<p>We are committed to making Zo&ouml;n an inclusive project that the whole research community can contribute to and benefit from it and ask all contributers (including the Zo&ouml;n development team) to stick to <a href="https://github.com/zoonproject/zoon/blob/master/code_of_conduct.md">a code of conduct</a></p>
+<p>We are using the <a href="https://google.github.io/styleguide/Rguide.xml">Google style guide</a> with the exception that function description goes before the function name, not inside the function definition. We are using <a href="https://cran.r-project.org/web/packages/roxygen2/vignettes/roxygen2.html">roxygen2</a> to document the package. Try to keep function names as verbs.</p>
+<p><img src="https://raw.githubusercontent.com/zoonproject/blog/master/zoon.jpg" alt="Zoon banner"></p>
+
   </div>
 </div>
 
