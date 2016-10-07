@@ -21,8 +21,8 @@ test_that('plot.zoonWorkflow works', {
   
   # Create a simple workflow to test on
   work2 <- workflow(occurrence = list(UKAnophelesPlumbeus, 
-                                      SpOcc(species = 'Anopheles plumbeus', 
-                                            extent = c(-10, 10, 45, 65))),
+                                      NaiveRandomPresence(extent = c(-10, 10, 45, 65),
+                                                          n = 100)),
                     covariate = UKAir,
                     process = Background(n = 70),
                     model = LogisticRegression,
@@ -35,8 +35,8 @@ test_that('plot.zoonWorkflow works', {
   
   # chain
   work3 <- workflow(occurrence = Chain(UKAnophelesPlumbeus, 
-                                      SpOcc(species = 'Anopheles plumbeus', 
-                                            extent = c(-10, 10, 45, 65))),
+                                       NaiveRandomPresence(extent = c(-10, 10, 45, 65),
+                                                           n = 100)),
                     covariate = UKAir,
                     process = Background(n = 70),
                     model = LogisticRegression,
