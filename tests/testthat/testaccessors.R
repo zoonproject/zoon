@@ -1,5 +1,5 @@
 
-context('Test the accessor functions work properly')
+context('Accessor functions')
 
 test_that('All accessor functions return objects of the right length and type', {
 

@@ -23,17 +23,16 @@ from the online repo. This ensure the analysis is reproducible.}
 }
 \value{
 A list with the results of each module and a copy of the
- code used to execute the workflow (what's there now should be source-able
- though I'm sure there is a much neater approach than the one I took - the
- ultimate aim would be a much nicer way of enhancing reproducibility).
+ code used to execute the workflow. If the workflow fails a partial
+ list is saved to a temporary file for debugging.
 }
 \description{
 This is the main function of zoon. The arguments should specify at least five
-  modules, at least one of each type.
-  If modules do not have any arguments to be specific (or defaults are being
-  used then simply give the names of the module. If arguments are needed 
-  give the modules in the form of a function 
-  e.g. occurrence = AModule(para1 = 2, para2 = 'detail')
+modules, at least one of each type.
+If modules do not have any arguments to be specific (or defaults are being
+used) then simply give the names of the module. If arguments are needed 
+give the modules in the form of a function 
+e.g. occurrence = AModule(para1 = 2, para2 = 'detail')
 }
 \examples{
 # run a workflow, using the logistic regression model
@@ -47,8 +46,11 @@ work1 <- workflow(occurrence = UKAnophelesPlumbeus,
 
 str(work1, 1)
 
-work2 <- workflow(UKAnophelesPlumbeus, UKAir, OneHundredBackground,   
-          RandomForest, PrintMap)
+work2 <- workflow(UKAnophelesPlumbeus,
+                 UKAir,
+                 OneHundredBackground,   
+                 RandomForest,
+                 PrintMap)
 
 }
 }

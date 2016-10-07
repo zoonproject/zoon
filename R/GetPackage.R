@@ -12,7 +12,7 @@
 
 GetPackage <- function (package) {
   
-  # Check pageage is a character
+  # Check package is a character
   if(!inherits(x = package, what = 'character')) stop('package must be a character')
   
   for(i in package){

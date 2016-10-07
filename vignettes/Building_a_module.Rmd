@@ -1,9 +1,9 @@
 ---
 title: "Building modules"
 author: "Tom August & Tim Lucas"
-date: '2016-06-06'
+date: '2016-08-22'
 output:
-  rmarkdown::html_vignette:
+  html_document:
     keep_md: yes
     toc: yes
 vignette: >
@@ -127,6 +127,7 @@ BuildModule(Lorem_ipsum_UK,
             'precence only data and was collected between 1990 and',
             '2000 by members of to Lorem ipsum appreciation society'),
             details = 'This dataset is fake, Lorem ipsum does not exist',
+            version = 0.1,
             author = 'A.B. Ceidi',
             email = 'ABCD@anemail.com',
             dataType = 'presence-only')
@@ -246,6 +247,7 @@ BuildModule(AustraliaAir,
             details = paste('These data are redistributed under the terms of',
                             'the Open Database License',
                             'http://opendatacommons.org/licenses/odbl/1.0/'),
+            version = 0.1,
             author = 'Z.O. Onn',
             email = 'zoon@zoon-zoon.com',
             paras = list(variables = paste('A character vector of air variables',
@@ -477,6 +479,7 @@ BuildModule(ClipOccurrence,
                             'All data that falls outside of the extent will',
                             'be removed and will be not be used in the',
                             'modelling process'),
+            version = 0.1,
             author = 'Z.O. Onn',
             email = 'zoon@zoon-zoon.com',
             paras = list(extent = paste('A numeric vector of length for',
@@ -527,7 +530,7 @@ work7 <- workflow(occurrence = AnophelesPlumbeus,
 ```
 
 ```
-## 386 records found
+## 146 records found
 ```
 
 ```
@@ -535,11 +538,7 @@ work7 <- workflow(occurrence = AnophelesPlumbeus,
 ```
 
 ```
-## 300-
-```
-
-```
-## 386 records downloaded
+## 146 records downloaded
 ```
 
 <img src="building_pro7-1.png" title="plot of chunk building_pro7" alt="plot of chunk building_pro7" style="display:block; margin: auto" style="display: block; margin: auto;" />
@@ -700,6 +699,7 @@ BuildModule(object = GamGam,
             description = 'This is my mega cool new model.',
             details = paste('This module performs GAMs (Generalised Additive',
                             'Models) using the gam function from the package gam.'),
+            version = 0.1,
             author = 'Z. Oon',
             email = 'zoon@zoon.com',
             dataType = c('presence-only', 'presence/absence'))
@@ -912,6 +912,7 @@ BuildModule(PredictNewRasterMap,
                             'raster provided by the covariate module.',
                             'It must have the same covariate columns in the',
                             'same order.'),
+            version = 0.1,
             author = 'Z.O. On',
             email = 'zoon@zoon-zoon.com',
             paras = list(raster = paste('A RasterBrick, RasterLayer or RasterStack in',

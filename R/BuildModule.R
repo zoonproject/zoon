@@ -4,7 +4,9 @@
 #'Will later add functions to upload module to figshare etc.
 #'And add testing that the module name is unique.
 #'
-#' @param object A function that will be made into a module file.
+#' @param object A function that will be made into a module file. It is good
+#'      practise to ensure your function does not have the same name as a base
+#'      function, another module, or other common functions.
 #' @param dir The directory to put the module into (defaults to the
 #'      working directory).
 #' @param type A string that defines the type of module. Possible module types
@@ -14,10 +16,11 @@
 #' @param details (optional) A single string giving details of the module.
 #' @param paras A list of the form 
 #'    list(parameterName = 'Parameter description.',
-#'    anotherParameter = 'Another descriptions.')
+#'    anotherParameter = 'Another description.')
 #'    This is required if the module takes non-default arguements
 #' @param author (required) String giving the author(s) name(s)
 #' @param email (required) String giving the correspondance address for the module (only give one address).
+#' @param version (optional) Numeric giving the version number. Default 0.1.
 #' @param dataType Character vector required for all module types except 'covariate'.
 #' Indicates the types of data that this module works with. Values can be any of
 #' 'presence-only', 'presence/absence', 'presence/background', 'abundance' or 'proportion'. For a occurrence
@@ -28,7 +31,8 @@
 #' @param check Logical indicating if the module should be run through checks
 #' once it has been built. Defaults to TRUE.
 #'
-#' @return Name of the module. Outputs a file
+#' @return Name of the module. AS a side effect outputs a .R file to the directory
+#' specified.
 #' @name BuildModule
 #' @import methods
 #' @import testthat
@@ -36,8 +40,8 @@
 #' @export
 
 BuildModule <- function(object, type, dir='.', title = '',  description = '',
-                        details = '', author = '', email = '', paras = NULL,
-                        dataType = NULL, check = TRUE){
+                        details = '', author = '', email = '', version = 0.1,
+                        paras = NULL, dataType = NULL, check = TRUE){
   
   # Check object is a function
   if(!is(object, 'function')) stop('object must be a function')
@@ -124,9 +128,10 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
   if(!is.null(dataType)) dataType <- paste0("\n#'\n#' @section Data type: ",
                                             paste(dataType, collapse = ', '))
         
-  # Add place holder for the version as this will be decided
-  # on submission to the website
-  version <- "\n#'\n#' @section Version: 0"
+  # Version number. his will be checked by the website
+  # on submission
+  if(!inherits(version, 'numeric')) stop('Version must be numeric')
+  version <- paste("\n#'\n#' @section Version:", version)
   
   # Give this as the current date
   submitted <- paste("\n#'\n#' @section Date submitted: ", Sys.Date())
@@ -142,11 +147,9 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
                  version,
                  submitted)
   
-  
-  
 
   # get and format the source code
-  src <- capture.output(dput(object))
+  src <- capture.output(dput(object, control = 'useSource'))
   src[1] <- sprintf('%s <- %s', obj, src[1])
   src <- paste0(src, collapse = '\n')
 

@@ -7,7 +7,7 @@ test_parameters <- function(roxy_parse, defaultParams = NULL, modulePath){
   # Create blank symbol to test against
   blank <- formals(function(blank){})
   
-  test_that('Check parameter names', {
+  test_that(paste('Check parameter names for', basename(modulePath)), {
     
     # Extract names from tags
     paramNames <- unlist(lapply(roxy_parse[names(roxy_parse) == 'param'],
@@ -15,15 +15,21 @@ test_parameters <- function(roxy_parse, defaultParams = NULL, modulePath){
     
     # Check for defult parameter
     if(!is.null(defaultParams)) expect_true(all(defaultParams %in% paramNames),
-                                            info = 'Default parameter is not documented')
+                                            info = paste('Default parameter(s) is not documented:', paste(defaultParams[!defaultParams %in% paramNames], collapse = ', ')))
     
     # Check all parameters are documented
     expect_true(all(names(params) %in% paramNames),
-                info = 'Parameters are missing documentation')
+                info = paste('Parameter(s) are missing documentation:',
+                             paste(names(params)[!names(params) %in% paramNames], collapse = ', ')))
+    
+    # Check all documented parameters exist
+    expect_true(all(paramNames %in% names(params)),
+                info = paste('Documented parameters do not exist:',
+                             paste(paramNames[!paramNames %in% names(params)], collapse = ', ')))
     
   })
   
-  test_that('Check default values', {
+  test_that(paste('Check default values for', basename(modulePath)), {
     
     # Expect that all non-default parameters have defaults
     paramClasses <- lapply(params, function(x) identical(x, blank$blank))

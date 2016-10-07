@@ -12,12 +12,9 @@
 \item{\dots}{currently ignored}
 }
 \value{
-A list of length 2, first the data summaries and then the 
-model summaries. each of these is as long as the coressponding
-elements in the zoonWorkflow object
+Path to HTML file. Associated images will be in the same directory.
 }
 \description{
-The function currently outputs the result of summary() on each
-occurence element and each model element
+Renders and opens an HTML report
 }
 

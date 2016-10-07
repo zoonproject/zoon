@@ -75,13 +75,13 @@ GetModule <- function(module, forceReproducible){
                      options('zoonRepo'),
                      options('zoonRepoBranch'),
                      module)
-
+  
   # If the module is in global namespace, use that function
   #   unless forceReproduce is TRUE, in which case we want to get from repo.
   #   
   # Get module from zoonURL otherwise.
-  if (exists(module) & !forceReproducible){
-    assign(module, eval(parse(text = module)),  envir = parent.frame(4))
+  if (exists(module, where = ".GlobalEnv", mode = "function", inherits = FALSE) & !forceReproducible){
+    assign(module, eval(parse(text = module), envir = globalenv()),  envir = parent.frame(4))
     attr(module, 'version') <- 'local copy'
     return(module)
   } else {
@@ -90,7 +90,7 @@ GetModule <- function(module, forceReproducible){
   
   # getURL returns "Not Found" if no webpage found.
   #   Use this to avoid two web call.s
-  if(rawText == "Not Found") {
+  if(grepl("^404: Not Found", rawText)) {
     stop(paste('Cannot find "', module, 
                '". Check that the module is on the zoon repository or in the global namespace.'))
   }
@@ -161,11 +161,9 @@ RunModels <- function(df, modelFunction, paras, workEnv){
   # Old versions of modules dont use this attribute 
   ## REMOVE ONCE MODULES UPDATED ##
   if('covCols' %in% names(attributes(df))){
-    dfOut <- cbind(df[!colnames(df) %in% attr(df, 'covCols')],
-                   predictions = NA,
-                   df[colnames(df) %in% attr(df, 'covCols')])
+    dfOut <- cbindZoon(subsetColumnsZoon(df,!colnames(df) %in% attr(df, 'covCols')),
+                        cbind(predictions = NA, df[colnames(df) %in% attr(df, 'covCols')]))
   } else {
-    
     dfOut <- cbind(df[, 1:5], predictions = NA, df[,6:NCOL(df)])
     names(dfOut)[7:ncol(dfOut)] <- names(df)[6:ncol(df)]
     
@@ -184,9 +182,8 @@ RunModels <- function(df, modelFunction, paras, workEnv){
       ## REMOVE ONCE MODULES UPDATED ##
       if('covCols' %in% names(attributes(df))){
         pred <- ZoonPredict(modelFold,
-                            newdata = df[df$fold == i,
-                                         attr(df, 'covCols'),
-                                         drop = FALSE])
+                            newdata = subsetColumnsZoon(df[df$fold == i,],
+                                                          attr(df, 'covCols')))
       } else {
         pred <- ZoonPredict(modelFold,
                             newdata = df[df$fold == i, 6:NCOL(df), drop = FALSE])
@@ -208,9 +205,8 @@ RunModels <- function(df, modelFunction, paras, workEnv){
     ## REMOVE ONCE MODULES UPDATED ##
     if('covCols' %in% names(attributes(df))){
       pred <- ZoonPredict(m,
-                          newdata = df[df$fold == 0,
-                                       attr(df, 'covCols'),
-                                       drop = FALSE])
+                          newdata = subsetColumnsZoon(df[df$fold == 0,],
+                                                        attr(df, 'covCols')))
     } else {
       pred <- ZoonPredict(m,
                           newdata = df[df$fold == 0, 6:NCOL(df), drop = FALSE])
@@ -280,7 +276,7 @@ CheckModList <- function(x){
     listCall <- eval(x)
     
     ModuleList <- lapply(listCall, FormatModuleList) 
-
+    
     # If unquoted module w/ paras given: occurrence = Module1(k=2)
   } else if (identical(class(x[[1]]), 'name')){
     # Parameters
@@ -375,16 +371,33 @@ ExtractAndCombData <- function(occurrence, ras){
   bad.coords <- is.na(cellFromXY(ras,
                                  occurrence[,c('longitude', 'latitude')]))
   if(any(bad.coords)){
+    nr_before <- nrow(occurrence)
     occurrence <- occurrence[!bad.coords, ]
-    warning ('Some occurrence points are outside the raster extent and have been removed before modelling')
+    nr_after <- nrow(occurrence)
+    
+    if(nr_after > 0){
+      warning (paste(nr_before - nr_after,
+                     'occurrence points are outside the raster extent and have been removed before modelling leaving',
+                     nr_after, 'occurrence points'))
+    } else if(nr_after == 0) {
+      warning(paste('All occurrence points are outside the raster extent. Try changing your raster.'))
+    }
   }
   
   # extract covariates from lat long values in df.
-  occurrenceCovariates <- as.matrix(raster::extract(ras, occurrence[, c('longitude', 'latitude')]))
-  colnames(occurrenceCovariates) <- names(ras)  
+  ras.values <- raster::extract(ras, occurrence[, c('longitude', 'latitude')])
+  if(is.null(ras.values)){
+    occurrenceCovariates <- NULL
+    warning('Locations in the occurrence data did not match your raster so no covariate data were extracted. This is only a good idea if you are creating simulated data in the process module')
+  } else {
+    if(length(is.na(ras.values)) > 0){
+      warning('Some extracted covariate values are NA. This may cause issues for some models')
+    }
+    occurrenceCovariates <- as.matrix(ras.values)
+    colnames(occurrenceCovariates) <- names(ras)  
+  }
   
-  # combine with the occurrence data
-  df <- cbind(occurrence, occurrenceCovariates)
+  df <- cbindZoon(occurrence, occurrenceCovariates)
   
   # assign call_path attribute to this new object
   attr(df, 'call_path') <- attr(occurrence, 'call_path')
@@ -487,19 +500,19 @@ SplitCall <- function(call){
 ErrorModule <- function(cond, mod, e){
   
   # Select the module type using numeric mod argument
-  module <- c('occurrence',
-              'covariate',
-              'process',
-              'model',
-              'output')[mod]
+  module <- c('occurrence module.',
+              'covariate module.',
+              'ExtractAndCombData, a function that combines occurrence and covariate data.',
+              'process module.',
+              'model module.',
+              'output module.')[mod]
   
   # Give useful messages.
-  # What were the errors that were caught be tryCatch.
+  # What were the errors that were caught by tryCatch.
   message('Caught errors:\n',  cond)
   message()
   # Where did workflow break and where is the progress stored?
-  x <- paste("Stopping workflow due to error in", module, "module.\n", 
-             "Workflow progress will be returned.")
+  x <- paste("Stopping workflow due to error in", module, "\n")
   # Throw error. The call for this error is meaningless so don't print it.
   stop(x, call. = FALSE)
 }
@@ -667,4 +680,40 @@ GetModuleVersion <- function(rawText){
   Start <- TagPosition[[1]] + attr(TagPosition[[1]], 'match.length')
   substr(VersionLine, Start, nchar(VersionLine))    
 
+}
+
+
+# tryCatchModule
+#
+# This function runs a call to a module in testing and handles
+# error that may occur in a way to make debugging easier
+
+tryCatchModule <- function(expr, code_chunk, fun = roxy_parse$name, debug = TRUE){
+  tryCatch(expr = expr,
+           error = function(err, func = fun, debug_f = debug){
+             error_message <- paste('\nYour module failed to run with default parameters\n',
+                        'ERROR:', err,
+                        '\nYou can debug this error by running the following code chunk',
+                        '\n===========\n',
+                        ifelse(test = debug_f, yes = paste0('debugonce(', func, ')\n'), no = ''),
+                        code_chunk,
+                        '\n===========')
+             class(error_message) <- 'moduleError'
+             return(error_message)
+           })
+}
+
+# tryCatchWorkflow
+#
+# This function runs a workflow in testing and handles
+# error that may occur in a way to make debugging easier
+
+tryCatchWorkflow <- function(expr, placeholder, fun = roxy_parse$name){
+  
+  code_temp <- paste0(trimws(capture.output(print(substitute(expr)))), collapse = '')
+  code_chunk <- gsub(placeholder, fun, trimws(gsub('[{}]', '', code_temp)))
+  
+  tryCatchModule(expr = expr, code_chunk = code_chunk,
+                 fun = fun, debug = FALSE)
+  
 }
