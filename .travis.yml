@@ -16,9 +16,10 @@ r_packages:
 apt_packages:
  - libv8-dev 
 
-## After success update the code coverage
+## After success update the code coverage and deploy the pkgdown to gh-pages
 after_success:
  - Rscript -e 'library(covr);codecov()'
+ - bash ./deploy.sh
  
 # Warnings don't fail build
 warnings_are_errors: false
@@ -33,6 +34,9 @@ email:
   
 ## Set up the matrix of different runs
 env:
+  global:
+    - ENCRYPTION_LABEL: "1d00135b7611"
+    - COMMIT_AUTHOR_EMAIL: "goldingn35@gmail.com"
   matrix:
     - r: release
       not_cran: true
