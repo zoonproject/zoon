@@ -19,7 +19,7 @@ apt_packages:
 ## After success update the code coverage and deploy the pkgdown to gh-pages
 after_success:
  - Rscript -e 'library(covr);codecov()'
- - bash ./deploy.sh
+ - bash ./deploy_pkgdown.sh
  
 # Warnings don't fail build
 warnings_are_errors: false
