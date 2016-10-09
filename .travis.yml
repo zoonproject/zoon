@@ -2,8 +2,10 @@ language: r
 cache: packages
 sudo: required
 
-before_install:
- - sudo apt-get install libmagick++-dev
+# Add libv8 needed for running rgbif (in spocc)
+apt_packages:
+ - libv8-dev 
+ - libmagick++-dev
 
 # Install the suggested packages which
 # are needed for the vignette builds
@@ -14,17 +16,11 @@ r_packages:
  - spocc
  - rmarkdown
  - covr
- - magick
-
-# magick required for pkgdown
 
 r_github_packages:
+ - rstudio/rmarkdown
  - hadley/pkgdown
  
-# Add libv8 needed for running rgbif (in spocc)
-apt_packages:
- - libv8-dev 
-
 ## After success update the code coverage and deploy the pkgdown to gh-pages
 after_success:
  - Rscript -e 'library(covr);codecov()'
