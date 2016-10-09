@@ -1,4 +1,4 @@
-#'A function to replicate a module multiple times
+#'Replicate a module multiple times
 #'
 #'This function is useful when running simulations and could be used
 #'with modules that have random number generation internally meaning that
