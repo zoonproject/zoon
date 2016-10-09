@@ -2,6 +2,9 @@ language: r
 cache: packages
 sudo: required
 
+before_install:
+ - sudo apt-get install libmagick++-dev
+
 # Install the suggested packages which
 # are needed for the vignette builds
 r_packages:
