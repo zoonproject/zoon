@@ -11,6 +11,9 @@ r_packages:
  - spocc
  - rmarkdown
  - covr
+
+r_github_packages:
+ - hadley/pkgdown
  
 # Add libv8 needed for running rgbif (in spocc)
 apt_packages:
