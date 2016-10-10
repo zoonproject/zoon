@@ -5,7 +5,7 @@ set -e # Exit with nonzero exit code if anything fails
 
 SOURCE_BRANCH="master"
 TARGET_BRANCH="gh-pages"
-TRAVIS_KEY="settings/keys/zoon_travis.enc"
+TRAVIS_KEY="settings/keys/deploy_key.enc"
 
 function doCompile {
   # run pkgdown, put results in 'docs' directory,i
