@@ -70,7 +70,7 @@
                   <span class="dt">process    =</span> OneHundredBackground,
                   <span class="dt">model      =</span> RandomForest,
                   <span class="dt">output     =</span> PrintMap)</code></pre></div>
-<p><img src="/Users/nick/Dropbox/Github/zoon/vignettes/basic_5-1.png" title="plot of chunk basic_5" alt="plot of chunk basic_5" style="display:block; margin: auto"></p>
+<p><img src="/home/travis/build/goldingn/zoon/vignettes/basic_5-1.png" title="plot of chunk basic_5" alt="plot of chunk basic_5" style="display:block; margin: auto"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(work1)</code></pre></div>
 <pre><code>## [1] "zoonWorkflow"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(work1, <span class="dv">1</span>)</code></pre></div>
@@ -164,7 +164,7 @@ occ_out &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Occ
                   <span class="dt">process    =</span> OneHundredBackground,
                   <span class="dt">model      =</span> <span class="kw">list</span>(LogisticRegression, RandomForest),
                   <span class="dt">output     =</span> PrintMap)</code></pre></div>
-<p><img src="/Users/nick/Dropbox/Github/zoon/vignettes/basic_11-1.png" title="plot of chunk basic_11" alt="plot of chunk basic_11" style="display:block; margin: auto"><img src="/Users/nick/Dropbox/Github/zoon/vignettes/basic_11-2.png" title="plot of chunk basic_11" alt="plot of chunk basic_11" style="display:block; margin: auto"></p>
+<p><img src="/home/travis/build/goldingn/zoon/vignettes/basic_11-1.png" title="plot of chunk basic_11" alt="plot of chunk basic_11" style="display:block; margin: auto"><img src="/home/travis/build/goldingn/zoon/vignettes/basic_11-2.png" title="plot of chunk basic_11" alt="plot of chunk basic_11" style="display:block; margin: auto"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(work4, <span class="dv">1</span>)</code></pre></div>
 <pre><code>## List of 9
 ##  $ occurrence.output:List of 1
@@ -188,7 +188,7 @@ occ_out &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Occ
                   <span class="dt">process    =</span> <span class="kw"><a href="../reference/Replicate.html">Replicate</a></span>(<span class="kw">Background</span>(<span class="dt">n =</span> <span class="dv">20</span>), <span class="dt">n =</span> <span class="dv">3</span>),
                   <span class="dt">model      =</span> RandomForest,
                   <span class="dt">output     =</span> PrintMap)</code></pre></div>
-<p><img src="/Users/nick/Dropbox/Github/zoon/vignettes/basic_12-1.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto"><img src="/Users/nick/Dropbox/Github/zoon/vignettes/basic_12-2.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto"><img src="/Users/nick/Dropbox/Github/zoon/vignettes/basic_12-3.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto"></p>
+<p><img src="/home/travis/build/goldingn/zoon/vignettes/basic_12-1.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto"><img src="/home/travis/build/goldingn/zoon/vignettes/basic_12-2.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto"><img src="/home/travis/build/goldingn/zoon/vignettes/basic_12-3.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto"></p>
 <p><code>Replicate</code> takes as its first arguement the module you want to repeat and as its second argument the number of times yo want to repeat it. Here we end up running our model three times for three different sets out background points</p>
 </div>
 <div id="auxillary-information-in-a-zoonworkflow" class="section level3">
@@ -326,7 +326,7 @@ work5$module.versions</code></pre></div>
 <span class="kw">plot</span>(<span class="kw"><a href="../reference/Occurrence.html">Output</a></span>(work6)[[<span class="dv">3</span>]],
   <span class="dt">main =</span> <span class="kw">paste</span>(<span class="st">'Random forest: AUC = '</span>, 
              <span class="kw">round</span>(<span class="kw"><a href="../reference/Occurrence.html">Output</a></span>(work6)[[<span class="dv">4</span>]]$auc, <span class="dv">2</span>)))</code></pre></div>
-<p><img src="/Users/nick/Dropbox/Github/zoon/vignettes/basic_15-1.png" title="plot of chunk basic_15" alt="plot of chunk basic_15" style="display:block; margin: auto"></p>
+<p><img src="/home/travis/build/goldingn/zoon/vignettes/basic_15-1.png" title="plot of chunk basic_15" alt="plot of chunk basic_15" style="display:block; margin: auto"></p>
 <p>Here we are collecting occurrence data for two species, <em>Eresus kollari</em> and <em>E. sandaliatus</em> and combining them (having presumably decided that this is ecologically appropriate). We are using the air temperature data from NCEP again. We are sampling 100 pseudo absence points and running two fold crossvalidation.</p>
 <p>We run logistic regression and random forest on the data separately. We then predict the model back over the extent of our environmental data and calculate some measures of how good the models are. Collating the output into one plot we can see the very different forms of the models and can see that the random forest has a higher AUC (implying it predicts the data better).</p>
 </div>

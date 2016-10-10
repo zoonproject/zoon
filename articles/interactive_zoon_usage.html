@@ -58,7 +58,7 @@
 ## covariate values are NA. This may cause issues for some models</code></pre>
 <pre><code>## Warning in OneHundredBackground(.data = structure(list(df = structure(list(: There are fewer than 100 cells in the environmental raster.
 ## Using all available cells (81) instead</code></pre>
-<p><img src="/Users/nick/Dropbox/Github/zoon/vignettes/interactive_noninteractive-1.png" title="plot of chunk interactive_noninteractive" alt="plot of chunk interactive_noninteractive" style="display:block; margin: auto"></p>
+<p><img src="/home/travis/build/goldingn/zoon/vignettes/interactive_noninteractive-1.png" title="plot of chunk interactive_noninteractive" alt="plot of chunk interactive_noninteractive" style="display:block; margin: auto"></p>
 <p>It&rsquo;s worth noting that this is a simple workflow. Chaining modules will be fairly easy but depends on the module type. Workflows using list() are likely to not be easy.</p>
 <p>Get the modules from the zoon repository and load them into the working environment.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/LoadModule.html">LoadModule</a></span>(<span class="st">'UKAnophelesPlumbeus'</span>)</code></pre></div>
@@ -87,7 +87,7 @@ cov &lt;-<span class="st"> </span><span class="kw">UKAir</span>()</code></pre></
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">model =</span> mod, <span class="dt">data =</span> proc$df)
 
 out &lt;-<span class="st"> </span><span class="kw">PrintMap</span>(model, cov)</code></pre></div>
-<p><img src="/Users/nick/Dropbox/Github/zoon/vignettes/interactive_output-1.png" title="plot of chunk interactive_output" alt="plot of chunk interactive_output" style="display:block; margin: auto"></p>
+<p><img src="/home/travis/build/goldingn/zoon/vignettes/interactive_output-1.png" title="plot of chunk interactive_output" alt="plot of chunk interactive_output" style="display:block; margin: auto"></p>
 <div id="cross-and-external-validation" class="section level2">
 <h2>Cross and external validation</h2>
 <p>Crossvalidation requires the modules to be run using the function <code>RunModels</code> which runs the model on each fold of the crossvalidating data and predicts the remaining data. It also runs a model and predicts any external validation data.</p>
@@ -96,7 +96,7 @@ out &lt;-<span class="st"> </span><span class="kw">PrintMap</span>(model, cov)</
 modelCrossvalid &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">model =</span> modCrossvalid$model, <span class="dt">data =</span> proc$df)
 
 out &lt;-<span class="st"> </span><span class="kw">PrintMap</span>(modelCrossvalid, proc$ras)</code></pre></div>
-<p><img src="/Users/nick/Dropbox/Github/zoon/vignettes/interactive_cross_validation-1.png" title="plot of chunk interactive_cross_validation" alt="plot of chunk interactive_cross_validation" style="display:block; margin: auto"></p>
+<p><img src="/home/travis/build/goldingn/zoon/vignettes/interactive_cross_validation-1.png" title="plot of chunk interactive_cross_validation" alt="plot of chunk interactive_cross_validation" style="display:block; margin: auto"></p>
 </div>
 <div id="running-workflows-with-list." class="section level2">
 <h2>Running workflows with list.</h2>
