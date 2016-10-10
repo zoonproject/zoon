@@ -1,5 +1,6 @@
 #!/bin/bash
 # deploy pkgdown on travis, and push the results to the gh-pages branch
+# modified from: https://gist.github.com/domenic/ec8b0fc8ab45f39403dd
 
 set -e # Exit with nonzero exit code if anything fails
 
