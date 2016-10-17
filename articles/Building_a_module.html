@@ -104,16 +104,16 @@ out$fold &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co
   <span class="kw">return</span>(out)
 }</code></pre></div>
 <p>Now that we have our function written we can test it very simply in a workflow like this.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">workl1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>(<span class="dt">occurrence =</span> Lorem_ipsum_UK,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">workl1 &lt;-<span class="st"> </span><span class="kw">workflow</span>(<span class="dt">occurrence =</span> Lorem_ipsum_UK,
                    <span class="dt">covariate =</span> UKBioclim,
                    <span class="dt">process =</span> OneHundredBackground,
                    <span class="dt">model =</span> LogisticRegression,
                    <span class="dt">output =</span> PrintMap)</code></pre></div>
-<p><img src="/home/travis/build/goldingn/zoon/vignettes/building_occ6-1.png" title="plot of chunk building_occ6" alt="plot of chunk building_occ6" style="display:block; margin: auto"></p>
+<p><img src="building_occ6-1.png" title="plot of chunk building_occ6" alt="plot of chunk building_occ6" style="display:block; margin: auto"></p>
 <p>This is a nice way to debug your function and ensure you are getting the results you expect.</p>
 <p>Once you are happy that your function is working as you expect it to you can build you code into a module using the <code>BuildModule</code> function in <code>zoon</code>. This script adds in metadata including the type of module, authors&rsquo; names, a brief description and documentation for the arguments it accepts (though this one doesn&rsquo;t accept any arguments). Once <code>BuildModule</code> has created your module it will run it through checks to make sure has the required features, outputs data in the correct format, etc. Checking can be turned off by setting the argument <code>check = FALSE</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Let's build our module</span>
-<span class="kw"><a href="../reference/BuildModule.html">BuildModule</a></span>(Lorem_ipsum_UK,
+<span class="kw">BuildModule</span>(Lorem_ipsum_UK,
             <span class="dt">type =</span> <span class="st">'occurrence'</span>,
             <span class="dt">title =</span> <span class="st">'A dataset of Lorem ipsum occurrences'</span>,
             <span class="dt">description =</span> <span class="kw">paste0</span>(<span class="st">'The module retrieves a dataset of'</span>,
@@ -134,9 +134,9 @@ out$fold &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co
 <span class="kw">rm</span>(<span class="dt">list =</span> <span class="st">'Lorem_ipsum_UK'</span>)
 
 <span class="co"># This is how you would use a module that a colleague has sent you</span>
-<span class="kw"><a href="../reference/LoadModule.html">LoadModule</a></span>(<span class="dt">module =</span> <span class="st">'Lorem_ipsum_UK.R'</span>)
+<span class="kw">LoadModule</span>(<span class="dt">module =</span> <span class="st">'Lorem_ipsum_UK.R'</span>)
 
-work2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>(<span class="dt">occurrence =</span> Lorem_ipsum_UK,
+work2 &lt;-<span class="st"> </span><span class="kw">workflow</span>(<span class="dt">occurrence =</span> Lorem_ipsum_UK,
                   <span class="dt">covariate =</span> UKAir,
                   <span class="dt">process =</span> OneHundredBackground,
                   <span class="dt">model =</span> LogisticRegression,
@@ -177,17 +177,17 @@ ras &lt;-<span class="st"> </span><span class="kw">subset</span>(ras, variables)
 <span class="co"># Select the variables we want</span>
 myVariables &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">'air'</span>,<span class="st">'hgt'</span>,<span class="st">'rhum'</span>,<span class="st">'shum'</span>,<span class="st">'omega'</span>,<span class="st">'uwnd'</span>,<span class="st">'vwnd'</span>)
 
-work3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>(<span class="dt">occurrence =</span> <span class="kw">SpOcc</span>(<span class="dt">extent =</span> <span class="kw">c</span>(<span class="dv">111</span>, <span class="dv">157</span>, -<span class="dv">46</span>, -<span class="dv">6</span>),
+work3 &lt;-<span class="st"> </span><span class="kw">workflow</span>(<span class="dt">occurrence =</span> <span class="kw">SpOcc</span>(<span class="dt">extent =</span> <span class="kw">c</span>(<span class="dv">111</span>, <span class="dv">157</span>, -<span class="dv">46</span>, -<span class="dv">6</span>),
                                      <span class="dt">species =</span> <span class="st">'Varanus varius'</span>,
                                      <span class="dt">limit =</span> <span class="dv">500</span>),
                   <span class="dt">covariate =</span> <span class="kw">AustraliaAir</span>(<span class="dt">variables =</span> myVariables),
                   <span class="dt">process =</span> OneHundredBackground,
                   <span class="dt">model =</span> LogisticRegression,
                   <span class="dt">output =</span> PrintMap)</code></pre></div>
-<p><img src="/home/travis/build/goldingn/zoon/vignettes/building_cov4-1.png" title="plot of chunk building_cov4" alt="plot of chunk building_cov4" style="display:block; margin: auto"></p>
+<p><img src="building_cov4-1.png" title="plot of chunk building_cov4" alt="plot of chunk building_cov4" style="display:block; margin: auto"></p>
 <p>Once we are happy with the function we have written we need to use the <code>BuildModule</code> function to convert our function into a module by adding in the necessary metadata. Once <code>BuildModule</code> has created your module it will run it through checks to make sure has the required features, outputs data in the correct format, etc. Checking can be turned off by setting the argument <code>check = FALSE</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Build our module</span>
-<span class="kw"><a href="../reference/BuildModule.html">BuildModule</a></span>(AustraliaAir,
+<span class="kw">BuildModule</span>(AustraliaAir,
             <span class="dt">type =</span> <span class="st">'covariate'</span>,
             <span class="dt">title =</span> <span class="st">'Australia Air data from NCEP'</span>,
             <span class="dt">description =</span> <span class="kw">paste</span>(<span class="st">'This modules provides access to the'</span>,
@@ -213,9 +213,9 @@ work3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workf
 <span class="kw">rm</span>(<span class="dt">list =</span> <span class="st">'AustraliaAir'</span>)
 
 <span class="co"># Load the module script</span>
-<span class="kw"><a href="../reference/LoadModule.html">LoadModule</a></span>(<span class="st">'AustraliaAir.R'</span>)
+<span class="kw">LoadModule</span>(<span class="st">'AustraliaAir.R'</span>)
 
-work4 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>(<span class="dt">occurrence =</span> <span class="kw">SpOcc</span>(<span class="dt">extent =</span> <span class="kw">c</span>(<span class="dv">111</span>, <span class="dv">157</span>, -<span class="dv">46</span>, -<span class="dv">6</span>),
+work4 &lt;-<span class="st"> </span><span class="kw">workflow</span>(<span class="dt">occurrence =</span> <span class="kw">SpOcc</span>(<span class="dt">extent =</span> <span class="kw">c</span>(<span class="dv">111</span>, <span class="dv">157</span>, -<span class="dv">46</span>, -<span class="dv">6</span>),
                                      <span class="dt">species =</span> <span class="st">'Varanus varius'</span>,
                                      <span class="dt">limit =</span> <span class="dv">500</span>),
                   <span class="dt">covariate =</span> AustraliaAir,
@@ -232,17 +232,17 @@ work4 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workf
 <p>When writing a module it is useful to have example input to test with. One way to do this is to run a similar workflow and use the outputs of that workflow to test yours. Here is an example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># We run a very simple workflow so that we can get example input</span>
 <span class="co"># for our module</span>
-work5 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
+work5 &lt;-<span class="st"> </span><span class="kw">workflow</span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
                   <span class="dt">covariate  =</span> UKAir,
                   <span class="dt">process    =</span> OneHundredBackground,
                   <span class="dt">model      =</span> LogisticRegression,
                   <span class="dt">output     =</span> PrintMap)</code></pre></div>
-<p><img src="/home/travis/build/goldingn/zoon/vignettes/building_pro1-1.png" title="plot of chunk building_pro1" alt="plot of chunk building_pro1" style="display:block; margin: auto"></p>
+<p><img src="building_pro1-1.png" title="plot of chunk building_pro1" alt="plot of chunk building_pro1" style="display:block; margin: auto"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The output from a process module is in the same format as the </span>
 <span class="co"># input, so we can use the output of OneHundredBackground as the testing</span>
 <span class="co"># input for our module. Note that this object should be called</span>
 <span class="co"># .data</span>
-.data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Occurrence.html">Process</a></span>(work5)
+.data &lt;-<span class="st"> </span><span class="kw">Process</span>(work5)
 
 <span class="kw">str</span>(.data, <span class="dv">2</span>)</code></pre></div>
 <pre><code>## List of 2
@@ -286,7 +286,7 @@ work5 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workf
 ## 6 272.2655</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The second element is the raster</span>
 <span class="kw">plot</span>(.data$ras)</code></pre></div>
-<p><img src="/home/travis/build/goldingn/zoon/vignettes/buliding_pro1a-1.png" title="plot of chunk buliding_pro1a" alt="plot of chunk buliding_pro1a" style="display:block; margin: auto"></p>
+<p><img src="buliding_pro1a-1.png" title="plot of chunk buliding_pro1a" alt="plot of chunk buliding_pro1a" style="display:block; margin: auto"></p>
 <p>Let&rsquo;s start writing our new process module.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Start writing our module</span>
 ClipOccurence &lt;-<span class="st"> </span>function(.data, <span class="dt">extent =</span> <span class="kw">c</span>(-<span class="dv">180</span>, <span class="dv">180</span>, -<span class="dv">180</span>, <span class="dv">180</span>)){</code></pre></div>
@@ -326,17 +326,17 @@ occSub &lt;-<span class="st"> </span>occSub[occSub$latitude &gt;=<span class="st
 <p>Our next step is to test that this function will work in a workflow. Once we have read in our function so that it is available in our working environment we can then include it in a workflow as we would a normal module.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Run a workflow with our new process</span>
 <span class="co"># In this example we first add background points, then clip the data</span>
-work6 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
+work6 &lt;-<span class="st"> </span><span class="kw">workflow</span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
                   <span class="dt">covariate  =</span> UKAir,
-                  <span class="dt">process    =</span> <span class="kw"><a href="../reference/Chain.html">Chain</a></span>(OneHundredBackground,
+                  <span class="dt">process    =</span> <span class="kw">Chain</span>(OneHundredBackground,
                                      <span class="kw">ClipOccurrence</span>(<span class="dt">extent =</span> <span class="kw">c</span>(-<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">50</span>, <span class="dv">53</span>))),
                   <span class="dt">model      =</span> LogisticRegression,
                   <span class="dt">output     =</span> PrintMap)</code></pre></div>
-<p><img src="/home/travis/build/goldingn/zoon/vignettes/building_pro5-1.png" title="plot of chunk building_pro5" alt="plot of chunk building_pro5" style="display:block; margin: auto"></p>
+<p><img src="building_pro5-1.png" title="plot of chunk building_pro5" alt="plot of chunk building_pro5" style="display:block; margin: auto"></p>
 <p>We can see that the data has been clipped to the extent we specified in the map printed by the output module.</p>
 <p>The next stage is to turn this function into a module which is shareable. To do this we need to add metadata to our function using the <code>BuildModule</code> function. Once <code>BuildModule</code> has created your module it will run it through checks to make sure has the required features, outputs data in the correct format, etc. Checking can be turned off by setting the argument <code>check = FALSE</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Build our module</span>
-<span class="kw"><a href="../reference/BuildModule.html">BuildModule</a></span>(ClipOccurrence,
+<span class="kw">BuildModule</span>(ClipOccurrence,
             <span class="dt">type =</span> <span class="st">'process'</span>,
             <span class="dt">title =</span> <span class="st">'Clip occurrence data to extent'</span>,
             <span class="dt">description =</span> <span class="kw">paste</span>(<span class="st">'This process module clips the occurrence'</span>,
@@ -366,18 +366,18 @@ work6 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workf
 <span class="kw">rm</span>(<span class="dt">list =</span> <span class="st">'ClipOccurrence'</span>)
 
 <span class="co"># Load the module script</span>
-<span class="kw"><a href="../reference/LoadModule.html">LoadModule</a></span>(<span class="st">'ClipOccurrence.R'</span>)</code></pre></div>
+<span class="kw">LoadModule</span>(<span class="st">'ClipOccurrence.R'</span>)</code></pre></div>
 <pre><code>## [1] "ClipOccurrence"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">work7 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>(<span class="dt">occurrence =</span> AnophelesPlumbeus,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">work7 &lt;-<span class="st"> </span><span class="kw">workflow</span>(<span class="dt">occurrence =</span> AnophelesPlumbeus,
                   <span class="dt">covariate =</span> UKBioclim,
-                  <span class="dt">process =</span> <span class="kw"><a href="../reference/Chain.html">Chain</a></span>(OneHundredBackground,
+                  <span class="dt">process =</span> <span class="kw">Chain</span>(OneHundredBackground,
                                   <span class="kw">ClipOccurrence</span>(<span class="dt">extent =</span> <span class="kw">c</span>(-<span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">50</span>, <span class="dv">55</span>))),
                   <span class="dt">model =</span> LogisticRegression,
                   <span class="dt">output =</span> PrintMap)</code></pre></div>
 <pre><code>## 146 records found</code></pre>
 <pre><code>## 0-</code></pre>
 <pre><code>## 146 records downloaded</code></pre>
-<p><img src="/home/travis/build/goldingn/zoon/vignettes/building_pro7-1.png" title="plot of chunk building_pro7" alt="plot of chunk building_pro7" style="display:block; margin: auto"></p>
+<p><img src="building_pro7-1.png" title="plot of chunk building_pro7" alt="plot of chunk building_pro7" style="display:block; margin: auto"></p>
 <p>Once we&rsquo;re happy with the module, we will hopefully upload it to the zoon repository. The repository is currently under development. Visit <a href="https://zoonproject.wordpress.com/">the development pages</a> for more information.</p>
 </div>
 <div id="how-to-write-a-model-module" class="section level2">
@@ -389,7 +389,7 @@ work6 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workf
 <p>Next we specify the packages our function needs. These should be specified by using <code>GetPackage</code> function in the zoon package. This function will load the package if the user of your module already has it or will install it from CRAN if they don&rsquo;t. For this reason make sure your package only uses packages that are on CRAN.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Specify the packages we need using the function</span>
 <span class="co"># GetPackage</span>
-zoon::<span class="kw"><a href="../reference/GetPackage.html">GetPackage</a></span>(<span class="st">"gam"</span>)</code></pre></div>
+zoon::<span class="kw">GetPackage</span>(<span class="st">"gam"</span>)</code></pre></div>
 <p>Next we can add the code that does our modelling, here we create a simple GAM (Generalised Additive Model) using the package <a href="https://cran.r-project.org/package=gam">gam</a></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create a data.frame of covariate data</span>
 covs &lt;-<span class="st"> </span>.df[<span class="kw">colnames</span>(.df) %in%<span class="st"> </span><span class="kw">attr</span>(.df, <span class="st">'covCols'</span>)]
@@ -411,7 +411,7 @@ m &lt;-<span class="st"> </span>gam::<span class="kw">gam</span>(<span class="dt
 </ul><div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create a ZoonModel object to return.</span>
 <span class="co"># this includes our model, predict method</span>
 <span class="co"># and the packages we need.</span>
-<span class="kw"><a href="../reference/ZoonModel.html">ZoonModel</a></span>(<span class="dt">model =</span> m,
+<span class="kw">ZoonModel</span>(<span class="dt">model =</span> m,
           <span class="dt">code =</span> {
           
           <span class="co"># create empty vector of predictions</span>
@@ -445,7 +445,7 @@ m &lt;-<span class="st"> </span>gam::<span class="kw">gam</span>(<span class="dt
 
   <span class="co"># Specify the packages we need using the function</span>
   <span class="co"># GetPackage</span>
-  zoon::<span class="kw"><a href="../reference/GetPackage.html">GetPackage</a></span>(<span class="st">"gam"</span>)
+  zoon::<span class="kw">GetPackage</span>(<span class="st">"gam"</span>)
   
   <span class="co"># Create a data.frame of covariate data</span>
   covs &lt;-<span class="st"> </span>.df[<span class="kw">colnames</span>(.df) %in%<span class="st"> </span><span class="kw">attr</span>(.df, <span class="st">'covCols'</span>)]
@@ -464,7 +464,7 @@ m &lt;-<span class="st"> </span>gam::<span class="kw">gam</span>(<span class="dt
   <span class="co"># Create a ZoonModel object to return.</span>
   <span class="co"># this includes our model, predict method</span>
   <span class="co"># and the packages we need.</span>
-  <span class="kw"><a href="../reference/ZoonModel.html">ZoonModel</a></span>(<span class="dt">model =</span> m,
+  <span class="kw">ZoonModel</span>(<span class="dt">model =</span> m,
             <span class="dt">code =</span> {
             
             <span class="co"># create empty vector of predictions</span>
@@ -496,7 +496,7 @@ m &lt;-<span class="st"> </span>gam::<span class="kw">gam</span>(<span class="dt
   
 }</code></pre></div>
 <p>We then run <code>BuildModule</code> on our function, adding the required metadata. As this module has no parameters other than <code>.df</code> which is not user specified, we don&rsquo;t need to set the <code>paras</code> argument, which would normally be used to document arguments. Default arguments, like <code>.df</code> are all signified by starting with a <code>.</code> and don&rsquo;t need to be documented as this will be written into the module documentation automatically. It is worth noting the <code>dataType</code> field. This must be any of &lsquo;presence-only&rsquo;, &lsquo;presence/absence&rsquo;, &lsquo;presence/background&rsquo;, &lsquo;abundance&rsquo; or &lsquo;proportion&rsquo;. This is important so that people using your module in the future will know what types of data can be used as inputs. Once <code>BuildModule</code> has created your module it will run it through checks to make sure has the required features, outputs data in the correct format, etc. Checking can be turned off by setting the argument <code>check = FALSE</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/BuildModule.html">BuildModule</a></span>(<span class="dt">object =</span> GamGam,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">BuildModule</span>(<span class="dt">object =</span> GamGam,
             <span class="dt">type =</span> <span class="st">'model'</span>,
             <span class="dt">title =</span> <span class="st">'GAM sdm model'</span>,
             <span class="dt">description =</span> <span class="st">'This is my mega cool new model.'</span>,
@@ -515,15 +515,15 @@ m &lt;-<span class="st"> </span>gam::<span class="kw">gam</span>(<span class="dt
 <span class="kw">rm</span>(GamGam)
 
 <span class="co"># Load in the module we just built</span>
-<span class="kw"><a href="../reference/LoadModule.html">LoadModule</a></span>(<span class="st">'GamGam.R'</span>)</code></pre></div>
+<span class="kw">LoadModule</span>(<span class="st">'GamGam.R'</span>)</code></pre></div>
 <pre><code>## [1] "GamGam"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Run a workflow using our module</span>
-work8 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
+work8 &lt;-<span class="st"> </span><span class="kw">workflow</span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
                   <span class="dt">covariate =</span> UKAir,
                   <span class="dt">process  =</span> OneHundredBackground,
                   <span class="dt">model =</span> GamGam,
                   <span class="dt">output =</span> PrintMap)</code></pre></div>
-<p><img src="/home/travis/build/goldingn/zoon/vignettes/building_mod7-1.png" title="plot of chunk building_mod7" alt="plot of chunk building_mod7" style="display:block; margin: auto"></p>
+<p><img src="building_mod7-1.png" title="plot of chunk building_mod7" alt="plot of chunk building_mod7" style="display:block; margin: auto"></p>
 <p>Once we&rsquo;re happy with the module, we will hopefully upload it to the zoon repository. The repository is currently under development. Visit <a href="https://zoonproject.wordpress.com/">the development pages</a> for more information.</p>
 </div>
 <div id="how-to-write-an-output-module" class="section level2">
@@ -533,7 +533,7 @@ work8 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workf
 <p>When writing a module it is useful to have example input to test with. One way to do this is to run a similar workflow and use the outputs of that workflow to test yours. Here is an example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># We run a very simple workflow so that we can get example input</span>
 <span class="co"># for our module</span>
-work9 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
+work9 &lt;-<span class="st"> </span><span class="kw">workflow</span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
                   <span class="dt">covariate  =</span> UKAir,
                   <span class="dt">process    =</span> OneHundredBackground,
                   <span class="dt">model      =</span> LogisticRegression,
@@ -542,8 +542,8 @@ work9 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workf
 <span class="co"># The input to an output module is a combination of the output</span>
 <span class="co"># from the model module and the covariate module. We can recreate</span>
 <span class="co"># it for this work flow like this</span>
-.model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Occurrence.html">Model</a></span>(work9)
-.ras &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Occurrence.html">Covariate</a></span>(work9)</code></pre></div>
+.model &lt;-<span class="st"> </span><span class="kw">Model</span>(work9)
+.ras &lt;-<span class="st"> </span><span class="kw">Covariate</span>(work9)</code></pre></div>
 <p>Both <code>.model</code> and <code>.ras</code> are default arguments for an output model so it is important that you have them as arguements for your module, even if you dont use them both. It is also important that you stick to the same naming conventions.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Our output module takes the default parameters and a user-defined</span>
 <span class="co"># Raster* object that has the same structure as the raster layer output</span>
@@ -551,7 +551,7 @@ work9 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workf
 PredictNewRasterMap &lt;-<span class="st"> </span>function(.model, .ras, <span class="dt">raster =</span> .ras){</code></pre></div>
 <p>It is important to have default values for all user defined parameters so that your module can be tested when you upload it to the zoon website. Here we set our default &lsquo;new area&rsquo; raster to be the same as the raster used to create the model. Clearly this is not how we envisage the module being used in a real application (unless they genuinely wanted to predict back to the same area), however this ensures that this module will always work with its default arguments, no matter what workflow it is placed in.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The first step is to load in the packages we need</span>
-zoon::<span class="kw"><a href="../reference/GetPackage.html">GetPackage</a></span>(<span class="st">"raster"</span>) 
+zoon::<span class="kw">GetPackage</span>(<span class="st">"raster"</span>) 
   
 <span class="co"># Then extract the covariate values</span>
 <span class="co"># from the user provided raster</span>
@@ -559,7 +559,7 @@ vals &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span clas
 <span class="kw">colnames</span>(vals) &lt;-<span class="st"> </span><span class="kw">names</span>(raster)</code></pre></div>
 <p>Once we have these new values we can predict using the <code>ZoonPredict</code> function. This function is very useful as it simplifies the process of making predictions from the ouput of a model module. See the <a href="https://github.com/zoonproject/modules/blob/master/R/InteractiveMap.R">InteractiveMap</a> module for an innovative visualisation using predicted values.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Make predictions to the new values</span>
-pred &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ZoonPredict.html">ZoonPredict</a></span>(.model$model,
+pred &lt;-<span class="st"> </span><span class="kw">ZoonPredict</span>(.model$model,
                     <span class="dt">newdata =</span> vals)
 
 <span class="co"># Create a copy of the users' raster...</span>
@@ -577,14 +577,14 @@ pred_ras &lt;-<span class="st"> </span><span class="kw">setValues</span>(pred_ra
 <p>Our function now looks like this:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PredictNewRasterMap &lt;-<span class="st"> </span>function(.model, .ras, <span class="dt">raster =</span> .ras){
   
-  zoon::<span class="kw"><a href="../reference/GetPackage.html">GetPackage</a></span>(<span class="st">"raster"</span>)
+  zoon::<span class="kw">GetPackage</span>(<span class="st">"raster"</span>)
   
   <span class="co"># Extract the values from the user provided raster</span>
   vals &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">getValues</span>(raster))
   <span class="kw">colnames</span>(vals) &lt;-<span class="st"> </span><span class="kw">names</span>(raster)
   
   <span class="co"># Make predictions to the new values</span>
-  pred &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ZoonPredict.html">ZoonPredict</a></span>(.model$model,
+  pred &lt;-<span class="st"> </span><span class="kw">ZoonPredict</span>(.model$model,
                       <span class="dt">newdata =</span> vals)
   
   pred_ras &lt;-<span class="st"> </span>raster[[<span class="dv">1</span>]]
@@ -597,12 +597,12 @@ pred_ras &lt;-<span class="st"> </span><span class="kw">setValues</span>(pred_ra
 }</code></pre></div>
 <p>Our next step is to test that this function will work in a workflow. Once we have read in our function so that it is available in our working environment we can then include it in a workflow as we would a normal module.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Run it with the defaults</span>
-work10 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
+work10 &lt;-<span class="st"> </span><span class="kw">workflow</span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
                    <span class="dt">covariate  =</span> UKBioclim,
                    <span class="dt">process    =</span> OneHundredBackground,
                    <span class="dt">model      =</span> LogisticRegression,
                    <span class="dt">output     =</span> PredictNewRasterMap)</code></pre></div>
-<p><img src="/home/travis/build/goldingn/zoon/vignettes/building_out7-1.png" title="plot of chunk building_out7" alt="plot of chunk building_out7" style="display:block; margin: auto"></p>
+<p><img src="building_out7-1.png" title="plot of chunk building_out7" alt="plot of chunk building_out7" style="display:block; margin: auto"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Now I'm going to run it with a different raster</span>
 <span class="kw">library</span>(raster)
 
@@ -616,20 +616,20 @@ cropped &lt;-<span class="st"> </span><span class="kw">crop</span>(BioclimData,
                 <span class="kw">c</span>(<span class="dv">109</span>,<span class="dv">155</span>,-<span class="dv">46</span>,-<span class="dv">7</span>))
 
 <span class="co"># Run it with my new raster</span>
-work11 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
+work11 &lt;-<span class="st"> </span><span class="kw">workflow</span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
                    <span class="dt">covariate  =</span> UKBioclim,
                    <span class="dt">process    =</span> OneHundredBackground,
                    <span class="dt">model      =</span> LogisticRegression,
                    <span class="dt">output     =</span> <span class="kw">PredictNewRasterMap</span>(<span class="dt">raster =</span> cropped))</code></pre></div>
-<p><img src="/home/travis/build/goldingn/zoon/vignettes/building_out7-2.png" title="plot of chunk building_out7" alt="plot of chunk building_out7" style="display:block; margin: auto"></p>
+<p><img src="building_out7-2.png" title="plot of chunk building_out7" alt="plot of chunk building_out7" style="display:block; margin: auto"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The prediction map should also be returned as a raster</span>
-<span class="kw">class</span>(<span class="kw"><a href="../reference/Occurrence.html">Output</a></span>(work11))</code></pre></div>
+<span class="kw">class</span>(<span class="kw">Output</span>(work11))</code></pre></div>
 <pre><code>## [1] "RasterLayer"
 ## attr(,"package")
 ## [1] "raster"</code></pre>
 <p>The next stage is to turn this function into a module which is shareable. To do this we need to add metadata to our function using the <code>BuildModule</code> function</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Build our module</span>
-<span class="kw"><a href="../reference/BuildModule.html">BuildModule</a></span>(PredictNewRasterMap,
+<span class="kw">BuildModule</span>(PredictNewRasterMap,
             <span class="dt">type =</span> <span class="st">'output'</span>,
             <span class="dt">title =</span> <span class="st">'Predict to a new raster and map'</span>,
             <span class="dt">description =</span> <span class="kw">paste</span>(<span class="st">'This output module predicts the species'</span>,
@@ -660,18 +660,18 @@ work11 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/work
 <span class="kw">rm</span>(<span class="dt">list =</span> <span class="st">'PredictNewRasterMap'</span>)
 
 <span class="co"># Load the module script</span>
-<span class="kw"><a href="../reference/LoadModule.html">LoadModule</a></span>(<span class="st">'PredictNewRasterMap.R'</span>)</code></pre></div>
+<span class="kw">LoadModule</span>(<span class="st">'PredictNewRasterMap.R'</span>)</code></pre></div>
 <pre><code>## [1] "PredictNewRasterMap"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Now I model a crop pest from Zimbabwe in its home</span>
 <span class="co"># range and in Australia by chaining together</span>
 <span class="co"># output modules</span>
-work12 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>(<span class="dt">occurrence =</span> CWBZimbabwe,
+work12 &lt;-<span class="st"> </span><span class="kw">workflow</span>(<span class="dt">occurrence =</span> CWBZimbabwe,
                    <span class="dt">covariate =</span> <span class="kw">Bioclim</span>(<span class="dt">extent =</span> <span class="kw">c</span>(<span class="dv">28</span>, <span class="dv">38</span>, -<span class="dv">24</span>, -<span class="dv">16</span>)),
                    <span class="dt">process =</span> NoProcess,
                    <span class="dt">model =</span> RandomForest,
-                   <span class="dt">output =</span> <span class="kw"><a href="../reference/Chain.html">Chain</a></span>(PrintMap,
+                   <span class="dt">output =</span> <span class="kw">Chain</span>(PrintMap,
                                   <span class="kw">PredictNewRasterMap</span>(<span class="dt">raster =</span> cropped)))</code></pre></div>
-<p><img src="/home/travis/build/goldingn/zoon/vignettes/building_out9-1.png" title="plot of chunk building_out9" alt="plot of chunk building_out9" style="display:block; margin: auto"><img src="/home/travis/build/goldingn/zoon/vignettes/building_out9-2.png" title="plot of chunk building_out9" alt="plot of chunk building_out9" style="display:block; margin: auto"></p>
+<p><img src="building_out9-1.png" title="plot of chunk building_out9" alt="plot of chunk building_out9" style="display:block; margin: auto"><img src="building_out9-2.png" title="plot of chunk building_out9" alt="plot of chunk building_out9" style="display:block; margin: auto"></p>
 <p>Once we&rsquo;re happy with the module, we will hopefully upload it to the zoon repository. The repository is currently under development. Visit <a href="https://zoonproject.wordpress.com/">the development pages</a> for more information. <a id="ModIO"> </a></p>
 </div>
 <div id="module-io-definitions-for-module-developers" class="section level2">
@@ -721,7 +721,7 @@ work12 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/work
 </div>
 <div id="pictoral-description-of-inputs-and-outputs" class="section level1">
 <h1>Pictoral description of inputs and outputs</h1>
-<p><img src="/home/travis/build/goldingn/zoon/vignettes/occurrenceInOut.svg" alt="OccurrenceModule"><img src="/home/travis/build/goldingn/zoon/vignettes/covariateInOut.svg" alt="CovariateModule"><img src="/home/travis/build/goldingn/zoon/vignettes/processInOut.svg" alt="ProcessModule"><img src="/home/travis/build/goldingn/zoon/vignettes/modelInOut.svg" alt="ModelModule"><img src="/home/travis/build/goldingn/zoon/vignettes/outputInOut.svg" alt="OuputModule"></p>
+<p><img src="occurrenceInOut.svg" alt="OccurrenceModule"><img src="covariateInOut.svg" alt="CovariateModule"><img src="processInOut.svg" alt="ProcessModule"><img src="modelInOut.svg" alt="ModelModule"><img src="outputInOut.svg" alt="OuputModule"></p>
 </div>
   </div>
 

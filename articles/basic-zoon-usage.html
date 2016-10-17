@@ -65,12 +65,12 @@
 <div id="basic-usage" class="section level2">
 <h2>Basic usage</h2>
 <p>A basic worklow is run using the <code>workflow</code> function. We must chose a module for each type: occurrence, covariate, process, model and output.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">work1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">work1 &lt;-<span class="st"> </span><span class="kw">workflow</span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
                   <span class="dt">covariate  =</span> UKAir,
                   <span class="dt">process    =</span> OneHundredBackground,
                   <span class="dt">model      =</span> RandomForest,
                   <span class="dt">output     =</span> PrintMap)</code></pre></div>
-<p><img src="/home/travis/build/goldingn/zoon/vignettes/basic_5-1.png" title="plot of chunk basic_5" alt="plot of chunk basic_5" style="display:block; margin: auto"></p>
+<p><img src="basic_5-1.png" title="plot of chunk basic_5" alt="plot of chunk basic_5" style="display:block; margin: auto"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(work1)</code></pre></div>
 <pre><code>## [1] "zoonWorkflow"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(work1, <span class="dv">1</span>)</code></pre></div>
@@ -93,11 +93,11 @@
 <li><code>RandomForest</code>: Run a random forest to model the relationship between <em>A. plumbeus</em> and air temperature</li>
 <li><code>PrintMap</code>: Predicts the model across the whole of the covariate dataset (<code>UKAir</code> in this case) and prints to graphics device.</li>
 </ul><p>The object returned from the workflow function (<code>work1</code> in the above example) is an object of class <code>zoonWorkflow</code>. This object is a list with all the data, models and output we collected and created in our analysis.</p>
-<p>To access the output of a particular part of the workflow you can use the accessor functions which have the same names as the modules. For example if you want the data returned from the occurrence module you can use the <code><a href="../reference/Occurrence.html">Occurrence()</a></code> accessor function</p>
+<p>To access the output of a particular part of the workflow you can use the accessor functions which have the same names as the modules. For example if you want the data returned from the occurrence module you can use the <code>Occurrence()</code> accessor function</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Use the Occurrence function to get occurrence module</span>
 <span class="co"># output from the workflow object</span>
 
-occ_out &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Occurrence.html">Occurrence</a></span>(work1)
+occ_out &lt;-<span class="st"> </span><span class="kw">Occurrence</span>(work1)
 
 <span class="kw">head</span>(occ_out)</code></pre></div>
 <pre><code>##     longitude latitude value     type fold
@@ -112,21 +112,21 @@ occ_out &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Occ
 <div id="getting-help" class="section level2">
 <h2>Getting Help</h2>
 <p>To find a list of modules available on the online repository use</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/GetModuleList.html">GetModuleList</a></span>()</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">GetModuleList</span>()</code></pre></div>
 <p>To find help on a specific module use</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/ModuleHelp.html">ModuleHelp</a></span>(LogisticRegression)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ModuleHelp</span>(LogisticRegression)</code></pre></div>
 <p>Note that you can&rsquo;t use <code>?</code> as the modules are held on a repository. Therefore the module documentation files are not included with the basic zoon install.</p>
 <p>If you have used zoon in a publication you will need to cite zoon and the modules you have used. There are two different functions for doing this.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># For the zoon package</span>
 <span class="kw">citation</span>(<span class="st">'zoon'</span>)
 
 <span class="co"># For zoon modules</span>
-<span class="kw"><a href="../reference/ZoonCitation.html">ZoonCitation</a></span>(<span class="st">'OptGRaF'</span>)</code></pre></div>
+<span class="kw">ZoonCitation</span>(<span class="st">'OptGRaF'</span>)</code></pre></div>
 </div>
 <div id="more-complex-analyses" class="section level2">
 <h2>More complex analyses</h2>
 <p>The syntax for including arguments to modules is simply <code>ModuleName(parameter = 'value')</code>. For example, to do two fold crossvalidation we do</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">work2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">work2 &lt;-<span class="st"> </span><span class="kw">workflow</span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
                   <span class="dt">covariate  =</span> UKAir,
                   <span class="dt">process    =</span> <span class="kw">BackgroundAndCrossvalid</span>(<span class="dt">k =</span> <span class="dv">2</span>),
                   <span class="dt">model      =</span> LogisticRegression,
@@ -142,9 +142,9 @@ occ_out &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Occ
 <div id="multiple-modules-with-chain" class="section level3">
 <h3>Multiple modules with Chain</h3>
 <p>We might want to combine multiple modules in our analysis. For this we use the function Chain.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">work3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">work3 &lt;-<span class="st"> </span><span class="kw">workflow</span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
                   <span class="dt">covariate  =</span> UKAir,
-                  <span class="dt">process    =</span> <span class="kw"><a href="../reference/Chain.html">Chain</a></span>(OneHundredBackground, Crossvalidate),
+                  <span class="dt">process    =</span> <span class="kw">Chain</span>(OneHundredBackground, Crossvalidate),
                   <span class="dt">model      =</span> LogisticRegression,
                   <span class="dt">output     =</span> PerformanceMeasures)</code></pre></div>
 <p>Here we draw some pseudoabsence background points, and do crossvalidation (which is the same as <code>work2</code>, but explicitely using the separate modules.)</p>
@@ -159,12 +159,12 @@ occ_out &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Occ
 <div id="multiple-modules-with-list" class="section level3">
 <h3>Multiple modules with list</h3>
 <p>If you want to run separate analyses that can then be compared for example, specifiy a list of modules.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">work4 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">work4 &lt;-<span class="st"> </span><span class="kw">workflow</span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
                   <span class="dt">covariate  =</span> UKAir,
                   <span class="dt">process    =</span> OneHundredBackground,
                   <span class="dt">model      =</span> <span class="kw">list</span>(LogisticRegression, RandomForest),
                   <span class="dt">output     =</span> PrintMap)</code></pre></div>
-<p><img src="/home/travis/build/goldingn/zoon/vignettes/basic_11-1.png" title="plot of chunk basic_11" alt="plot of chunk basic_11" style="display:block; margin: auto"><img src="/home/travis/build/goldingn/zoon/vignettes/basic_11-2.png" title="plot of chunk basic_11" alt="plot of chunk basic_11" style="display:block; margin: auto"></p>
+<p><img src="basic_11-1.png" title="plot of chunk basic_11" alt="plot of chunk basic_11" style="display:block; margin: auto"><img src="basic_11-2.png" title="plot of chunk basic_11" alt="plot of chunk basic_11" style="display:block; margin: auto"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(work4, <span class="dv">1</span>)</code></pre></div>
 <pre><code>## List of 9
 ##  $ occurrence.output:List of 1
@@ -183,12 +183,12 @@ occ_out &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Occ
 <div id="repeating-a-module-multiple-times" class="section level3">
 <h3>Repeating a module multiple times</h3>
 <p>If you want to repeat a module multiple times you can use <code>Replicate</code>. This can be useful when using modules that have a random process such as the creation of pseudoabsences.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">work5 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">work5 &lt;-<span class="st"> </span><span class="kw">workflow</span>(<span class="dt">occurrence =</span> UKAnophelesPlumbeus,
                   <span class="dt">covariate  =</span> UKAir,
-                  <span class="dt">process    =</span> <span class="kw"><a href="../reference/Replicate.html">Replicate</a></span>(<span class="kw">Background</span>(<span class="dt">n =</span> <span class="dv">20</span>), <span class="dt">n =</span> <span class="dv">3</span>),
+                  <span class="dt">process    =</span> <span class="kw">Replicate</span>(<span class="kw">Background</span>(<span class="dt">n =</span> <span class="dv">20</span>), <span class="dt">n =</span> <span class="dv">3</span>),
                   <span class="dt">model      =</span> RandomForest,
                   <span class="dt">output     =</span> PrintMap)</code></pre></div>
-<p><img src="/home/travis/build/goldingn/zoon/vignettes/basic_12-1.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto"><img src="/home/travis/build/goldingn/zoon/vignettes/basic_12-2.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto"><img src="/home/travis/build/goldingn/zoon/vignettes/basic_12-3.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto"></p>
+<p><img src="basic_12-1.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto"><img src="basic_12-2.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto"><img src="basic_12-3.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto"></p>
 <p><code>Replicate</code> takes as its first arguement the module you want to repeat and as its second argument the number of times yo want to repeat it. Here we end up running our model three times for three different sets out background points</p>
 </div>
 <div id="auxillary-information-in-a-zoonworkflow" class="section level3">
@@ -265,7 +265,7 @@ work5$module.versions</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># work4 has two output maps, find the origins of the first</span>
 <span class="co"># using the Output accessor function and the call_path</span>
 <span class="co"># attribute</span>
-<span class="kw">attr</span>(<span class="kw"><a href="../reference/Occurrence.html">Output</a></span>(work4)[[<span class="dv">1</span>]], <span class="dt">which =</span> <span class="st">'call_path'</span>)</code></pre></div>
+<span class="kw">attr</span>(<span class="kw">Output</span>(work4)[[<span class="dv">1</span>]], <span class="dt">which =</span> <span class="st">'call_path'</span>)</code></pre></div>
 <pre><code>## $occurrence
 ## [1] "UKAnophelesPlumbeus"
 ## 
@@ -284,7 +284,7 @@ work5$module.versions</code></pre></div>
 <div id="a-larger-example" class="section level3">
 <h3>A larger example</h3>
 <p>Here is an example of a larger analysis.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">work6 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>(<span class="dt">occurrence =</span> <span class="kw"><a href="../reference/Chain.html">Chain</a></span>(<span class="kw">SpOcc</span>(<span class="dt">species =</span> <span class="st">'Eresus kollari'</span>, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">work6 &lt;-<span class="st"> </span><span class="kw">workflow</span>(<span class="dt">occurrence =</span> <span class="kw">Chain</span>(<span class="kw">SpOcc</span>(<span class="dt">species =</span> <span class="st">'Eresus kollari'</span>, 
                                        <span class="dt">extent =</span> <span class="kw">c</span>(-<span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">45</span>, <span class="dv">65</span>)),
                                      <span class="kw">SpOcc</span>(<span class="dt">species =</span> <span class="st">'Eresus sandaliatus'</span>, 
                                        <span class="dt">extent =</span> <span class="kw">c</span>(-<span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">45</span>, <span class="dv">65</span>))),
@@ -292,7 +292,7 @@ work5$module.versions</code></pre></div>
                   <span class="dt">process =</span> <span class="kw">BackgroundAndCrossvalid</span>(<span class="dt">k =</span> <span class="dv">2</span>),
                   <span class="dt">model =</span> <span class="kw">list</span>(LogisticRegression,
                                RandomForest),
-                  <span class="dt">output =</span> <span class="kw"><a href="../reference/Chain.html">Chain</a></span>(<span class="kw">PrintMap</span>(<span class="dt">plot =</span> <span class="ot">FALSE</span>),
+                  <span class="dt">output =</span> <span class="kw">Chain</span>(<span class="kw">PrintMap</span>(<span class="dt">plot =</span> <span class="ot">FALSE</span>),
                                  PerformanceMeasures)
          )</code></pre></div>
 <pre><code>## Loading required package: MASS</code></pre>
@@ -319,14 +319,14 @@ work5$module.versions</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create some custom plots using the raster returned from </span>
 <span class="co"># the output module</span>
 <span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>), <span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">4</span>))
-<span class="kw">plot</span>(<span class="kw"><a href="../reference/Occurrence.html">Output</a></span>(work6)[[<span class="dv">1</span>]], 
+<span class="kw">plot</span>(<span class="kw">Output</span>(work6)[[<span class="dv">1</span>]], 
      <span class="dt">main =</span> <span class="kw">paste</span>(<span class="st">'Logistic Regression: AUC = '</span>, 
-             <span class="kw">round</span>(<span class="kw"><a href="../reference/Occurrence.html">Output</a></span>(work6)[[<span class="dv">2</span>]]$auc, <span class="dv">2</span>)),
+             <span class="kw">round</span>(<span class="kw">Output</span>(work6)[[<span class="dv">2</span>]]$auc, <span class="dv">2</span>)),
      <span class="dt">xlim =</span> <span class="kw">c</span>(-<span class="dv">10</span>, <span class="dv">10</span>))
-<span class="kw">plot</span>(<span class="kw"><a href="../reference/Occurrence.html">Output</a></span>(work6)[[<span class="dv">3</span>]],
+<span class="kw">plot</span>(<span class="kw">Output</span>(work6)[[<span class="dv">3</span>]],
   <span class="dt">main =</span> <span class="kw">paste</span>(<span class="st">'Random forest: AUC = '</span>, 
-             <span class="kw">round</span>(<span class="kw"><a href="../reference/Occurrence.html">Output</a></span>(work6)[[<span class="dv">4</span>]]$auc, <span class="dv">2</span>)))</code></pre></div>
-<p><img src="/home/travis/build/goldingn/zoon/vignettes/basic_15-1.png" title="plot of chunk basic_15" alt="plot of chunk basic_15" style="display:block; margin: auto"></p>
+             <span class="kw">round</span>(<span class="kw">Output</span>(work6)[[<span class="dv">4</span>]]$auc, <span class="dv">2</span>)))</code></pre></div>
+<p><img src="basic_15-1.png" title="plot of chunk basic_15" alt="plot of chunk basic_15" style="display:block; margin: auto"></p>
 <p>Here we are collecting occurrence data for two species, <em>Eresus kollari</em> and <em>E. sandaliatus</em> and combining them (having presumably decided that this is ecologically appropriate). We are using the air temperature data from NCEP again. We are sampling 100 pseudo absence points and running two fold crossvalidation.</p>
 <p>We run logistic regression and random forest on the data separately. We then predict the model back over the extent of our environmental data and calculate some measures of how good the models are. Collating the output into one plot we can see the very different forms of the models and can see that the random forest has a higher AUC (implying it predicts the data better).</p>
 </div>

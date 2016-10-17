@@ -53,29 +53,29 @@
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dismo)
 <span class="kw">library</span>(zoon)</code></pre></div>
 <p>This is the workflow we will run. It might be worth running it here to make sure there are no problems.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w &lt;-<span class="st"> </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>(UKAnophelesPlumbeus, UKAir, OneHundredBackground, LogisticRegression, PrintMap)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w &lt;-<span class="st"> </span><span class="kw">workflow</span>(UKAnophelesPlumbeus, UKAir, OneHundredBackground, LogisticRegression, PrintMap)</code></pre></div>
 <pre><code>## Warning in ExtractAndCombData(x, covariate.output[[1]]): Some extracted
 ## covariate values are NA. This may cause issues for some models</code></pre>
 <pre><code>## Warning in OneHundredBackground(.data = structure(list(df = structure(list(: There are fewer than 100 cells in the environmental raster.
 ## Using all available cells (81) instead</code></pre>
-<p><img src="/home/travis/build/goldingn/zoon/vignettes/interactive_noninteractive-1.png" title="plot of chunk interactive_noninteractive" alt="plot of chunk interactive_noninteractive" style="display:block; margin: auto"></p>
+<p><img src="interactive_noninteractive-1.png" title="plot of chunk interactive_noninteractive" alt="plot of chunk interactive_noninteractive" style="display:block; margin: auto"></p>
 <p>It&rsquo;s worth noting that this is a simple workflow. Chaining modules will be fairly easy but depends on the module type. Workflows using list() are likely to not be easy.</p>
 <p>Get the modules from the zoon repository and load them into the working environment.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/LoadModule.html">LoadModule</a></span>(<span class="st">'UKAnophelesPlumbeus'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">LoadModule</span>(<span class="st">'UKAnophelesPlumbeus'</span>)</code></pre></div>
 <pre><code>## [1] "UKAnophelesPlumbeus"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/LoadModule.html">LoadModule</a></span>(<span class="st">'UKAir'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">LoadModule</span>(<span class="st">'UKAir'</span>)</code></pre></div>
 <pre><code>## [1] "UKAir"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/LoadModule.html">LoadModule</a></span>(<span class="st">'OneHundredBackground'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">LoadModule</span>(<span class="st">'OneHundredBackground'</span>)</code></pre></div>
 <pre><code>## [1] "OneHundredBackground"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/LoadModule.html">LoadModule</a></span>(<span class="st">'LogisticRegression'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">LoadModule</span>(<span class="st">'LogisticRegression'</span>)</code></pre></div>
 <pre><code>## [1] "LogisticRegression"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/LoadModule.html">LoadModule</a></span>(<span class="st">'PrintMap'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">LoadModule</span>(<span class="st">'PrintMap'</span>)</code></pre></div>
 <pre><code>## [1] "PrintMap"</code></pre>
 <p>Run the data modules. To chain occurrence modules, just <code>rbind</code> the resulting dataframes. To chain covariate modules, use <code>raster::stack</code> to combine the covariate data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">oc &lt;-<span class="st"> </span><span class="kw">UKAnophelesPlumbeus</span>()
 cov &lt;-<span class="st"> </span><span class="kw">UKAir</span>()</code></pre></div>
 <p>We have to run <code>ExtractAndCombData</code>. This combines the occurrence and raster data.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ExtractAndCombData.html">ExtractAndCombData</a></span>(oc, cov)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">ExtractAndCombData</span>(oc, cov)</code></pre></div>
 <pre><code>## Warning in ExtractAndCombData(oc, cov): Some extracted covariate values are
 ## NA. This may cause issues for some models</code></pre>
 <p>Next run the process and model modules. To chain process models, simply run each in turn with the output of one going into the next. The simple way to run model modules is to use the module function as below. If crossvalidation is important then you need to run the modules slightly differently (see below).</p>
@@ -87,16 +87,16 @@ cov &lt;-<span class="st"> </span><span class="kw">UKAir</span>()</code></pre></
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">model =</span> mod, <span class="dt">data =</span> proc$df)
 
 out &lt;-<span class="st"> </span><span class="kw">PrintMap</span>(model, cov)</code></pre></div>
-<p><img src="/home/travis/build/goldingn/zoon/vignettes/interactive_output-1.png" title="plot of chunk interactive_output" alt="plot of chunk interactive_output" style="display:block; margin: auto"></p>
+<p><img src="interactive_output-1.png" title="plot of chunk interactive_output" alt="plot of chunk interactive_output" style="display:block; margin: auto"></p>
 <div id="cross-and-external-validation" class="section level2">
 <h2>Cross and external validation</h2>
 <p>Crossvalidation requires the modules to be run using the function <code>RunModels</code> which runs the model on each fold of the crossvalidating data and predicts the remaining data. It also runs a model and predicts any external validation data.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modCrossvalid &lt;-<span class="st"> </span><span class="kw"><a href="../reference/RunModels.html">RunModels</a></span>(proc$df, <span class="st">'LogisticRegression'</span>, <span class="kw">list</span>(), <span class="kw">environment</span>())
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modCrossvalid &lt;-<span class="st"> </span><span class="kw">RunModels</span>(proc$df, <span class="st">'LogisticRegression'</span>, <span class="kw">list</span>(), <span class="kw">environment</span>())
 
 modelCrossvalid &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">model =</span> modCrossvalid$model, <span class="dt">data =</span> proc$df)
 
 out &lt;-<span class="st"> </span><span class="kw">PrintMap</span>(modelCrossvalid, proc$ras)</code></pre></div>
-<p><img src="/home/travis/build/goldingn/zoon/vignettes/interactive_cross_validation-1.png" title="plot of chunk interactive_cross_validation" alt="plot of chunk interactive_cross_validation" style="display:block; margin: auto"></p>
+<p><img src="interactive_cross_validation-1.png" title="plot of chunk interactive_cross_validation" alt="plot of chunk interactive_cross_validation" style="display:block; margin: auto"></p>
 </div>
 <div id="running-workflows-with-list." class="section level2">
 <h2>Running workflows with list.</h2>
