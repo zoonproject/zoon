@@ -32,7 +32,7 @@ LoadModule <- function(module){
     txt <- parse(text = getURL(zoonURL, ssl.verifypeer=FALSE))
     # If module on its own is a url, load module
   } else if (url.exists(module, .opts=list(ssl.verifypeer=FALSE))){
-    txt <- parse( text = getURL(module, ssl.verifypeer=FALSE))
+    txt <- parse(text = getURL(module, ssl.verifypeer=FALSE))
     # Otherwise throw error.
   } else {
     modList <- GetModuleList()
@@ -54,6 +54,7 @@ LoadModule <- function(module){
   #   call environment.
   eval(txt)
   new.func.name <- ls()[!ls() %in% c('module', 'txt', 'zoonURL')]
+  closeAllConnections()
   return(new.func.name)
 }
 
