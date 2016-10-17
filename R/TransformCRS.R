@@ -1,87 +1,72 @@
-#' Change the CRS of occurrence or covariate data
+#' Change the CRS of occurrence data
 #'
 #' Takes a dataframe returned by an occurrence module or a raster object from a covariate module and converts the CRS to lat/long so tht everything works together. 
 #'
-#'@param data The object returned by an occurrence or covariate module.
-#'@param module The module the object came from, one of 'occurrence' or 'covariate'
-#'@return The same object as in data, but with CRS changed
+#'@param occurrence The output of an occurrence module
+#'@param projection The projection of a covariate layer as a character (from projection())
+#'@return The same object as in occurrence, but with CRS changed as needed
 #'
 #'@name TransformCRS
 #'@import rgdal
-#'@examples \dontrun{
-#' w <- workflow(UKAnophelesPlumbeus,
-#'               UKAir,
-#'               Background(n = 70), 
-#'               LogisticRegression,
-#'               PrintMap)
-#'
-#' w2 <- ChangeWorkflow(w,
-#'                      output = PrintMap)
-#'}
+#'@import sp
 
-TransformCRS <- function(data, module){
+TransformCRS <- function(occurrence, ras_projection){
 
-  if(!module %in% c('occurrence', 'covariate')) stop('In TransformCRS: module must be occurrence or covariate')
+  # Sense checks #
+  if(!inherits(what = 'data.frame', x = occurrence)) stop('occurrence must be a data.frame')
+  if(!inherits(what = 'character', x = ras_projection)) stop('ras_projection must be a character')
+  tryCatch(expr = {CRS(ras_projection)},
+           error = function(e){
+             stop(paste0('CRS provided in covariate data [', ras_projection, '] is not a recognised CRS. ', e))
+           })
+  if(!'crs' %in% tolower(colnames(occurrence))) stop('Transform CRS expects occurrence data to have a "crs" column')
   
-  if(module == 'occurrence'){
+  crs_current <- as.character(unique(occurrence[,grep('crs', tolower(names(occurrence)))]))
+  
+  if(length(crs_current) > 1){
+    stop('In occurrence module: There is more than one CRS type specified in the CRS column currently we zoon support one')
+  }
+   
+  tryCatch(expr = {CRS(crs_current)},
+           error = function(e){
+             stop(paste0('CRS provided in occurrence data [', crs_current, '] is not a recognised CRS. ', e))
+           })
+  
+  if(ras_projection != crs_current){
     
-    if('crs' %in% tolower(colnames(data))){
-      
-      crs_current <- as.character(unique(data[,grep('crs', tolower(names(data)))]))
-      
-      if(length(crs_current) > 1){
-        stop('In occurrence module: There is more than one CRS type specified in the CRS column currently we only support one')
-      }
-      
-      LL <- cbind(X = as.numeric(data$longitude),
-                  Y = as.numeric(data$latitude))
-      
-      LL_omit <- na.omit(LL)
-      
-      LL_points <- SpatialPoints(coords = LL_omit, proj4string = CRS(crs_current))
-      
-      LL_new <- spTransform(LL_points,
-                            CRS("+init=epsg:4326"))
-      
-      XY_new <- coordinates(LL_new)
-      
-      # merge back to orignals (containing NAs)
-      XY_NAs <- LL
-      XY_NAs[-attr(LL_omit, "na.action"), ] <- XY_new
-      XY_NAs[attr(LL_omit, "na.action"), ] <- NA
-      
-      data$longitude <- XY_NAs[,1]
-      data$latitude <- XY_NAs[,2]
-      
-      return(data)
-      
+    message(paste('Occurrence data will be transformed from', crs_current, 'to', ras_projection,
+                  'to match covariate data'))
+    
+    occ_cords <- data.frame(X = as.numeric(occurrence$longitude),
+                            Y = as.numeric(occurrence$latitude))
+    
+    occ_cords_omit <- na.omit(occ_cords)
+    
+    LL_points <- SpatialPoints(coords = occ_cords_omit, proj4string = CRS(crs_current))
+    
+    LL_new <- spTransform(x = LL_points, CRSobj = CRS(ras_projection))
+    
+    XY_new <- coordinates(LL_new)
+    
+    # merge back to orignals (containing NAs)
+    XY_NAs <- occ_cords
+    
+    if('na.action' %in% names(attributes(occ_cords_omit))){
+      XY_NAs[-attr(occ_cords_omit, "na.action"), ] <- XY_new
+      XY_NAs[attr(occ_cords_omit, "na.action"), ] <- NA
     } else {
-      
-      # The data should be lat long so check a few things and error 
-      # if not lat long
-      t1 <- data$longitude <= 180 & data$longitude >= -180
-      t2 <- data$latitude <= 90 & data$latitude >= -90
-
-      if(any(!c(t1, t2))){
-       
-        stop(paste('Your occurrence data lat/long positions dont appear',
-                   'to be in lat/long, some fall out of range of possible',
-                   'values (lat -90-90, long -180-180). If your data are',
-                   'not lat/long add a column named "crs" giving the proj4string',
-                   ' for the coordinate system you are using (for example',
-                   '"+init=epsg:27700" for easting/northing data)')) 
-        
-      }
-      
-      return(data)
-      
+      XY_NAs <- XY_new
     }
     
-  } else if(module == 'covariate'){
+    occurrence$longitude <- XY_NAs[,1]
+    occurrence$latitude <- XY_NAs[,2]
     
+    return(occurrence)
     
+  } else if(ras_projection == crs_current){
     
-    return(data)
+    # No transformation needed
+    return(occurrence)
     
   }
 }

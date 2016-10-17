@@ -152,23 +152,7 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
               sep = ''))
   })
   
-  tryCatch({
-    occurrence.output <- lapply(occurrenceName, FUN = DoOccurrenceModule, e = e)
-    # Then bind together if the occurrence modules were chained
-    if (identical(attr(occurrence.module, 'chain'), TRUE)){
-      occurrence.output <- list(do.call(rbind.fill, occurrence.output))
-      attr(occurrence.output[[1]], 'call_path') <- list(occurrence = paste('Chain(',
-                                                    paste(lapply(occurrenceName, function(x) x$module),
-                                                          collapse = ', '),
-                                                    ')', sep = ''))
-    }
-    output$occurrence.output <- occurrence.output
-  },  
-    error = function(cond){
-      ErrorModule(cond, 1, e)
-    }
-  )
-
+  # Run to covariate modules
   tryCatch({
     #covariate.output <- lapply(covariateName, function(x) do.call(x$func, x$paras))
     covariate.output <- lapply(covariateName, FUN = DoCovariateModule, e = e)
@@ -176,14 +160,33 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
       covariate.output <- CombineRasters(covariate.output)
       covariate.output <- list(do.call(raster::stack, covariate.output))
       attr(covariate.output[[1]], 'call_path') <- list(covariate = paste('Chain(',
-                                                                           paste(lapply(covariateName, function(x) x$module),
-                                                                                 collapse = ', '),
-                                                                           ')', sep = ''))
+                                                                         paste(lapply(covariateName, function(x) x$module),
+                                                                               collapse = ', '),
+                                                                         ')', sep = ''))
     }
     output$covariate.output <- covariate.output
   },  
+  error = function(cond){
+    ErrorModule(cond, 2, e)
+  }
+  )
+  
+  
+  # Run the occurrence modules
+  tryCatch({
+  occurrence.output <- lapply(occurrenceName, FUN = DoOccurrenceModule, e = e)
+  # Then bind together if the occurrence modules were chained
+  if (identical(attr(occurrence.module, 'chain'), TRUE)){
+    occurrence.output <- list(do.call(rbind.fill, occurrence.output))
+    attr(occurrence.output[[1]], 'call_path') <- list(occurrence = paste('Chain(',
+                                                  paste(lapply(occurrenceName, function(x) x$module),
+                                                        collapse = ', '),
+                                                  ')', sep = ''))
+    }
+    output$occurrence.output <- occurrence.output
+  },  
     error = function(cond){
-      ErrorModule(cond, 2, e)
+      ErrorModule(cond, 1, e)
     }
   )
 

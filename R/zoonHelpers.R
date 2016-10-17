@@ -374,6 +374,21 @@ ExtractAndCombData <- function(occurrence, ras){
     occurrence <- occurrence[!NArows, ]
   }
   
+  if(is.na(projection(ras))){
+    
+    message('Covarite raster does not have a projection, zoon will assume this is in the same projection as your occurrence data')
+    
+  } else if(!'crs' %in% tolower(colnames(occurrence))){
+    
+    message('Occurrence data does not have a "crs" column, zoon will assume it is in the same projection as the covariate data')
+    
+  } else if('crs' %in% tolower(colnames(occurrence))){
+    
+    occurrence <- TransformCRS(occurrence = occurrence,
+                               ras_projection = projection(ras))
+    
+  }
+  
   # Check that all points are within the raster
   bad.coords <- is.na(cellFromXY(ras,
                                  occurrence[,c('longitude', 'latitude')]))

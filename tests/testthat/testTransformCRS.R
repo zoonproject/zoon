@@ -1,51 +1,107 @@
-# context('Transfrom CRS Function')
-# 
-# LoadModule('NaiveRandomPresence')
-# occ_data <- NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000), seed = 123) 
-# tempcsv1 <- tempfile(fileext = '.csv')
-# write.csv(occ_data, row.names = FALSE, file = tempcsv1)
-# occ_data$crs <- '+init=epsg:27700'
-# tempcsv2 <- tempfile(fileext = '.csv')
-# write.csv(occ_data, row.names = FALSE, file = tempcsv2)
-# 
-# test_that('Fails if an invalid lat/long is used', {
-#   
-#   # expect error as not lat long and crs column not given
-#   expect_error(workflow(occurrence = LocalOccurrenceData(tempcsv1),
-#                         covariate  = UKAir,
-#                         process    = Background(n=70),
-#                         model      = LogisticRegression,
-#                         output     = PrintMap))
-#               
-# })
-# 
-# test_that('Converts easting/northing to lat long', {
-#   
-#   occ_data_new <- zoon:::TransformCRS(data = occ_data, module = 'occurrence')
-#     
-#   expect_equal(nrow(occ_data), nrow(occ_data_new), info = 'Occurrence data has different number of rows after coordinate transformation')
-#   expect_identical(names(occ_data), names(occ_data_new), 'Occurrence data has different column names after coordinate transformation')
-#   
-#   t1 <- occ_data_new$longitude <= 180 & occ_data_new$longitude >= -180
-#   t2 <- occ_data_new$latitude <= 90 & occ_data_new$latitude >= -90
-#   
-#   expect_true(all(c(t1, t2)), info = 'Some transformed values are not lat/long')
-#   
-#   expect_is(workflow(occurrence = LocalOccurrenceData(tempcsv2),
-#                         covariate  = UKAir,
-#                         process    = Background(n=70),
-#                         model      = LogisticRegression,
-#                         output     = PrintMap),
-#             class = 'zoonWorkflow')
-# })
-# 
-# test_that('Handles NA values and blanks', {
-#   
-#   occ_data$latitude[1] <- NA
-#   occ_data$longitude[3] <- ''
-#   
-#   occ_data_new <- zoon:::TransformCRS(data = occ_data, module = 'occurrence')
-#   
-#   expect_equal(as.numeric(attr(na.omit(occ_data_new$longitude), 'na.action')), c(1,3))
-#   
-# })
+context('Transfrom CRS Function')
+
+LoadModule('NaiveRandomPresence')
+occ_data <- NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000), seed = 123)
+tempcsv1 <- tempfile(fileext = '.csv')
+write.csv(occ_data, row.names = FALSE, file = tempcsv1)
+occ_data$crs <- '+init=epsg:27700'
+tempcsv2 <- tempfile(fileext = '.csv')
+write.csv(occ_data, row.names = FALSE, file = tempcsv2)
+occ_data1 <- NaiveRandomPresence(extent = c(-5, 5, 50, 55), seed = 123)
+tempcsv3 <- tempfile(fileext = '.csv')
+write.csv(occ_data1, row.names = FALSE, file = tempcsv3)
+
+LoadModule('NaiveRandomRaster')
+new_ras <- NaiveRandomRaster()
+new_ras <- projectRaster(new_ras, crs = CRS('+init=epsg:27700'))
+
+test_that('Expected errors'){
+  
+  expect_error(zoon:::TransformCRS('tom', '+init=epsg:27700'),
+               'occurrence must be a data.frame')
+  expect_error(zoon:::TransformCRS(occ_data, 27700),
+               'ras_projection must be a character')
+  occ_data_error <- occ_data
+  occ_data_error$crs <- 'tom'
+  expect_error(zoon:::TransformCRS(occ_data_error, '+init=epsg:27700'),
+               'CRS provided in occurrence data')
+  expect_error(zoon:::TransformCRS(occ_data, 'tom'),
+               'CRS provided in covariate data')
+  expect_error(zoon:::TransformCRS(occ_data[,-6], '+init=epsg:27700'),
+               'Transform CRS expects occurrence data to have a "crs" column')
+  # CRS column not given and they are not the same
+  expect_error(workflow(occurrence = LocalOccurrenceData(tempcsv1),
+                        covariate  = UKAir,
+                        process    = Background(n=70),
+                        model      = LogisticRegression,
+                        output     = PrintMap))
+}
+
+test_that('occurrence data is handled as expected when CRSs vary', {
+
+  occ_data_new <- zoon:::TransformCRS(occ_data, "+init=epsg:4326")
+  
+  expect_is(occ_data_new, 'data.frame')
+  expect_equal(nrow(occ_data), nrow(occ_data_new), info = 'Occurrence data has different number of rows after coordinate transformation')
+  expect_identical(names(occ_data), names(occ_data_new), 'Occurrence data has different column names after coordinate transformation')
+  
+  t1 <- occ_data_new$longitude <= 180 & occ_data_new$longitude >= -180
+  t2 <- occ_data_new$latitude <= 90 & occ_data_new$latitude >= -90
+
+  expect_true(all(c(t1, t2)), info = 'Some transformed values are not lat/long')
+
+  expect_is(workflow(occurrence = LocalOccurrenceData(tempcsv2),
+                     covariate  = UKAir,
+                     process    = Background(n=70),
+                     model      = LogisticRegression,
+                     output     = PrintMap),
+            class = 'zoonWorkflow', info = 'lat/long raster and e/n occurrence data')
+  
+  expect_is(workflow(occurrence = LocalOccurrenceData(tempcsv3),
+                     covariate  = UKAir,
+                     process    = Background(n=70),
+                     model      = LogisticRegression,
+                     output     = PrintMap),
+            class = 'zoonWorkflow', info = 'lat/long raster and occurrence data with no CRS')
+  
+  expect_is(workflow(occurrence = list(LocalOccurrenceData(tempcsv3),
+                                       LocalOccurrenceData(tempcsv2)),
+                     covariate  = UKAir,
+                     process    = Background(n=70),
+                     model      = LogisticRegression,
+                     output     = PrintMap),
+            class = 'zoonWorkflow', info = 'lat/long raster and list of e/n occurrence data and with no CRS')
+  
+  expect_is(workflow(occurrence = LocalOccurrenceData(tempcsv3),
+                     covariate  = list(UKAir, NaiveRandomRaster),
+                     process    = Background(n=70),
+                     model      = LogisticRegression,
+                     output     = PrintMap),
+            class = 'zoonWorkflow', info = 'list of lat/long raster and occurrence data and with no CRS')
+  
+  expect_is(workflow(occurrence = LocalOccurrenceData(tempcsv2),
+                     covariate  = list(UKAir, NaiveRandomRaster),
+                     process    = Background(n=70),
+                     model      = LogisticRegression,
+                     output     = PrintMap),
+            class = 'zoonWorkflow', info = 'list of lat/long raster and n/e occurrence data')
+  
+  expect_is(workflow(occurrence = LocalOccurrenceData(tempcsv2),
+                     covariate  = list(NaiveRandomRaster, LocalRaster(new_ras)),
+                     process    = Background(n=70),
+                     model      = LogisticRegression,
+                     output     = PrintMap),
+            class = 'zoonWorkflow', info = 'list of lat/long raster and n/e raster with n/e occurrence data')
+  
+})
+
+test_that('Handles NA values and blanks', {
+
+  occ_data$latitude[1] <- NA
+  occ_data$longitude[3] <- ''
+
+  occ_data_new <- zoon:::TransformCRS(occ_data, "+init=epsg:4326")
+
+  expect_equal(as.numeric(attr(na.omit(occ_data_new$longitude), 'na.action')), c(1,3))
+
+})

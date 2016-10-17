@@ -2,31 +2,19 @@
 % Please edit documentation in R/TransformCRS.R
 \name{TransformCRS}
 \alias{TransformCRS}
-\title{Change the CRS of occurrence or covariate data}
+\title{Change the CRS of occurrence data}
 \usage{
-TransformCRS(data, module)
+TransformCRS(occurrence, ras_projection)
 }
 \arguments{
-\item{data}{The object returned by an occurrence or covariate module.}
+\item{occurrence}{The output of an occurrence module}
 
-\item{module}{The module the object came from, one of 'occurrence' or 'covariate'}
+\item{projection}{The projection of a covariate layer as a character (from projection())}
 }
 \value{
-The same object as in data, but with CRS changed
+The same object as in occurrence, but with CRS changed as needed
 }
 \description{
 Takes a dataframe returned by an occurrence module or a raster object from a covariate module and converts the CRS to lat/long so tht everything works together.
-}
-\examples{
-\dontrun{
-w <- workflow(UKAnophelesPlumbeus,
-              UKAir,
-              Background(n = 70), 
-              LogisticRegression,
-              PrintMap)
-
-w2 <- ChangeWorkflow(w,
-                     output = PrintMap)
-}
 }
 
