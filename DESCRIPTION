@@ -19,6 +19,7 @@ Imports:
     SDMTools,
     randomForest,
     rgdal,
+    sp,
     plyr
 Depends:
     raster (>= 2.4-20),
