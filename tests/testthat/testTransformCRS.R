@@ -1,22 +1,15 @@
 context('Transfrom CRS Function')
 
-LoadModule('NaiveRandomPresence')
-occ_data <- NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000), seed = 123)
-tempcsv1 <- tempfile(fileext = '.csv')
-write.csv(occ_data, row.names = FALSE, file = tempcsv1)
-occ_data$crs <- '+init=epsg:27700'
-tempcsv2 <- tempfile(fileext = '.csv')
-write.csv(occ_data, row.names = FALSE, file = tempcsv2)
-occ_data1 <- NaiveRandomPresence(extent = c(-5, 5, 50, 55), seed = 123)
-tempcsv3 <- tempfile(fileext = '.csv')
-write.csv(occ_data1, row.names = FALSE, file = tempcsv3)
-
-LoadModule('NaiveRandomRaster')
-new_ras <- NaiveRandomRaster()
-new_ras <- projectRaster(new_ras, crs = CRS('+init=epsg:27700'))
-
-test_that('Expected errors'){
+test_that('Expected errors', {
   
+  LoadModule('NaiveRandomPresence')
+  occ_data <- NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000), seed = 123)
+  occ_data$crs <- '+init=epsg:27700'
+
+  LoadModule('NaiveRandomRaster')
+  new_ras <- NaiveRandomRaster()
+  new_ras <- projectRaster(new_ras, crs = CRS('+init=epsg:27700'))
+    
   expect_error(zoon:::TransformCRS('tom', '+init=epsg:27700'),
                'occurrence must be a data.frame')
   expect_error(zoon:::TransformCRS(occ_data, 27700),
@@ -29,15 +22,28 @@ test_that('Expected errors'){
                'CRS provided in covariate data')
   expect_error(zoon:::TransformCRS(occ_data[,-6], '+init=epsg:27700'),
                'Transform CRS expects occurrence data to have a "crs" column')
+  
   # CRS column not given and they are not the same
-  expect_error(workflow(occurrence = LocalOccurrenceData(tempcsv1),
+  expect_error(workflow(occurrence = NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000),
+                                                         seed = 123),
                         covariate  = UKAir,
                         process    = Background(n=70),
                         model      = LogisticRegression,
                         output     = PrintMap))
-}
+})
 
 test_that('occurrence data is handled as expected when CRSs vary', {
+  
+  latlong <- "+init=epsg:4326"
+  eastnorth <- '+init=epsg:27700'
+  
+  LoadModule('NaiveRandomPresence')
+  occ_data <- NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000), seed = 123)
+  occ_data$crs <- '+init=epsg:27700'
+
+  LoadModule('NaiveRandomRaster')
+  new_ras <- NaiveRandomRaster()
+  new_ras <- projectRaster(new_ras, crs = CRS('+init=epsg:27700'))
 
   occ_data_new <- zoon:::TransformCRS(occ_data, "+init=epsg:4326")
   
@@ -50,43 +56,51 @@ test_that('occurrence data is handled as expected when CRSs vary', {
 
   expect_true(all(c(t1, t2)), info = 'Some transformed values are not lat/long')
 
-  expect_is(workflow(occurrence = LocalOccurrenceData(tempcsv2),
-                     covariate  = UKAir,
-                     process    = Background(n=70),
-                     model      = LogisticRegression,
-                     output     = PrintMap),
-            class = 'zoonWorkflow', info = 'lat/long raster and e/n occurrence data')
-  
-  expect_is(workflow(occurrence = LocalOccurrenceData(tempcsv3),
+  expect_is(workflow(occurrence = NaiveRandomPresence(extent = c(-5, 5, 50, 55), seed = 123),
                      covariate  = UKAir,
                      process    = Background(n=70),
                      model      = LogisticRegression,
                      output     = PrintMap),
             class = 'zoonWorkflow', info = 'lat/long raster and occurrence data with no CRS')
   
-  expect_is(workflow(occurrence = list(LocalOccurrenceData(tempcsv3),
-                                       LocalOccurrenceData(tempcsv2)),
+  expect_is(workflow(occurrence = NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000),
+                                                       seed = 123,
+                                                       projection = eastnorth),
+                     covariate  = UKAir,
+                     process    = Background(n=70),
+                     model      = LogisticRegression,
+                     output     = PrintMap),
+            class = 'zoonWorkflow', info = 'lat/long raster and e/n occurrence data')
+  
+  expect_is(workflow(occurrence = list(NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000),
+                                                           seed = 123,
+                                                           projection = eastnorth),
+                                       NaiveRandomPresence(extent = c(-5, 5, 50, 55), seed = 123)),
                      covariate  = UKAir,
                      process    = Background(n=70),
                      model      = LogisticRegression,
                      output     = PrintMap),
             class = 'zoonWorkflow', info = 'lat/long raster and list of e/n occurrence data and with no CRS')
   
-  expect_is(workflow(occurrence = LocalOccurrenceData(tempcsv3),
+  expect_is(workflow(occurrence = NaiveRandomPresence(extent = c(-5, 5, 50, 55), seed = 123),
                      covariate  = list(UKAir, NaiveRandomRaster),
                      process    = Background(n=70),
                      model      = LogisticRegression,
                      output     = PrintMap),
             class = 'zoonWorkflow', info = 'list of lat/long raster and occurrence data and with no CRS')
   
-  expect_is(workflow(occurrence = LocalOccurrenceData(tempcsv2),
+  expect_is(workflow(occurrence = NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000),
+                                                      seed = 123,
+                                                      projection = eastnorth),
                      covariate  = list(UKAir, NaiveRandomRaster),
                      process    = Background(n=70),
                      model      = LogisticRegression,
                      output     = PrintMap),
             class = 'zoonWorkflow', info = 'list of lat/long raster and n/e occurrence data')
   
-  expect_is(workflow(occurrence = LocalOccurrenceData(tempcsv2),
+  expect_is(workflow(occurrence = NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000),
+                                                      seed = 123,
+                                                      projection = eastnorth),
                      covariate  = list(NaiveRandomRaster, LocalRaster(new_ras)),
                      process    = Background(n=70),
                      model      = LogisticRegression,
@@ -96,7 +110,10 @@ test_that('occurrence data is handled as expected when CRSs vary', {
 })
 
 test_that('Handles NA values and blanks', {
-
+  
+  LoadModule('NaiveRandomPresence')
+  occ_data <- NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000), seed = 123)
+  
   occ_data$latitude[1] <- NA
   occ_data$longitude[3] <- ''
 
