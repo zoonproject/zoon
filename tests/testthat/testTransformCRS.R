@@ -56,7 +56,8 @@ test_that('occurrence data is handled as expected when CRSs vary', {
 
   expect_true(all(c(t1, t2)), info = 'Some transformed values are not lat/long')
 
-  expect_is(workflow(occurrence = NaiveRandomPresence(extent = c(-5, 5, 50, 55), seed = 123),
+  expect_is(workflow(occurrence = NaiveRandomPresence(extent = c(-5, 5, 50, 55),
+                                                      seed = 123),
                      covariate  = UKAir,
                      process    = Background(n=70),
                      model      = LogisticRegression,
@@ -65,7 +66,7 @@ test_that('occurrence data is handled as expected when CRSs vary', {
   
   expect_is(workflow(occurrence = NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000),
                                                        seed = 123,
-                                                       projection = eastnorth),
+                                                       projection = '+init=epsg:27700'),
                      covariate  = UKAir,
                      process    = Background(n=70),
                      model      = LogisticRegression,
@@ -74,7 +75,7 @@ test_that('occurrence data is handled as expected when CRSs vary', {
   
   expect_is(workflow(occurrence = list(NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000),
                                                            seed = 123,
-                                                           projection = eastnorth),
+                                                           projection = '+init=epsg:27700'),
                                        NaiveRandomPresence(extent = c(-5, 5, 50, 55), seed = 123)),
                      covariate  = UKAir,
                      process    = Background(n=70),
@@ -91,7 +92,7 @@ test_that('occurrence data is handled as expected when CRSs vary', {
   
   expect_is(workflow(occurrence = NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000),
                                                       seed = 123,
-                                                      projection = eastnorth),
+                                                      projection = '+init=epsg:27700'),
                      covariate  = list(UKAir, NaiveRandomRaster),
                      process    = Background(n=70),
                      model      = LogisticRegression,
@@ -100,8 +101,12 @@ test_that('occurrence data is handled as expected when CRSs vary', {
   
   expect_is(workflow(occurrence = NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000),
                                                       seed = 123,
-                                                      projection = eastnorth),
-                     covariate  = list(NaiveRandomRaster, LocalRaster(new_ras)),
+                                                      projection = '+init=epsg:27700'),
+                     covariate  = list(NaiveRandomRaster,
+                                       NaiveRandomRaster(extent = c(0, 1000000, 0, 1000000),
+                                                         seed = 123,
+                                                         res = 10000,
+                                                         projection = '+init=epsg:27700')),
                      process    = Background(n=70),
                      model      = LogisticRegression,
                      output     = PrintMap),
@@ -112,7 +117,8 @@ test_that('occurrence data is handled as expected when CRSs vary', {
 test_that('Handles NA values and blanks', {
   
   LoadModule('NaiveRandomPresence')
-  occ_data <- NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000), seed = 123)
+  occ_data <- NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000),
+                                  seed = 123, projection = '+init=epsg:27700')
   
   occ_data$latitude[1] <- NA
   occ_data$longitude[3] <- ''
