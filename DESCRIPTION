@@ -1,8 +1,8 @@
 Package: zoon
 Type: Package
 Title: Reproducible, Accessible & Shareable Species Distribution Modelling
-Version: 0.5.1
-Date: 2016-08-23
+Version: 0.5.2
+Date: 2016-10-17
 Author: Tim Lucas, Nick Golding, Tom August, Greg McInerny, Emiel van Loon
 Maintainer: Tom August <tomaug@ceh.ac.uk>
 Description: Reproducible and remixable species distribution modelling. The
@@ -17,7 +17,10 @@ Imports:
     testthat,
     roxygen2,
     SDMTools,
-    randomForest
+    randomForest,
+    rgdal,
+    sp,
+    plyr
 Depends:
     raster (>= 2.4-20),
     R (>= 3.2.0)

@@ -49,7 +49,9 @@ GetModuleList <- function(renew = FALSE){
     for (i in 1:5) {
       
       # grab the rd file
-      rd_i <- readLines(url(canary_urls[i], method = 'libcurl'))
+      con <- url(canary_urls[i], method = 'libcurl')
+      rd_i <- readLines(con)
+      close(con)
       
       # get the expected module type
       type <- names(canaries)[i]
@@ -93,6 +95,9 @@ GetModuleList <- function(renew = FALSE){
     names(moduleNames) <- names(canaries)
 
     .zoonHidden$moduleList <- moduleNames
+    
+    closeAllConnections()
+    
     return(moduleNames)
   }
 }

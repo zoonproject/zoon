@@ -227,6 +227,7 @@ covHTML <- function(cov){
     
     nam <- names(cov[[x]])
     dat <- summary(cov[[x]]@data@values)
+    if(!"NA's" %in% names(dat)) dat["NA's"] <- 0
     temp_frame <- data.frame(temp = as.numeric(dat), row.names = names(dat))
     colnames(temp_frame) <- nam
     return(temp_frame)
@@ -348,6 +349,7 @@ proHTML <- function(pro){
     
     nam <- names(ras[[x]])
     dat <- summary(ras[[x]]@data@values)
+    if(!"NA's" %in% names(dat)) dat["NA's"] <- 0
     temp_frame <- data.frame(temp = as.numeric(dat), row.names = names(dat))
     colnames(temp_frame) <- nam
     return(temp_frame)
