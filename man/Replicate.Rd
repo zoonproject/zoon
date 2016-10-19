@@ -2,7 +2,7 @@
 % Please edit documentation in R/Replicate.R
 \name{Replicate}
 \alias{Replicate}
-\title{A function to replicate a module multiple times}
+\title{Replicate a module multiple times}
 \usage{
 Replicate(call, n)
 }
