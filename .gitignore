@@ -4,6 +4,7 @@ R/.R~
 .Rproj.user
 zoon_package.Rproj
 .Rhistory
+Species
 
 # things in vignettes created when building
 vignettes/*.html

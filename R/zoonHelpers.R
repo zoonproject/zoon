@@ -32,11 +32,18 @@ LoadModule <- function(module){
     txt <- parse(text = getURL(zoonURL, ssl.verifypeer=FALSE))
     # If module on its own is a url, load module
   } else if (url.exists(module, .opts=list(ssl.verifypeer=FALSE))){
-    txt <- parse( text = getURL(module, ssl.verifypeer=FALSE))
+    txt <- parse(text = getURL(module, ssl.verifypeer=FALSE))
     # Otherwise throw error.
   } else {
-    stop(paste('Cannot find "', module, 
-               '". Check the file path or URL exist'))
+    modList <- GetModuleList()
+    closeMatches <- unlist(modList)[agrep(module, unlist(modList), max.distance = 0.3)]
+    if(length(closeMatches) == 0){
+      stop("Can't find '", module, "' or any modules with closely matching names.") 
+    } else if (length(closeMatches) == 1){
+      stop("Can't find '", module, "'. Did you mean '", closeMatches, "'?")
+    } else {
+      stop("Can't find '", module, "'. Did you mean one of '", paste(closeMatches, collapse="', "), "'?")
+    }
   }
   # Load to global environment
   eval(txt, envir = globalenv())
@@ -47,6 +54,7 @@ LoadModule <- function(module){
   #   call environment.
   eval(txt)
   new.func.name <- ls()[!ls() %in% c('module', 'txt', 'zoonURL')]
+  closeAllConnections()
   return(new.func.name)
 }
 
@@ -367,6 +375,21 @@ ExtractAndCombData <- function(occurrence, ras){
     occurrence <- occurrence[!NArows, ]
   }
   
+  if(is.na(projection(ras))){
+    
+    message('Covarite raster does not have a projection, zoon will assume this is in the same projection as your occurrence data')
+    
+  } else if(!'crs' %in% tolower(colnames(occurrence))){
+    
+    message('Occurrence data does not have a "crs" column, zoon will assume it is in the same projection as the covariate data')
+    
+  } else if('crs' %in% tolower(colnames(occurrence))){
+    
+    occurrence <- TransformCRS(occurrence = occurrence,
+                               ras_projection = projection(ras))
+    
+  }
+  
   # Check that all points are within the raster
   bad.coords <- is.na(cellFromXY(ras,
                                  occurrence[,c('longitude', 'latitude')]))
@@ -390,8 +413,8 @@ ExtractAndCombData <- function(occurrence, ras){
     occurrenceCovariates <- NULL
     warning('Locations in the occurrence data did not match your raster so no covariate data were extracted. This is only a good idea if you are creating simulated data in the process module')
   } else {
-    if(length(is.na(ras.values)) > 0){
-      warning('Some extracted covariate values are NA. This may cause issues for some models')
+    if(sum(is.na(ras.values)) > 0){
+      warning(paste(sum(is.na(ras.values)), 'extracted covariate values are NA. This may cause issues for some models'))
     }
     occurrenceCovariates <- as.matrix(ras.values)
     colnames(occurrenceCovariates) <- names(ras)  

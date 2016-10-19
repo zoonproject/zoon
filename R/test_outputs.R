@@ -41,11 +41,7 @@ test_outputs <- function(roxy_parse, modulePath){
 
       # Check the data.frame returned is as expected
       expect_is(occ_return, 'data.frame', info = 'Occurrence modules must return a data.frame')
-      expect_named(occ_return, expected = c('longitude',
-                                            'latitude',
-                                            'value',
-                                            'type',
-                                            'fold'), 
+      expect_true(all(c('longitude','latitude','value','type','fold') %in% names(occ_return)), 
                    info = "Check your occurrence data has the correct column names in the correct order. See the 'Building a module' vignette for details")
       expect_is(occ_return$longitude, c('numeric', 'integer'), info = 'longitude must be a numeric or integer')
       expect_is(occ_return$latitude, c('numeric', 'integer'), info = 'latitude must be a numeric or integer')
@@ -214,9 +210,8 @@ test_outputs <- function(roxy_parse, modulePath){
       if(inherits(cov_return, what = 'moduleError')) stop(cov_return)
 
       # Check projection
-      expect_true(all(grepl("+proj=longlat", projection(cov_return)),
-                      grepl("+ellps=WGS84", projection(cov_return))),
-                  info = 'Covariate module output must have WGS84 projection: proj4 string is expected to contain the elements "+proj=longlat" and "+ellps=WGS84"')
+      expect_true(!is.na(projection(cov_return)),
+                  info = 'Covariate module output must have a projection (see ?raster::projection)')
       
       # Check raster returned is as expected
       expect_is(cov_return, c('RasterLayer', 'RasterStack', 'RasterBrick'), info = 'Covariate module output must be either a RasterLayer or a RasterStack')
@@ -333,6 +328,9 @@ test_outputs <- function(roxy_parse, modulePath){
           # run load expression
           eval(loadExpr)
           
+          # Add a test attribute
+          attr(.data$df, 'test') <- 123
+          
           # Run the module with defaults
           pro_return <- tryCatchModule(expr = {pro_return <- do.call(roxy_parse$name, args = list(.data = .data))},
                                        code_chunk = paste(capture.output(print(loadExpr)),
@@ -355,8 +353,11 @@ test_outputs <- function(roxy_parse, modulePath){
           expect_is(pro_return$df$type, c('character', 'factor'), info = 'type column, from the "df" element returned from a process module, must be a character')
           expect_is(pro_return$df$fold, c('numeric', 'integer'), info = 'info column, from the "df" element returned from a process module, must be a numeric or integer')
           expect_true(ncol(pro_return$df) >= 6, info = 'The "df" element returned from a process module is expected to contain 6 or more columns')
-          
-          ## Check 'ras'
+          expect_true('test' %in% names(attributes(pro_return$df)), 
+                      info = 'Process module dropped attibutes of "df", ensure that your module propegates "df"s attributes so that they can be used downstream')
+          expect_true(attr(pro_return$df,'test') == 123, info = 'a test attribute on "df", changed value in your process module. Ensure that attribute of "df" are preserved')
+         
+           ## Check 'ras'
           # Check projection
           expect_true(all(grepl("+proj=longlat", projection(pro_return$ras)),
                           grepl("+ellps=WGS84", projection(pro_return$ras))),

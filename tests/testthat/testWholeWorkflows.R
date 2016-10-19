@@ -65,8 +65,7 @@ test_that('modules downloading data work', {
 
    skip_on_cran()
   
-   work2 <- workflow(occurrence = SpOcc(species = 'Anopheles plumbeus',
-                                        extent = c(-10, 10, 45, 65)),
+   work2 <- workflow(occurrence = Lorem_ipsum_UK,
                      covariate = UKAir,
                      process = Background(n = 70),
                      model = RandomForest, 
@@ -89,10 +88,7 @@ test_that('modules downloading data work', {
    expect_is(work2$module.versions, 'list')
    expect_named(work2$module.versions, c("occurrence","covariate","process","model","output"))
    
-   
 })
-
-
 
 test_that('Workflows with lists of modules work.', {
   
@@ -101,8 +97,7 @@ test_that('Workflows with lists of modules work.', {
   # Would like to remove some of the slow online database modules from here.
   # In fact I don't think the would pass cran.
    workOccurList <- workflow(occurrence = list(UKAnophelesPlumbeus, 
-                         SpOcc(species = 'Anopheles plumbeus', 
-                           extent = c(-10, 10, 45, 65))),
+                                               UKAnophelesPlumbeus),
                          covariate = UKAir,
                          process = Background(n = 70),
                          model = LogisticRegression,
