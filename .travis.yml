@@ -51,7 +51,7 @@ email:
 env:
   global:
     - ENCRYPTION_LABEL: "1d00135b7611"
-    - COMMIT_AUTHOR_EMAIL: "goldingn35@gmail.com"
+    - COMMIT_AUTHOR_EMAIL: "zoonproject@gmail.com"
   matrix:
     - r: release
       not_cran: true
