@@ -15,3 +15,5 @@ vignette_prebuild
 README.md
 settings/*
 docs/*
+_pkgdown.yaml
+.deploy_pkgdown.sh
