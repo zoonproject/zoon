@@ -13,3 +13,4 @@ tests/testthat/*.pdf
 ^appveyor\.yml$
 vignette_prebuild
 README.md
+Species/

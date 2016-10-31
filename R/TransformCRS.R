@@ -3,12 +3,14 @@
 #' Takes a dataframe returned by an occurrence module or a raster object from a covariate module and converts the CRS to lat/long so tht everything works together. 
 #'
 #'@param occurrence The output of an occurrence module
-#'@param projection The projection of a covariate layer as a character (from projection())
+#'@param ras_projection The projection of a covariate layer as a character (from projection())
 #'@return The same object as in occurrence, but with CRS changed as needed
 #'
 #'@name TransformCRS
 #'@import rgdal
 #'@import sp
+#'@importFrom stats na.omit
+#'@export
 
 TransformCRS <- function(occurrence, ras_projection){
 

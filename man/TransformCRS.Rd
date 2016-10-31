@@ -9,7 +9,7 @@ TransformCRS(occurrence, ras_projection)
 \arguments{
 \item{occurrence}{The output of an occurrence module}
 
-\item{projection}{The projection of a covariate layer as a character (from projection())}
+\item{ras_projection}{The projection of a covariate layer as a character (from projection())}
 }
 \value{
 The same object as in occurrence, but with CRS changed as needed

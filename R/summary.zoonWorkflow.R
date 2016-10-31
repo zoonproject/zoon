@@ -139,6 +139,9 @@ occurrenceSummary <- function(occ){
   
 }
 
+#'@importFrom grDevices dev.off png
+#'@importFrom utils methods
+
 occHTML <- function(occ){
   
   nrows <- nrow(occ)
@@ -205,6 +208,9 @@ covariateSummary <- function(cov){
   }
   
 }
+
+#'@importFrom grDevices dev.off png
+#'@importFrom utils methods
 
 covHTML <- function(cov){
 
@@ -438,6 +444,9 @@ outputSummary <- function(out){
   }
   
 }
+
+#'@importFrom grDevices dev.off png
+#'@importFrom utils methods
 
 outHTML <- function(out){
   
