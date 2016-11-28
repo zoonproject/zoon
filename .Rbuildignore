@@ -16,3 +16,7 @@ README.md
 Species/
 settings/*
 docs/*
+vignette_prebuild/*
+_pkgdown.yaml
+deploy_key.enc
+.deploy_pkgdown.sh

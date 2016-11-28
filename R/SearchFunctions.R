@@ -96,8 +96,6 @@ GetModuleList <- function(renew = FALSE){
 
     .zoonHidden$moduleList <- moduleNames
     
-    closeAllConnections()
-    
     return(moduleNames)
   }
 }

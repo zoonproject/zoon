@@ -54,7 +54,6 @@ LoadModule <- function(module){
   #   call environment.
   eval(txt)
   new.func.name <- ls()[!ls() %in% c('module', 'txt', 'zoonURL')]
-  closeAllConnections()
   return(new.func.name)
 }
 
