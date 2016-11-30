@@ -164,6 +164,13 @@ RunModels <- function(df, modelFunction, paras, workEnv){
   # 0 are for external validation only. 
   k <- length(unique(df$fold)[unique(df$fold) != 0])
   
+  # Doing predictions requires handling of NAs in subsets
+  # of the data (subsets = folds). This breaks if there
+  # is already a na.action attribute on df, so we remove it
+  if('na.action' %in% names(attributes(df))){
+    attributes(df) <- attributes(df)[!names(attributes(df)) %in% 'na.action']
+  }
+  
   # Init. output dataframe with predictions column
   # Old versions of modules dont use this attribute 
   ## REMOVE ONCE MODULES UPDATED ##
