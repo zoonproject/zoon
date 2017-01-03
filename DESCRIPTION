@@ -29,4 +29,5 @@ Suggests:
 VignetteBuilder: knitr
 LazyData: TRUE
 URL: https://github.com/zoonproject/zoon
+BugReports: https://github.com/zoonproject/zoon/issues
 RoxygenNote: 5.0.1
