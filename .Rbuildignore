@@ -20,5 +20,5 @@ vignette_prebuild/*
 _pkgdown.yaml
 deploy_key.enc
 .deploy_pkgdown.sh
-new.md
+news.md
 zoon_package.Rproj
