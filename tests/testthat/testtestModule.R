@@ -23,7 +23,7 @@ test_that('repo modules pass', {
   expect_true(x <- zoon:::test_module('https://raw.githubusercontent.com/zoonproject/modules/master/R/UKAir.R'))
   
   # Occurrence PO
-  expect_true(x <- zoon:::test_module('https://raw.githubusercontent.com/zoonproject/modules/master/R/AnophelesPlumbeus.R'))
+  expect_true(x <- zoon:::test_module('https://raw.githubusercontent.com/zoonproject/modules/master/R/CarolinaWrenPO.R'))
   
   # Occurrence PA
   expect_true(x <- zoon:::test_module('https://raw.githubusercontent.com/zoonproject/modules/master/R/CWBZimbabwe.R'))
