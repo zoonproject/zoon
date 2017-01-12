@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/zoonproject/zoon.svg)](https://travis-ci.org/zoonproject/zoon)
 [![codecov.io](https://codecov.io/github/zoonproject/zoon/coverage.svg?branch=master)](https://codecov.io/github/zoonproject/zoon?branch=master)
 [![cran version](http://www.r-pkg.org/badges/version/zoon)](https://cran.rstudio.com/web/packages/zoon) 
-[![DOI](https://zenodo.org/badge/21827779.svg)](https://zenodo.org/badge/latestdoi/21827779)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.240926.svg)](https://doi.org/10.5281/zenodo.240926)
 [![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/zoon?)](https://github.com/metacran/cranlogs.app)
 
 Zoön is a package for the reproducible and shareable analysis of species distribution models with a focus on the ability to compare between models and diagnostic output of models.
