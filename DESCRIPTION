@@ -3,7 +3,7 @@ Type: Package
 Title: Reproducible, Accessible & Shareable Species Distribution Modelling
 Version: 0.6
 Date: 2017-01-06
-Author: Tom August, Tim Lucas, Nick Golding, Emiel van Loon, Greg McInerny
+Author: Tom August [aut, cre], Tim Lucas [aut], Nick Golding [aut], Emiel van Loon [ctb], Greg McInerny [aut]
 Authors@R: c(person("Tom", "August", role = c("aut", "cre"),
                     email = "tomaug@ceh.ac.uk"),
              person("Tim", "Lucas", role = "aut"),
