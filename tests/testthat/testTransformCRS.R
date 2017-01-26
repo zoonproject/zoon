@@ -2,11 +2,12 @@ context('Transfrom CRS Function')
 
 test_that('Expected errors', {
   
-  LoadModule('NaiveRandomPresence')
+  NaiveRandomPresence <- source("https://raw.githubusercontent.com/zoonproject/modules/master/R/NaiveRandomPresence.R")$value
+  NaiveRandomRaster <- source("https://raw.githubusercontent.com/zoonproject/modules/master/R/NaiveRandomRaster.R")$value
+  
   occ_data <- NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000), seed = 123)
   occ_data$crs <- '+init=epsg:27700'
 
-  LoadModule('NaiveRandomRaster')
   new_ras <- NaiveRandomRaster()
   new_ras <- projectRaster(new_ras, crs = CRS('+init=epsg:27700'))
     
@@ -37,11 +38,9 @@ test_that('occurrence data is handled as expected when CRSs vary', {
   latlong <- "+init=epsg:4326"
   eastnorth <- '+init=epsg:27700'
   
-  LoadModule('NaiveRandomPresence')
   occ_data <- NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000), seed = 123)
   occ_data$crs <- '+init=epsg:27700'
 
-  LoadModule('NaiveRandomRaster')
   new_ras <- NaiveRandomRaster()
   new_ras <- projectRaster(new_ras, crs = CRS('+init=epsg:27700'))
 
@@ -116,7 +115,6 @@ test_that('occurrence data is handled as expected when CRSs vary', {
 
 test_that('Handles NA values and blanks', {
   
-  LoadModule('NaiveRandomPresence')
   occ_data <- NaiveRandomPresence(extent = c(0, 1000000, 0, 1000000),
                                   seed = 123, projection = '+init=epsg:27700')
   

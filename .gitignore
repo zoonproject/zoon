@@ -2,7 +2,6 @@ R/.R~
 *~
 .httr-oauth
 .Rproj.user
-zoon_package.Rproj
 .Rhistory
 Species
 
@@ -15,6 +14,3 @@ vignettes/cache
 
 # outputs from testing
 tests/testthat/*.pdf
-
-# Vignette pre-build folder
-vignette_prebuild

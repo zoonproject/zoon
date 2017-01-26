@@ -1,7 +1,7 @@
 ---
 title: "Basic zoon usage"
 author: "Tim Lucas and Tom August"
-date: "2016-08-22"
+date: "2016-11-23"
 output:
   html_document:
     toc: yes
@@ -172,6 +172,15 @@ work2 <- workflow(occurrence = UKAnophelesPlumbeus,
 ```
 
 ```
+## Occurrence data does not have a "crs" column, zoon will assume it is in the same projection as the covariate data
+```
+
+```
+## There are fewer than 100 cells in the environmental raster.
+## Using all available cells (81) instead
+```
+
+```
 ## Loading required package: SDMTools
 ```
 
@@ -204,6 +213,15 @@ work3 <- workflow(occurrence = UKAnophelesPlumbeus,
                   output     = PerformanceMeasures)
 ```
 
+```
+## Occurrence data does not have a "crs" column, zoon will assume it is in the same projection as the covariate data
+```
+
+```
+## There are fewer than 100 cells in the environmental raster.
+## Using all available cells (81) instead
+```
+
 Here we draw some pseudoabsence background points, and do crossvalidation (which is the same as `work2`, but explicitely using the separate modules.)
 
 The effect of `Chain` depends on the module type:
@@ -227,6 +245,15 @@ work4 <- workflow(occurrence = UKAnophelesPlumbeus,
                   process    = OneHundredBackground,
                   model      = list(LogisticRegression, RandomForest),
                   output     = PrintMap)
+```
+
+```
+## Occurrence data does not have a "crs" column, zoon will assume it is in the same projection as the covariate data
+```
+
+```
+## There are fewer than 100 cells in the environmental raster.
+## Using all available cells (81) instead
 ```
 
 <img src="basic_11-1.png" title="plot of chunk basic_11" alt="plot of chunk basic_11" style="display:block; margin: auto" style="display: block; margin: auto;" /><img src="basic_11-2.png" title="plot of chunk basic_11" alt="plot of chunk basic_11" style="display:block; margin: auto" style="display: block; margin: auto;" />
@@ -265,6 +292,10 @@ work5 <- workflow(occurrence = UKAnophelesPlumbeus,
                   output     = PrintMap)
 ```
 
+```
+## Occurrence data does not have a "crs" column, zoon will assume it is in the same projection as the covariate data
+```
+
 <img src="basic_12-1.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto" style="display: block; margin: auto;" /><img src="basic_12-2.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto" style="display: block; margin: auto;" /><img src="basic_12-3.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 `Replicate` takes as its first arguement the module you want to repeat and as its second argument the number of times yo want to repeat it. Here we end up running our model three times for three different sets out background points
@@ -290,7 +321,7 @@ work5$session.info
 ```
 
 ```
-## R version 3.3.1 (2016-06-21)
+## R version 3.3.2 (2016-10-31)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
 ## Running under: Windows 7 x64 (build 7601) Service Pack 1
 ## 
@@ -306,24 +337,22 @@ work5$session.info
 ## 
 ## other attached packages:
 ## [1] SDMTools_1.1-221    randomForest_4.6-12 dismo_1.1-1        
-## [4] knitr_1.13          zoon_0.5            raster_2.5-8       
-## [7] sp_1.2-3           
+## [4] zoon_0.5.3          raster_2.5-8        sp_1.2-3           
+## [7] knitr_1.15         
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_0.12.6       formatR_1.4       plyr_1.8.4       
-##  [4] iterators_1.0.8   R.methodsS3_1.7.1 bitops_1.0-6     
-##  [7] R.utils_2.3.0     tools_3.3.1       testthat_1.0.2   
-## [10] digest_0.6.10     evaluate_0.9      memoise_1.0.0    
-## [13] rfigshare_0.3.7   gtable_0.2.0      lattice_0.20-33  
-## [16] foreach_1.4.3     rgdal_1.1-10      yaml_2.1.13      
-## [19] withr_1.0.2       httr_1.2.1        stringr_1.0.0    
-## [22] roxygen2_5.0.1    devtools_1.12.0   grid_3.3.1       
-## [25] R6_2.1.2          XML_3.98-1.4      RJSONIO_1.3-0    
-## [28] ggplot2_2.1.0     magrittr_1.5      codetools_0.2-14 
-## [31] scales_0.4.0      splines_3.3.1     rsconnect_0.4.3  
-## [34] colorspace_1.2-6  httpuv_1.3.3      stringi_1.1.1    
-## [37] RCurl_1.95-4.8    munsell_0.4.3     gam_1.12         
-## [40] crayon_1.3.2      R.oo_1.20.0
+##  [1] Rcpp_0.12.7       magrittr_1.5      roxygen2_5.0.1   
+##  [4] munsell_0.4.3     colorspace_1.3-0  lattice_0.20-34  
+##  [7] R6_2.2.0          highr_0.6         httr_1.2.1       
+## [10] stringr_1.1.0     plyr_1.8.4        tools_3.3.2      
+## [13] rgdal_1.2-4       grid_3.3.2        gtable_0.2.0     
+## [16] R.oo_1.21.0       assertthat_0.1    lazyeval_0.2.0   
+## [19] yaml_2.1.14       tibble_1.2        rfigshare_0.3.7  
+## [22] crayon_1.3.2      RJSONIO_1.3-0     ggplot2_2.2.0    
+## [25] R.utils_2.5.0     bitops_1.0-6      RCurl_1.95-4.8   
+## [28] testthat_1.0.2    evaluate_0.10     stringi_1.1.2    
+## [31] scales_0.4.1      R.methodsS3_1.7.1 XML_3.98-1.5     
+## [34] httpuv_1.3.3
 ```
 
 ```r
@@ -422,6 +451,15 @@ work6 <- workflow(occurrence = Chain(SpOcc(species = 'Eresus kollari',
 
 ```
 ## Loading required package: spocc
+```
+
+```
+## Occurrence data does not have a "crs" column, zoon will assume it is in the same projection as the covariate data
+```
+
+```
+## There are fewer than 100 cells in the environmental raster.
+## Using all available cells (81) instead
 ```
 
 ```r

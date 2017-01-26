@@ -1,7 +1,7 @@
 ---
 title: "Building modules"
 author: "Tom August & Tim Lucas"
-date: '2016-08-22'
+date: '2016-11-23'
 output:
   html_document:
     keep_md: yes
@@ -61,7 +61,8 @@ head(out)
 ## 6 2013-04-12 52.23719 0.7877316
 ```
 
-Now it is time to think about how we return our data. The output format for occurrence modules is very important. If you do not ensure that the format is correct then your module will not work properly when entered into a workflow. An occurrence module must return a data.frame with the columns longitude, latitude, value, type and fold, the details are given at [the end of this document](#occIO). The order of these columns is important.
+Now it is time to think about how we return our data. The output format for occurrence modules is very important. If you do not ensure that the format is correct then your module will not work properly when entered into a workflow. An occurrence module must return a data.frame with the columns longitude, latitude, value, type and fold, the details are given at [the end of this document](#occIO). The order of these columns is important. Another optional column is `crs`
+(Coordinate Reference System), which specifies the coordinate system of you points if they are not latitude/longitude (the default). This is specified in the proj4string format. You can also supply extra columns that might be used further down the workflow.
 
 Our occurrence data does not have all of these columns so we need to add them. So we need to do a little reformatting
 
@@ -108,6 +109,10 @@ workl1 <- workflow(occurrence = Lorem_ipsum_UK,
                    process = OneHundredBackground,
                    model = LogisticRegression,
                    output = PrintMap)
+```
+
+```
+## Occurrence data does not have a "crs" column, zoon will assume it is in the same projection as the covariate data
 ```
 
 <img src="building_occ6-1.png" title="plot of chunk building_occ6" alt="plot of chunk building_occ6" style="display:block; margin: auto" style="display: block; margin: auto;" />
@@ -312,6 +317,15 @@ work5 <- workflow(occurrence = UKAnophelesPlumbeus,
                   output     = PrintMap)
 ```
 
+```
+## Occurrence data does not have a "crs" column, zoon will assume it is in the same projection as the covariate data
+```
+
+```
+## There are fewer than 100 cells in the environmental raster.
+## Using all available cells (81) instead
+```
+
 <img src="building_pro1-1.png" title="plot of chunk building_pro1" alt="plot of chunk building_pro1" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 ```r
@@ -333,6 +347,7 @@ str(.data, 2)
 ##   ..$ longitude: num [1:269] 1.01 -0.16 -2.83 -0.63 -3.53 ...
 ##   ..$ latitude : num [1:269] 52.4 51.6 53.4 51.6 56 ...
 ##   ..$ layer    : num [1:269] 271 272 272 272 271 ...
+##   ..- attr(*, "call_path")=List of 1
 ##   ..- attr(*, "covCols")= chr "layer"
 ##  $ ras:Formal class 'RasterLayer' [package "raster"] with 12 slots
 ##  - attr(*, "call_path")=List of 3
@@ -530,7 +545,7 @@ work7 <- workflow(occurrence = AnophelesPlumbeus,
 ```
 
 ```
-## 146 records found
+## 152 records found
 ```
 
 ```
@@ -538,7 +553,11 @@ work7 <- workflow(occurrence = AnophelesPlumbeus,
 ```
 
 ```
-## 146 records downloaded
+## 152 records downloaded
+```
+
+```
+## Occurrence data does not have a "crs" column, zoon will assume it is in the same projection as the covariate data
 ```
 
 <img src="building_pro7-1.png" title="plot of chunk building_pro7" alt="plot of chunk building_pro7" style="display:block; margin: auto" style="display: block; margin: auto;" />
@@ -965,6 +984,10 @@ work12 <- workflow(occurrence = CWBZimbabwe,
                                   PredictNewRasterMap(raster = cropped)))
 ```
 
+```
+## Occurrence data does not have a "crs" column, zoon will assume it is in the same projection as the covariate data
+```
+
 <img src="building_out9-1.png" title="plot of chunk building_out9" alt="plot of chunk building_out9" style="display:block; margin: auto" style="display: block; margin: auto;" /><img src="building_out9-2.png" title="plot of chunk building_out9" alt="plot of chunk building_out9" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
 Once we're happy with the module, we will hopefully upload it to the zoon repository. The repository is currently under development. Visit [the development pages](https://zoonproject.wordpress.com/) for more information.
@@ -986,6 +1009,8 @@ The default input arguments and return values of modules are strict. However, an
 * `value`: The response value for the observation when used in a model. This can be 1 or 0 for presence/absence, an integer for abundance (e.g. 1, 3, 67), or a decimal number between 0 and 1 for proportions (e.g. 0.12, 0.5, 0.98).
 * `type`: This is linked to `value` and dictates for each row of the data.frame the type of value given. This can be one of the following; `'presence'`, `'absence'`, `'background'`, `'abundance'`, `'proportion'`.
 * `fold`: Folds are used to test your model. If we have, for example, 3 folds (1, 2, 3) then we can use the [`PerformanceMeasures` output module](https://github.com/zoonproject/modules/blob/master/R/PerformanceMeasures.R) to test the performance of the model. A common method, implemented by `PerformanceMeasures` is to build the model using all but one fold, and then test the models ability to predict the fold that was held back.  
+
+* Optionally `crs` a column specifying the coordinate reference system in proj4string format if the points are not in latitude/longitude (WGS84)
 
 ### Covariate
 *In*: No default inputs

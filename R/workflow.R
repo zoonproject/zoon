@@ -152,6 +152,25 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
               sep = ''))
   })
   
+
+  # Run the occurrence modules
+  tryCatch({
+  occurrence.output <- lapply(occurrenceName, FUN = DoOccurrenceModule, e = e)
+  # Then bind together if the occurrence modules were chained
+  if (identical(attr(occurrence.module, 'chain'), TRUE)){
+    occurrence.output <- list(do.call(rbind.fill, occurrence.output))
+    attr(occurrence.output[[1]], 'call_path') <- list(occurrence = paste('Chain(',
+                                                  paste(lapply(occurrenceName, function(x) x$module),
+                                                        collapse = ', '),
+                                                  ')', sep = ''))
+    }
+    output$occurrence.output <- occurrence.output
+  },  
+    error = function(cond){
+      ErrorModule(cond, 1, e)
+    }
+  )
+
   # Run to covariate modules
   tryCatch({
     #covariate.output <- lapply(covariateName, function(x) do.call(x$func, x$paras))
@@ -171,25 +190,6 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   }
   )
   
-  
-  # Run the occurrence modules
-  tryCatch({
-  occurrence.output <- lapply(occurrenceName, FUN = DoOccurrenceModule, e = e)
-  # Then bind together if the occurrence modules were chained
-  if (identical(attr(occurrence.module, 'chain'), TRUE)){
-    occurrence.output <- list(do.call(rbind.fill, occurrence.output))
-    attr(occurrence.output[[1]], 'call_path') <- list(occurrence = paste('Chain(',
-                                                  paste(lapply(occurrenceName, function(x) x$module),
-                                                        collapse = ', '),
-                                                  ')', sep = ''))
-    }
-    output$occurrence.output <- occurrence.output
-  },  
-    error = function(cond){
-      ErrorModule(cond, 1, e)
-    }
-  )
-
   # Simply combine data into basic df shape
   # This shape is then input and output of all process modules.
   # Also makes it easy to implement a NULL process

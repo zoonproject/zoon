@@ -19,9 +19,37 @@ ZoonModuleParse <- function(modulePath){
   # Get the tags out
   roc <- roxygen2::rd_roclet()
   rd <- roxygen2::roc_proc_text(roc, lines)[[1]]
-  res <- lapply(names(rd),
-                function(field, x) x[[1]][[field]]$values,
-                rd)
+  
+  # Behaviour varies on the version of 
+  # Roxygen2 being used
+  if('fields' %in% names(rd)){
+    
+    res <- sapply(names(rd$fields),
+                  function(field, x){
+                    if('values' %in% names(x[[field]])){
+                      named_tag <- list(x[[field]]$values)
+                      names(named_tag) <- field
+                      return(unlist(named_tag))
+                    } else {
+                      list_tag <- list()
+                      for(i in seq_along(x[[field]]$title)){
+                        list_tag <- c(list_tag,
+                                      list(list(name = x[[field]]$title[i],
+                                                content = x[[field]]$content[i])))
+                      }
+                      return(list_tag)
+                    }
+                  },
+                  rd$fields)
+    
+    if('param' %in% names(res)) names(res$param) <- gsub('^param.', '', names(res$param))
+    
+  } else {
+    
+    res <- lapply(names(rd),
+                  function(field, x) x[[1]][[field]]$values,
+                  rd)
+  }
   
   # flatten 'sections'
   if('section' %in% names(res)){

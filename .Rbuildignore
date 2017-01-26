@@ -13,7 +13,12 @@ tests/testthat/*.pdf
 ^appveyor\.yml$
 vignette_prebuild
 README.md
+Species/
 settings/*
 docs/*
+vignette_prebuild/*
 _pkgdown.yaml
+deploy_key.enc
 .deploy_pkgdown.sh
+news.md
+zoon_package.Rproj
