@@ -7,18 +7,21 @@
 CombineRasters(rasters, method = "ngb")
 }
 \arguments{
-\item{rasters}{A list of Raster* objects to be converted to a common CRS and resolution}
+\item{rasters}{A list of Raster* objects to be converted to a common CRS and
+resolution}
 
-\item{method}{The method used in raster::projectRaster. Either 'ngb' (nearest neighbor), which is useful for categorical variables, or 'bilinear' (bilinear interpolation; the default value), which is appropriate for continuous variables}
+\item{method}{The method used in raster::projectRaster. Either 'ngb' (nearest
+neighbor), which is useful for categorical variables, or 'bilinear'
+(bilinear interpolation; the default value), which is appropriate for
+continuous variables}
 }
 \value{
 A list of rasters
 }
 \description{
-A generalised function to combine rasters of differing CRS
-and resolution. The function takes and returns a list of Raster*
-objects. The final CRS is the one most frequent in 
-the rasters being combined, or lat/long if there is no CRS is 
-most frequent
+A generalised function to combine rasters of differing CRS and resolution.
+The function takes and returns a list of Raster* objects. The final CRS is
+the one most frequent in the rasters being combined, or lat/long if there is
+no CRS is most frequent
 }
 
