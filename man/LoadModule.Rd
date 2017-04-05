@@ -14,7 +14,7 @@ a full URL or a path to a local file.}
 Name of the function. Adds function to global namespace.
 }
 \description{
-Loads a module function into the global environment ready to be used in a 
+Loads a module function into the global environment ready to be used in a
  zoon workflow. This function is mostly for use while developing modules.
  Workflows run with modules defined locally are no longer reproducible and
  so are discouraged and will be tagged as 'unreproducible'.

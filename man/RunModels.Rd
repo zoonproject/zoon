@@ -7,24 +7,24 @@
 RunModels(df, modelFunction, paras, workEnv)
 }
 \arguments{
-\item{df}{Dataframe from process module. Should contain columns 
+\item{df}{Dataframe from process module. Should contain columns
 value, type, lon, lat
 and fold, a number indicating which cross validation set a datapoint is in.
 If fold is 0 then this is considered external validation data
 If all data is 0 or 1, then no cross validation is run.}
 
-\item{modelFunction}{String giving the name of the model function which is 
+\item{modelFunction}{String giving the name of the model function which is
 in turn the
 name of the module.}
 
-\item{paras}{All other parameters that should be passed to the model function. 
+\item{paras}{All other parameters that should be passed to the model function.
 i.e. model[[1]]$paras}
 
 \item{workEnv}{The environment name of the workflow call environment.}
 }
 \value{
 A list of length 2 containing the model trained on all data and a
- data.frame which contains value, type, fold, lon, lat, predictions and 
+ data.frame which contains value, type, fold, lon, lat, predictions and
  then all environmental variables.
 }
 \description{
