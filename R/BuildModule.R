@@ -10,7 +10,7 @@
 #' @param dir The directory to put the module into (defaults to the
 #'      working directory).
 #' @param type A string that defines the type of module. Possible module types
-#'      are occurrence, covariate, process, model, diagnostic and output.
+#'      are occurrence, covariate, process, model, and output.
 #' @param title A short description of the module.
 #' @param description (required) A single string giving a full description of the module.
 #' @param details (optional) A single string giving details of the module.
@@ -47,8 +47,8 @@ BuildModule <- function(object, type, dir='.', title = '',  description = '',
   if(!is(object, 'function')) stop('object must be a function')
   
   # Check type is known
-  if(!tolower(type) %in% c('occurrence', 'covariate', 'process', 'model', 'diagnostic', 'output')){
-    stop("type must be one of 'occurrence', 'covariate', 'process', 'model', 'diagnostic', 'output'")
+  if(!tolower(type) %in% c('occurrence', 'covariate', 'process', 'model', 'output')){
+    stop("type must be one of 'occurrence', 'covariate', 'process', 'model', 'output'")
   }
   
   # Check dataType is known
