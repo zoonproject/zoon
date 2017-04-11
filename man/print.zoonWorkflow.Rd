@@ -14,4 +14,3 @@
 \description{
 The function returns a very simple output detailing the function call.
 }
-

@@ -15,4 +15,3 @@
 Prints a zoonCitation object to console
  giving easy access to module citations
 }
-

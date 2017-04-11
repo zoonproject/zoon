@@ -19,4 +19,3 @@ How to cite Zoon Modules in publications
 \seealso{
 \code{\link{print.zoonCitation}}
 }
-

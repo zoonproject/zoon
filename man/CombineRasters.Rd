@@ -24,4 +24,3 @@ The function takes and returns a list of Raster* objects. The final CRS is
 the one most frequent in the rasters being combined, or lat/long if there is
 no CRS is most frequent
 }
-

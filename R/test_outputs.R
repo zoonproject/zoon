@@ -28,7 +28,7 @@ test_outputs <- function(roxy_parse, modulePath){
       LoadModule('Background'); LoadModule('BackgroundAndCrossvalid')
       LoadModule('Crossvalidate'); LoadModule('LogisticRegression')
       LoadModule('NaiveRandomRaster'); LoadModule('NoProcess')
-      LoadModule('PrintMap')
+      LoadModule('PrintMap');
       
       # Load the script
       source(modulePath) 
@@ -290,13 +290,13 @@ test_outputs <- function(roxy_parse, modulePath){
       Background <- NaiveRandomPresenceAbsence <- NULL
       NaiveRandomRaster <- Crossvalidate <- LogisticRegression <- NULL
       NoProcess <- NULL
-      PrintMap <- RandomForest <- UKAir <- UKAnophelesPlumbeus <- NULL
+      PrintMap <- Domain <- UKAir <- UKAnophelesPlumbeus <- NULL
       
       ## Move these to the sections where they are needed
       LoadModule('Background'); LoadModule('NaiveRandomPresenceAbsence')
       LoadModule('Crossvalidate'); LoadModule('LogisticRegression')
       LoadModule('NaiveRandomRaster'); LoadModule('NoProcess')
-      LoadModule('PrintMap'); LoadModule('RandomForest')
+      LoadModule('PrintMap'); LoadModule('Domain')
       LoadModule('UKAir'); LoadModule('UKAnophelesPlumbeus')
       
       # Load the script
@@ -479,7 +479,8 @@ test_outputs <- function(roxy_parse, modulePath){
       LoadModule('Background'); LoadModule('Crossvalidate')
       LoadModule('NaiveRandomRaster'); LoadModule('NaiveRandomPresenceAbsence')
       LoadModule('NoProcess'); LoadModule('PerformanceMeasures');
-      LoadModule('PrintMap'); LoadModule('UKAir'); LoadModule('UKAnophelesPlumbeus')
+      LoadModule('PrintMap'); LoadModule('UKAir');
+      LoadModule('UKAnophelesPlumbeus')
       
       # Load the script
       source(modulePath) 

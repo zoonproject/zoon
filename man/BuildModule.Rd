@@ -14,7 +14,7 @@ practise to ensure your function does not have the same name as a base
 function, another module, or other common functions.}
 
 \item{type}{A string that defines the type of module. Possible module types
-are occurrence, covariate, process, model, diagnostic and output.}
+are occurrence, covariate, process, model, and output.}
 
 \item{dir}{The directory to put the module into (defaults to the
 working directory).}
@@ -56,4 +56,3 @@ Turn a function in the namespace into a module.
 Will later add functions to upload module to figshare etc.
 And add testing that the module name is unique.
 }
-

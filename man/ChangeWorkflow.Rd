@@ -35,4 +35,3 @@ w2 <- ChangeWorkflow(w,
                      output = PrintMap)
 }
 }
-

@@ -35,4 +35,3 @@ module using the function \code{ZoonModel}, make a prediction to
 a new dataframe.
 For an example, see the source code for the module \code{InteractiveMap}.
 }
-

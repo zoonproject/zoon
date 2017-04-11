@@ -15,4 +15,3 @@ This is an example environmental covariate raster layer. It is
 \author{
 Tim Lucas September 2014
 }
-

@@ -18,4 +18,3 @@ Returns the help file for a zoon module.
 \seealso{
 \code{\link{GetModuleList}}
 }
-

@@ -17,4 +17,3 @@ Path to HTML file. Associated images will be in the same directory.
 \description{
 Renders and opens an HTML report
 }
-

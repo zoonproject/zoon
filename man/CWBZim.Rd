@@ -31,4 +31,3 @@ toy presence/absence species distribution models.
 \author{
 Nick Golding August 2015
 }
-
