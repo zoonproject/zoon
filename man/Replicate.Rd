@@ -50,4 +50,3 @@ work1 <- workflow(occurrence = UKAnophelesPlumbeus,
 
 }
 }
-

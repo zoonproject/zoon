@@ -10,4 +10,3 @@
 Zoon: A package for comparing multple SDM models, good model diagnostics
      and better reproducibility
 }
-

@@ -27,4 +27,3 @@ your workflow with the community please set your workflow to public on figshare
 after using this function. If your workflow is made public it will automatically
 appear on the Zoon website.
 }
-

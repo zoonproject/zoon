@@ -19,4 +19,3 @@ Loads a module function into the global environment ready to be used in a
  Workflows run with modules defined locally are no longer reproducible and
  so are discouraged and will be tagged as 'unreproducible'.
 }
-

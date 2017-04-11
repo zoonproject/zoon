@@ -16,4 +16,3 @@ Simply extract covariates from rasters and combine with occurrence data.
 This function is primarily used internally but can be used when
 running workflows interactively (see vignette \code{basic zoon useage})
 }
-

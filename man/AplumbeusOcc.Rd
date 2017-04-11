@@ -19,4 +19,3 @@ This is an example occurrence only data for the species
 \author{
 Tim Lucas September 2014
 }
-

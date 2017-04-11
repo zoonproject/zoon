@@ -12,4 +12,3 @@ relative recording effort for plants in England using the Frescalo function in t
 \author{
 Tom August & Nick Golding September 2015
 }
-

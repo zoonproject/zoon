@@ -22,4 +22,3 @@ Model and output modules may not be chained.
 Developers should note that this function is not actually used - calls using
  \code{Chain} are parsed by workflow, with behaviour similar to this function.
 }
-

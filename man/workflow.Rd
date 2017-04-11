@@ -54,4 +54,3 @@ work2 <- workflow(UKAnophelesPlumbeus,
 
 }
 }
-

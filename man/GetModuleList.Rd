@@ -24,4 +24,3 @@ method 'libcurl' in the function url. This can be tested using the function
 # GetModuleList requires libcurl to be supported
 if(capabilities('libcurl')) GetModuleList()
 }
-

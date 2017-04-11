@@ -17,4 +17,3 @@ website, users must download the file themselves and place it in the
 right location for R packages to access it. This function helps with that.
 Just run \code{GetMaxEnt()} and follow the prompts in the terminal.
 }
-

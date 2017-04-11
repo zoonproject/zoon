@@ -15,4 +15,3 @@
 Opens a graphics device and produces a plot of the workflow
 structure and modules used.
 }
-

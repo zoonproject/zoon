@@ -17,4 +17,3 @@ CRAN and then load
 \examples{
 GetPackage('gam')
 }
-

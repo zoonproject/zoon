@@ -31,4 +31,3 @@ w <- workflow(UKAnophelesPlumbeus,
 RerunWorkflow(w)
 }
 }
-

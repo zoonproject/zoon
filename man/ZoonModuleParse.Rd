@@ -16,4 +16,3 @@ Named list of roxygen tags
 This is a stand in for the parse_file function in roxygen which
 is not exported.
 }
-
