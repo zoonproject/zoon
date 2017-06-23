@@ -4,9 +4,14 @@
 \alias{GetModuleList}
 \title{GetModuleList}
 \usage{
-GetModuleList(renew = FALSE)
+GetModuleList(type = c("all", "occurrence", "covariate", "process", "model",
+  "output"), renew = FALSE)
 }
 \arguments{
+\item{type}{The subset of zoon modules you want to return. Defaults to 'all', but you can
+select any of the zoon workflow steps: 'occurrence', 'covariate', 'process', 
+'model', or 'output'.}
+
 \item{renew}{Download from github even if we already have a module list.}
 }
 \value{
