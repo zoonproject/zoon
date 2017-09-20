@@ -16,19 +16,12 @@
 #'@examples 
 #'# GetModuleList requires libcurl to be supported
 #'if(capabilities('libcurl')) GetModuleList()
-
 GetModuleList <- function(type = c("all", "occurrence", "covariate", "process",
                                    "model", "output"),
                           renew = FALSE){
   
   # Define desired subset
   subset <- match.arg(type)
-  
-  # Check if we've made an environment called zoonHidden yet
-  # If not make one.
-  if(!exists('zoonHidden', mode = 'environment')){
-    .zoonHidden <- new.env(parent = .GlobalEnv)
-  }
   
   if(subset == "all"){   # return all available modules under sub-headings
     
@@ -191,3 +184,6 @@ GetModuleList <- function(type = c("all", "occurrence", "covariate", "process",
     }
   }
 }
+
+# create .zoonHidden in the package namespace
+.zoonHidden <- new.env()
