@@ -130,9 +130,6 @@ Boxed2 <- function (NoOfModules, InModuleList, IsList, IsChain, ModuleNames) {
       if( IsList[i] && ListAlready == 1) ListAlready = 2
       if(ListAlready != 2){
         if(InModuleList[[ModuleInc]]) ColCode = 1 else ColCode = 2
-#       } else {
-#         if(InModuleList[[ModuleInc]]) ColCode = 3 else ColCode = 4
-#         clrsTXT = "white"			
       }
       
       if(IsList[i]){
@@ -147,13 +144,6 @@ Boxed2 <- function (NoOfModules, InModuleList, IsList, IsChain, ModuleNames) {
         segments(	x2[i], yNow+0.5*yH, 
                   x2[i]+xG*0.33, yNow+0.5*yH, lwd = lW, col = clrs[ColCode])
         
-#         if(ListAlready == 2){
-#           segments( x1[i] - (xG*0.5), 5, x1[i] - xG*0.5, yM, 
-#                     lwd = 1.5, lty = 3, col = "cornsilk4")
-#           segments(x1[1]+0.5*xG, 5, x1[i] - xG*0.5, 5, lwd = 1.5, lty = 3, col = "cornsilk4")
-#           text (x1[1]+0.5*xG, 0, "*, only 1 list permitted per workflow", col = "cornsilk4", adj = 0, cex = 0.8)
-#           ListAlready = 2
-#         }
       }else{
         if(IsChain[i]){
           if(i != 1 && N == NoOfModules[i]) segments(x1[i] - xG*0.33, yLnow, x1[i], yNow+0.5*yH, lwd = lW, col = clrs[ColCode])
@@ -231,13 +221,14 @@ CallLister <- function( callList ){
 #' @param \dots currently ignored
 #'
 #' @method plot zoonWorkflow
-#' @importFrom graphics plot.new par rect
+#' @importFrom graphics par rect
 #' @export
 plot.zoonWorkflow <- function(x, ...) {
   
   # set up new device
-  plot.new()
+  omar <- par()$mar
   par(mar = c(0, 0, 0, 0))
+  on.exit({par(mar = omar)})
   
   graphics::plot(-99, -99,
                  xlim = c(0, 110),
@@ -245,9 +236,9 @@ plot.zoonWorkflow <- function(x, ...) {
                  xlab = "", ylab = "",
                  axes = FALSE)
   
-  rect( -200, -200, 200, 200,
-        col = "cornsilk1",
-        border = FALSE)
+  rect(-200, -200, 200, 200,
+       col = "cornsilk1",
+       border = FALSE)
   
   text(10,
        120,
