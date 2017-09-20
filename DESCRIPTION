@@ -1,8 +1,8 @@
 Package: zoon
 Type: Package
 Title: Reproducible, Accessible & Shareable Species Distribution Modelling
-Version: 0.6.1
-Date: 2017-04-11
+Version: 0.6.2
+Date: 2017-09-20
 Author: Tom August [aut, cre], Tim Lucas [aut], Nick Golding [aut], Emiel van Loon [ctb], Greg McInerny [aut]
 Authors@R: c(person("Tom", "August", role = c("aut", "cre"),
                     email = "tomaug@ceh.ac.uk"),
@@ -16,17 +16,18 @@ Description: Reproducible and remixable species distribution modelling. The
     SDM workflows and returns output that is fully reproducible.
 License: BSD_3_clause + file LICENSE
 Imports:
-    RCurl,
     dismo,
-    rfigshare,
     methods,
-    testthat,
-    roxygen2,
-    SDMTools,
+    plyr,
     randomForest,
+    RCurl,
+    rfigshare,
     rgdal,
+    roxygen2,
+    rworldmap,
+    SDMTools,
     sp,
-    plyr
+    testthat
 Depends:
     raster (>= 2.4-20),
     R (>= 3.2.0)
