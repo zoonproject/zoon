@@ -29,7 +29,7 @@ cbindZoon <- function(a, b) {
 #' @export
 subsetColumnsZoon <- function(df, columns) {
   attr.list <- attributes(df) # Extract attribute list
-  output <- df[, columns, drop = F] # subset dataframe
+  output <- df[, columns, drop = FALSE] # subset dataframe
 
   attr.list$names <- attr(output, which = "names") # update names in attribute list
   attributes(output) <- attr.list # set attributes for appended dataframe
