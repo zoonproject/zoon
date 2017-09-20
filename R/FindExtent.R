@@ -28,6 +28,8 @@
 #'   
 #' @import rworldmap
 #' @importFrom raster drawExtent
+#' @importFrom grDevices grey
+#' @importFrom utils data
 #' @export
 #' 
 #' @examples
