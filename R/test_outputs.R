@@ -15,7 +15,8 @@ test_outputs <- function(roxy_parse, modulePath) {
   # them in. using forcereproducile = TRUE is not an option as this does
   # not allow me to use the module under test
 
-  test_that(paste("Check OCCURRENCE output formats for", basename(modulePath)), {
+  test_that(paste("Check OCCURRENCE output formats for",
+                  basename(modulePath)), {
 
     ## OCCURRENCE MODULES ##
     if (roxy_parse$family == "occurrence") {
@@ -46,16 +47,28 @@ test_outputs <- function(roxy_parse, modulePath) {
       if (inherits(occ_return, what = "moduleError")) stop(occ_return)
 
       # Check the data.frame returned is as expected
-      expect_is(occ_return, "data.frame", info = "Occurrence modules must return a data.frame")
+      expect_is(occ_return,
+                "data.frame",
+                info = "Occurrence modules must return a data.frame")
       expect_true(
         all(c("longitude", "latitude", "value", "type", "fold") %in% names(occ_return)),
         info = "Check your occurrence data has the correct column names in the correct order. See the 'Building a module' vignette for details"
       )
-      expect_is(occ_return$longitude, c("numeric", "integer"), info = "longitude must be a numeric or integer")
-      expect_is(occ_return$latitude, c("numeric", "integer"), info = "latitude must be a numeric or integer")
-      expect_is(occ_return$value, c("numeric", "integer"), info = "value must be a numeric or integer")
-      expect_is(occ_return$type, "character", info = "type must be a character")
-      expect_is(occ_return$fold, c("numeric", "integer"), info = "info must be a numeric or integer")
+      expect_is(occ_return$longitude,
+                c("numeric", "integer"),
+                info = "longitude must be a numeric or integer")
+      expect_is(occ_return$latitude,
+                c("numeric", "integer"),
+                info = "latitude must be a numeric or integer")
+      expect_is(occ_return$value,
+                c("numeric", "integer"),
+                info = "value must be a numeric or integer")
+      expect_is(occ_return$type,
+                "character",
+                info = "type must be a character")
+      expect_is(occ_return$fold,
+                c("numeric", "integer"),
+                info = "info must be a numeric or integer")
 
       ## Check it in a few workflows
       # Assign function
@@ -137,7 +150,8 @@ test_outputs <- function(roxy_parse, modulePath) {
 
           expect_is(
             w, "zoonWorkflow",
-            info = "The occurrence module did not work when chained in a workflow"
+            info = paste("The occurrence module did not work",
+                         "when chained in a workflow")
           )
 
 
@@ -167,7 +181,8 @@ test_outputs <- function(roxy_parse, modulePath) {
 
           expect_is(
             w, "zoonWorkflow",
-            info = "The occurrence module did not work when listed in a workflow with crossvalidation"
+            info = paste("The occurrence module did not work",
+                         "when listed in a workflow with crossvalidation")
           )
         } else if (data_type == "presence/absence") {
 
@@ -223,10 +238,9 @@ test_outputs <- function(roxy_parse, modulePath) {
 
           expect_is(
             w, "zoonWorkflow",
-            info = "The occurrence module did not work when chained in a workflow"
+            info = paste("The occurrence module did not work",
+                         "when chained in a workflow")
           )
-
-
 
           # test list + crossvalidation
           w <- tryCatchWorkflow(
@@ -254,14 +268,16 @@ test_outputs <- function(roxy_parse, modulePath) {
 
           expect_is(
             w, "zoonWorkflow",
-            info = "The occurrence module did not work when listed in a workflow with crossvalidation"
+            info = paste("The occurrence module did not work",
+                         "when listed in a workflow with crossvalidation")
           )
         } ## Add tests for proportion and abundance ##
       }
     }
   })
 
-  test_that(paste("Check COVARIATE output formats for", basename(modulePath)), {
+  test_that(paste("Check COVARIATE output formats for",
+                  basename(modulePath)), {
 
     ## COVARIATE MODULES ##
     if (roxy_parse$family == "covariate") {
@@ -294,11 +310,15 @@ test_outputs <- function(roxy_parse, modulePath) {
       # Check projection
       expect_true(
         !is.na(projection(cov_return)),
-        info = "Covariate module output must have a projection (see ?raster::projection)"
+        info = paste("Covariate module output must have a projection",
+                     "(see ?raster::projection)")
       )
 
       # Check raster returned is as expected
-      expect_is(cov_return, c("RasterLayer", "RasterStack", "RasterBrick"), info = "Covariate module output must be either a RasterLayer or a RasterStack")
+      expect_is(cov_return,
+                c("RasterLayer", "RasterStack", "RasterBrick"),
+                info = paste("Covariate module output must be either",
+                             "a RasterLayer or a RasterStack"))
 
       ## Check it in a few workflows
       # Assign function
@@ -308,7 +328,8 @@ test_outputs <- function(roxy_parse, modulePath) {
 
       expect_is(
         extent(cov_return), "Extent",
-        info = "An extent could not be obtained from the object returned by the covariate module"
+        info = paste("An extent could not be obtained from the object",
+                     "returned by the covariate module")
       )
 
       myExtent <- as.vector(extent(cov_return))
@@ -391,7 +412,8 @@ test_outputs <- function(roxy_parse, modulePath) {
 
       expect_is(
         w, "zoonWorkflow",
-        info = "The covariate module did not work when listed in a workflow with crossvalidation"
+        info = paste("The covariate module did not work",
+                     "when listed in a workflow with crossvalidation")
       )
     }
   })
@@ -423,7 +445,8 @@ test_outputs <- function(roxy_parse, modulePath) {
 
       # Run the module with defaults
       sections <- roxy_parse[grepl("section", names(roxy_parse))]
-      data_types <- gsub("Data type: ", "", sections[grepl("Data type: ", sections)])
+      data_types <- gsub("Data type: ", "",
+                         sections[grepl("Data type: ", sections)])
 
       # assign the module
       ProcessModule <- source(modulePath)$value
@@ -438,9 +461,13 @@ test_outputs <- function(roxy_parse, modulePath) {
 
           # Choose file to load
           if (data_type == "presence/absence") {
-            loadExpr <- substitute(load(system.file("extdata", "data_PA.rdata", package = "zoon")))
+            loadExpr <- substitute(load(system.file("extdata",
+                                                    "data_PA.rdata",
+                                                    package = "zoon")))
           } else if (data_type == "presence-only") {
-            loadExpr <- substitute(load(system.file("extdata", "data_PO.rdata", package = "zoon")))
+            loadExpr <- substitute(load(system.file("extdata",
+                                                    "data_PO.rdata",
+                                                    package = "zoon")))
           }
 
           # run load expression
@@ -452,7 +479,8 @@ test_outputs <- function(roxy_parse, modulePath) {
           # Run the module with defaults
           pro_return <- tryCatchModule(
             expr = {
-              pro_return <- do.call(roxy_parse$name, args = list(.data = .data))
+              pro_return <- do.call(roxy_parse$name,
+                                    args = list(.data = .data))
             },
             code_chunk = paste(
               capture.output(print(loadExpr)),
@@ -460,30 +488,79 @@ test_outputs <- function(roxy_parse, modulePath) {
             ),
             fun = roxy_parse$name
           )
-          if (inherits(pro_return, what = "moduleError")) stop(pro_return)
+          
+          if (inherits(pro_return, what = "moduleError"))
+            stop(pro_return)
 
           ## Check pro_return structure
-          expect_is(pro_return, "list", info = "The object returned from a process module must be a list")
-          expect_named(pro_return, expected = c("df", "ras"), info = 'The elements of the list returned from a process module must be named "df" and "ras"')
+          expect_is(pro_return, "list",
+                    info = paste("The object returned from a process module",
+                                 "must be a list"))
+                    
+          expect_named(pro_return, expected = c("df", "ras"),
+                       info = paste('The elements of the list returned from',
+                                    'a process module must be named',
+                                    '"df" and "ras"'))
 
           ## Check 'df'
           # Check the data.frame returned is as expected
-          expect_is(pro_return$df, "data.frame", info = "Occurrence modules must return a data.frame")
+          expect_is(pro_return$df, "data.frame",
+                    info = "Occurrence modules must return a data.frame")
+          
+          colnames <- c("longitude", "latitude", "value", "type", "fold")
           expect_true(
-            all(c("longitude", "latitude", "value", "type", "fold") %in% names(pro_return$df)),
-            info = "Some of the required columns from the 'df' element returned by the process module, are missing ('longitude', 'latitude', 'value', 'type', 'fold')"
+            all(colnames %in% names(pro_return$df)),
+            info = paste("Some of the required columns from the 'df' element",
+                         "returned by the process module, are missing",
+                         "('longitude', 'latitude', 'value', 'type', 'fold')")
           )
-          expect_is(pro_return$df$longitude, c("numeric", "integer"), info = 'longitude column, from the "df" element returned from a process module, must be a numeric or integer')
-          expect_is(pro_return$df$latitude, c("numeric", "integer"), info = 'latitude column, from the "df" element returned from a process module, must be a numeric or integer')
-          expect_is(pro_return$df$value, c("numeric", "integer"), info = 'value column, from the "df" element returned from a process module, must be a numeric or integer')
-          expect_is(pro_return$df$type, c("character", "factor"), info = 'type column, from the "df" element returned from a process module, must be a character')
-          expect_is(pro_return$df$fold, c("numeric", "integer"), info = 'info column, from the "df" element returned from a process module, must be a numeric or integer')
-          expect_true(ncol(pro_return$df) >= 6, info = 'The "df" element returned from a process module is expected to contain 6 or more columns')
+          
+          expect_is(pro_return$df$longitude,
+                    c("numeric", "integer"),
+                    info = paste('longitude column, from the "df" element',
+                                 'returned from a process module, must be',
+                                 'a numeric or integer'))
+          
+          expect_is(pro_return$df$latitude,
+                    c("numeric", "integer"),
+                    info = paste('latitude column, from the "df" element',
+                                 'returned from a process module, must be',
+                                 'a numeric or integer'))
+          
+          expect_is(pro_return$df$value,
+                    c("numeric", "integer"),
+                    info = paste('value column, from the "df" element',
+                                 'returned from a process module, must be',
+                                 'a numeric or integer'))
+          
+          expect_is(pro_return$df$type,
+                    c("character", "factor"),
+                    info = paste('type column, from the "df" element',
+                                 'returned from a process module, must be',
+                                 'a character'))
+          
+          expect_is(pro_return$df$fold,
+                    c("numeric", "integer"),
+                    info = paste('info column, from the "df" element',
+                                 'returned from a process module, must be',
+                                 'a numeric or integer'))
+          
+          expect_true(ncol(pro_return$df) >= 6,
+                      info = paste('The "df" element returned from a process',
+                                   'module is expected to contain 6 or more',
+                                   'columns'))
+          
           expect_true(
             "test" %in% names(attributes(pro_return$df)),
-            info = 'Process module dropped attibutes of "df", ensure that your module propegates "df"s attributes so that they can be used downstream'
+            info = paste('Process module dropped attibutes of "df", ensure',
+                         'that your module propegates "df"s attributes so that',
+                         'they can be used downstream')
           )
-          expect_true(attr(pro_return$df, "test") == 123, info = 'a test attribute on "df", changed value in your process module. Ensure that attribute of "df" are preserved')
+          
+          expect_true(attr(pro_return$df, "test") == 123,
+                      info = paste('a test attribute on "df", changed value',
+                                   'in your process module. Ensure that',
+                                   'attributes of "df" are preserved'))
 
           ## Check 'ras'
           # Check projection
@@ -492,11 +569,18 @@ test_outputs <- function(roxy_parse, modulePath) {
               grepl("+proj=longlat", projection(pro_return$ras)),
               grepl("+ellps=WGS84", projection(pro_return$ras))
             ),
-            info = 'The "ras" element returned by a process module must have WGS84 projection: proj4 string is expected to contain the elements "+proj=longlat" and "+ellps=WGS84"'
+            info = paste('The "ras" element returned by a process module must',
+                         'have WGS84 projection: proj4 string is expected to',
+                         'contain the elements "+proj=longlat" and',
+                         '"+ellps=WGS84"')
           )
 
           # Check raster returned is as expected
-          expect_is(pro_return$ras, c("RasterLayer", "RasterStack", "RasterBrick"), info = 'The "ras" element returned by a process module must be either a RasterLayer or a RasterStack')
+          expect_is(pro_return$ras,
+                    c("RasterLayer", "RasterStack", "RasterBrick"),
+                    info = paste('The "ras" element returned by a process',
+                                 'module must be either a RasterLayer or a',
+                                 'RasterStack'))
 
           ## Try it in some workflows
           if (data_type == "presence/absence") {
@@ -505,7 +589,8 @@ test_outputs <- function(roxy_parse, modulePath) {
             w <- tryCatchWorkflow(
               expr = {
                 w <- workflow(
-                  occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
+                  occurrence = NaiveRandomPresenceAbsence(n = 1000,
+                                                          seed = 123),
                   covariate = NaiveRandomRaster,
                   process = ProcessModule,
                   model = LogisticRegression,
@@ -553,7 +638,8 @@ test_outputs <- function(roxy_parse, modulePath) {
             w <- tryCatchWorkflow(
               expr = {
                 w <- workflow(
-                  occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
+                  occurrence = NaiveRandomPresenceAbsence(n = 1000,
+                                                          seed = 123),
                   covariate = NaiveRandomRaster,
                   process = list(
                     Crossvalidate,
@@ -676,7 +762,8 @@ test_outputs <- function(roxy_parse, modulePath) {
 
       # Run the module with defaults
       sections <- roxy_parse[grepl("section", names(roxy_parse))]
-      data_types <- gsub("Data type: ", "", sections[grepl("Data type: ", sections)])
+      data_types <- gsub("Data type: ", "",
+                         sections[grepl("Data type: ", sections)])
 
       # assign the module
       ModelModule <- source(modulePath)$value
@@ -691,9 +778,13 @@ test_outputs <- function(roxy_parse, modulePath) {
 
             # Choose file to load
             if (data_type == "presence/absence") {
-              loadExpr <- substitute(load(system.file("extdata", "data_PA.rdata", package = "zoon")))
+              loadExpr <- substitute(load(system.file("extdata",
+                                                      "data_PA.rdata",
+                                                      package = "zoon")))
             } else if (data_type == "presence/background") {
-              loadExpr <- substitute(load(system.file("extdata", "data_PB.rdata", package = "zoon")))
+              loadExpr <- substitute(load(system.file("extdata",
+                                                      "data_PB.rdata",
+                                                      package = "zoon")))
             }
 
             # run load expression
@@ -702,7 +793,8 @@ test_outputs <- function(roxy_parse, modulePath) {
             # Run the module with defaults
             mod_return <- tryCatchModule(
               expr = {
-                mod_return <- do.call(roxy_parse$name, args = list(.df = .data$df))
+                mod_return <- do.call(roxy_parse$name,
+                                      args = list(.df = .data$df))
               },
               code_chunk = paste(
                 capture.output(print(loadExpr)),
@@ -710,11 +802,20 @@ test_outputs <- function(roxy_parse, modulePath) {
               ),
               fun = roxy_parse$name
             )
-            if (inherits(mod_return, what = "moduleError")) stop(mod_return)
+            if (inherits(mod_return, what = "moduleError"))
+              stop (mod_return)
 
             ## Check mod_return structure
-            expect_is(mod_return, "zoonModel", info = "The object returned from a model module must be a 'zoonModel' object. See '?ZoonModel' for more details")
-            expect_named(mod_return, expected = c("model", "code", "packages"), info = "The elements of a 'zoonModel' object must be named 'model', 'code', and 'packages'")
+            expect_is(mod_return, "zoonModel",
+                      info = paste("The object returned from a model module",
+                                   "must be a 'zoonModel' object.",
+                                   "See '?ZoonModel' for more details"))
+            
+            expect_named(mod_return,
+                         expected = c("model", "code", "packages"),
+                         info = paste("The elements of a 'zoonModel' object",
+                                      "must be named 'model', 'code', and",
+                                      "'packages'"))
 
 
             ## Check 'model'
@@ -723,7 +824,10 @@ test_outputs <- function(roxy_parse, modulePath) {
 
             ## Check 'code'
             # code is a charachter and can be parsed and checked
-            expect_is(mod_return$code, "character", info = 'The "code" element returned by a model module must be a character (see ?ZoonModel for details)')
+            expect_is(mod_return$code, "character",
+                      info = paste('The "code" element returned by a model',
+                                   'module must be a character',
+                                   '(see ?ZoonModel for details)'))
 
             newdata <- .data$df[, 6:ncol(.data$df), drop = FALSE]
 
@@ -732,26 +836,50 @@ test_outputs <- function(roxy_parse, modulePath) {
               newdata = newdata
             )
 
-            expect_true(is.vector(predicted_vals), info = 'Your ZoonModel object (returned from your model module) does not return a vector when using "code" to predict (see ?ZoonModel)')
-            expect_is(predicted_vals, "numeric", info = "The code element of your model module did not return a vector of predicted values when given your model object and data.")
-            expect_equal(length(predicted_vals), nrow(newdata), info = "Length of predicted values is not equal to the number of row in newdata")
+            expect_true(is.vector(predicted_vals),
+                        info = paste('Your ZoonModel object (returned from',
+                                     'your model module) does not return a',
+                                     'vector when using "code" to predict',
+                                     '(see ?ZoonModel)'))
+            
+            expect_is(predicted_vals, "numeric",
+                      info = paste("The code element of your model module",
+                                   "did not return a vector of predicted",
+                                   "values when given your model object and",
+                                   "data."))
+            
+            expect_equal(length(predicted_vals), nrow(newdata),
+                         info = paste("Length of predicted values is not equal",
+                                      "to the number of row in newdata"))
 
 
             ## Check 'packages'
-            expect_true(is.vector(mod_return$packages), info = '"packages" element of ZoonModel object returned from a model module should be a vector')
-            expect_is(mod_return$packages, "character", '"packages" element of ZoonModel object returned from a model module should be a character object of package names')
+            expect_true(is.vector(mod_return$packages),
+                        info = paste('"packages" element of ZoonModel object',
+                                     'returned from a model module should be',
+                                     'a vector'))
+            
+            expect_is(mod_return$packages, "character",
+                      info = paste('"packages" element of ZoonModel object',
+                                   'returned from a model module should be',
+                                   'a character object of package names'))
 
             # Check these against available packages
-            cran_avail_packages <- unique(row.names(utils::available.packages("http://cran.rstudio.com/src/contrib")))
+            pkg_path <- "http://cran.rstudio.com/src/contrib"
+            avail <- utils::available.packages(pkg_path)
+            cran_avail_packages <- unique(row.names(avail))
             inst_pck <- as.data.frame(utils::installed.packages())
-            base_installed_packages <- rownames(inst_pck[inst_pck$Priority == "base" & !is.na(inst_pck$Priority), ])
+            idx <- inst_pck$Priority == "base" & !is.na(inst_pck$Priority)
+            base_installed_packages <- rownames(inst_pck[idx, ])
             avail_packages <- c(cran_avail_packages, base_installed_packages)
-            not_avail <- mod_return$packages[!mod_return$packages %in% avail_packages]
+            idx <- !mod_return$packages %in% avail_packages
+            not_avail <- mod_return$packages[idx]
 
-            expect_true(length(not_avail) == 0, info = paste(
-              "Not all packages specified in your model module are available on cran. Could not find:",
-              paste(not_avail, collapse = ", ")
-            ))
+            expect_true(length(not_avail) == 0,
+                        info = paste("Not all packages specified in your model",
+                                     "module are available on cran.",
+                                     "Could not find:",
+                                     paste(not_avail, collapse = ", ")))
 
             ## Try it in some workflows
             if (data_type == "presence/absence") {
@@ -760,7 +888,8 @@ test_outputs <- function(roxy_parse, modulePath) {
               w <- tryCatchWorkflow(
                 expr = {
                   w <- workflow(
-                    occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
+                    occurrence = NaiveRandomPresenceAbsence(n = 1000,
+                                                            seed = 123),
                     covariate = NaiveRandomRaster,
                     process = NoProcess,
                     model = ModelModule,
@@ -782,7 +911,8 @@ test_outputs <- function(roxy_parse, modulePath) {
               w <- tryCatchWorkflow(
                 expr = {
                   w <- workflow(
-                    occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
+                    occurrence = NaiveRandomPresenceAbsence(n = 1000,
+                                                            seed = 123),
                     covariate = NaiveRandomRaster,
                     process = Chain(NoProcess, NoProcess),
                     model = ModelModule,
@@ -804,7 +934,8 @@ test_outputs <- function(roxy_parse, modulePath) {
               w <- tryCatchWorkflow(
                 expr = {
                   w <- workflow(
-                    occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
+                    occurrence = NaiveRandomPresenceAbsence(n = 1000,
+                                                            seed = 123),
                     covariate = NaiveRandomRaster,
                     process = NoProcess,
                     model = list(ModelModule, ModelModule),
@@ -826,7 +957,8 @@ test_outputs <- function(roxy_parse, modulePath) {
               w <- tryCatchWorkflow(
                 expr = {
                   w <- workflow(
-                    occurrence = NaiveRandomPresenceAbsence(n = 1000, seed = 123),
+                    occurrence = NaiveRandomPresenceAbsence(n = 1000,
+                                                            seed = 123),
                     covariate = NaiveRandomRaster,
                     process = Crossvalidate,
                     model = list(ModelModule, ModelModule),
@@ -841,8 +973,9 @@ test_outputs <- function(roxy_parse, modulePath) {
 
               expect_is(
                 w, "zoonWorkflow",
-                info = "The process module did not work in a crossvalidation workflow"
-              )
+                info = paste("The process module did not work in a",
+                             "crossvalidation workflow"))
+              
             } else if (data_type == "presence/background") {
 
               # Norm
@@ -931,10 +1064,9 @@ test_outputs <- function(roxy_parse, modulePath) {
               )
               if (inherits(w, what = "moduleError")) stop(w)
 
-              expect_is(
-                w, "zoonWorkflow",
-                info = "The model module did not work in a crossvalidation workflow"
-              )
+              expect_is(w, "zoonWorkflow",
+                        info = paste("The model module did not work",
+                                     "in a crossvalidation workflow"))
             }
           }
         }
@@ -961,7 +1093,8 @@ test_outputs <- function(roxy_parse, modulePath) {
 
       # Run the module with defaults
       sections <- roxy_parse[grepl("section", names(roxy_parse))]
-      data_types <- gsub("Data type: ", "", sections[grepl("Data type: ", sections)])
+      data_types <- gsub("Data type: ", "",
+                         sections[grepl("Data type: ", sections)])
 
       # assign the module
       OutputModule <- source(modulePath)$value

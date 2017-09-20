@@ -74,7 +74,8 @@ ChangeWorkflow <- function(workflow,
   # Work out where to run the workflow from.
   from <- which.max(!unchanged)
 
-  # Give new arg names to *Sub objects so we can continue with RerunWorkflow source code.
+  # Give new arg names to *Sub objects so we can continue with RerunWorkflow
+  # source code.
   occNew <- oldCallArgs[["occurrence"]]
   covNew <- oldCallArgs[["covariate"]]
   proNew <- oldCallArgs[["process"]]
@@ -261,7 +262,10 @@ ChangeWorkflow <- function(workflow,
   if (from <= 3) {
     tryCatch(
       {
-        process.output <- DoProcessModules(process.module, processName, data, e)
+        process.output <- DoProcessModules(process.module,
+                                           processName,
+                                           data,
+                                           e)
         output$process.output <- process.output
       },
       error = function(cond) {
@@ -278,7 +282,10 @@ ChangeWorkflow <- function(workflow,
   if (from <= 4) {
     tryCatch(
       {
-        model.output <- DoModelModules(model.module, modelName, process.output, e)
+        model.output <- DoModelModules(model.module,
+                                       modelName,
+                                       process.output,
+                                       e)
         output$model.output <- model.output
       },
       error = function(cond) {
@@ -298,10 +305,12 @@ ChangeWorkflow <- function(workflow,
   if (from <= 5) {
     tryCatch(
       {
-        output.output <- DoOutputModules(
-          output.module, outputName,
-          process.module, process.output, model.output, e
-        )
+        output.output <- DoOutputModules(output.module,
+                                         outputName,
+                                         process.module,
+                                         process.output,
+                                         model.output,
+                                         e)
         output$report <- output.output
       },
       error = function(cond) {

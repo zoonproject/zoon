@@ -18,11 +18,11 @@
 # Not Chained
 #   length(output) > 1 (output is a list)
 #   length(output) == 1 (output isn't a list)
-#     length(process) == length(model) (process, covariate or occurrence is a list)
+#     length(process) == length(model) (proc, cov or occ is a list)
 #     length(process) != length(model) (model or nothing is a list)
 #
 # Is Chained
-#   length(process) == length(model) (process, covariate or occurrence is a list)
+#   length(process) == length(model) (proc, cov or occ is a list)
 #   length(process) != length(model) (model or nothing is a list)
 
 
@@ -240,11 +240,15 @@ DoModelModules <- function(model.module, modelName, process.output, e) {
   }
 
   if (length(model.module) > 1) {
-    model.output <-
-      lapply(modelName, FUN = DoModelList, e = e, process.output = process.output)
+    model.output <- lapply(modelName,
+                           FUN = DoModelList,
+                           e = e,
+                           process.output = process.output)
   } else {
-    model.output <-
-      lapply(process.output, FUN = DoModelNotList, e = e, modelName = modelName)
+    model.output <- lapply(process.output,
+                           FUN = DoModelNotList,
+                           e = e,
+                           modelName = modelName)
   }
   return(model.output)
 }
@@ -322,7 +326,10 @@ DoProcessModules <- function(process.module, processName, data, e) {
     #   at the end of the workflow.
     process.output <- data
     for (p in seq_along(processName)) {
-      process.output <- lapply(process.output, FUN = DoProcessChain, p = p, e = e)
+      process.output <- lapply(process.output,
+                               FUN = DoProcessChain,
+                               p = p,
+                               e = e)
     }
 
     call_path_process_chain <- function(x) {
@@ -342,11 +349,6 @@ DoProcessModules <- function(process.module, processName, data, e) {
 
     process.output <- lapply(process.output, call_path_process_chain)
 
-    #     # add call_path for the chain
-    #     attr(process.output, 'call_path') <- list(attr(process.output, 'call_path'),
-    #                                               paste('Chain(',
-    #                                                     paste(processName, collapse = ', '),
-    #                                                     ')', sep = ''))
   }
   return(process.output)
 }
@@ -357,7 +359,8 @@ DoProcessModules <- function(process.module, processName, data, e) {
 # (occurrenceName)
 DoOccurrenceModule <- function(x, e) {
   occurrence.output <- do.call(x$func, x$paras, envir = e)
-  attr(occurrence.output, "call_path") <- list(occurrence = as.character(x$module))
+  call_path <- list(occurrence = as.character(x$module))
+  attr(occurrence.output, "call_path") <- call_path
   return(occurrence.output)
 }
 
@@ -366,6 +369,7 @@ DoOccurrenceModule <- function(x, e) {
 # (covariateName)
 DoCovariateModule <- function(x, e) {
   covariate.output <- do.call(x$func, x$paras, envir = e)
-  attr(covariate.output, "call_path") <- list(covariate = as.character(x$module))
+  call_path <- list(covariate = as.character(x$module))
+  attr(covariate.output, "call_path") <- call_path
   return(covariate.output)
 }

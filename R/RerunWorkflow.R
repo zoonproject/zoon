@@ -155,7 +155,9 @@ RerunWorkflow <- function(workflow, from = NULL) {
   if (from <= 1) {
     tryCatch(
       {
-        occurrence.output <- lapply(occurrenceName, FUN = DoOccurrenceModule, e)
+        occurrence.output <- lapply(occurrenceName,
+                                    FUN = DoOccurrenceModule,
+                                    e)
         # Then bind together if the occurrence modules were chained
         if (identical(attr(occurrence.module, "chain"), TRUE)) {
           occurrence.output <- list(do.call(rbind, occurrence.output))
@@ -244,7 +246,10 @@ RerunWorkflow <- function(workflow, from = NULL) {
   if (from <= 4) {
     tryCatch(
       {
-        model.output <- DoModelModules(model.module, modelName, process.output, e)
+        model.output <- DoModelModules(model.module,
+                                       modelName,
+                                       process.output,
+                                       e)
         output$model.output <- model.output
       },
       error = function(cond) {

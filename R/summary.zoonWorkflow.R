@@ -31,7 +31,9 @@ summaryHTML <- function(workflow) {
           <html>
           <body>"
 
-  zoonLogo <- '<img src="https://github.com/zoonproject/blog/raw/master/zoon_top.png" alt="Zoon Logo", style="max-height: 170px; max-width: 100%;">'
+  zoonLogo <- paste0('<img src="https://github.com/zoonproject/blog/raw/',
+                     'master/zoon_top.png" alt="Zoon Logo", style="max-height:',
+                     ' 170px; max-width: 100%;">')
 
   callHeader <- paste(
     "<h1>Zoon Workflow summary</h1><br>",
@@ -264,7 +266,8 @@ covHTML <- function(cov) {
     dev.off()
 
     nlayerWARN <- NULL
-    if (length(names(cov)) > 16) nlayerWARN <- "<span>Only the first 16 layers are shown</span><br>"
+    if (length(names(cov)) > 16)
+      nlayerWARN <- "<span>Only the first 16 layers are shown</span><br>"
 
     HTML <- paste(
       HTML,
@@ -283,13 +286,16 @@ htmlTable <- function(dataFrame, maxWidth = 600, maxHeight = 300) {
   colheaders <- colnames(dataFrame)
   rowNames <- row.names(dataFrame)
 
-  tableHTML <- paste(
-    '<div style="float: left; max-width: ', maxWidth, "px; max-height: ", maxHeight, 'px; overflow: scroll;>">',
-    "<TABLE ><TR><TH></TH><TH>", paste(colheaders, collapse = "</TH><TH>"), "</TH></TR>", sep = ""
-  )
+  tableHTML <- paste('<div style="float: left; max-width: ',
+                     maxWidth, "px; max-height: ", maxHeight,
+                     'px; overflow: scroll;>">', "<TABLE ><TR><TH></TH><TH>",
+                     paste(colheaders, collapse = "</TH><TH>"), "</TH></TR>",
+                     sep = "")
 
   for (i in rowNames) {
-    tableHTML <- paste(tableHTML, "<TR><TD>", i, "</TD><TD>", paste(dataFrame[i, ], collapse = "</TD><TD>"), "</TD></TR>", sep = "")
+    tableHTML <- paste(tableHTML, "<TR><TD>", i, "</TD><TD>",
+                       paste(dataFrame[i, ], collapse = "</TD><TD>"),
+                       "</TD></TR>", sep = "")
   }
 
   tableHTML <- paste(tableHTML, "</TABLE>", "</div>", sep = "")
@@ -319,19 +325,21 @@ proHTML <- function(pro) {
   minLong <- round(min(df$longitude), 3)
   maxLong <- round(max(df$longitude), 3)
 
-  HTML <- paste(
-    '<h3 style="clear: both;">Module:', attr(pro, "call_path")$process, "</h3>",
-    "<span>Call path:", paste(unlist(attr(pro, "call_path")), collapse = " > "), "</span><br>",
-    '<div style="clear: both; float: left; width: 200px;">',
-    "<h4>Occurrence data</h4>",
-    "<span>Number of rows:", nrows, "</span><br>",
-    "<span>Min Latitude:", minLat, "</span><br>",
-    "<span>Max Latitude:", maxLat, "</span><br>",
-    "<span>Min Longitude:", minLong, "</span><br>",
-    "<span>Max Longitude:", maxLong, "</span>",
-    "</div>"
+  HTML <- paste('<h3 style="clear: both;">Module:',
+                attr(pro, "call_path")$process, "</h3>",
+                "<span>Call path:",
+                paste(unlist(attr(pro, "call_path")), collapse = " > "),
+                "</span><br>",
+                '<div style="clear: both; float: left; width: 200px;">',
+                "<h4>Occurrence data</h4>",
+                "<span>Number of rows:", nrows, "</span><br>",
+                "<span>Min Latitude:", minLat, "</span><br>",
+                "<span>Max Latitude:", maxLat, "</span><br>",
+                "<span>Min Longitude:", minLong, "</span><br>",
+                "<span>Max Longitude:", maxLong, "</span>",
+                "</div>"
   )
-
+  
   HTML <- paste(
     HTML,
     "<h4>Preview</h4>",
@@ -388,8 +396,10 @@ modelSummary <- function(mod) {
 
 modHTML <- function(mod) {
   df <- mod$data
-  prediction_code <- paste(capture.output(cat(mod$model$code)), collapse = "<br>")
-  model_summary <- paste(capture.output(print(mod$model$model)), collapse = "<br>")
+  prediction_code <- paste(capture.output(cat(mod$model$code)),
+                           collapse = "<br>")
+  model_summary <- paste(capture.output(print(mod$model$model)),
+                         collapse = "<br>")
 
   nrows <- nrow(df)
   minLat <- round(min(df$latitude), 3)
@@ -397,19 +407,21 @@ modHTML <- function(mod) {
   minLong <- round(min(df$longitude), 3)
   maxLong <- round(max(df$longitude), 3)
 
-  HTML <- paste(
-    '<h3 style="clear: both;">Module:', attr(mod, "call_path")$model, "</h3>",
-    "<span>Call path:", paste(unlist(attr(mod, "call_path")), collapse = " > "), "</span><br>",
-    '<div style="clear: both; float: left; width: 200px;">',
-    "<h4>Occurrence data</h4>",
-    "<span>Number of rows:", nrows, "</span><br>",
-    "<span>Min Latitude:", minLat, "</span><br>",
-    "<span>Max Latitude:", maxLat, "</span><br>",
-    "<span>Min Longitude:", minLong, "</span><br>",
-    "<span>Max Longitude:", maxLong, "</span>",
-    "</div>"
+  HTML <- paste('<h3 style="clear: both;">Module:',
+                attr(mod, "call_path")$model, "</h3>",
+                "<span>Call path:",
+                paste(unlist(attr(mod, "call_path")), collapse = " > "),
+                "</span><br>",
+                '<div style="clear: both; float: left; width: 200px;">',
+                "<h4>Occurrence data</h4>",
+                "<span>Number of rows:", nrows, "</span><br>",
+                "<span>Min Latitude:", minLat, "</span><br>",
+                "<span>Max Latitude:", maxLat, "</span><br>",
+                "<span>Min Longitude:", minLong, "</span><br>",
+                "<span>Max Longitude:", maxLong, "</span>",
+                "</div>"
   )
-
+  
   HTML <- paste(
     HTML,
     "<h4>Preview</h4>",

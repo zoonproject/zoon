@@ -15,7 +15,10 @@ ModuleLabels <- function(colr, IsChain, IsList) {
   ### ___ function for writing the module labels
 
   # basic defaults for diagram layout.
-  x1 <- c(10, 30, 50, 70, 90) # lower corner for boxes (Xaxis) (occurrence, covariate, process, model, output)
+  
+  # lower corner for boxes (Xaxis) (occurrence, covariate, process, model,
+  # output)
+  x1 <- c(10, 30, 50, 70, 90) 
   x2 <- c(20, 40, 60, 80, 100) # top corner for boxes (Xaxis)
   xG <- x2[1] - x1[1] # gap between boxes (Xaxis)
   yM <- 50 # Y val for middle line
@@ -113,7 +116,10 @@ Boxed2 <- function(NoOfModules, InModuleList, IsList, IsChain, ModuleNames) {
   rm(i)
 
   # basic defaults for diagram layout.
-  x1 <- c(10, 30, 50, 70, 90) # lower corner for boxes (Xaxis) (occurrence, covariate, process, model, output)
+  
+  # lower corner for boxes (Xaxis) (occurrence, covariate, process, model,
+  # output)
+  x1 <- c(10, 30, 50, 70, 90) 
   x2 <- c(20, 40, 60, 80, 100) # top corner for boxes (Xaxis)
   xG <- x2[1] - x1[1] # gap between boxes (Xaxis)
   yM <- 50 # Y val for middle line
@@ -152,7 +158,8 @@ Boxed2 <- function(NoOfModules, InModuleList, IsList, IsChain, ModuleNames) {
         lwd = lW, col = clrs[ColCode]
       )
     }
-    yStart <- yM - (yH * 0.5 * NoOfModules[i]) - (yG * 0.5 * (NoOfModules[i] - 1))
+    yStart <- yM - (yH * 0.5 * NoOfModules[i]) -
+      (yG * 0.5 * (NoOfModules[i] - 1))
     yNow <- yStart
     yLineStart <- yM - (yLG * 0.5 * (NoOfModules[i] - 1))
     yLnow <- yLineStart
@@ -331,7 +338,13 @@ CallLister <- function(callList) {
 
   moduleIndex <- as.numeric(moduleIndex)
 
-  return(list(noOfModules, moduleIndex, isChain, isList, moduleNames, inModuleList))
+  list(noOfModules,
+       moduleIndex,
+       isChain,
+       isList,
+       moduleNames,
+       inModuleList)
+  
 } # END CallLister function
 
 #' @name plot.zoonWorkflow

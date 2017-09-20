@@ -11,9 +11,12 @@
 
 ModuleHelp <- function(module) {
   module <- as.character(substitute(module))
-  if (!is.character(module) | !length(module) == 1) stop("module must be a character of length 1")
+  if (!is.character(module) | !length(module) == 1)
+    stop("module must be a character of length 1")
 
-  helpURL <- paste0("https://raw.githubusercontent.com/zoonproject/modules/master/man/", module, ".Rd")
+  helpURL <- paste0("https://raw.githubusercontent.com/",
+                    "zoonproject/modules/master/man/",
+                    module, ".Rd")
 
   if (url.exists(helpURL)) {
 
@@ -24,13 +27,18 @@ ModuleHelp <- function(module) {
     DisplayModuleHelp(helpURL)
   } else {
     modList <- GetModuleList()
-    closeMatches <- unlist(modList)[agrep(module, unlist(modList), max.distance = 0.3)]
+    idx <- agrep(module, unlist(modList), max.distance = 0.3)
+    closeMatches <- unlist(modList)[idx]
     if (length(closeMatches) == 0) {
-      stop("Can't find '", module, "' or any modules with closely matching names.")
+      stop ("Can't find '", module,
+            "' or any modules with closely matching names.")
     } else if (length(closeMatches) == 1) {
-      stop("Can't find '", module, "'. Did you mean '", closeMatches, "'?")
+      stop ("Can't find '", module,
+            "'. Did you mean '", closeMatches, "'?")
     } else {
-      stop("Can't find '", module, "'. Did you mean one of '", paste(closeMatches, collapse = "', "), "'?")
+      stop ("Can't find '", module,
+            "'. Did you mean one of '",
+            paste(closeMatches, collapse = "', "), "'?")
     }
   }
 }

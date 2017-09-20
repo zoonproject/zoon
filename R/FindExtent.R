@@ -47,7 +47,9 @@
 #'             resolution = "medium",
 #'             round = 6)
 #' }
-FindExtent <- function(initial_extent = c(-180, 180, -90, 90), resolution = c("low", "medium"), round = 3) {
+FindExtent <- function (initial_extent = c(-180, 180, -90, 90),
+                        resolution = c("low", "medium"),
+                        round = 3) {
 
   # reset the graphics parameters on exit
   old_mar <- par()$mar
