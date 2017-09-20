@@ -24,8 +24,13 @@
 #'                      output = PrintMap)
 #' }
 
-ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, process = NULL,
-                           model = NULL, output = NULL, forceReproducible = NULL) {
+ChangeWorkflow <- function(workflow,
+                           occurrence = NULL,
+                           covariate = NULL,
+                           process = NULL,
+                           model = NULL,
+                           output = NULL,
+                           forceReproducible = NULL) {
 
   # Sub all inputs
   occSub <- substitute(occurrence)
@@ -48,29 +53,23 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
   oldCallArgs <- lapply(oldCallArgs, StringToCall)
 
   # Replace any arguments that have been specified.
-  if (!is.null(occSub)) {
+  if (!is.null(occSub))
     oldCallArgs[["occurrence"]] <- occSub
-  }
 
-  if (!is.null(covSub)) {
+  if (!is.null(covSub))
     oldCallArgs[["covariate"]] <- covSub
-  }
 
-  if (!is.null(proSub)) {
+  if (!is.null(proSub))
     oldCallArgs[["process"]] <- proSub
-  }
 
-  if (!is.null(modSub)) {
+  if (!is.null(modSub))
     oldCallArgs[["model"]] <- modSub
-  }
 
-  if (!is.null(outSub)) {
+  if (!is.null(outSub))
     oldCallArgs[["output"]] <- outSub
-  }
 
-  if (!is.null(forceReproducible)) {
+  if (!is.null(forceReproducible))
     oldCallArgs$forceReproducible <- forceReproducible
-  }
 
   # Work out where to run the workflow from.
   from <- which.max(!unchanged)
@@ -110,19 +109,14 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
 
   # Only one of occurrence, covariate, process and model can be a list of
   #   multiple modules.
-  module_list <- list(occurrence.module,
-                      covariate.module,
-                      process.module,
-                      model.module,
-                      output.module)
   
-  isChain <- vapply(module_list,
+  isChain <- vapply(call.list,
                     function(x) {
                       isTRUE(attr(x, "chain"))
                     },
                     FUN.VALUE = FALSE)
   
-  NoOfModules <- vapply(module_list, length, FUN.VALUE = 0)
+  NoOfModules <- vapply(call.list, length, FUN.VALUE = 0)
   
   if (sum(NoOfModules[!isChain] > 1) > 1)
     stop ("Only one module type can be a list of multiple modules.")
@@ -166,8 +160,12 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
 
   # set up zoon object now so we can return it if there's an error
   call <- SortArgs(
-    PasteAndDep(occNew), PasteAndDep(covNew), PasteAndDep(proNew),
-    PasteAndDep(modNew), PasteAndDep(outNew), forceReproducible
+    PasteAndDep(occNew),
+    PasteAndDep(covNew),
+    PasteAndDep(proNew),
+    PasteAndDep(modNew),
+    PasteAndDep(outNew),
+    forceReproducible
   )
 
   output <- list(

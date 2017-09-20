@@ -92,9 +92,8 @@ RerunWorkflow <- function(workflow, from = NULL) {
                         length,
                         FUN.VALUE = 0)
   
-  if (sum(NoOfModules[!isChain] > 1) > 1) {
+  if (sum(NoOfModules[!isChain] > 1) > 1)
     stop("Only one module type can be a list of multiple modules.")
-  }
 
   # Get the modules (functions) from github.
   # Save name of functions as well as load functions into global namespace.

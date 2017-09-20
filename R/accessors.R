@@ -27,12 +27,13 @@
 #' }
 
 Occurrence <- function(workflow) {
+  
   if (!inherits(workflow, "zoonWorkflow"))
     stop("workflow should be a zoon workflow object.")
 
   if (length(workflow$occurrence.output) == 1)
     out <- workflow$occurrence.output[[1]]
-    else
+  else
     out <- workflow$occurrence.output
 
   out
@@ -50,7 +51,7 @@ Covariate <- function(workflow) {
 
   if (length(workflow$covariate.output) == 1)
     out <- workflow$covariate.output[[1]]
-    else
+  else
     out <- workflow$covariate.output
 
   out
@@ -68,7 +69,7 @@ Process <- function(workflow) {
 
   if (length(workflow$process.output) == 1)
     out <- workflow$process.output[[1]]
-    else
+  else
     out <- workflow$process.output
 
   out
@@ -83,7 +84,7 @@ Model <- function(workflow) {
 
   if (length(workflow$model.output) == 1)
     out <- workflow$model.output[[1]]
-    else
+  else
     out <- workflow$model.output
 
   out
@@ -99,7 +100,7 @@ Output <- function(workflow) {
 
   if (length(workflow$report) == 1)
     out <- workflow$report[[1]]
-    else
+  else
     out <- workflow$report
 
   out

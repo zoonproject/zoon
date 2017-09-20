@@ -5,5 +5,6 @@ test_that("print.zoonCitation tests", {
 
   cit_out <- capture.output(ZoonCitation("LogisticRegression"))
 
-  expect_output(print(cit_out), "To cite the LogisticRegression module in publications use:")
+  expect_output(print(cit_out),
+                "To cite the LogisticRegression module in publications use:")
 })
