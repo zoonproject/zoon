@@ -1,7 +1,7 @@
-context('RunModules')
+context("RunModules")
 
 # Having environment problems with this test.
-#test_that('RunModels function works correctly', {
+# test_that('RunModels function works correctly', {
 #  skip_on_cran()
 
 #  GetModule('LogisticRegression', forceReproducible = FALSE)
@@ -9,9 +9,9 @@ context('RunModules')
 #  e <- environment()
 
 #  # Test data with training and external validation data
-#  
+#
 #  df <- data.frame(value = rep(c(0,1), 10),
-#                   type = rep(c('absence', 'presence'), 10), 
+#                   type = rep(c('absence', 'presence'), 10),
 #                   lon = 1:20, lat = 1:20,
 #                   fold = rep(c(1,0), each = 10),
 #                   cov1 = 1:20)
@@ -32,9 +32,9 @@ context('RunModules')
 
 
 #  # Test data with crossvalidation data
-#  
+#
 #  df2 <- data.frame(value = rep(c(0,1), 10),
-#                   type = rep(c('absence', 'presence'), 10), 
+#                   type = rep(c('absence', 'presence'), 10),
 #                   lon = 1:20, lat = 1:20,
 #                   fold = rep(c(1,2), each = 10),
 #                   cov1 = c(1:10, 1:10))
@@ -53,13 +53,13 @@ context('RunModules')
 #  expect_true(length(x2$model$y) == 20)
 
 #  # Because cov1 is artificially replicated, predictions should be equal
-#  expect_true(all.equal(x2$data[1:10,'predictions'], 
+#  expect_true(all.equal(x2$data[1:10,'predictions'],
 #                        x2$data[11:20,'predictions']))
 
 
 #  # Mix of external and cross validation
 #  df3 <- data.frame(value = rep(c(0,1), 10),
-#                   type = rep(c('absence', 'presence'), 10), 
+#                   type = rep(c('absence', 'presence'), 10),
 #                   lon = 1:20, lat = 1:20,
 #                   fold = c(rep(c(1,2), each = 5), rep(0,10)),
 #                   cov1 = c(1:10, 1:10))
@@ -79,4 +79,4 @@ context('RunModules')
 #  expect_true(length(x3$model$y) == 10)
 
 
-#})
+# })

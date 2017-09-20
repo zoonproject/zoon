@@ -12,6 +12,6 @@ subsetColumnsZoon(df, columns)
 \item{columns}{A vector of column names (character) of indexs (numeric) which you'd like to keep}
 }
 \description{
-Extract a subset of columns from a data.frame, while preserving the user 
+Extract a subset of columns from a data.frame, while preserving the user
 defined attributes of the parent data.frame.
 }

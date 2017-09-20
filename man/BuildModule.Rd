@@ -31,7 +31,7 @@ working directory).}
 
 \item{version}{(optional) Numeric giving the version number. Default 0.1.}
 
-\item{paras}{A list of the form 
+\item{paras}{A list of the form
 list(parameterName = 'Parameter description.',
 anotherParameter = 'Another description.')
 This is required if the module takes non-default arguements}
