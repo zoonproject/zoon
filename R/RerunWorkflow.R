@@ -35,8 +35,12 @@ RerunWorkflow <- function(workflow, from = NULL) {
 
   # Find first NULL modules and run from there.
   if (is.null(from)) {
-    NullModules <- sapply(workflow[1:5], is.null)
-    if (!sum(NullModules) == 0) {
+    
+    NullModules <- vapply(workflow[1:5],
+                          is.null,
+                          FUN.VALUE = FALSE)
+    
+    if (any(NullModules)) {
       from <- which.max(NullModules)
     } else {
       from <- 1
@@ -72,22 +76,25 @@ RerunWorkflow <- function(workflow, from = NULL) {
 
   # Only one of occurrence, covariate, process and model can be a list of
   #   multiple modules.
-  isChain <- sapply(
-    list(
-      occurrence.module, covariate.module,
-      process.module, model.module, output.module
-    ),
-    function(x) identical(attr(x, "chain"), TRUE)
-  )
-  NoOfModules <- sapply(list(
-    occurrence.module, covariate.module,
-    process.module, model.module, output.module
-  ), length)
+  module_list <- list(occurrence.module,
+                      covariate.module,
+                      process.module,
+                      model.module,
+                      output.module)
+  
+  isChain <- vapply(module_list,
+                    function (x) {
+                      isTRUE(attr(x, "chain"))
+                    },
+                    FUN.VALUE = FALSE)
+  
+  NoOfModules <- vapply(module_list,
+                        length,
+                        FUN.VALUE = 0)
+  
   if (sum(NoOfModules[!isChain] > 1) > 1) {
     stop("Only one module type can be a list of multiple modules.")
   }
-
-
 
   # Get the modules (functions) from github.
   # Save name of functions as well as load functions into global namespace.
@@ -100,47 +107,18 @@ RerunWorkflow <- function(workflow, from = NULL) {
   # Test for predict method
   outputName <- LapplyGetModule(output.module, forceReproducible, e)
 
+  fun_ver <- function(x) c(module = x$func, version = x$version)
+  eg <- c(module = "a", version = "b")
+  
   # Build module version list
   moduleVersions <- list(
-    occurrence = sapply(
-      occurrenceName,
-      function(x) c(
-        module = x$func,
-        version = x$version
-      )
-    ),
-    covariate = sapply(
-      covariateName,
-      function(x) c(
-        module = x$func,
-        version = x$version
-      )
-    ),
-    process = sapply(
-      processName,
-      function(x) c(
-        module = x$func,
-        version = x$version
-      )
-    ),
-    model = sapply(
-      modelName,
-      function(x) c(
-        module = x$func,
-        version = x$version
-      )
-    ),
-    output = sapply(
-      outputName,
-      function(x) c(
-        module = x$func,
-        version = x$version
-      )
-    )
+    occurrence = vapply(occurrenceName, fun_ver, FUN.VALUE = eg),
+    covariate = vapply(covariateName, fun_ver, FUN.VALUE = eg),
+    process = vapply(processName, fun_ver, FUN.VALUE = eg),
+    model = vapply(modelName, fun_ver, FUN.VALUE = eg),
+    output = vapply(outputName, fun_ver, FUN.VALUE = eg)
   )
-
-
-
+  
   # Different to workflow(), We have an if statement before each module is run
   #   to check the 'from' argument.
 

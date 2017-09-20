@@ -79,19 +79,24 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
 
   # Only one of occurrence, covariate, process and model can be a list of
   #   multiple modules. But ignore chained modules.
-  isChain <- sapply(
-    list(
-      occurrence.module, covariate.module,
-      process.module, model.module, output.module
-    ),
-    function(x) identical(attr(x, "chain"), TRUE)
-  )
-  NoOfModules <- sapply(list(
-    occurrence.module, covariate.module,
-    process.module, model.module, output.module
-  ), length)
+  module_list <- list(occurrence.module,
+                      covariate.module,
+                      process.module,
+                      model.module,
+                      output.module)
+  
+  isChain <- vapply(module_list,
+                    function (x) {
+                      isTRUE(attr(x, "chain"))
+                    },
+                    FUN.VALUE = FALSE)
+  
+  NoOfModules <- vapply(module_list,
+                        length,
+                        FUN.VALUE = 0)
+  
   if (sum(NoOfModules[!isChain] > 1) > 1) {
-    stop("Only one module type can be a list of multiple modules.")
+    stop ("Only one module type can be a list of multiple modules.")
   }
 
   # Get the modules (functions) from github.
@@ -105,45 +110,18 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   # Test for predict method
   outputName <- LapplyGetModule(output.module, forceReproducible, e)
 
+  fun_ver <- function(x) c(module = x$func, version = x$version)
+  eg <- c(module = "a", version = "b")
+  
   # Build module version list
   moduleVersions <- list(
-    occurrence = sapply(
-      occurrenceName,
-      function(x) c(
-        module = x$func,
-        version = x$version
-      )
-    ),
-    covariate = sapply(
-      covariateName,
-      function(x) c(
-        module = x$func,
-        version = x$version
-      )
-    ),
-    process = sapply(
-      processName,
-      function(x) c(
-        module = x$func,
-        version = x$version
-      )
-    ),
-    model = sapply(
-      modelName,
-      function(x) c(
-        module = x$func,
-        version = x$version
-      )
-    ),
-    output = sapply(
-      outputName,
-      function(x) c(
-        module = x$func,
-        version = x$version
-      )
-    )
+    occurrence = vapply(occurrenceName, fun_ver, FUN.VALUE = eg),
+    covariate = vapply(covariateName, fun_ver, FUN.VALUE = eg),
+    process = vapply(processName, fun_ver, FUN.VALUE = eg),
+    model = vapply(modelName, fun_ver, FUN.VALUE = eg),
+    output = vapply(outputName, fun_ver, FUN.VALUE = eg)
   )
-
+  
   # Run the modules. (these functions are in DoModuleFunctions.R)
   # But we have to check for chained modules and deal with them
   # And work out which module has been given as a list, and lapply over that.

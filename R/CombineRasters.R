@@ -35,29 +35,35 @@ CombineRasters <- function(rasters, method = "ngb") {
         projectRaster(x, crs = crs, method = method)
       }
     )
-
+    
+    edge <- function (x, i, j) {
+      bbox(x)[i, j]
+    }
+    
     # Manually compute the minimal extent
-    xmin <- max(sapply(rasters, FUN = function(x) {
-      bbox(x)[1, 1]
-    }))
-    xmax <- min(sapply(rasters, FUN = function(x) {
-      bbox(x)[1, 2]
-    }))
-    ymin <- max(sapply(rasters, FUN = function(x) {
-      bbox(x)[2, 1]
-    }))
-    ymax <- min(sapply(rasters, FUN = function(x) {
-      bbox(x)[2, 2]
-    }))
+    xmin <- max(vapply(rasters,
+                       edge, 1, 1,
+                       FUN.VALUE = 1))
+    xmax <- min(vapply(rasters,
+                       edge, 1, 2,
+                       FUN.VALUE = 1))
+    ymin <- max(vapply(rasters,
+                       edge, 2, 1,
+                       FUN.VALUE = 1))
+    ymax <- min(vapply(rasters,
+                       edge, 2, 2,
+                       FUN.VALUE = 1))
 
     # error is the extents dont match
     if (xmin >= xmax | ymin >= ymax) {
-      stop('Rasters in covariates modules do not overlap. ",
-           "Review their extents.')
+      stop ('Rasters in covariates modules do not overlap. ",
+            "Review their extents.')
     }
-
+    
     # Get the minimum resolution of these
-    resolutions <- sapply(rasters, FUN = raster::res)
+    resolutions <- vapply(rasters,
+                          raster::res,
+                          FUN.VALUE = c(1, 1))
     x_min <- min(resolutions[1, ])
     y_min <- min(resolutions[2, ])
 
@@ -81,13 +87,12 @@ CombineRasters <- function(rasters, method = "ngb") {
     newextent <- c(xmin, xmax, ymin, ymax)
 
     # Which raster need to be cropped?
-    ras_crop <- sapply(
-      rasters,
-      FUN = function(x) {
-        extent(x) != extent(newextent)
-      }
-    )
-
+    ras_crop <- vapply(rasters,
+                       FUN = function(x) {
+                         extent(x) != extent(newextent)
+                       },
+                       FUN.VALUE = FALSE)
+    
     # Crop the ones that need to be cropped (and report cropping)
     if (any(ras_crop)) {
       message(

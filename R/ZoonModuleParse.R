@@ -23,31 +23,38 @@ ZoonModuleParse <- function(modulePath) {
   # Behaviour varies on the version of
   # Roxygen2 being used
   if ("fields" %in% names(rd)) {
-    res <- sapply(
-      names(rd$fields),
-      function(field, x) {
-        if ("values" %in% names(x[[field]])) {
-          named_tag <- list(x[[field]]$values)
-          names(named_tag) <- field
-          return(unlist(named_tag))
-        } else {
-          list_tag <- list()
-          for (i in seq_along(x[[field]]$title)) {
-            list_tag <- c(
-              list_tag,
-              list(list(
-                name = x[[field]]$title[i],
-                content = x[[field]]$content[i]
-              ))
-            )
-          }
-          return(list_tag)
+    
+    field_fun <- function (field, x) {
+      
+      if ("values" %in% names(x[[field]])) {
+        
+        named_tag <- list(x[[field]]$values)
+        names(named_tag) <- field
+        return (unlist(named_tag))
+        
+      } else {
+        
+        list_tag <- list()
+        
+        for (i in seq_along(x[[field]]$title)) {
+          list_tag <- c(list_tag,
+                        list(list(name = x[[field]]$title[i],
+                                  content = x[[field]]$content[i])))
         }
-      },
-      rd$fields
-    )
-
-    if ("param" %in% names(res)) names(res$param) <- gsub("^param.", "", names(res$param))
+        return (list_tag)
+        
+      }
+    }
+    
+    res <- lapply(names(rd$fields),
+                  field_fun,
+                  rd$fields)
+    
+    names(res) <- names(rd$fields)
+    
+    if ("param" %in% names(res))
+      names(res$param) <- gsub("^param.", "", names(res$param))
+    
   } else {
     res <- lapply(
       names(rd),
@@ -58,34 +65,42 @@ ZoonModuleParse <- function(modulePath) {
 
   # flatten 'sections'
   if ("section" %in% names(res)) {
+    
     sections <- lapply(
       res$section,
-      function(x) paste0(x$name, ":", x$content)
+      function (x) {
+        paste0(x$name, ":", x$content)
+      }
     )
-
+    
     # name sections
     names(sections) <- rep("section", length(sections))
 
     # replace old section with new sections
     res[["section"]] <- NULL
     res <- append(res, sections)
+    
   }
 
   # format params
   if ("param" %in% names(res)) {
+    
     params <- lapply(
       names(res$param),
-      function(field, x) list(
-        name = field,
-        description = as.character(x[field])
-      ),
+      function (field, x) {
+        list(name = field,
+             description = as.character(x[field]))
+      },
       res$param
+      
     )
 
     names(params) <- rep("param", length(params))
     res[["param"]] <- NULL
     res <- append(params, res)
+    
   }
 
   return(res)
+  
 }

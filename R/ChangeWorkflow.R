@@ -35,9 +35,11 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
   outSub <- substitute(output)
 
   # Some checks. At least one new module. 'workflow' is from zoon workflow call.
-  if (sum(sapply(list(occSub, covSub, proSub, modSub, outSub), is.null)) == 5) {
+  unchanged <- vapply(list(occSub, covSub, proSub, modSub, outSub),
+                      is.null, FUN.VALUE = FALSE)
+  if (all(unchanged))
     stop("At least one module type must be changed.")
-  }
+  
   stopifnot(inherits(workflow, "zoonWorkflow"))
 
   # Separate the original work flow.
@@ -71,8 +73,7 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
   }
 
   # Work out where to run the workflow from.
-  from <- which.max(!sapply(list(occSub, covSub, proSub, modSub, outSub), is.null))
-
+  from <- which.max(!unchanged)
 
   # Give new arg names to *Sub objects so we can continue with RerunWorkflow source code.
   occNew <- oldCallArgs[["occurrence"]]
@@ -109,21 +110,22 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
 
   # Only one of occurrence, covariate, process and model can be a list of
   #   multiple modules.
-  isChain <- sapply(
-    list(
-      occurrence.module, covariate.module,
-      process.module, model.module, output.module
-    ),
-    function(x) identical(attr(x, "chain"), TRUE)
-  )
-  NoOfModules <- sapply(list(
-    occurrence.module, covariate.module,
-    process.module, model.module, output.module
-  ), length)
-  if (sum(NoOfModules[!isChain] > 1) > 1) {
-    stop("Only one module type can be a list of multiple modules.")
-  }
-
+  module_list <- list(occurrence.module,
+                      covariate.module,
+                      process.module,
+                      model.module,
+                      output.module)
+  
+  isChain <- vapply(module_list,
+                    function(x) {
+                      isTRUE(attr(x, "chain"))
+                    },
+                    FUN.VALUE = FALSE)
+  
+  NoOfModules <- vapply(module_list, length, FUN.VALUE = 0)
+  
+  if (sum(NoOfModules[!isChain] > 1) > 1)
+    stop ("Only one module type can be a list of multiple modules.")
 
   # Get the modules (functions) from github.
   # Save name of functions as well as load functions into global namespace.
@@ -137,44 +139,16 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
   outputName <- LapplyGetModule(output.module, forceReproducible, e)
 
   # Build module version list
+  fun_ver <- function(x) c(module = x$func, version = x$version)
+  eg <- c(module = "a", version = "b")
+  
   moduleVersions <- list(
-    occurrence = sapply(
-      occurrenceName,
-      function(x) c(
-        module = x$func,
-        version = x$version
-      )
-    ),
-    covariate = sapply(
-      covariateName,
-      function(x) c(
-        module = x$func,
-        version = x$version
-      )
-    ),
-    process = sapply(
-      processName,
-      function(x) c(
-        module = x$func,
-        version = x$version
-      )
-    ),
-    model = sapply(
-      modelName,
-      function(x) c(
-        module = x$func,
-        version = x$version
-      )
-    ),
-    output = sapply(
-      outputName,
-      function(x) c(
-        module = x$func,
-        version = x$version
-      )
-    )
+    occurrence = vapply(occurrenceName, fun_ver, FUN.VALUE = eg),
+    covariate = vapply(covariateName, fun_ver, FUN.VALUE = eg),
+    process = vapply(processName, fun_ver, FUN.VALUE = eg),
+    model = vapply(modelName, fun_ver, FUN.VALUE = eg),
+    output = vapply(outputName, fun_ver, FUN.VALUE = eg)
   )
-
 
   # Different to workflow(), We have an if statement before each module is run
   #   to check the 'from' argument.
