@@ -29,7 +29,7 @@ ZoonPredict <- function(zoonModel, newdata) {
 
   # get required packages
   if (!is.null(zoonModel$packages)) {
-    require(
+    require (
       zoonModel$packages,
       character.only = TRUE
     )

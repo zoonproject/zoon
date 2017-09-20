@@ -117,7 +117,7 @@ DoOutputModules <- function(output.module, outputName, process.module,
         # Create a paired list of model and process output
         MP.output <- list()
 
-        for (i in seq_along(1:length(process.output))) {
+        for (i in seq_along(process.output)) {
           MP.output[[i]] <- list(model.output[[i]], process.output[[i]])
         }
 
@@ -146,7 +146,7 @@ DoOutputModules <- function(output.module, outputName, process.module,
       # Create a paired list of model and process output
       MP.output <- list()
 
-      for (i in 1:length(process.output)) {
+      for (i in seq_along(process.output)) {
         MP.output[[i]] <- list(model.output[[i]], process.output[[i]])
       }
 
@@ -321,7 +321,7 @@ DoProcessModules <- function(process.module, processName, data, e) {
     # We might want to save output of each process and return all of them
     #   at the end of the workflow.
     process.output <- data
-    for (p in 1:length(processName)) {
+    for (p in seq_along(processName)) {
       process.output <- lapply(process.output, FUN = DoProcessChain, p = p, e = e)
     }
 
