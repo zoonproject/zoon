@@ -75,7 +75,7 @@ LoadModule <- function(module){
 #  function is added to workflow environment.
 #@name GetModule
 
-GetModule <- function(module, forceReproducible){
+GetModule <- function(module, forceReproducible, environment = parent.frame()){
 
   # URL to module in user's favourite repo & branch
   zoonURL <- sprintf('%s/%s/R/%s.R',
@@ -88,7 +88,7 @@ GetModule <- function(module, forceReproducible){
   #
   # Get module from zoonURL otherwise.
   if (exists(module, where = ".GlobalEnv", mode = "function", inherits = FALSE) & !forceReproducible){
-    assign(module, eval(parse(text = module), envir = globalenv()),  envir = parent.frame(4))
+    assign(module, eval(parse(text = module), envir = globalenv()),  envir = environment)
     attr(module, 'version') <- 'local copy'
     return(module)
   } else {
@@ -106,7 +106,7 @@ GetModule <- function(module, forceReproducible){
   txt <- parse(text = rawText)
 
   # Evaluate text in the workflow call environment
-  eval(txt, envir = parent.frame(4))
+  eval(txt, envir = environment)
 
   # Assign version attribute
   attr(module, 'version') <- GetModuleVersion(rawText)
@@ -122,9 +122,9 @@ GetModule <- function(module, forceReproducible){
 #  taken from repo even if they exist locally to enforce reproducibility.
 #@name LapplyGetModule
 
-LapplyGetModule <- function(modules, forceReproducible){
+LapplyGetModule <- function(modules, forceReproducible, environment = parent.frame()){
   lapply(modules, function(x){
-    GotModule <- GetModule(as.character(x$module), forceReproducible)
+    GotModule <- GetModule(as.character(x$module), forceReproducible, environment)
     return(c(x, func = GotModule, version = attr(GotModule, 'version')))
   }
   )

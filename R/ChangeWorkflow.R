@@ -86,7 +86,7 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
   # From here is the same as RerunWorkflow.
 
   # save the local environment as it needs to be passed to various functions.
-  e <- environment() 
+  e <- new.env(parent = parent.frame()) 
   
   # capture the session info to return in workflow object
   session.info <- sessionInfo()
@@ -120,13 +120,13 @@ ChangeWorkflow <- function(workflow, occurrence = NULL, covariate = NULL, proces
   # Get the modules (functions) from github. 
   # Save name of functions as well as load functions into global namespace.
   # Will probably want to make this so it checks namespace first.
-  occurrenceName <- LapplyGetModule(occurrence.module, forceReproducible) 
-  covariateName <- LapplyGetModule(covariate.module, forceReproducible) 
-  processName <- LapplyGetModule(process.module, forceReproducible) 
+  occurrenceName <- LapplyGetModule(occurrence.module, forceReproducible, e) 
+  covariateName <- LapplyGetModule(covariate.module, forceReproducible, e) 
+  processName <- LapplyGetModule(process.module, forceReproducible, e) 
   # Check for val type lon lat covs
-  modelName <- LapplyGetModule(model.module, forceReproducible) 
+  modelName <- LapplyGetModule(model.module, forceReproducible, e) 
   # Test for predict method
-  outputName <- LapplyGetModule(output.module, forceReproducible) 
+  outputName <- LapplyGetModule(output.module, forceReproducible, e) 
   
   # Build module version list
   moduleVersions <- list(occurrence = sapply(occurrenceName,
