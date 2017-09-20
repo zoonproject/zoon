@@ -1,4 +1,4 @@
-#' @name findExtent
+#' @name FindExtent
 #' @title Determine the Extent of Interest
 #'   
 #' @description Helper function to define an extent (in latitude and longitude) 
@@ -33,19 +33,19 @@
 #' @examples
 #' \dontrun{
 #'  # open a world map and click on two spots to print the extent to the console
-#'  findExtent()
+#'  FindExtent()
 #'  
 #'  # you can get the corresponding extent object too
-#'  ext <- findExtent()
+#'  ext <- FindExtent()
 #'  ext
 #'  
 #'  # you can zoom in on an area and increase the resolution, and precision of
 #'  # the extent vector
-#'  findExtent(c(112, 156, -44, -8),
+#'  FindExtent(c(112, 156, -44, -8),
 #'             resolution = "medium",
 #'             round = 6)
 #' }
-findExtent <- function (initial_extent = c(-180, 180, -90, 90), resolution = c("low", "medium"), round = 3) {
+FindExtent <- function (initial_extent = c(-180, 180, -90, 90), resolution = c("low", "medium"), round = 3) {
   
   # reset the graphics parameters on exit
   old_mar <- par()$mar
