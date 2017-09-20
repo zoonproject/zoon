@@ -11,7 +11,7 @@
 #
 # WITH REPRODUCIBLE, ACCESSIBLE & SHAREABLE SCIENTIFIC OUTPUTS IN R
 
-#' Zoon: A package for comparing multple SDM models, good model diagnostics
+#' Zoon: A package for comparing multiple SDM models, good model diagnostics
 #'      and better reproducibility
 #' @name zoon
 #' @docType package

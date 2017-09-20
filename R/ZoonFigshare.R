@@ -7,11 +7,11 @@
 #'
 #' @param zoonWorkflow A zoonWorkflow object as returned by the function \code{Workflow}
 #'
-#' @param title String giving the title of hte workflow
+#' @param title String giving the title of the workflow
 #'
 #' @param description String describing the workflow
 #'
-#' @param authors Charactor vector of full authors names
+#' @param authors Character vector of full authors names
 #'
 #' @param categories Character vector of figshare categories e.g. ecology.
 #'

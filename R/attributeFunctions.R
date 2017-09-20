@@ -32,7 +32,7 @@ cbindZoon <- function(a, b) {
 #' defined attributes of the parent data.frame.
 #'
 #' @param df The dataframe of which you'd like to subset columns from
-#' @param columns A vector of column names (character) of indexs (numeric) which
+#' @param columns A vector of column names (character) of indices (numeric) which
 #'   you'd like to keep
 #' @name subsetColumnsZoon
 #' @export

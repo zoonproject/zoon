@@ -9,7 +9,7 @@ subsetColumnsZoon(df, columns)
 \arguments{
 \item{df}{The dataframe of which you'd like to subset columns from}
 
-\item{columns}{A vector of column names (character) of indexs (numeric) which
+\item{columns}{A vector of column names (character) of indices (numeric) which
 you'd like to keep}
 }
 \description{

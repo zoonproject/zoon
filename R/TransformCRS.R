@@ -1,6 +1,6 @@
 #' Change the CRS of occurrence data
 #'
-#' Takes a dataframe returned by an occurrence module or a raster object from a covariate module and converts the CRS to lat/long so tht everything works together.
+#' Takes a dataframe returned by an occurrence module or a raster object from a covariate module and converts the CRS to lat/long so that everything works together.
 #'
 #' @param occurrence The output of an occurrence module
 #' @param ras_projection The projection of a covariate layer as a character (from projection())

@@ -5,7 +5,7 @@
 #' unique.
 #'
 #' @param object A function that will be made into a module file. It is good
-#'   practise to ensure your function does not have the same name as a base
+#'   practice to ensure your function does not have the same name as a base
 #'   function, another module, or other common functions.
 #' @param dir The directory to put the module into (defaults to the working
 #'   directory).
@@ -17,9 +17,9 @@
 #' @param details (optional) A single string giving details of the module.
 #' @param paras A list of the form list(parameterName = 'Parameter
 #'   description.', anotherParameter = 'Another description.') This is required
-#'   if the module takes non-default arguements
+#'   if the module takes non-default arguments
 #' @param author (required) String giving the author(s) name(s)
-#' @param email (required) String giving the correspondance address for the
+#' @param email (required) String giving the correspondence address for the
 #'   module (only give one address).
 #' @param version (optional) Numeric giving the version number. Default 0.1.
 #' @param dataType Character vector required for all module types except

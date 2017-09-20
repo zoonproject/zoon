@@ -24,7 +24,7 @@ Output(workflow)
 \description{
 These functions access the output from each module type. If workflows
   are split using list, they will return a list with the output of
-  each seperate workflow being one element of the list.
+  each separate workflow being one element of the list.
 }
 \examples{
 \dontrun{

@@ -10,7 +10,7 @@ BuildModule(object, type, dir = ".", title = "", description = "",
 }
 \arguments{
 \item{object}{A function that will be made into a module file. It is good
-practise to ensure your function does not have the same name as a base
+practice to ensure your function does not have the same name as a base
 function, another module, or other common functions.}
 
 \item{type}{A string that defines the type of module. Possible module types
@@ -28,14 +28,14 @@ the module.}
 
 \item{author}{(required) String giving the author(s) name(s)}
 
-\item{email}{(required) String giving the correspondance address for the
+\item{email}{(required) String giving the correspondence address for the
 module (only give one address).}
 
 \item{version}{(optional) Numeric giving the version number. Default 0.1.}
 
 \item{paras}{A list of the form list(parameterName = 'Parameter
 description.', anotherParameter = 'Another description.') This is required
-if the module takes non-default arguements}
+if the module takes non-default arguments}
 
 \item{dataType}{Character vector required for all module types except
 'covariate'. Indicates the types of data that this module works with.

@@ -23,7 +23,7 @@
 #'   any rounding. This only affects the vector version of the extent printed in
 #'   the console, not the extent object returned.
 #'
-#' @return invisibly returns an extent object, also pronts a vector version of
+#' @return invisibly returns an extent object, also prints a vector version of
 #'   that extent to the console.
 #'
 #' @import rworldmap

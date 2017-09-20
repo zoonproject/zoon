@@ -3,7 +3,7 @@
 #' This function is useful when running simulations and could be used
 #' with modules that have random number generation internally meaning that
 #' results from identical runs are different. Replicate gives the same result
-#' as using list() and repeating the module mulitple times.
+#' as using list() and repeating the module multiple times.
 #'
 #' @param call A module call, e.g. UKAnophelesPlumbeus
 #' @param n The number of times to replicate the call
