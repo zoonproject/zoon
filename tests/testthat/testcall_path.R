@@ -13,48 +13,66 @@ test_that("Test call_path in a large number of variations", {
 
   expect_equal(
     attr(Occurrence(CP_work)[[1]], "call_path"),
-    structure(list(covariate = "UKAnophelesPlumbeus"), .Names = "occurrence")
+    structure(list(covariate = "UKAnophelesPlumbeus"),
+              .Names = "occurrence")
   )
   expect_equal(
     attr(Occurrence(CP_work)[[2]], "call_path"),
-    structure(list(covariate = "NaiveRandomPresence"), .Names = "occurrence")
+    structure(list(covariate = "NaiveRandomPresence"),
+              .Names = "occurrence")
   )
   expect_equal(
     attr(Covariate(CP_work), "call_path"),
-    structure(list(covariate = "UKAir"), .Names = "covariate")
+    structure(list(covariate = "UKAir"),
+              .Names = "covariate")
   )
   expect_equal(
     attr(Process(CP_work)[[1]], "call_path"),
     structure(
-      list(occurrence = "UKAnophelesPlumbeus", covariate = "UKAir", process = "Background"),
+      list(occurrence = "UKAnophelesPlumbeus",
+           covariate = "UKAir",
+           process = "Background"),
       .Names = c("occurrence", "covariate", "process")
     )
   )
   expect_equal(
     attr(Process(CP_work)[[2]], "call_path"),
     structure(
-      list(occurrence = "NaiveRandomPresence", covariate = "UKAir", process = "Background"),
+      list(occurrence = "NaiveRandomPresence",
+           covariate = "UKAir",
+           process = "Background"),
       .Names = c("occurrence", "covariate", "process")
     )
   )
   expect_equal(
     attr(Model(CP_work)[[1]], "call_path"),
     structure(
-      list(occurrence = "UKAnophelesPlumbeus", covariate = "UKAir", process = "Background", model = "RandomForest"),
+      list(occurrence = "UKAnophelesPlumbeus",
+           covariate = "UKAir",
+           process = "Background",
+           model = "RandomForest"),
       .Names = c("occurrence", "covariate", "process", "model")
     )
   )
   expect_equal(
     attr(Output(CP_work)[[1]], "call_path"),
     structure(
-      list(occurrence = "UKAnophelesPlumbeus", covariate = "UKAir", process = "Background", model = "RandomForest", output = "PrintMap"),
+      list(occurrence = "UKAnophelesPlumbeus",
+           covariate = "UKAir",
+           process = "Background",
+           model = "RandomForest",
+           output = "PrintMap"),
       .Names = c("occurrence", "covariate", "process", "model", "output")
     )
   )
   expect_equal(
     attr(Output(CP_work)[[2]], "call_path"),
     structure(
-      list(occurrence = "NaiveRandomPresence", covariate = "UKAir", process = "Background", model = "RandomForest", output = "PrintMap"),
+      list(occurrence = "NaiveRandomPresence",
+           covariate = "UKAir",
+           process = "Background",
+           model = "RandomForest",
+           output = "PrintMap"),
       .Names = c("occurrence", "covariate", "process", "model", "output")
     )
   )
@@ -69,26 +87,40 @@ test_that("Test call_path in a large number of variations", {
 
   expect_equal(
     attr(Occurrence(CP_worka), "call_path"),
-    structure(list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)"), .Names = "occurrence")
+    structure(list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                                      "NaiveRandomPresence)")),
+              .Names = "occurrence")
   )
   expect_equal(
     attr(Process(CP_worka), "call_path"),
     structure(
-      list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)", covariate = "UKAir", process = "Background"),
+      list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                              "NaiveRandomPresence)"),
+           covariate = "UKAir",
+           process = "Background"),
       .Names = c("occurrence", "covariate", "process")
     )
   )
   expect_equal(
     attr(Model(CP_worka), "call_path"),
     structure(
-      list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)", covariate = "UKAir", process = "Background", model = "RandomForest"),
+      list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                              "NaiveRandomPresence)"),
+           covariate = "UKAir",
+           process = "Background",
+           model = "RandomForest"),
       .Names = c("occurrence", "covariate", "process", "model")
     )
   )
   expect_equal(
     attr(Output(CP_worka), "call_path"),
     structure(
-      list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)", covariate = "UKAir", process = "Background", model = "RandomForest", output = "PrintMap"),
+      list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                              "NaiveRandomPresence)"),
+           covariate = "UKAir",
+           process = "Background",
+           model = "RandomForest",
+           output = "PrintMap"),
       .Names = c("occurrence", "covariate", "process", "model", "output")
     )
   )
@@ -103,51 +135,71 @@ test_that("Test call_path in a large number of variations", {
 
   expect_equal(
     attr(Covariate(CP_work2)[[1]], "call_path"),
-    structure(list(covariate = "NaiveRandomRaster"), .Names = "covariate")
+    structure(list(covariate = "NaiveRandomRaster"),
+              .Names = "covariate")
   )
   expect_equal(
     attr(Covariate(CP_work2)[[2]], "call_path"),
-    structure(list(covariate = "UKAir"), .Names = "covariate")
+    structure(list(covariate = "UKAir"),
+              .Names = "covariate")
   )
   expect_equal(
     attr(Process(CP_work2)[[1]], "call_path"),
     structure(
-      list(occurrence = "UKAnophelesPlumbeus", covariate = "NaiveRandomRaster", process = "Background"),
+      list(occurrence = "UKAnophelesPlumbeus",
+           covariate = "NaiveRandomRaster",
+           process = "Background"),
       .Names = c("occurrence", "covariate", "process")
     )
   )
   expect_equal(
     attr(Process(CP_work2)[[2]], "call_path"),
     structure(
-      list(occurrence = "UKAnophelesPlumbeus", covariate = "UKAir", process = "Background"),
+      list(occurrence = "UKAnophelesPlumbeus",
+           covariate = "UKAir",
+           process = "Background"),
       .Names = c("occurrence", "covariate", "process")
     )
   )
   expect_equal(
     attr(Model(CP_work2)[[1]], "call_path"),
     structure(
-      list(occurrence = "UKAnophelesPlumbeus", covariate = "NaiveRandomRaster", process = "Background", model = "RandomForest"),
+      list(occurrence = "UKAnophelesPlumbeus",
+           covariate = "NaiveRandomRaster",
+           process = "Background",
+           model = "RandomForest"),
       .Names = c("occurrence", "covariate", "process", "model")
     )
   )
   expect_equal(
     attr(Model(CP_work2)[[2]], "call_path"),
     structure(
-      list(occurrence = "UKAnophelesPlumbeus", covariate = "UKAir", process = "Background", model = "RandomForest"),
+      list(occurrence = "UKAnophelesPlumbeus",
+           covariate = "UKAir",
+           process = "Background",
+           model = "RandomForest"),
       .Names = c("occurrence", "covariate", "process", "model")
     )
   )
   expect_equal(
     attr(Output(CP_work2)[[1]], "call_path"),
     structure(
-      list(occurrence = "UKAnophelesPlumbeus", covariate = "NaiveRandomRaster", process = "Background", model = "RandomForest", output = "PrintMap"),
+      list(occurrence = "UKAnophelesPlumbeus",
+           covariate = "NaiveRandomRaster",
+           process = "Background",
+           model = "RandomForest",
+           output = "PrintMap"),
       .Names = c("occurrence", "covariate", "process", "model", "output")
     )
   )
   expect_equal(
     attr(Output(CP_work2)[[2]], "call_path"),
     structure(
-      list(occurrence = "UKAnophelesPlumbeus", covariate = "UKAir", process = "Background", model = "RandomForest", output = "PrintMap"),
+      list(occurrence = "UKAnophelesPlumbeus",
+           covariate = "UKAir",
+           process = "Background",
+           model = "RandomForest",
+           output = "PrintMap"),
       .Names = c("occurrence", "covariate", "process", "model", "output")
     )
   )
@@ -163,26 +215,36 @@ test_that("Test call_path in a large number of variations", {
 
   expect_equal(
     attr(Covariate(CP_work2a), "call_path"),
-    structure(list(covariate = "Chain(UKAir, UKAir)"), .Names = "covariate")
+    structure(list(covariate = "Chain(UKAir, UKAir)"),
+              .Names = "covariate")
   )
   expect_equal(
     attr(Process(CP_work2a), "call_path"),
     structure(
-      list(occurrence = "UKAnophelesPlumbeus", covariate = "Chain(UKAir, UKAir)", process = "Background"),
+      list(occurrence = "UKAnophelesPlumbeus",
+           covariate = "Chain(UKAir, UKAir)",
+           process = "Background"),
       .Names = c("occurrence", "covariate", "process")
     )
   )
   expect_equal(
     attr(Model(CP_work2a), "call_path"),
     structure(
-      list(occurrence = "UKAnophelesPlumbeus", covariate = "Chain(UKAir, UKAir)", process = "Background", model = "RandomForest"),
+      list(occurrence = "UKAnophelesPlumbeus",
+           covariate = "Chain(UKAir, UKAir)",
+           process = "Background",
+           model = "RandomForest"),
       .Names = c("occurrence", "covariate", "process", "model")
     )
   )
   expect_equal(
     attr(Output(CP_work2a), "call_path"),
     structure(
-      list(occurrence = "UKAnophelesPlumbeus", covariate = "Chain(UKAir, UKAir)", process = "Background", model = "RandomForest", output = "PrintMap"),
+      list(occurrence = "UKAnophelesPlumbeus",
+           covariate = "Chain(UKAir, UKAir)",
+           process = "Background",
+           model = "RandomForest",
+           output = "PrintMap"),
       .Names = c("occurrence", "covariate", "process", "model", "output")
     )
   )
@@ -198,66 +260,101 @@ test_that("Test call_path in a large number of variations", {
 
   expect_equal(
     attr(Occurrence(CP_work1), "call_path"),
-    structure(list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)"), .Names = "occurrence")
+    structure(list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                                      "NaiveRandomPresence)")),
+              .Names = "occurrence")
   )
   expect_equal(
     attr(Process(CP_work1)[[1]], "call_path"),
     structure(
-      list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)", covariate = "UKAir", process = "OneHundredBackground"),
+      list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                              "NaiveRandomPresence)"),
+           covariate = "UKAir",
+           process = "OneHundredBackground"),
       .Names = c("occurrence", "covariate", "process")
     )
   )
   expect_equal(
     attr(Process(CP_work1)[[2]], "call_path"),
     structure(
-      list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)", covariate = "UKAir", process = "Background"),
+      list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                              "NaiveRandomPresence)"),
+           covariate = "UKAir",
+           process = "Background"),
       .Names = c("occurrence", "covariate", "process")
     )
   )
   expect_equal(
     attr(Model(CP_work1)[[1]], "call_path"),
     structure(
-      list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)", covariate = "UKAir", process = "OneHundredBackground", model = "RandomForest"),
+      list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                              "NaiveRandomPresence)"),
+           covariate = "UKAir",
+           process = "OneHundredBackground",
+           model = "RandomForest"),
       .Names = c("occurrence", "covariate", "process", "model")
     )
   )
   expect_equal(
     attr(Model(CP_work1)[[2]], "call_path"),
     structure(
-      list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)", covariate = "UKAir", process = "Background", model = "RandomForest"),
+      list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                              "NaiveRandomPresence)"),
+           covariate = "UKAir",
+           process = "Background",
+           model = "RandomForest"),
       .Names = c("occurrence", "covariate", "process", "model")
     )
   )
   expect_equal(
     attr(Output(CP_work1)[[1]], "call_path"),
     structure(
-      list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)", covariate = "UKAir", process = "OneHundredBackground", model = "RandomForest", output = "PrintMap"),
+      list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                              "NaiveRandomPresence)"),
+           covariate = "UKAir",
+           process = "OneHundredBackground",
+           model = "RandomForest",
+           output = "PrintMap"),
       .Names = c("occurrence", "covariate", "process", "model", "output")
     )
   )
   expect_equal(
     attr(Output(CP_work1)[[2]], "call_path"),
     structure(
-      list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)", covariate = "UKAir", process = "Background", model = "RandomForest", output = "PrintMap"),
+      list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                              "NaiveRandomPresence)"),
+           covariate = "UKAir",
+           process = "Background",
+           model = "RandomForest",
+           output = "PrintMap"),
       .Names = c("occurrence", "covariate", "process", "model", "output")
     )
   )
   expect_equal(
     attr(Output(CP_work1)[[1]], "call_path"),
     structure(
-      list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)", covariate = "UKAir", process = "OneHundredBackground", model = "RandomForest", output = "PrintMap"),
+      list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                              "NaiveRandomPresence)"),
+           covariate = "UKAir",
+           process = "OneHundredBackground",
+           model = "RandomForest",
+           output = "PrintMap"),
       .Names = c("occurrence", "covariate", "process", "model", "output")
     )
   )
+  
   expect_equal(
     attr(Output(CP_work1)[[2]], "call_path"),
     structure(
-      list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)", covariate = "UKAir", process = "Background", model = "RandomForest", output = "PrintMap"),
+      list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                              "NaiveRandomPresence)"),
+           covariate = "UKAir",
+           process = "Background",
+           model = "RandomForest",
+           output = "PrintMap"),
       .Names = c("occurrence", "covariate", "process", "model", "output")
     )
   )
-
-
 
   CP_work1a <- workflow(
     occurrence = Chain(UKAnophelesPlumbeus, NaiveRandomPresence),
@@ -269,26 +366,40 @@ test_that("Test call_path in a large number of variations", {
 
   expect_equal(
     attr(Occurrence(CP_work1a), "call_path"),
-    structure(list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)"), .Names = "occurrence")
+    structure(list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                                      "NaiveRandomPresence)")),
+              .Names = "occurrence")
   )
   expect_equal(
     attr(Process(CP_work1a), "call_path"),
     structure(
-      list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)", covariate = "UKAir", process = "Chain(NoProcess, Background)"),
+      list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                              "NaiveRandomPresence)"),
+           covariate = "UKAir",
+           process = "Chain(NoProcess, Background)"),
       .Names = c("occurrence", "covariate", "process")
     )
   )
   expect_equal(
     attr(Model(CP_work1a), "call_path"),
     structure(
-      list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)", covariate = "UKAir", process = "Chain(NoProcess, Background)", model = "RandomForest"),
+      list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                              "NaiveRandomPresence)"),
+           covariate = "UKAir",
+           process = "Chain(NoProcess, Background)",
+           model = "RandomForest"),
       .Names = c("occurrence", "covariate", "process", "model")
     )
   )
   expect_equal(
     attr(Output(CP_work1a), "call_path"),
     structure(
-      list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)", covariate = "UKAir", process = "Chain(NoProcess, Background)", model = "RandomForest", output = "PrintMap"),
+      list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                              "NaiveRandomPresence)"),
+           covariate = "UKAir",
+           process = "Chain(NoProcess, Background)",
+           model = "RandomForest",
+           output = "PrintMap"),
       .Names = c("occurrence", "covariate", "process", "model", "output")
     )
   )
@@ -305,28 +416,46 @@ test_that("Test call_path in a large number of variations", {
   expect_equal(
     attr(Model(CP_work3)[[1]], "call_path"),
     structure(
-      list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)", covariate = "UKAir", process = "Chain(NoProcess, Background)", model = "RandomForest"),
+      list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                              "NaiveRandomPresence)"),
+           covariate = "UKAir",
+           process = "Chain(NoProcess, Background)",
+           model = "RandomForest"),
       .Names = c("occurrence", "covariate", "process", "model")
     )
   )
   expect_equal(
     attr(Model(CP_work3)[[2]], "call_path"),
     structure(
-      list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)", covariate = "UKAir", process = "Chain(NoProcess, Background)", model = "LogisticRegression"),
+      list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                              "NaiveRandomPresence)"),
+           covariate = "UKAir",
+           process = "Chain(NoProcess, Background)",
+           model = "LogisticRegression"),
       .Names = c("occurrence", "covariate", "process", "model")
     )
   )
   expect_equal(
     attr(Output(CP_work3)[[1]], "call_path"),
     structure(
-      list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)", covariate = "UKAir", process = "Chain(NoProcess, Background)", model = "RandomForest", output = "PrintMap"),
+      list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                              "NaiveRandomPresence)"),
+           covariate = "UKAir",
+           process = "Chain(NoProcess, Background)",
+           model = "RandomForest",
+           output = "PrintMap"),
       .Names = c("occurrence", "covariate", "process", "model", "output")
     )
   )
   expect_equal(
     attr(Output(CP_work3)[[2]], "call_path"),
     structure(
-      list(occurrence = "Chain(UKAnophelesPlumbeus, NaiveRandomPresence)", covariate = "UKAir", process = "Chain(NoProcess, Background)", model = "LogisticRegression", output = "PrintMap"),
+      list(occurrence = paste("Chain(UKAnophelesPlumbeus,",
+                              "NaiveRandomPresence)"),
+           covariate = "UKAir",
+           process = "Chain(NoProcess, Background)",
+           model = "LogisticRegression",
+           output = "PrintMap"),
       .Names = c("occurrence", "covariate", "process", "model", "output")
     )
   )
@@ -343,14 +472,21 @@ test_that("Test call_path in a large number of variations", {
   expect_equal(
     attr(Model(CP_work3a), "call_path"),
     structure(
-      list(occurrence = "UKAnophelesPlumbeus", covariate = "UKAir", process = "Background", model = "LogisticRegression"),
+      list(occurrence = "UKAnophelesPlumbeus",
+           covariate = "UKAir",
+           process = "Background",
+           model = "LogisticRegression"),
       .Names = c("occurrence", "covariate", "process", "model")
     )
   )
   expect_equal(
     attr(Output(CP_work3a), "call_path"),
     structure(
-      list(occurrence = "UKAnophelesPlumbeus", covariate = "UKAir", process = "Background", model = "LogisticRegression", output = "PrintMap"),
+      list(occurrence = "UKAnophelesPlumbeus",
+           covariate = "UKAir",
+           process = "Background",
+           model = "LogisticRegression",
+           output = "PrintMap"),
       .Names = c("occurrence", "covariate", "process", "model", "output")
     )
   )
@@ -367,7 +503,11 @@ test_that("Test call_path in a large number of variations", {
   expect_equal(
     attr(Output(CP_work4)[[2]], "call_path"),
     structure(
-      list(occurrence = "UKAnophelesPlumbeus", covariate = "UKAir", process = "Background", model = "LogisticRegression", output = "PerformanceMeasures"),
+      list(occurrence = "UKAnophelesPlumbeus",
+           covariate = "UKAir",
+           process = "Background",
+           model = "LogisticRegression",
+           output = "PerformanceMeasures"),
       .Names = c("occurrence", "covariate", "process", "model", "output")
     )
   )
@@ -383,7 +523,11 @@ test_that("Test call_path in a large number of variations", {
   expect_equal(
     attr(Output(CP_work4b)[[2]], "call_path"),
     structure(
-      list(occurrence = "UKAnophelesPlumbeus", covariate = "UKAir", process = "Background", model = "LogisticRegression", output = "PerformanceMeasures"),
+      list(occurrence = "UKAnophelesPlumbeus",
+           covariate = "UKAir",
+           process = "Background",
+           model = "LogisticRegression",
+           output = "PerformanceMeasures"),
       .Names = c("occurrence", "covariate", "process", "model", "output")
     )
   )
@@ -399,7 +543,9 @@ test_that("Test call_path in a large number of variations", {
     attr(Output(CP_work4c)[[1]], "call_path"),
     structure(
       list(
-        occurrence = "UKAnophelesPlumbeus", covariate = "UKAir", process = "Background",
+        occurrence = "UKAnophelesPlumbeus",
+        covariate = "UKAir",
+        process = "Background",
         model = "LogisticRegression",
         output = "PrintMap"
       ),
@@ -410,7 +556,9 @@ test_that("Test call_path in a large number of variations", {
     attr(Output(CP_work4c)[[2]], "call_path"),
     structure(
       list(
-        occurrence = "UKAnophelesPlumbeus", covariate = "UKAir", process = "Background",
+        occurrence = "UKAnophelesPlumbeus",
+        covariate = "UKAir",
+        process = "Background",
         model = "LogisticRegression",
         output = "PerformanceMeasures"
       ),
@@ -421,7 +569,9 @@ test_that("Test call_path in a large number of variations", {
     attr(Output(CP_work4c)[[3]], "call_path"),
     structure(
       list(
-        occurrence = "UKAnophelesPlumbeus", covariate = "UKAir", process = "Background",
+        occurrence = "UKAnophelesPlumbeus",
+        covariate = "UKAir",
+        process = "Background",
         model = "RandomForest",
         output = "PrintMap"
       ),
@@ -432,7 +582,9 @@ test_that("Test call_path in a large number of variations", {
     attr(Output(CP_work4c)[[4]], "call_path"),
     structure(
       list(
-        occurrence = "UKAnophelesPlumbeus", covariate = "UKAir", process = "Background",
+        occurrence = "UKAnophelesPlumbeus",
+        covariate = "UKAir",
+        process = "Background",
         model = "RandomForest",
         output = "PerformanceMeasures"
       ),

@@ -60,7 +60,9 @@ test_that("Basic ChangeWorkflow works", {
   ))
   expect_true(identical(
     w2$call,
-    "workflow(occurrence = UKAnophelesPlumbeus, covariate = UKAir, process = Background(n = 70), model = RandomForest, output = PrintMap, forceReproducible = FALSE)"
+    paste("workflow(occurrence = UKAnophelesPlumbeus, covariate = UKAir,",
+          "process = Background(n = 70), model = RandomForest,",
+          "output = PrintMap, forceReproducible = FALSE)")
   ))
 
 

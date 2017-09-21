@@ -3,7 +3,8 @@ context("ModuleHelp")
 directory <- tempdir()
 
 test_that("ModuleHelp errors", {
-  if (!capabilities("libcurl")) skip("skipping as libcurl not supported")
+  if (!capabilities("libcurl"))
+    skip("skipping as libcurl not supported")
 
   expect_error(
     ModuleHelp(c(one, two)),
@@ -97,12 +98,15 @@ test_that("Help as pdf", {
 
 
   # Some modules with no close matches
-  expect_error(ModuleHelp("zzzzz123232"), "or any modules with closely matching names")
+  expect_error(ModuleHelp("zzzzz123232"),
+               "or any modules with closely matching names")
 
 
   # Module with 1 close matches
-  expect_error(ModuleHelp("NoProcesss"), "Can't find 'NoProcesss'. Did you mean")
+  expect_error(ModuleHelp("NoProcesss"),
+               "Can't find 'NoProcesss'. Did you mean")
 
   # Module with 2 close matches
-  expect_error(ModuleHelp("Crissvalid"), "Can't find 'Crissvalid'. Did you mean one of")
+  expect_error(ModuleHelp("Crissvalid"),
+               "Can't find 'Crissvalid'. Did you mean one of")
 })

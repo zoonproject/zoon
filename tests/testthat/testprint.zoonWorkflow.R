@@ -16,10 +16,12 @@ test_that("print.zoonWorkflow tests", {
 
   expect_identical(
     sum_out,
-    c(
-      "zoonWorkflow Object", "===================",
+    c("zoonWorkflow Object", "===================",
       "",
-      "Call: workflow(occurrence = UKAnophelesPlumbeus, covariate = UKAir, process = Background(n = 70), model = LogisticRegression, output = PrintMap, forceReproducible = FALSE) "
+      paste("Call: workflow(occurrence = UKAnophelesPlumbeus,",
+            "covariate = UKAir, process = Background(n = 70),",
+            "model = LogisticRegression, output = PrintMap,",
+            "forceReproducible = FALSE) ")
     )
   )
 })

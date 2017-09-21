@@ -1,6 +1,9 @@
 context("LoadModule")
 
 test_that("LoadModule works", {
+  
+  path <- paste0("https://raw.githubusercontent.com/zoonproject/modules/",
+                 "master/R/NoProcess.R")
 
   # Load module is only used to URLS and paths.
 
@@ -21,14 +24,14 @@ test_that("LoadModule works", {
   }
 
   TestURL <- function() {
-    LoadModule("https://raw.githubusercontent.com/zoonproject/modules/master/R/NoProcess.R")
+    LoadModule(path)
     return(class(NoProcess))
   }
 
   expect_error(LoadModule("xxx"))
   expect_that(LoadModule("~/TestModule.R"), equals("TestModule"))
   expect_that(LoadModule("NoProcess"), equals("NoProcess"))
-  expect_that(LoadModule("https://raw.githubusercontent.com/zoonproject/modules/master/R/NoProcess.R"), equals("NoProcess"))
+  expect_that(LoadModule(path), equals("NoProcess"))
 
   file.remove("~/TestModule.R")
 })

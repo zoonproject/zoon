@@ -1,7 +1,9 @@
 context("CombineRasters")
 
 test_that("Test errors are thrown", {
-  NaiveRandomRaster <- source("https://raw.githubusercontent.com/zoonproject/modules/master/R/NaiveRandomRaster.R")$value
+  path <- paste0("https://raw.githubusercontent.com/zoonproject/modules",
+                 "/master/R/NaiveRandomRaster.R")
+  NaiveRandomRaster <- source(path)$value
 
   # Create some rasters for testing
   ras1 <- NaiveRandomRaster(
@@ -47,8 +49,10 @@ test_that("Test errors are thrown", {
 })
 
 test_that("Combinations of projections and extents", {
-  NaiveRandomRaster <- source("https://raw.githubusercontent.com/zoonproject/modules/master/R/NaiveRandomRaster.R")$value
-
+  path <- paste0("https://raw.githubusercontent.com/zoonproject/modules",
+                 "/master/R/NaiveRandomRaster.R")
+  NaiveRandomRaster <- source(path)$value
+  
   # Create some rasters for testing
   ras1 <- NaiveRandomRaster(
     extent = c(-10, 10, 45, 65),

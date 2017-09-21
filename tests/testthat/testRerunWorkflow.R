@@ -39,8 +39,10 @@ test_that("RerunWorkflow test error", {
 
   set.seed(1)
 
-  expect_error(w2 <- RerunWorkflow(w1, from = "a"), regexp = "from \\%in\\% c\\(1\\:5\\) is not TRUE")
-  expect_error(w2 <- RerunWorkflow(w1, from = 6), regexp = "from \\%in\\% c\\(1\\:5\\) is not TRUE")
+  expect_error(w2 <- RerunWorkflow(w1, from = "a"),
+               regexp = "from \\%in\\% c\\(1\\:5\\) is not TRUE")
+  expect_error(w2 <- RerunWorkflow(w1, from = 6),
+               regexp = "from \\%in\\% c\\(1\\:5\\) is not TRUE")
 
   # You cannot re-run a workflow with
 })

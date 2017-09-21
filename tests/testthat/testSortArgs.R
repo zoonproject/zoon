@@ -11,10 +11,11 @@ test_that("SortArgs works.", {
     TRUE
   )
 
-  expect_equal(
-    x,
-    "workflow(occurrence = UKAnophelesPlumbeus, covariate = UKAir, process = OneHundredBackground, model = LogisticRegression, output = PrintMap, forceReproducible = TRUE)"
-  )
+  expect_equal(x,
+               paste("workflow(occurrence = UKAnophelesPlumbeus,",
+                     "covariate = UKAir, process = OneHundredBackground,",
+                     "model = LogisticRegression, output = PrintMap,",
+                     "forceReproducible = TRUE)"))
 
   # Check the call is runeable
   w <- eval(parse(text = x))

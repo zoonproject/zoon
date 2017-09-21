@@ -1,7 +1,8 @@
 
 context("Accessor functions")
 
-test_that("All accessor functions return objects of the right length and type", {
+test_that(paste("All accessor functions return objects",
+                "of the right length and type"), {
 
   # Three work flows that cover all lengths (1 or > 1) of outputs.
 

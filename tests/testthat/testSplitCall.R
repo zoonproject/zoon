@@ -1,8 +1,8 @@
 context("SplitCall")
 
 test_that("SplitCall works", {
-  # This function is only ever used on calls from a workflow object, so we can use
-  #   SortArgs to simulate the possible things we might get.
+  # This function is only ever used on calls from a workflow object, so we can
+  # use SortArgs to simulate the possible things we might get.
 
 
   call1 <- SortArgs(
@@ -26,7 +26,8 @@ test_that("SplitCall works", {
     PasteAndDep(substitute(UKAnophelesPlumbeus)),
     PasteAndDep(substitute("UKAir")),
     PasteAndDep(substitute(BackgroundAndCrossvalid(k = 2))),
-    PasteAndDep(substitute(list(LogisticRegression, LogisticRegression))),
+    PasteAndDep(substitute(list(LogisticRegression,
+                                LogisticRegression))),
     PasteAndDep(substitute(Chain(PrintMap, PrintMap))),
     TRUE
   )
@@ -42,9 +43,12 @@ test_that("SplitCall works", {
   call3 <- SortArgs(
     PasteAndDep(substitute(UKAnophelesPlumbeus(k = "awd", v = 2))),
     PasteAndDep(substitute(Chain("UKAir", "UKAir"))),
-    PasteAndDep(substitute(list(BackgroundAndCrossvalid(k = 2), BackgroundAndCrossvalid(k = 2, l = 3)))),
-    PasteAndDep(substitute(list(LogisticRegression, LogisticRegression))),
-    PasteAndDep(substitute(Chain(PrintMap(l = 2), PrintMap(l = 2, k = 3, r = "23")))),
+    PasteAndDep(substitute(list(BackgroundAndCrossvalid(k = 2),
+                                BackgroundAndCrossvalid(k = 2, l = 3)))),
+    PasteAndDep(substitute(list(LogisticRegression,
+                                LogisticRegression))),
+    PasteAndDep(substitute(Chain(PrintMap(l = 2),
+                                 PrintMap(l = 2, k = 3, r = "23")))),
     TRUE
   )
 
