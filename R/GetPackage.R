@@ -10,13 +10,13 @@
 #' @examples GetPackage('gam')
 #' @export
 
-GetPackage <- function (package) {
+GetPackage <- function(package) {
 
   # Check package is a character
-  if (!inherits(x = package, what = 'character'))
-    stop ('package must be a character')
+  if (!inherits(x = package, what = "character"))
+    stop("package must be a character")
 
-  for (i in package){
+  for (i in package) {
 
     # if it isn't installed, install it
     installed_packages <- rownames(installed.packages())
@@ -26,7 +26,5 @@ GetPackage <- function (package) {
 
     # now load the package
     library(i, character.only = TRUE)
-
   }
 }
-

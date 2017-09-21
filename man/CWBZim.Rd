@@ -4,8 +4,8 @@
 \name{CWBZim}
 \alias{CWBZim}
 \title{Presence/absence of the coffee white stem borer in Zimbabwe 2003}
-\format{data.frame with five columns, longitude, latitude, value (1 for 
-   presence), type (presence) and a column of 1s indicating this is 
+\format{data.frame with five columns, longitude, latitude, value (1 for
+   presence), type (presence) and a column of 1s indicating this is
    training data not external validation data.}
 \source{
 Original publication:
@@ -21,7 +21,7 @@ Kutywayo D, Chemura A, Kusena W, Chidoko P, Mahoya C (2013) The impact of
    \url{http://dx.doi.org/10.1371/journal.pone.0073432}
 }
 \description{
-This is an example presence/absence dataset for the 
+This is an example presence/absence dataset for the
 coffee white stem borer \emph{Monochamus leuconotus} P. taken from an
 open access dataset on the Dryad data repository.
 The data are made available by those authors under a Creative Commons CC0

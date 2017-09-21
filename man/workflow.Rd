@@ -18,7 +18,7 @@ workflow(occurrence, covariate, process, model, output,
 
 \item{output}{Output module to be used.}
 
-\item{forceReproducible}{Logical whether to force zoon to collect modules 
+\item{forceReproducible}{Logical whether to force zoon to collect modules
 from the online repo. This ensure the analysis is reproducible.}
 }
 \value{
@@ -30,8 +30,8 @@ A list with the results of each module and a copy of the
 This is the main function of zoon. The arguments should specify at least five
 modules, at least one of each type.
 If modules do not have any arguments to be specific (or defaults are being
-used) then simply give the names of the module. If arguments are needed 
-give the modules in the form of a function 
+used) then simply give the names of the module. If arguments are needed
+give the modules in the form of a function
 e.g. occurrence = AModule(para1 = 2, para2 = 'detail')
 }
 \examples{
@@ -48,7 +48,7 @@ str(work1, 1)
 
 work2 <- workflow(UKAnophelesPlumbeus,
                  UKAir,
-                 OneHundredBackground,   
+                 OneHundredBackground,
                  RandomForest,
                  PrintMap)
 
