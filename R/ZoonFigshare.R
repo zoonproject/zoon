@@ -1,11 +1,12 @@
 #' @title ZoonFigshare
 #'
-#' @description This function uploads a zoon workflow object to Figshare. To share
-#' your workflow with the community please set your workflow to public on figshare
-#' after using this function. If your workflow is made public it will automatically
-#' appear on the Zoon website.
+#' @description This function uploads a zoon workflow object to Figshare. To
+#'   share your workflow with the community please set your workflow to public
+#'   on figshare after using this function. If your workflow is made public it
+#'   will automatically appear on the Zoon website.
 #'
-#' @param zoonWorkflow A zoonWorkflow object as returned by the function \code{Workflow}
+#' @param zoonWorkflow A zoonWorkflow object as returned by the function
+#'   \code{Workflow}
 #'
 #' @param title String giving the title of the workflow
 #'
@@ -21,9 +22,12 @@
 #' @importFrom utils browseURL
 #' @export
 
-ZoonFigshare <- function(zoonWorkflow, title = "My Zoon Workflow",
+ZoonFigshare <- function(zoonWorkflow,
+                         title = "My Zoon Workflow",
                          description = "zoon workflow",
-                         authors = "zoon", categories = "SDM", tags = "zoon") {
+                         authors = "zoon",
+                         categories = "SDM",
+                         tags = "zoon") {
 
   # Create the filename
   tx <- gsub(" ", "_", title)
@@ -54,14 +58,13 @@ ZoonFigshare <- function(zoonWorkflow, title = "My Zoon Workflow",
     visibility = "private"
   )
 
-  message("To share your workflow with the ZOON community remember to make it public on Figshare")
+  message("To share your workflow with the ZOON community remember ",
+          "to make it public on Figshare")
 
-  if (is.numeric(id)) browseURL(paste(
-    "http://figshare.com/preview/_preview/",
-    id, sep = ""
-  ))
+  if (is.numeric(id))
+    browseURL(paste0("http://figshare.com/preview/_preview/", id))
 
   file.remove(metasave, datasave)
 
-  return(invisible(NULL))
+  return (invisible(NULL))
 }

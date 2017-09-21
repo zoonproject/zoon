@@ -50,9 +50,14 @@ test_outputs <- function(roxy_parse, modulePath) {
       expect_is(occ_return,
                 "data.frame",
                 info = "Occurrence modules must return a data.frame")
+      
+      colnames <- c("longitude", "latitude", "value", "type", "fold")
+      
       expect_true(
-        all(c("longitude", "latitude", "value", "type", "fold") %in% names(occ_return)),
-        info = "Check your occurrence data has the correct column names in the correct order. See the 'Building a module' vignette for details"
+        all(colnames %in% names(occ_return)),
+        info = paste("Check your occurrence data has the correct column names",
+                     "in the correct order. See the 'Building a module'",
+                     "vignette for details")
       )
       expect_is(occ_return$longitude,
                 c("numeric", "integer"),

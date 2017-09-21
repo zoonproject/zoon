@@ -28,8 +28,8 @@ LoadModule <- function(module) {
   # If module is a path, load module
   if (file.exists(module)) {
     txt <- parse(text = paste(readLines(module), collapse = "\n"))
-    # If zoonURL is a zoon repo url, load module
-    #   Could probably do same thing as GetModule here to avoid repeated web call
+    # If zoonURL is a zoon repo url, load module Could probably do same thing as
+    # GetModule here to avoid repeated web call
   } else if (url.exists(zoonURL, .opts = list(ssl.verifypeer = FALSE))) {
     txt <- parse(text = getURL(zoonURL, ssl.verifypeer = FALSE))
     # If module on its own is a url, load module
@@ -38,13 +38,17 @@ LoadModule <- function(module) {
     # Otherwise throw error.
   } else {
     modList <- GetModuleList()
-    closeMatches <- unlist(modList)[agrep(module, unlist(modList), max.distance = 0.3)]
+    module_idx <- agrep(module, unlist(modList), max.distance = 0.3)
+    closeMatches <- unlist(modList)[module_idx]
     if (length(closeMatches) == 0) {
-      stop("Can't find '", module, "' or any modules with closely matching names.")
+      stop ("Can't find '", module,
+            "' or any modules with closely matching names.")
     } else if (length(closeMatches) == 1) {
-      stop("Can't find '", module, "'. Did you mean '", closeMatches, "'?")
+      stop ("Can't find '", module,
+            "'. Did you mean '", closeMatches, "'?")
     } else {
-      stop("Can't find '", module, "'. Did you mean one of '", paste(closeMatches, collapse = "', "), "'?")
+      stop ("Can't find '", module, "'. Did you mean one of '",
+            paste(closeMatches, collapse = "', "), "'?")
     }
   }
   # Load to global environment
@@ -91,8 +95,14 @@ GetModule <- function(module, forceReproducible, environment = parent.frame()) {
   #   unless forceReproduce is TRUE, in which case we want to get from repo.
   #
   # Get module from zoonURL otherwise.
-  if (exists(module, where = ".GlobalEnv", mode = "function", inherits = FALSE) & !forceReproducible) {
-    assign(module, eval(parse(text = module), envir = globalenv()), envir = environment)
+  module_exists <- exists(module,
+                          where = ".GlobalEnv",
+                          mode = "function",
+                          inherits = FALSE)
+  if (module_exists & !forceReproducible) {
+    assign(module,
+           eval(parse(text = module), envir = globalenv()),
+           envir = environment)
     attr(module, "version") <- "local copy"
     return(module)
   } else {
@@ -102,10 +112,9 @@ GetModule <- function(module, forceReproducible, environment = parent.frame()) {
   # getURL returns "Not Found" if no webpage found.
   #   Use this to avoid two web call.s
   if (grepl("^404: Not Found", rawText)) {
-    stop(paste(
-      'Cannot find "', module,
-      '". Check that the module is on the zoon repository or in the global namespace.'
-    ))
+    stop('Cannot find "', module,
+         '". Check that the module is on the zoon repository ',
+         'or in the global namespace.')
   }
 
   # Parse text from webpage.
@@ -128,39 +137,45 @@ GetModule <- function(module, forceReproducible, environment = parent.frame()) {
 #  taken from repo even if they exist locally to enforce reproducibility.
 # @name LapplyGetModule
 
-LapplyGetModule <- function(modules, forceReproducible, environment = parent.frame()) {
-  lapply(modules, function(x) {
-    GotModule <- GetModule(as.character(x$module), forceReproducible, environment)
-    return(c(x, func = GotModule, version = attr(GotModule, "version")))
-  })
+LapplyGetModule <- function (modules,
+                             forceReproducible,
+                             environment = parent.frame()) {
+  lapply(modules,
+         function(x) {
+           GotModule <- GetModule(as.character(x$module),
+                                  forceReproducible,
+                                  environment)
+           res <- c(x,
+                    func = GotModule,
+                    version = attr(GotModule, "version"))
+           return (res)
+         })
 }
 
 
 #' RunModels
 #'
-#' A function to train and predict crossvalidation folds
-#' and train one full model and predict any external validation data.
-#' This function is primarily used internally but can be used when
-#' running workflows interactively (see vignette \code{basic zoon useage})
+#' A function to train and predict crossvalidation folds and train one full
+#' model and predict any external validation data. This function is primarily
+#' used internally but can be used when running workflows interactively (see
+#' vignette \code{basic zoon useage})
 #'
-#' @param df Dataframe from process module. Should contain columns
-#'  value, type, lon, lat
-#'  and fold, a number indicating which cross validation set a datapoint is in.
-#'  If fold is 0 then this is considered external validation data
-#'  If all data is 0 or 1, then no cross validation is run.
+#' @param df Dataframe from process module. Should contain columns value, type,
+#'   lon, lat and fold, a number indicating which cross validation set a
+#'   datapoint is in. If fold is 0 then this is considered external validation
+#'   data If all data is 0 or 1, then no cross validation is run.
 #'
-#' @param modelFunction String giving the name of the model function which is
-#'  in turn the
-#'  name of the module.
+#' @param modelFunction String giving the name of the model function which is in
+#'   turn the name of the module.
 #'
-#' @param paras All other parameters that should be passed to the model function.
-#'  i.e. model[[1]]$paras
+#' @param paras All other parameters that should be passed to the model
+#'   function. i.e. model[[1]]$paras
 #'
 #' @param workEnv The environment name of the workflow call environment.
 #'
 #' @return A list of length 2 containing the model trained on all data and a
-#'  data.frame which contains value, type, fold, lon, lat, predictions and
-#'  then all environmental variables.
+#'   data.frame which contains value, type, fold, lon, lat, predictions and then
+#'   all environmental variables.
 #' @export
 #' @name RunModels
 
@@ -172,9 +187,8 @@ RunModels <- function(df, modelFunction, paras, workEnv) {
   # Doing predictions requires handling of NAs in subsets
   # of the data (subsets = folds). This breaks if there
   # is already a na.action attribute on df, so we remove it
-  if ("na.action" %in% names(attributes(df))) {
+  if ("na.action" %in% names(attributes(df)))
     attributes(df) <- attributes(df)[!names(attributes(df)) %in% "na.action"]
-  }
 
   # Init. output dataframe with predictions column
   # Old versions of modules dont use this attribute
@@ -406,12 +420,16 @@ ExtractAndCombData <- function(occurrence, ras) {
   )
 
   if (any(NArows)) {
-    warning(sum(NArows), " row(s) of occurrence data have NA values for latitude/longitude and will be removed")
+    warning (sum(NArows), " row(s) of occurrence data have NA values ",
+             "for latitude/longitude and will be removed")
     occurrence <- occurrence[!NArows, ]
   }
 
   if (is.na(projection(ras))) {
-    message("Covarite raster does not have a projection, zoon will assume this is in the same projection as your occurrence data")
+    
+    message("Covariate raster does not have a projection, zoon will assume ",
+            "this is in the same projection as your occurrence data")
+    
   } else if ("crs" %in% tolower(colnames(occurrence))) {
     occurrence <- TransformCRS(
       occurrence = occurrence,
@@ -430,24 +448,28 @@ ExtractAndCombData <- function(occurrence, ras) {
     nr_after <- nrow(occurrence)
 
     if (nr_after > 0) {
-      warning(paste(
-        nr_before - nr_after,
-        "occurrence points are outside the raster extent and have been removed before modelling leaving",
-        nr_after, "occurrence points"
-      ))
+      warning (nr_before - nr_after, "occurrence points are outside ",
+               "the raster extent and have been removed before modelling ",
+               "leaving", nr_after, "occurrence points")
     } else if (nr_after == 0) {
-      warning(paste("All occurrence points are outside the raster extent. Try changing your raster."))
+      warning ("All occurrence points are outside the raster extent. ",
+               "Try changing your raster.")
     }
   }
 
   # extract covariates from lat long values in df.
-  ras.values <- raster::extract(ras, occurrence[, c("longitude", "latitude")])
+  ras.values <- raster::extract(ras,
+                                occurrence[, c("longitude", "latitude")])
   if (is.null(ras.values)) {
     occurrenceCovariates <- NULL
-    warning("Locations in the occurrence data did not match your raster so no covariate data were extracted. This is only a good idea if you are creating simulated data in the process module")
+    warning ("Locations in the occurrence data did not match your raster ",
+             "so no covariate data were extracted. ",
+             "This is only a good idea if you are creating simulated data ",
+             "in the process module")
   } else {
-    if (sum(is.na(ras.values)) > 0) {
-      warning(paste(sum(is.na(ras.values)), "extracted covariate values are NA. This may cause issues for some models"))
+    if (any(is.na(ras.values))) {
+      warning(sum(is.na(ras.values)), "extracted covariate values are NA. ",
+              "This may cause issues for some models")
     }
     occurrenceCovariates <- as.matrix(ras.values)
     colnames(occurrenceCovariates) <- names(ras)
@@ -468,17 +490,18 @@ ExtractAndCombData <- function(occurrence, ras) {
 
 #' Chain modules together
 #'
-#' \code{Chain} combines multiple modules of the same module type such that they are
-#' executed sequentially and their outputs combined.
-#' For example, process modules may be \code{Chain}ed to carry out successive
-#'  processing operations. By contrast, \code{list}ing modules of the same type
-#'  would split the workflow into multiple parallel workflows, each using a
-#'  different module at this step.
-#' Similarly for occurrence or covariate modules the datasets are joined
-#' (row- or layer-wise) whereas \code{list} would carry out separate analyses.
-#' Model and output modules may not be chained.
-#' Developers should note that this function is not actually used - calls using
-#'  \code{Chain} are parsed by workflow, with behaviour similar to this function.
+#' \code{Chain} combines multiple modules of the same module type such that they
+#' are executed sequentially and their outputs combined. For example, process
+#' modules may be \code{Chain}ed to carry out successive processing operations.
+#' By contrast, \code{list}ing modules of the same type would split the workflow
+#' into multiple parallel workflows, each using a different module at this step.
+#'
+#' Similarly for occurrence or covariate modules the datasets are joined (row-
+#' or layer-wise) whereas \code{list} would carry out separate analyses. Model
+#' and output modules may not be chained. Developers should note that this
+#' function is not actually used - calls using \code{Chain} are parsed by
+#' workflow, with behaviour similar to this function.
+#' 
 #' @param ... List of modules to be chained.
 #' @export
 #' @name Chain
@@ -497,7 +520,12 @@ Chain <- function(...) {
 #   a runeable workflow function.
 # @name SortArgs
 
-SortArgs <- function(occSub, covSub, proSub, modSub, outSub, forceReproducible) {
+SortArgs <- function (occSub,
+                      covSub,
+                      proSub,
+                      modSub,
+                      outSub,
+                      forceReproducible) {
   call <- paste0(
     "workflow(",
     "occurrence = ", occSub,
@@ -505,7 +533,8 @@ SortArgs <- function(occSub, covSub, proSub, modSub, outSub, forceReproducible) 
     ", process = ", proSub,
     ", model = ", modSub,
     ", output = ", outSub,
-    ", forceReproducible = ", as.character(forceReproducible), ")"
+    ", forceReproducible = ", as.character(forceReproducible),
+    ")"
   )
 }
 
@@ -513,8 +542,8 @@ SortArgs <- function(occSub, covSub, proSub, modSub, outSub, forceReproducible) 
 
 # SplitCall
 #
-# Helper to split a character string workflow call, as inherited from zoonWorkflow
-#   into it's constituent arguments
+# Helper to split a character string workflow call, as inherited from
+# zoonWorkflow into it's constituent arguments
 # @param call A character string of a valid zoon workflow call.
 # @name SplitCall
 
@@ -561,7 +590,8 @@ ErrorModule <- function(cond, mod, e) {
   module <- c(
     "occurrence module.",
     "covariate module.",
-    "ExtractAndCombData, a function that combines occurrence and covariate data.",
+    paste("ExtractAndCombData, a function that combines",
+          "occurrence and covariate data."),
     "process module.",
     "model module.",
     "output module."
@@ -581,7 +611,8 @@ ErrorModule <- function(cond, mod, e) {
 # PasteAndDep
 #
 # Paste and deparse. Helper to format substituted args. If arguments were
-#   chained or listed then substitute gives a list. We want to paste it back together.
+# chained or listed then substitute gives a list. We want to paste it back
+# together.
 # @name PasteAndDep
 
 PasteAndDep <- function(x) {
@@ -623,17 +654,17 @@ GetMaxEnt <- function() {
   # then find and upload it
 
   # define text
-  browser_txt <- "\nTo get MaxEnt working, you'll need to download the executable
-  file from the MaxEnt website. The website will require you to give some details,
-  once you've done this please download the 'maxent.jar' file to somewhere
-  memorable (you'll have to find it again in a second).
+  browser_txt <- paste("\nTo get MaxEnt working, you'll need to download the",
+                       "executable file from the MaxEnt website. The website",
+                       "will require you to give some details, once you've",
+                       "done this please download the 'maxent.jar' file to",
+                       "somewhere memorable (you'll have to find it again in",
+                       "a second).\n\nPress return to launch the MaxEnt",
+                       "website and continue.")
 
-  Press return to launch the MaxEnt website and continue."
-
-  chooser_txt <- "\n\n\n\nzoon now needs to copy the 'maxent.jar' file to the
-  correct locations.
-
-  Press return to locate the 'maxent.jar' file you just downloaded"
+  chooser_txt <- paste("\n\n\n\nzoon now needs to copy the 'maxent.jar' file",
+                       "to the correct locations.\n\nPress return to locate",
+                       "the 'maxent.jar' file you just downloaded")
 
   # step one, download the file
   message(browser_txt) # speak to user
@@ -659,14 +690,17 @@ GetMaxEnt <- function() {
   # message, warn, or error depending on the level of success
   if (dismo_success) {
     if (biomod2_success) {
-      message("maxent.jar successfully deployed for MaxEnt and BiomodModel modules")
+      message("maxent.jar successfully deployed for MaxEnt ",
+              "and BiomodModel modules")
     } else {
-      warning("maxent.jar successfully deployed for MaxEnt module, but not for BiomodModel module")
+      warning ("maxent.jar successfully deployed for MaxEnt module, ",
+               "but not for BiomodModel module")
     }
   } else if (biomod2_success) {
-    warning("maxent.jar successfully deployed for BiomodModel module, but not for MaxEnt module")
+    warning ("maxent.jar successfully deployed for BiomodModel module, ",
+             "but not for MaxEnt module")
   } else {
-    stop("maxent.jar not deployed for MaxEnt or BiomodModel modules")
+    stop ("maxent.jar not deployed for MaxEnt or BiomodModel modules")
   }
 }
 
@@ -675,7 +709,7 @@ GetMaxEnt <- function() {
 # Adds the default parameters and their descriptions to the parameters list in
 # BuildModule.
 # @param paras The orginial named list of paramenter descriptions
-# @param type The module type used to allocated the defaul arguements
+# @param type The module type used to allocated the default arguements
 AddDefaultParas <- function(paras, type) {
 
   # Define default arguements
@@ -683,7 +717,6 @@ AddDefaultParas <- function(paras, type) {
     occurrence = NULL, covariate = NULL, process = c(".data"),
     model = c(".df"), output = c(".model", ".ras")
   )
-
 
   # Remove defaults if they exist, then add in the defaults.
   paras <- paras[!names(paras) %in% defArgs[[type]]]
@@ -693,10 +726,11 @@ AddDefaultParas <- function(paras, type) {
     covariate = NULL,
     process = list(.data = paste(
       "\\strong{Internal parameter, do not use in the workflow function}.",
-      "\\code{.data} is a list of a data frame and a raster object returned from",
-      "occurrence modules and covariate modules respectively. \\code{.data} is",
-      "passed automatically in workflow from the occurrence and covariate modules",
-      "to the process module(s) and should not be passed by the user."
+      "\\code{.data} is a list of a data frame and a raster object returned",
+      "from occurrence modules and covariate modules respectively.",
+      "\\code{.data} is passed automatically in workflow from the occurrence",
+      "and covariate modules to the process module(s) and should not be passed",
+      "by the user."
     )),
     model = list(.df = paste(
       "\\strong{Internal parameter, do not use in the workflow function}.",
@@ -710,8 +744,9 @@ AddDefaultParas <- function(paras, type) {
         "\\strong{Internal parameter, do not use in the workflow function}.",
         "\\code{.model} is list of a data frame (\\code{data}) and a model",
         "object (\\code{model}). \\code{.model} is passed automatically in",
-        "workflow, combining data from the model module(s) and process module(s),",
-        "to the output module(s) and should not be passed by the user."
+        "workflow, combining data from the model module(s) and process",
+        "module(s) to the output module(s) and should not be passed by",
+        "the user."
       ),
       .ras = paste(
         "\\strong{Internal parameter, do not use in the workflow function}.",
@@ -767,7 +802,9 @@ tryCatchModule <- function(expr, code_chunk, fun, debug = TRUE) {
         "ERROR:", err,
         "\nYou can debug this error by running the following code chunk",
         "\n===========\n",
-        ifelse(test = debug_f, yes = paste0("debugonce(", func, ")\n"), no = ""),
+        ifelse(test = debug_f,
+               yes = paste0("debugonce(", func, ")\n"),
+               no = ""),
         code_chunk,
         "\n==========="
       )
@@ -783,7 +820,8 @@ tryCatchModule <- function(expr, code_chunk, fun, debug = TRUE) {
 # error that may occur in a way to make debugging easier
 
 tryCatchWorkflow <- function(expr, placeholder, fun) {
-  code_temp <- paste0(trimws(capture.output(print(substitute(expr)))), collapse = "")
+  
+  code_temp <- paste0(trimws(capture.output(print(substitute(expr)))))
   code_chunk <- gsub(placeholder, fun, trimws(gsub("[{}]", "", code_temp)))
 
   tryCatchModule(

@@ -43,7 +43,13 @@
 #'
 #' }
 
-workflow <- function(occurrence, covariate, process, model, output, forceReproducible=FALSE) {
+workflow <- function(occurrence,
+                     covariate,
+                     process,
+                     model,
+                     output,
+                     forceReproducible = FALSE) {
+  
   occSub <- substitute(occurrence)
   covSub <- substitute(covariate)
   proSub <- substitute(process)
@@ -149,12 +155,11 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   on.exit(expr = {
     tempf <- tempfile(fileext = ".rdata")
     save(output, file = tempf)
-    message(paste(
-      "The process failed. The partially completed workflow has been",
-      ' saved as a temporary file. Load the partially completed workflow named "output" by',
-      ' using load("',
-      normalizePath(tempf, winslash = "/"), '")',
-      sep = ""
+    message(paste0(
+      "The process failed. The partially completed workflow has been ",
+      "saved as a temporary file. Load the partially completed workflow",
+      'named "output" by using load("',
+      normalizePath(tempf, winslash = "/"), '")'
     ))
   })
 
@@ -162,7 +167,9 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   # Run the occurrence modules
   tryCatch(
     {
-      occurrence.output <- lapply(occurrenceName, FUN = DoOccurrenceModule, e = e)
+      occurrence.output <- lapply(occurrenceName,
+                                  FUN = DoOccurrenceModule,
+                                  e = e)
       # Then bind together if the occurrence modules were chained
       if (identical(attr(occurrence.module, "chain"), TRUE)) {
         occurrence.output <- list(do.call(rbind.fill, occurrence.output))
@@ -185,8 +192,9 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   # Run to covariate modules
   tryCatch(
     {
-      # covariate.output <- lapply(covariateName, function(x) do.call(x$func, x$paras))
-      covariate.output <- lapply(covariateName, FUN = DoCovariateModule, e = e)
+      covariate.output <- lapply(covariateName,
+                                 FUN = DoCovariateModule,
+                                 e = e)
       if (identical(attr(covariate.module, "chain"), TRUE)) {
         covariate.output <- CombineRasters(covariate.output)
         covariate.output <- list(do.call(raster::stack, covariate.output))
@@ -232,7 +240,10 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
 
   tryCatch(
     {
-      process.output <- DoProcessModules(process.module, processName, data, e)
+      process.output <- DoProcessModules(process.module,
+                                         processName,
+                                         data,
+                                         e)
       output$process.output <- process.output
     },
     error = function(cond) {
@@ -243,7 +254,10 @@ workflow <- function(occurrence, covariate, process, model, output, forceReprodu
   # Model module
   tryCatch(
     {
-      model.output <- DoModelModules(model.module, modelName, process.output, e)
+      model.output <- DoModelModules(model.module,
+                                     modelName,
+                                     process.output,
+                                     e)
       output$model.output <- model.output
     },
     error = function(cond) {

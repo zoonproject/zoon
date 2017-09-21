@@ -19,7 +19,9 @@ test_parameters <- function(roxy_parse, defaultParams = NULL, modulePath) {
     # Check for defult parameter
     if (!is.null(defaultParams)) expect_true(
       all(defaultParams %in% paramNames),
-      info = paste("Default parameter(s) is not documented:", paste(defaultParams[!defaultParams %in% paramNames], collapse = ", "))
+      info = paste("Default parameter(s) is not documented:",
+                   paste(defaultParams[!defaultParams %in% paramNames],
+                         collapse = ", "))
     )
 
     # Check all parameters are documented
@@ -50,11 +52,13 @@ test_parameters <- function(roxy_parse, defaultParams = NULL, modulePath) {
     paramClasses <- paramClasses[!names(paramClasses) %in% "..."]
 
     # remove defaults
-    if (!is.null(defaultParams)) paramClasses <- paramClasses[!names(paramClasses) %in% defaultParams]
+    if (!is.null(defaultParams))
+      paramClasses <- paramClasses[!names(paramClasses) %in% defaultParams]
 
     expect_true(
       !any(unlist(paramClasses)),
-      info = paste("Some parameters are missing default values:", names(unlist(paramClasses)[unlist(paramClasses)]))
+      info = paste("Some parameters are missing default values:",
+                   names(unlist(paramClasses)[unlist(paramClasses)]))
     )
   })
 }
