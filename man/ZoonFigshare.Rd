@@ -11,11 +11,11 @@ ZoonFigshare(zoonWorkflow, title = "My Zoon Workflow",
 \arguments{
 \item{zoonWorkflow}{A zoonWorkflow object as returned by the function \code{Workflow}}
 
-\item{title}{String giving the title of hte workflow}
+\item{title}{String giving the title of the workflow}
 
 \item{description}{String describing the workflow}
 
-\item{authors}{Charactor vector of full authors names}
+\item{authors}{Character vector of full authors names}
 
 \item{categories}{Character vector of figshare categories e.g. ecology.}
 

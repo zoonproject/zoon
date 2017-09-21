@@ -15,5 +15,5 @@ TransformCRS(occurrence, ras_projection)
 The same object as in occurrence, but with CRS changed as needed
 }
 \description{
-Takes a dataframe returned by an occurrence module or a raster object from a covariate module and converts the CRS to lat/long so tht everything works together.
+Takes a dataframe returned by an occurrence module or a raster object from a covariate module and converts the CRS to lat/long so that everything works together.
 }

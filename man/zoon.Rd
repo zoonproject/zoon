@@ -4,9 +4,9 @@
 \name{zoon}
 \alias{zoon}
 \alias{zoon-package}
-\title{Zoon: A package for comparing multple SDM models, good model diagnostics
+\title{Zoon: A package for comparing multiple SDM models, good model diagnostics
      and better reproducibility}
 \description{
-Zoon: A package for comparing multple SDM models, good model diagnostics
+Zoon: A package for comparing multiple SDM models, good model diagnostics
      and better reproducibility
 }
