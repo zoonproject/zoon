@@ -17,15 +17,15 @@ test_that("CheckModList works.", {
 
   testNames <- function(l) names(l) == c("module", "paras")
 
-  expect_true(all(sapply(CheckModList(a), testNames)))
-  expect_true(all(sapply(CheckModList(b), testNames)))
-  expect_true(all(sapply(CheckModList(c), testNames)))
-  expect_true(all(sapply(CheckModList(d), testNames)))
-  expect_true(all(sapply(CheckModList(e), testNames)))
-  expect_true(all(sapply(CheckModList(f), testNames)))
-  expect_true(all(sapply(CheckModList(g), testNames)))
-  expect_true(all(sapply(CheckModList(h), testNames)))
-  expect_true(all(sapply(CheckModList(i), testNames)))
+  expect_true(all(vapply(CheckModList(a), testNames, FALSE)))
+  expect_true(all(vapply(CheckModList(b), testNames, FALSE)))
+  expect_true(all(vapply(CheckModList(c), testNames, FALSE)))
+  expect_true(all(vapply(CheckModList(d), testNames, FALSE)))
+  expect_true(all(vapply(CheckModList(e), testNames, FALSE)))
+  expect_true(all(vapply(CheckModList(f), testNames, FALSE)))
+  expect_true(all(vapply(CheckModList(g), testNames, FALSE)))
+  expect_true(all(vapply(CheckModList(h), testNames, FALSE)))
+  expect_true(all(vapply(CheckModList(i), testNames, FALSE)))
 
   expect_equal(length(CheckModList(a)), 1)
   expect_equal(length(CheckModList(b)), 1)
@@ -47,6 +47,8 @@ test_that("CheckModList errors correctly", {
   b <- substitute("list('mod1', 'mod2')")
   grepl("[^\' | ^\"]", a) & grepl("[( | )]", a)
 
-  expect_error(CheckModList(a), "If specifying module arguments please use the form")
-  expect_error(CheckModList(b), "If specifying module arguments please use the form")
+  expect_error(CheckModList(a),
+               "If specifying module arguments please use the form")
+  expect_error(CheckModList(b),
+               "If specifying module arguments please use the form")
 })
