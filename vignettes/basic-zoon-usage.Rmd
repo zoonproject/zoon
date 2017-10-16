@@ -298,7 +298,7 @@ work5 <- workflow(occurrence = UKAnophelesPlumbeus,
 
 <img src="basic_12-1.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto" style="display: block; margin: auto;" /><img src="basic_12-2.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto" style="display: block; margin: auto;" /><img src="basic_12-3.png" title="plot of chunk basic_12" alt="plot of chunk basic_12" style="display:block; margin: auto" style="display: block; margin: auto;" />
 
-`Replicate` takes as its first arguement the module you want to repeat and as its second argument the number of times yo want to repeat it. Here we end up running our model three times for three different sets out background points
+`Replicate` takes as its first argument the module you want to repeat and as its second argument the number of times yo want to repeat it. Here we end up running our model three times for three different sets out background points
 
 ### Auxillary information in a ZoonWorkflow
 
