@@ -119,7 +119,7 @@ workl1 <- workflow(occurrence = Lorem_ipsum_UK,
 
 This is a nice way to debug your function and ensure you are getting the results you expect.
 
-Once you are happy that your function is working as you expect it to you can build you code into a module using the `BuildModule` function in `zoon`. This script adds in metadata including the type of module, authors' names, a brief description and documentation for the arguments it accepts (though this one doesn't accept any arguments). Once `BuildModule` has created your module it will run it through checks to make sure has the required features, outputs data in the correct format, etc. Checking can be turned off by setting the argument `check = FALSE`.
+Once you are happy that your function is working as you expect it to you can build your code into a module using the `BuildModule` function in `zoon`. This script adds in metadata including the type of module, authors' names, a brief description and documentation for the arguments it accepts (though this one doesn't accept any arguments). Once `BuildModule` has created your module it will run it through checks to make sure has the required features, outputs data in the correct format, etc. Checking can be turned off by setting the argument `check = FALSE`.
 
 
 ```r
