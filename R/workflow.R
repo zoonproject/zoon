@@ -16,6 +16,7 @@
 #' @param forceReproducible Logical whether to force zoon to collect modules
 #'  from the online repo. This ensure the analysis is reproducible.
 #'
+#' @importFrom future future_lapply
 #' @return A list with the results of each module and a copy of the
 #'  code used to execute the workflow. If the workflow fails a partial
 #'  list is saved to a temporary file for debugging.
@@ -167,7 +168,7 @@ workflow <- function(occurrence,
   # Run the occurrence modules
   tryCatch(
     {
-      occurrence.output <- lapply(occurrenceName,
+      occurrence.output <- future_lapply(occurrenceName,
                                   FUN = DoOccurrenceModule,
                                   e = e)
       # Then bind together if the occurrence modules were chained
@@ -192,7 +193,7 @@ workflow <- function(occurrence,
   # Run to covariate modules
   tryCatch(
     {
-      covariate.output <- lapply(covariateName,
+      covariate.output <- future_lapply(covariateName,
                                  FUN = DoCovariateModule,
                                  e = e)
       if (identical(attr(covariate.module, "chain"), TRUE)) {
