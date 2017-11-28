@@ -805,7 +805,7 @@ tryCatchModule <- function(expr, code_chunk, fun, debug = TRUE) {
         ifelse(test = debug_f,
                yes = paste0("debugonce(", func, ")\n"),
                no = ""),
-        code_chunk,
+        paste(code_chunk, collapse = "\n"),
         "\n==========="
       )
       class(error_message) <- "moduleError"

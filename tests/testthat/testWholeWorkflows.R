@@ -27,9 +27,9 @@ test_that("simple, package data workflow works.", {
   expect_equal(dim(work1$occurrence.output[[1]]), c(188, 5))
   expect_is(work1$covariate.output[[1]], "RasterLayer")
   expect_equal(dim(work1$covariate.output[[1]]), c(9, 9, 1))
-  expect_equal(
-    names(work1$process.output[[1]]$df),
-    c("value", "type", "fold", "longitude", "latitude", "layer")
+  column_names <- c("value", "type", "fold", "longitude", "latitude", "layer")
+  expect_true(
+    all(column_names %in% names(work1$process.output[[1]]$df))
   )
   expect_equal(dim(work1$process.output[[1]][[1]]), c(258, 6))
   expect_is((work1$model.output[[1]])$model, c("zoonModel"))
@@ -59,9 +59,9 @@ test_that("Check basic quoted workflow.", {
   expect_equal(dim(work1$occurrence.output[[1]]), c(188, 5))
   expect_is(work1$covariate.output[[1]], "RasterLayer")
   expect_equal(dim(work1$covariate.output[[1]]), c(9, 9, 1))
-  expect_equal(
-    names(work1$process.output[[1]]$df),
-    c("value", "type", "fold", "longitude", "latitude", "layer")
+  column_names <- c("value", "type", "fold", "longitude", "latitude", "layer")
+  expect_true(
+    all(column_names %in% names(work1$process.output[[1]]$df))
   )
   expect_equal(dim(work1$process.output[[1]][[1]]), c(269, 6))
   expect_is((work1$model.output[[1]])$model, c("zoonModel"))
@@ -334,9 +334,9 @@ test_that("chains work.", {
   expect_equal(dim(chain1$occurrence.output[[1]]), c(376, 5))
   expect_is(chain1$covariate.output[[1]], "RasterLayer")
   expect_equal(dim(chain1$covariate.output[[1]]), c(9, 9, 1))
-  expect_equal(
-    names(chain1$process.output[[1]]$df),
-    c("value", "type", "fold", "longitude", "latitude", "layer")
+  column_names <- c("value", "type", "fold", "longitude", "latitude", "layer")
+  expect_true(
+    all(column_names %in% names(chain1$process.output[[1]]$df))
   )
   expect_equal(dim(chain1$process.output[[1]]$df), c(446, 6))
   expect_is((chain1$model.output[[1]])$model, c("zoonModel"))
@@ -352,9 +352,9 @@ test_that("chains work.", {
   expect_equal(dim(chain2$occurrence.output[[1]]), c(188, 5))
   expect_is(chain2$covariate.output[[1]], "RasterStack")
   expect_equal(dim(chain2$covariate.output[[1]]), c(9, 9, 2))
-  expect_equal(
-    names(chain2$process.output[[1]]$df),
-    c("value", "type", "fold", "longitude", "latitude", "layer.1", "layer.2")
+  column_names <- c("value", "type", "fold", "longitude", "latitude", "layer.1", "layer.2")
+  expect_true(
+    all(column_names %in% names(chain2$process.output[[1]]$df))
   )
   expect_equal(dim(chain2$process.output[[1]]$df), c(258, 7))
   expect_is((chain2$model.output[[1]])$model, c("zoonModel"))
@@ -370,9 +370,9 @@ test_that("chains work.", {
   expect_equal(dim(chain3$occurrence.output[[1]]), c(188, 5))
   expect_is(chain3$covariate.output[[1]], "RasterStack")
   expect_equal(dim(chain3$covariate.output[[1]]), c(9, 9, 2))
-  expect_equal(
-    names(chain3$process.output[[1]]$df),
-    c("value", "type", "fold", "longitude", "latitude", "layer.1", "layer.2")
+  column_names <- c("value", "type", "fold", "longitude", "latitude", "layer.1", "layer.2")
+  expect_true(
+    all(column_names %in% names(chain3$process.output[[1]]$df))
   )
   expect_equal(dim(chain3$process.output[[1]]$df), c(258, 7))
   expect_is((chain3$model.output[[1]])$model, c("zoonModel"))
@@ -388,9 +388,9 @@ test_that("chains work.", {
   expect_equal(dim(chain4$occurrence.output[[1]]), c(188, 5))
   expect_is(chain4$covariate.output[[1]], "RasterLayer")
   expect_equal(dim(chain4$covariate.output[[1]]), c(9, 9, 1))
-  expect_equal(
-    names(chain4$process.output[[1]]$df),
-    c("value", "type", "fold", "longitude", "latitude", "layer")
+  column_names <- c("value", "type", "fold", "longitude", "latitude", "layer")
+  expect_true(
+    all(column_names %in% names(chain4$process.output[[1]]$df))
   )
   expect_equal(dim(chain4$process.output[[1]]$df), c(258, 6))
   expect_is((chain4$model.output[[1]])$model, c("zoonModel"))
@@ -406,9 +406,9 @@ test_that("chains work.", {
   expect_equal(dim(chain5$occurrence.output[[1]]), c(188, 5))
   expect_is(chain5$covariate.output[[1]], "RasterLayer")
   expect_equal(dim(chain5$covariate.output[[1]]), c(9, 9, 1))
-  expect_equal(
-    names(chain5$process.output[[1]]$df),
-    c("value", "type", "fold", "longitude", "latitude", "layer")
+  column_names <- c("value", "type", "fold", "longitude", "latitude", "layer")
+  expect_true(
+    all(column_names %in% names(chain5$process.output[[1]]$df))
   )
   expect_equal(dim(chain5$process.output[[1]]$df), c(258, 6))
   expect_is((chain5$model.output[[1]])$model, c("zoonModel"))
