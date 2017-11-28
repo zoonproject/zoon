@@ -1,0 +1,18 @@
+pre{
+  background-color: transparent;
+  border: 1px solid #696969;
+  border-radius: 0;
+  color: #696969;
+}
+pre.r{
+  background-color: #ecf5f9;
+  border: none;
+  border-radius: 0;
+}
+hr {
+  height:6px;
+  border-top:4px solid #158cba;
+}
+code {
+  background-color: #f5eef6;
+}
