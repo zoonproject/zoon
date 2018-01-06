@@ -22,9 +22,20 @@ GetPackage <- function(package) {
     installed_packages <- rownames(installed.packages())
 
     if (!i %in% installed_packages)
-      install.packages(i, repos = "http://cran.rstudio.com")
-
-    # now load the package
-    library(i, character.only = TRUE)
+      
+      cat(paste0('A module requires the package "',
+                i,
+                '". Would you like to install it?'))
+      
+      if(interactive()) {
+        installChoice <- menu(c("yes", "no"))
+        if(installChoice == 1){
+          install.packages(i, repos = "http://cran.rstudio.com")
+          # now load the package
+          library(i, character.only = TRUE)
+        } else {
+          stop('Not installing packages and cannot continue.' )
+        }
+      }
   }
 }
