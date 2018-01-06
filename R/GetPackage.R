@@ -28,7 +28,7 @@ GetPackage <- function(package) {
                 '". Would you like to install it?'))
       
       if(interactive()) {
-        installChoice <- menu(c("yes", "no"))
+        installChoice <- untils::menu(c("yes", "no"))
         if(installChoice == 1){
           install.packages(i, repos = "http://cran.rstudio.com")
           # now load the package
