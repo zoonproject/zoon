@@ -21,14 +21,14 @@ GetPackage <- function(package) {
     # if it isn't installed, install it
     installed_packages <- rownames(installed.packages())
 
-    if (!i %in% installed_packages)
+    if (!i %in% installed_packages){
       
       cat(paste0('A module requires the package "',
                 i,
                 '". Would you like to install it?'))
       
       if(interactive()) {
-        installChoice <- untils::menu(c("yes", "no"))
+        installChoice <- utils::menu(c("yes", "no"))
         if(installChoice == 1){
           install.packages(i, repos = "http://cran.rstudio.com")
           # now load the package
@@ -37,5 +37,6 @@ GetPackage <- function(package) {
           stop('Not installing packages and cannot continue.' )
         }
       }
+    }
   }
 }
