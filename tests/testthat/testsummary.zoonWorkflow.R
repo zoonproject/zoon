@@ -69,7 +69,7 @@ test_that("summary.zoonWorkflow tests", {
       occurrence = UKAnophelesPlumbeus,
       covariate = UKAir,
       process = Background(n = 70),
-      model = list(OptGRaF, LogisticRegression),
+      model = list(Domain, LogisticRegression),
       output = SameTimePlaceMap
     )),
     class = "character"
@@ -81,7 +81,7 @@ test_that("summary.zoonWorkflow tests", {
       occurrence = UKAnophelesPlumbeus,
       covariate = UKAir,
       process = BackgroundAndCrossvalid,
-      model = OptGRaF,
+      model = Domain,
       output = list(
         SameTimePlaceMap,
         PerformanceMeasures
