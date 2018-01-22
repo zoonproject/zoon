@@ -7,8 +7,13 @@
 #' @param package A character vector of packages to load
 #' @return NULL
 #' @importFrom utils install.packages installed.packages
-#' @examples GetPackage('gam')
 #' @export
+#' @examples
+#' \dontrun{
+#' 
+#' GetPackage('gam')
+#' 
+#' }
 
 GetPackage <- function(package) {
 
