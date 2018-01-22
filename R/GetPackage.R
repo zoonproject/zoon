@@ -31,12 +31,14 @@ GetPackage <- function(package) {
         installChoice <- utils::menu(c("yes", "no"))
         if(installChoice == 1){
           install.packages(i, repos = "http://cran.rstudio.com")
-          # now load the package
-          library(i, character.only = TRUE)
         } else {
           stop('Not installing packages and cannot continue.' )
         }
       }
     }
+    
+    # now load the package
+    library(i, character.only = TRUE)
+    
   }
 }
