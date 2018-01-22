@@ -24,6 +24,9 @@ test_outputs <- function(roxy_parse, modulePath) {
 
 test_occurrence_outputs <- function (roxy_parse, modulePath, en) {
   
+  # hide undefined variable from CRAN's ever-present gaze
+  PerformanceMeasures <- NULL
+  
   test_that(paste("Check OCCURRENCE output formats for", basename(modulePath)),
             {
     
@@ -764,6 +767,9 @@ test_process_outputs <- function (roxy_parse, modulePath, en) {
 }
 
 test_model_outputs <- function (roxy_parse, modulePath, en) {
+  
+  # hide undefined variable from CRAN's ever-present gaze
+  .data <- NULL
   
   test_that(paste("Check MODEL output formats for", basename(modulePath)),
   {
