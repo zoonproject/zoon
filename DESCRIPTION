@@ -1,8 +1,8 @@
 Package: zoon
 Type: Package
 Title: Reproducible, Accessible & Shareable Species Distribution Modelling
-Version: 0.6.2
-Date: 2017-09-20
+Version: 0.6.3
+Date: 2018-01-22
 Author: Tom August [aut, cre], Tim Lucas [aut], Nick Golding [aut], Emiel van Loon [ctb], Greg McInerny [aut]
 Authors@R: c(person("Tom", "August", role = c("aut", "cre"),
                     email = "tomaug@ceh.ac.uk"),
