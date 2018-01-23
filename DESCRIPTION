@@ -10,7 +10,7 @@ Authors@R: c(person("Tom", "August", role = c("aut", "cre"),
              person("Nick", "Golding", role = "aut"),
              person("Emiel", "van Loon", role = "ctb"),
              person("Greg", "McInerny", role = "aut"))
-Maintainer: Tom August <nick.golding.research@gmail.com>
+Maintainer: Tom August <tomaug@ceh.ac.uk>
 Description: Reproducible and remixable species distribution modelling. The
     package reads user submitted modules from an online repository, runs full
     SDM workflows and returns output that is fully reproducible.
