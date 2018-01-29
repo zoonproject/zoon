@@ -4,10 +4,10 @@
 \alias{ModuleArguments}
 \title{ModuleArguments}
 \usage{
-ModuleArguments(module)
+ModuleArguments(ModuleName)
 }
 \arguments{
-\item{module}{string giving the name of the module}
+\item{ModuleName}{string giving the name of the module}
 }
 \value{
 A list of arguments for user-intput to that module
