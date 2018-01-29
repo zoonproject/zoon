@@ -30,9 +30,10 @@ ModuleArguments <- function(ModuleName) {
   txt <- parse(text = rawText)
   
   # Evaluate text in the workflow call environment
-  eval(txt, envir = .GlobalEnv)
+  jobenv <- new.env(parent = globalenv())
+  jobenv$Background <- eval(txt)
   
-  all_arguments <- formals(ModuleName)
+  all_arguments <- eval(formals(ModuleName), envir = jobenv)
   
   arguments <- all_arguments[grepl('\\.', names(all_arguments)) == FALSE]
   arguments
