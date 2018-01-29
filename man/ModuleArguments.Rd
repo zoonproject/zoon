@@ -10,8 +10,11 @@ ModuleArguments(module)
 \item{module}{string giving the name of the module}
 }
 \value{
-A list of arguments to that module
+A list of arguments for user-intput to that module
 }
 \description{
 Produce list of module arguments
+}
+\examples{
+ModuleArguments('Background')
 }

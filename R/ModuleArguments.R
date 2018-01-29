@@ -3,10 +3,11 @@
 #' Produce list of module arguments
 #'
 #' @param module string giving the name of the module
-#' @return A list of arguments to that module
+#' @return A list of arguments for user-intput to that module
 #' @name ModuleArguments
 #' @importFrom RCurl getURL
 #' @export
+#' @examples ModuleArguments('Background')
 
 ModuleArguments <- function(module) {
 
