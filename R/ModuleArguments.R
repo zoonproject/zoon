@@ -2,32 +2,39 @@
 #'
 #' Produce list of module arguments
 #'
-#' @param module string giving the name of the module
+#' @param ModuleName string giving the name of the module
 #' @return A list of arguments for user-intput to that module
 #' @name ModuleArguments
 #' @importFrom RCurl getURL
 #' @export
 #' @examples ModuleArguments('Background')
 
-ModuleArguments <- function(module) {
+ModuleArguments <- function(ModuleName) {
 
-  zoonURL <- sprintf(
+  # Build URL
+  ModuleURL <- sprintf(
     "%s/%s/R/%s.R",
     options("zoonRepo"),
     options("zoonRepoBranch"),
-    module
+    ModuleName
   )
   
-  rawText <- getURL(zoonURL, ssl.verifypeer = FALSE)
+  # Check the URL exists
+  if (!RCurl::url.exists(ModuleURL))
+    stop("URL for module does not exist: ", ModuleURL)
   
-  # Parse text from webpage.
+  # Extract module function from webpage
+  rawText <- RCurl::getURL(ModuleURL, ssl.verifypeer = FALSE)
+  
+  # Parse text from webpage
   txt <- parse(text = rawText)
   
   # Evaluate text in the workflow call environment
   eval(txt, envir = .GlobalEnv)
   
-  arguments <- formals(module)
+  all_arguments <- formals(ModuleName)
   
-  arguments[grepl('\\.', names(arguments)) == FALSE]
+  arguments <- all_arguments[grepl('\\.', names(all_arguments)) == FALSE]
+  arguments
 
 }
