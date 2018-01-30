@@ -29,13 +29,17 @@ ModuleArguments <- function(ModuleName) {
   # Parse text from webpage
   txt <- parse(text = rawText)
   
-  # Evaluate text in the workflow call environment
-  jobenv <- new.env(parent = globalenv())
-  jobenv$Background <- eval(txt)
+  # Evaluate text in this function environment
+  Module <- eval(txt)
   
-  all_arguments <- eval(formals(ModuleName), envir = jobenv)
+  # Extract arguments
+  all_arguments <- formals(Module)
   
-  arguments <- all_arguments[grepl('\\.', names(all_arguments)) == FALSE]
+  # Make sure all arguments display as character
+  all_arguments_character <- lapply(all_arguments, deparse)
+  
+  # Remove the default arguments
+  arguments <- all_arguments_character[grepl('^\\.', names(all_arguments_character)) == FALSE]
   arguments
 
 }

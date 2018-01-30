@@ -14,9 +14,9 @@ test_that("Check returns list with all the names", {
   x <- ModuleArguments("Background")
   
   arguments <- list(
-    n = 100, 
-    bias = NULL,
-    seed = NULL
+    n = '100', 
+    bias = 'NULL',
+    seed = 'NULL'
   )
   
   expect_that(x, is_identical_to(arguments))
