@@ -1,9 +1,8 @@
 Package: zoon
 Type: Package
 Title: Reproducible, Accessible & Shareable Species Distribution Modelling
-Version: 0.6.2
-Date: 2017-09-20
-Author: Tom August [aut, cre], Tim Lucas [aut], Nick Golding [aut], Emiel van Loon [ctb], Greg McInerny [aut]
+Version: 0.6.3
+Date: 2018-01-22
 Authors@R: c(person("Tom", "August", role = c("aut", "cre"),
                     email = "tomaug@ceh.ac.uk"),
              person("Tim", "Lucas", role = "aut", comment = c(ORCID = "0000-0003-4694-8107")),
@@ -32,7 +31,8 @@ Depends:
     raster (>= 2.4-20),
     R (>= 3.2.0)
 Suggests:
-    knitr
+    knitr,
+    maxlike
 VignetteBuilder: knitr
 LazyData: TRUE
 URL: https://github.com/zoonproject/zoon
