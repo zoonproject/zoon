@@ -26,7 +26,8 @@ Imports:
     rworldmap,
     SDMTools,
     sp,
-    testthat
+    testthat,
+    future
 Depends:
     raster (>= 2.4-20),
     R (>= 3.2.0)
