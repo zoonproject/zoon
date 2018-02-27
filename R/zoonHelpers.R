@@ -17,9 +17,11 @@
 
 GetModule <- function(module, forceReproducible, environment = parent.frame()) {
 
-  envir_from <- ifelse(forceReproducible,
-                  asNamespace("zoon.modules"),
-                  globalenv())
+  if (forceReproducible) {
+    envir_from <- asNamespace("zoon.modules")
+  } else {
+    envir_from <- globalenv()
+  }
     
   module_function <- get(module, envir = envir_from)
 
