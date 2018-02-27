@@ -5,11 +5,16 @@
     options(rasterDataDir = tempdir())
   }
   # set up the default modules repo
-  if (is.null(getOption("zoonRepo"))) {
-    options(zoonRepo = "https://raw.githubusercontent.com/zoonproject/modules")
+  if (is.null(getOption("zoonModulesRepo"))) {
+    options(zoonModulesRepo = "zoonproject/modules")
   }
+  
   # set up the default branch
-  if (is.null(getOption("zoonRepoBranch"))) {
-    options(zoonRepoBranch = "master")
+  if (is.null(getOption("zoonModulesBranch"))) {
+    options(zoonModulesBranch = "dark_modules")
   }
+  
+  # check the module versions are up to date, and load
+  sync_modules()
+  
 }
