@@ -33,7 +33,7 @@ r_github_packages:
  - rstudio/rmarkdown
  - hadley/pkgdown
 
-before_install:
+before_script:
  - Rscript -e 'remotes::install_github("zoonproject/modules@dark_modules")'
  
 ## After success update the code coverage and deploy the pkgdown to gh-pages
