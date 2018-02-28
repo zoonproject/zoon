@@ -683,6 +683,12 @@ StringToCall <- function(x) {
 
 GetModuleVersion <- function(module) {
   
+  # see if it's a versioned module
+  versioned_modules <- names(asNamespace("zoon.modules"))
+  if (!module %in% versioned_modules) {
+    return ("local copy")
+  }
+  
   # get helpfile text
   file <- file.path(find.package("zoon.modules"), "help", module)
   rawText <- capture.output(tools::Rd2txt(utils:::.getHelpFile(file)))
@@ -694,6 +700,7 @@ GetModuleVersion <- function(module) {
   # find version line
   idx <- which(rawText == "Version:") + 1
   gsub(" ", "", rawText[idx])
+  
 }
 
 
