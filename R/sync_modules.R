@@ -1,4 +1,6 @@
 # check the modules are up to date and fetch them if not
+#' @noRd
+#' @importFrom git2r remote_ls
 latest_sha <- function() {
   shas <- git2r::remote_ls(paste0("https://github.com/",
                                   getOption("zoonModulesRepo"),
@@ -7,8 +9,10 @@ latest_sha <- function() {
   shas[[idx]]
 }
 
+#' @noRd
+#' @importFrom utils packageDescription
 current_sha <- function () {
-  suppressWarnings(desc <- packageDescription("zoon.modules"))
+  suppressWarnings(desc <- utils::packageDescription("zoon.modules"))
   sha <- ""
   if (inherits(desc, "packageDescription")) {
     sha <- desc$RemoteSha
