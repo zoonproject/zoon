@@ -32,12 +32,8 @@ r_packages:
 r_github_packages:
  - rstudio/rmarkdown
  - hadley/pkgdown
+ - zoonproject/modules@dark_modules
 
-before_script:
- - Rscript -e 'remotes::install_github("zoonproject/modules@dark_modules")'
- - Rscript -e 'zoon:::current_sha()'
- - Rscript -e 'zoon:::latest_sha()'
- 
 ## After success update the code coverage and deploy the pkgdown to gh-pages
 after_success:
  - Rscript -e 'library(covr);codecov()'
