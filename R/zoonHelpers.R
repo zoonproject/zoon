@@ -1,70 +1,4 @@
 
-#' A function to load a module function from url or disk.
-#'
-#' Loads a module function into the global environment ready to be used in a
-#'  zoon workflow. This function is mostly for use while developing modules.
-#'  Workflows run with modules defined locally are no longer reproducible and
-#'  so are discouraged and will be tagged as 'unreproducible'.
-#'
-#' @param module A string that describes the location of the R file. Can be a
-#'  a full URL or a path to a local file.
-#'
-#' @return Name of the function. Adds function to global namespace.
-#' @name LoadModule
-#' @export
-
-LoadModule <- function(module) {
-
-  # module must be a string
-
-  # URL to module in user's favourite repo & branch
-  zoonURL <- sprintf(
-    "%s/%s/R/%s.R",
-    options("zoonRepo"),
-    options("zoonRepoBranch"),
-    module
-  )
-
-  # If module is a path, load module
-  if (file.exists(module)) {
-    txt <- parse(text = paste(readLines(module), collapse = "\n"))
-    # If zoonURL is a zoon repo url, load module Could probably do same thing as
-    # GetModule here to avoid repeated web call
-  } else if (url.exists(zoonURL, .opts = list(ssl.verifypeer = FALSE))) {
-    txt <- parse(text = getURL(zoonURL, ssl.verifypeer = FALSE))
-    # If module on its own is a url, load module
-  } else if (url.exists(module, .opts = list(ssl.verifypeer = FALSE))) {
-    txt <- parse(text = getURL(module, ssl.verifypeer = FALSE))
-    # Otherwise throw error.
-  } else {
-    modList <- GetModuleList()
-    module_idx <- agrep(module, unlist(modList), max.distance = 0.3)
-    closeMatches <- unlist(modList)[module_idx]
-    if (length(closeMatches) == 0) {
-      stop ("Can't find '", module,
-            "' or any modules with closely matching names.")
-    } else if (length(closeMatches) == 1) {
-      stop ("Can't find '", module,
-            "'. Did you mean '", closeMatches, "'?")
-    } else {
-      stop ("Can't find '", module, "'. Did you mean one of '",
-            paste(closeMatches, collapse = "', "), "'?")
-    }
-  }
-  # Load to global environment
-  eval(txt, envir = globalenv())
-  # Return the actual name of the module that has been loaded.
-  #   Don't just return 'module' argument as that can be url/path
-  #   which isn't useful.
-  # Cruddy code. But module name is the only other object in this
-  #   call environment.
-  eval(txt)
-  new.func.name <- ls()[!ls() %in% c("module", "txt", "zoonURL")]
-  return(new.func.name)
-}
-
-
-
 # A function to get a module function.
 #
 # Checks for the module in the global namespace, then the zoon repo. Then reads
@@ -83,50 +17,21 @@ LoadModule <- function(module) {
 
 GetModule <- function(module, forceReproducible, environment = parent.frame()) {
 
-  # URL to module in user's favourite repo & branch
-  zoonURL <- sprintf(
-    "%s/%s/R/%s.R",
-    options("zoonRepo"),
-    options("zoonRepoBranch"),
-    module
-  )
-
-  # If the module is in global namespace, use that function
-  #   unless forceReproduce is TRUE, in which case we want to get from repo.
-  #
-  # Get module from zoonURL otherwise.
-  module_exists <- exists(module,
-                          where = ".GlobalEnv",
-                          mode = "function",
-                          inherits = FALSE)
-  if (module_exists & !forceReproducible) {
-    assign(module,
-           eval(parse(text = module), envir = globalenv()),
-           envir = environment)
-    attr(module, "version") <- "local copy"
-    return(module)
+  if (forceReproducible) {
+    envir_from <- asNamespace("zoon.modules")
   } else {
-    rawText <- getURL(zoonURL, ssl.verifypeer = FALSE)
+    envir_from <- globalenv()
   }
+    
+  module_function <- get(module, envir = envir_from)
 
-  # getURL returns "Not Found" if no webpage found.
-  #   Use this to avoid two web call.s
-  if (grepl("^404: Not Found", rawText)) {
-    stop('Cannot find "', module,
-         '". Check that the module is on the zoon repository ',
-         'or in the global namespace.')
-  }
+  assign(module,
+         module_function,
+         envir = environment)
 
-  # Parse text from webpage.
-  txt <- parse(text = rawText)
-
-  # Evaluate text in the workflow call environment
-  eval(txt, envir = environment)
-
-  # Assign version attribute
-  attr(module, "version") <- GetModuleVersion(rawText)
-
-  return(module)
+  # assign version attribute
+  attr(module, "version") <- GetModuleVersion(module)
+  module
 }
 
 
@@ -774,17 +679,28 @@ StringToCall <- function(x) {
 
 # GetModuleVersion
 #
-# Using the raw text returned from a GetURL call to github
-# this extracts the version number
+# Get the version of a module from its helpfile
 
-GetModuleVersion <- function(rawText) {
+GetModuleVersion <- function(module) {
+  
+  # see if it's a versioned module
+  versioned_modules <- names(asNamespace("zoon.modules"))
+  if (!module %in% versioned_modules) {
+    return ("local copy")
+  }
+  
+  # get helpfile text
+  file <- file.path(find.package("zoon.modules"), "help", module)
+  rawText <- capture.output(tools::Rd2txt(utils:::.getHelpFile(file)))
 
-  # Break down into lines
-  ModLines <- strsplit(rawText, "\n")[[1]]
-  VersionLine <- ModLines[grep("@section Version: ", ModLines)]
-  TagPosition <- gregexpr("@section Version: ", VersionLine)
-  Start <- TagPosition[[1]] + attr(TagPosition[[1]], "match.length")
-  substr(VersionLine, Start, nchar(VersionLine))
+  # strip bad characters and empty lines
+  rawText <- gsub("_\b", "", rawText)
+  rawText <- rawText[rawText != ""]
+  
+  # find version line
+  idx <- which(rawText == "Version:") + 1
+  gsub(" ", "", rawText[idx])
+  
 }
 
 

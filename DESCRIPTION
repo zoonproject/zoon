@@ -15,6 +15,8 @@ Description: Reproducible and remixable species distribution modelling. The
     SDM workflows and returns output that is fully reproducible.
 License: BSD_3_clause + file LICENSE
 Imports:
+    remotes,
+    gh,
     dismo,
     methods,
     plyr,

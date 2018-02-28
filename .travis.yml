@@ -32,7 +32,8 @@ r_packages:
 r_github_packages:
  - rstudio/rmarkdown
  - hadley/pkgdown
- 
+ - zoonproject/modules@dark_modules
+
 ## After success update the code coverage and deploy the pkgdown to gh-pages
 after_success:
  - Rscript -e 'library(covr);codecov()'

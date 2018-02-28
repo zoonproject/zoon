@@ -92,7 +92,7 @@ test_that("plot.zoonWorkflow module not on repo", {
 
   rm(myMissing)
 
-  LoadModule(module = file.path(directory, "myMissing.R"))
+  source(file.path(directory, "myMissing.R"))
 
   # NamespaceModule <- function(){
   #   return(myMissing)
