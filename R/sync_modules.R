@@ -1,12 +1,14 @@
 # check the modules are up to date and fetch them if not
 #' @noRd
-#' @importFrom git2r remote_ls
+#' @importFrom gh gh
 latest_sha <- function() {
-  shas <- git2r::remote_ls(paste0("https://github.com/",
-                                  getOption("zoonModulesRepo"),
-                                  ".git"))
-  idx <- grep(getOption("zoonModulesBranch"), names(shas))
-  shas[[idx]]
+  query <- paste("/repos",
+                 getOption("zoonModulesRepo"),
+                 "branches",
+                 getOption("zoonModulesBranch"),
+                 sep = "/")
+  branch <- gh::gh(query)
+  branch$commit$sha
 }
 
 #' @noRd
