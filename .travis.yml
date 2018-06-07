@@ -27,6 +27,7 @@ r_packages:
  - gam
  - spocc
  - covr
+ - devtools 
 
 r_github_packages:
  - rstudio/rmarkdown
