@@ -33,7 +33,7 @@
 #' @param check Logical indicating if the module should be run through checks
 #'   once it has been built. Defaults to TRUE.
 #'
-#' @return Name of the module. AS a side effect outputs a .R file to the
+#' @return Name of the module. As a side effect outputs a .R file to the
 #'   directory specified.
 #' @name BuildModule
 #' @import methods
