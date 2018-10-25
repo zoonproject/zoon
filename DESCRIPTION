@@ -1,12 +1,11 @@
 Package: zoon
 Type: Package
 Title: Reproducible, Accessible & Shareable Species Distribution Modelling
-Version: 0.6.1
-Date: 2017-04-11
-Author: Tom August [aut, cre], Tim Lucas [aut], Nick Golding [aut], Emiel van Loon [ctb], Greg McInerny [aut]
+Version: 0.6.3
+Date: 2018-01-22
 Authors@R: c(person("Tom", "August", role = c("aut", "cre"),
                     email = "tomaug@ceh.ac.uk"),
-             person("Tim", "Lucas", role = "aut"),
+             person("Tim", "Lucas", role = "aut", comment = c(ORCID = "0000-0003-4694-8107")),
              person("Nick", "Golding", role = "aut"),
              person("Emiel", "van Loon", role = "ctb"),
              person("Greg", "McInerny", role = "aut"))
@@ -16,22 +15,24 @@ Description: Reproducible and remixable species distribution modelling. The
     SDM workflows and returns output that is fully reproducible.
 License: BSD_3_clause + file LICENSE
 Imports:
-    RCurl,
     dismo,
-    rfigshare,
     methods,
-    testthat,
-    roxygen2,
-    SDMTools,
+    plyr,
     randomForest,
+    RCurl,
+    rfigshare,
     rgdal,
+    roxygen2,
+    rworldmap,
+    SDMTools,
     sp,
-    plyr
+    testthat
 Depends:
     raster (>= 2.4-20),
     R (>= 3.2.0)
 Suggests:
-    knitr
+    knitr,
+    maxlike
 VignetteBuilder: knitr
 LazyData: TRUE
 URL: https://github.com/zoonproject/zoon

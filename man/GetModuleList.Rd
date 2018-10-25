@@ -4,9 +4,14 @@
 \alias{GetModuleList}
 \title{GetModuleList}
 \usage{
-GetModuleList(renew = FALSE)
+GetModuleList(type = c("all", "occurrence", "covariate", "process", "model",
+  "output"), renew = FALSE)
 }
 \arguments{
+\item{type}{The subset of zoon modules you want to return. Defaults to 'all', but you can
+select any of the zoon workflow steps: 'occurrence', 'covariate', 'process',
+'model', or 'output'.}
+
 \item{renew}{Download from github even if we already have a module list.}
 }
 \value{
@@ -16,7 +21,7 @@ A list with all module names.
 Get a list of all the modules available on the github repo.
 }
 \details{
-This function will only work on a platform that supports the 
+This function will only work on a platform that supports the
 method 'libcurl' in the function url. This can be tested using the function
 \code{capabilities} (see example).
 }

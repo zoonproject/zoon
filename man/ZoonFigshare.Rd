@@ -9,21 +9,22 @@ ZoonFigshare(zoonWorkflow, title = "My Zoon Workflow",
   tags = "zoon")
 }
 \arguments{
-\item{zoonWorkflow}{A zoonWorkflow object as returned by the function \code{Workflow}}
+\item{zoonWorkflow}{A zoonWorkflow object as returned by the function
+\code{Workflow}}
 
-\item{title}{String giving the title of hte workflow}
+\item{title}{String giving the title of the workflow}
 
 \item{description}{String describing the workflow}
 
-\item{authors}{Charactor vector of full authors names}
+\item{authors}{Character vector of full authors names}
 
 \item{categories}{Character vector of figshare categories e.g. ecology.}
 
 \item{tags}{Character vector of searchable tags.}
 }
 \description{
-This function uploads a zoon workflow object to Figshare. To share
-your workflow with the community please set your workflow to public on figshare
-after using this function. If your workflow is made public it will automatically
-appear on the Zoon website.
+This function uploads a zoon workflow object to Figshare. To
+  share your workflow with the community please set your workflow to public
+  on figshare after using this function. If your workflow is made public it
+  will automatically appear on the Zoon website.
 }

@@ -27,7 +27,7 @@ Takes a workflow object and reruns it with changes.
 \dontrun{
 w <- workflow(UKAnophelesPlumbeus,
               UKAir,
-              Background(n = 70), 
+              Background(n = 70),
               LogisticRegression,
               PrintMap)
 

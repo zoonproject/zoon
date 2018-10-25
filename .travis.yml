@@ -21,11 +21,13 @@ r_binary_packages:
 # Install the suggested packages which
 # are needed for the vignette builds
 r_packages:
+ - rworldmap
  - knitr
  - testthat
  - gam
  - spocc
  - covr
+ - devtools 
 
 r_github_packages:
  - rstudio/rmarkdown

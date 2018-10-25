@@ -4,14 +4,14 @@
 \name{AplumbeusOcc}
 \alias{AplumbeusOcc}
 \title{UK occurrence data for Anopheles plumbeus as taken from GBIF}
-\format{data.frame with five columns, longitude, latitude, value (1 for 
-   presence), type (presence) and a column of 1s indicating this is 
+\format{data.frame with five columns, longitude, latitude, value (1 for
+   presence), type (presence) and a column of 1s indicating this is
    training data not external validation data.}
 \source{
 GBIF
 }
 \description{
-This is an example occurrence only data for the species 
+This is an example occurrence only data for the species
    Anopheles plumbeus. The data are taken from GBIF and restricted to the
    UK. These data are used in the module UKAnophelesPlumbeus which makes for
    a quick running occurrence module for testing and playing with zoon.

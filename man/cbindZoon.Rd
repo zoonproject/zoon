@@ -7,7 +7,8 @@
 cbindZoon(a, b)
 }
 \arguments{
-\item{a}{The dataframe of which you'd like preserve the user defined attributes}
+\item{a}{The dataframe of which you'd like preserve the user defined
+attributes}
 
 \item{b}{The dataframe which you'd like to append to a.}
 }
