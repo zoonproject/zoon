@@ -458,9 +458,9 @@ ExtractAndCombData <- function(occurrence, ras) {
   }
 
   # extract covariates from lat long values in df.
-  ras.values <- raster::extract(ras,
-                                occurrence[, c("longitude", "latitude")])
-  if (is.null(ras.values)) {
+  ras.values <- raster::extract(ras, occurrence[, c('longitude', 'latitude')])
+  if(length(ras.values) == 0){
+
     occurrenceCovariates <- NULL
     warning ("Locations in the occurrence data did not match your raster ",
              "so no covariate data were extracted. ",
