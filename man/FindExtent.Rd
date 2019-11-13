@@ -4,8 +4,11 @@
 \alias{FindExtent}
 \title{Determine the Extent of Interest}
 \usage{
-FindExtent(initial_extent = c(-180, 180, -90, 90), resolution = c("low",
-  "medium"), round = 3)
+FindExtent(
+  initial_extent = c(-180, 180, -90, 90),
+  resolution = c("low", "medium"),
+  round = 3
+)
 }
 \arguments{
 \item{initial_extent}{optional numeric vector or extent object defining the

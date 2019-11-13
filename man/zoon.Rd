@@ -3,7 +3,6 @@
 \docType{package}
 \name{zoon}
 \alias{zoon}
-\alias{zoon-package}
 \title{Zoon: A package for comparing multiple SDM models, good model diagnostics
      and better reproducibility}
 \description{

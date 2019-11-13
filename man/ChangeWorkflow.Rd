@@ -4,8 +4,15 @@
 \alias{ChangeWorkflow}
 \title{Change a workflow and rerun.}
 \usage{
-ChangeWorkflow(workflow, occurrence = NULL, covariate = NULL,
-  process = NULL, model = NULL, output = NULL, forceReproducible = NULL)
+ChangeWorkflow(
+  workflow,
+  occurrence = NULL,
+  covariate = NULL,
+  process = NULL,
+  model = NULL,
+  output = NULL,
+  forceReproducible = NULL
+)
 }
 \arguments{
 \item{workflow}{A zoonWorkflow object from a previous zoon analysis}

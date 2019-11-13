@@ -4,9 +4,14 @@
 \alias{ZoonFigshare}
 \title{ZoonFigshare}
 \usage{
-ZoonFigshare(zoonWorkflow, title = "My Zoon Workflow",
-  description = "zoon workflow", authors = "zoon", categories = "SDM",
-  tags = "zoon")
+ZoonFigshare(
+  zoonWorkflow,
+  title = "My Zoon Workflow",
+  description = "zoon workflow",
+  authors = "zoon",
+  categories = "SDM",
+  tags = "zoon"
+)
 }
 \arguments{
 \item{zoonWorkflow}{A zoonWorkflow object as returned by the function

@@ -1,8 +1,8 @@
 Package: zoon
 Type: Package
 Title: Reproducible, Accessible & Shareable Species Distribution Modelling
-Version: 0.6.3
-Date: 2018-01-22
+Version: 0.6.4
+Date: 2019-11-13
 Authors@R: c(person("Tom", "August", role = c("aut", "cre"),
                     email = "tomaug@ceh.ac.uk"),
              person("Tim", "Lucas", role = "aut", comment = c(ORCID = "0000-0003-4694-8107")),
@@ -38,4 +38,4 @@ VignetteBuilder: knitr
 LazyData: TRUE
 URL: https://github.com/zoonproject/zoon
 BugReports: https://github.com/zoonproject/zoon/issues
-RoxygenNote: 6.0.1
+RoxygenNote: 7.0.0

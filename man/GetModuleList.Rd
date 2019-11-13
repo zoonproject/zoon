@@ -4,8 +4,10 @@
 \alias{GetModuleList}
 \title{GetModuleList}
 \usage{
-GetModuleList(type = c("all", "occurrence", "covariate", "process", "model",
-  "output"), renew = FALSE)
+GetModuleList(
+  type = c("all", "occurrence", "covariate", "process", "model", "output"),
+  renew = FALSE
+)
 }
 \arguments{
 \item{type}{The subset of zoon modules you want to return. Defaults to 'all', but you can

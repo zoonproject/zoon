@@ -4,9 +4,20 @@
 \alias{BuildModule}
 \title{BuildModule}
 \usage{
-BuildModule(object, type, dir = ".", title = "", description = "",
-  details = "", author = "", email = "", version = 0.1, paras = NULL,
-  dataType = NULL, check = TRUE)
+BuildModule(
+  object,
+  type,
+  dir = ".",
+  title = "",
+  description = "",
+  details = "",
+  author = "",
+  email = "",
+  version = 0.1,
+  paras = NULL,
+  dataType = NULL,
+  check = TRUE
+)
 }
 \arguments{
 \item{object}{A function that will be made into a module file. It is good
@@ -50,7 +61,7 @@ c('presence-only', 'presence/absence')}
 once it has been built. Defaults to TRUE.}
 }
 \value{
-Name of the module. AS a side effect outputs a .R file to the
+Name of the module. As a side effect outputs a .R file to the
   directory specified.
 }
 \description{
