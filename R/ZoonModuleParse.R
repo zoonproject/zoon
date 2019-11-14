@@ -9,6 +9,7 @@
 #' @name ZoonModuleParse
 #' @export
 #' @import roxygen2
+#' @importFrom utils packageVersion
 
 
 ZoonModuleParse <- function(modulePath) {
