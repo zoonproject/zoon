@@ -65,29 +65,31 @@ test_that("Basic ChangeWorkflow works", {
           "output = PrintMap, forceReproducible = FALSE)")
   ))
 
-
+  
   # Change Process, model and output
-  set.seed(1)
-  w4 <- workflow(
-    UKAnophelesPlumbeus,
-    UKAir,
-    BackgroundAndCrossvalid(k = 2),
-    RandomForest,
-    PerformanceMeasures
-  )
-
-  set.seed(1)
-  w5 <- ChangeWorkflow(
-    w4,
-    process = Background(n = 70),
-    model = LogisticRegression,
-    output = PrintMap
-  )
-  expect_true(all.equal(
-    w1[!names(w1) %in% "session.info"],
-    w5[!names(w5) %in% "session.info"]
-  ))
-
+  suppressWarnings({SDMtools_check <- requireNamespace('SDMtools', quietly = TRUE)})
+  if(SDMtools_check){
+    set.seed(1)
+    w4 <- workflow(
+      UKAnophelesPlumbeus,
+      UKAir,
+      BackgroundAndCrossvalid(k = 2),
+      RandomForest,
+      PerformanceMeasures
+    )
+  
+    set.seed(1)
+    w5 <- ChangeWorkflow(
+      w4,
+      process = Background(n = 70),
+      model = LogisticRegression,
+      output = PrintMap
+    )
+    expect_true(all.equal(
+      w1[!names(w1) %in% "session.info"],
+      w5[!names(w5) %in% "session.info"]
+    ))
+  }
 
   # Change occurrence and covariate
   set.seed(1)
@@ -125,23 +127,26 @@ test_that("Basic ChangeWorkflow works", {
 
   # Only change output
   # Change Process, model and output
-  set.seed(1)
-  w7a <- workflow(
-    UKAnophelesPlumbeus,
-    UKAir,
-    Background(n = 70),
-    LogisticRegression,
-    PerformanceMeasures
-  )
-  set.seed(1)
-  w7b <- ChangeWorkflow(
-    w7a,
-    output = PrintMap
-  )
-  expect_true(all.equal(
-    w1[!names(w1) %in% "session.info"],
-    w7b[!names(w7b) %in% "session.info"]
-  ))
+  suppressWarnings({SDMtools_check <- requireNamespace('SDMtools', quietly = TRUE)})
+  if(SDMtools_check){
+    set.seed(1)
+    w7a <- workflow(
+      UKAnophelesPlumbeus,
+      UKAir,
+      Background(n = 70),
+      LogisticRegression,
+      PerformanceMeasures
+    )
+    set.seed(1)
+    w7b <- ChangeWorkflow(
+      w7a,
+      output = PrintMap
+    )
+    expect_true(all.equal(
+      w1[!names(w1) %in% "session.info"],
+      w7b[!names(w7b) %in% "session.info"]
+    ))
+  }
 })
 
 test_that("ChangeWorkflow - Chains", {

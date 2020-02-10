@@ -1,4 +1,3 @@
-#' @importFrom SDMTools auc confusion.matrix
 #' @import randomForest
 #'
 # A function for testing the outputs conform to the expected
@@ -171,36 +170,38 @@ test_occurrence_outputs <- function (roxy_parse, modulePath, en) {
                          "when chained in a workflow")
           )
           
-          
-          # test list + crossvalidation
-          w <- tryCatchWorkflow(
-            expr = {
-              w <- workflow(
-                occurrence = list(
-                  OccurrenceModule,
-                  OccurrenceModule
-                ),
-                covariate = NaiveRandomRaster(
-                  extent = myExtent,
-                  res = 0.5,
-                  seed = 123
-                ),
-                process = BackgroundAndCrossvalid,
-                model = LogisticRegression,
-                output = PerformanceMeasures,
-                forceReproducible = FALSE
-              )
-            },
-            placeholder = "OccurrenceModule",
-            fun = roxy_parse$name
-          )
-          if (inherits(w, what = "moduleError")) stop(w)
-          
-          expect_is(
-            w, "zoonWorkflow",
-            info = paste("The occurrence module did not work",
-                         "when listed in a workflow with crossvalidation")
-          )
+          SDMtools_check <- requireNamespace('SDMtools', quietly = TRUE)
+          if(SDMtools_check){
+            # test list + crossvalidation
+            w <- tryCatchWorkflow(
+              expr = {
+                w <- workflow(
+                  occurrence = list(
+                    OccurrenceModule,
+                    OccurrenceModule
+                  ),
+                  covariate = NaiveRandomRaster(
+                    extent = myExtent,
+                    res = 0.5,
+                    seed = 123
+                  ),
+                  process = BackgroundAndCrossvalid,
+                  model = LogisticRegression,
+                  output = PerformanceMeasures,
+                  forceReproducible = FALSE
+                )
+              },
+              placeholder = "OccurrenceModule",
+              fun = roxy_parse$name
+            )
+            if (inherits(w, what = "moduleError")) stop(w)
+            
+            expect_is(
+              w, "zoonWorkflow",
+              info = paste("The occurrence module did not work",
+                           "when listed in a workflow with crossvalidation")
+            )
+          }
         } else if (data_type == "presence/absence") {
           
           # test normal
@@ -259,35 +260,39 @@ test_occurrence_outputs <- function (roxy_parse, modulePath, en) {
                          "when chained in a workflow")
           )
           
-          # test list + crossvalidation
-          w <- tryCatchWorkflow(
-            expr = {
-              w <- workflow(
-                occurrence = list(
-                  OccurrenceModule,
-                  OccurrenceModule
-                ),
-                covariate = NaiveRandomRaster(
-                  extent = myExtent,
-                  res = 0.5,
-                  seed = 123
-                ),
-                process = Crossvalidate,
-                model = LogisticRegression,
-                output = PerformanceMeasures,
-                forceReproducible = FALSE
-              )
-            },
-            placeholder = "OccurrenceModule",
-            fun = roxy_parse$name
-          )
-          if (inherits(w, what = "moduleError")) stop(w)
-          
-          expect_is(
-            w, "zoonWorkflow",
-            info = paste("The occurrence module did not work",
-                         "when listed in a workflow with crossvalidation")
-          )
+          SDMtools_check <- requireNamespace('SDMtools', quietly = TRUE)
+          if(SDMtools_check){
+            
+            # test list + crossvalidation
+            w <- tryCatchWorkflow(
+              expr = {
+                w <- workflow(
+                  occurrence = list(
+                    OccurrenceModule,
+                    OccurrenceModule
+                  ),
+                  covariate = NaiveRandomRaster(
+                    extent = myExtent,
+                    res = 0.5,
+                    seed = 123
+                  ),
+                  process = Crossvalidate,
+                  model = LogisticRegression,
+                  output = PerformanceMeasures,
+                  forceReproducible = FALSE
+                )
+              },
+              placeholder = "OccurrenceModule",
+              fun = roxy_parse$name
+            )
+            if (inherits(w, what = "moduleError")) stop(w)
+            
+            expect_is(
+              w, "zoonWorkflow",
+              info = paste("The occurrence module did not work",
+                           "when listed in a workflow with crossvalidation")
+            )
+          }
         } ## Add tests for proportion and abundance ##
       }
     }
@@ -987,28 +992,32 @@ test_model_outputs <- function (roxy_parse, modulePath, en) {
                 info = "The model module did not work in a list workflow"
               )
               
-              # crossvalidate
-              w <- tryCatchWorkflow(
-                expr = {
-                  w <- workflow(
-                    occurrence = NaiveRandomPresenceAbsence(n = 1000,
-                                                            seed = 123),
-                    covariate = NaiveRandomRaster,
-                    process = Crossvalidate,
-                    model = list(ModelModule, ModelModule),
-                    output = PerformanceMeasures,
-                    forceReproducible = FALSE
-                  )
-                },
-                placeholder = "ModelModule",
-                fun = roxy_parse$name
-              )
-              if (inherits(w, what = "moduleError")) stop(w)
+              SDMtools_check <- requireNamespace('SDMtools', quietly = TRUE)
+              if(SDMtools_check){
               
-              expect_is(
-                w, "zoonWorkflow",
-                info = paste("The process module did not work in a",
-                             "crossvalidation workflow"))
+                # crossvalidate
+                w <- tryCatchWorkflow(
+                  expr = {
+                    w <- workflow(
+                      occurrence = NaiveRandomPresenceAbsence(n = 1000,
+                                                              seed = 123),
+                      covariate = NaiveRandomRaster,
+                      process = Crossvalidate,
+                      model = list(ModelModule, ModelModule),
+                      output = PerformanceMeasures,
+                      forceReproducible = FALSE
+                    )
+                  },
+                  placeholder = "ModelModule",
+                  fun = roxy_parse$name
+                )
+                if (inherits(w, what = "moduleError")) stop(w)
+                
+                expect_is(
+                  w, "zoonWorkflow",
+                  info = paste("The process module did not work in a",
+                               "crossvalidation workflow"))
+              }
               
             } else if (data_type == "presence/background") {
               
@@ -1081,26 +1090,30 @@ test_model_outputs <- function (roxy_parse, modulePath, en) {
                 info = "The model module did not work in a list workflow"
               )
               
-              # crossvalidate
-              w <- tryCatchWorkflow(
-                expr = {
-                  w <- workflow(
-                    occurrence = UKAnophelesPlumbeus,
-                    covariate = UKAir,
-                    process = Chain(Background(n = 70), Crossvalidate),
-                    model = ModelModule,
-                    output = PerformanceMeasures,
-                    forceReproducible = FALSE
-                  )
-                },
-                placeholder = "ModelModule",
-                fun = roxy_parse$name
-              )
-              if (inherits(w, what = "moduleError")) stop(w)
-              
-              expect_is(w, "zoonWorkflow",
-                        info = paste("The model module did not work",
-                                     "in a crossvalidation workflow"))
+              SDMtools_check <- requireNamespace('SDMtools', quietly = TRUE)
+              if(SDMtools_check){
+                
+                # crossvalidate
+                w <- tryCatchWorkflow(
+                  expr = {
+                    w <- workflow(
+                      occurrence = UKAnophelesPlumbeus,
+                      covariate = UKAir,
+                      process = Chain(Background(n = 70), Crossvalidate),
+                      model = ModelModule,
+                      output = PerformanceMeasures,
+                      forceReproducible = FALSE
+                    )
+                  },
+                  placeholder = "ModelModule",
+                  fun = roxy_parse$name
+                )
+                if (inherits(w, what = "moduleError")) stop(w)
+                
+                expect_is(w, "zoonWorkflow",
+                          info = paste("The model module did not work",
+                                       "in a crossvalidation workflow"))
+              }
             }
           }
         }

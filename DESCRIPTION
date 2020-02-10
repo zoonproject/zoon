@@ -1,8 +1,8 @@
 Package: zoon
 Type: Package
 Title: Reproducible, Accessible & Shareable Species Distribution Modelling
-Version: 0.6.4
-Date: 2019-11-13
+Version: 0.6.5
+Date: 2012-02-10
 Authors@R: c(person("Tom", "August", role = c("aut", "cre"),
                     email = "tomaug@ceh.ac.uk"),
              person("Tim", "Lucas", role = "aut", comment = c(ORCID = "0000-0003-4694-8107")),
@@ -24,7 +24,6 @@ Imports:
     rgdal,
     roxygen2,
     rworldmap,
-    SDMTools,
     sp,
     testthat
 Depends:
@@ -32,7 +31,8 @@ Depends:
     R (>= 3.2.0)
 Suggests:
     knitr,
-    maxlike
+    maxlike,
+    SDMTools
 VignetteBuilder: knitr
 LazyData: TRUE
 URL: https://github.com/zoonproject/zoon

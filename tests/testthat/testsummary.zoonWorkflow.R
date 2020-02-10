@@ -75,6 +75,9 @@ test_that("summary.zoonWorkflow tests", {
     class = "character"
   )
 
+  suppressWarnings({SDMtools_check <- requireNamespace('SDMtools', quietly = TRUE)})
+  if(!SDMtools_check) skip(message = 'SDMtools required for some tests')
+  
   set.seed(1)
   expect_is(
     summary(workflow(
