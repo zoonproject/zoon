@@ -32,7 +32,7 @@ Depends:
 Suggests:
     knitr,
     maxlike,
-    SDMTools
+    SDMtools
 VignetteBuilder: knitr
 LazyData: TRUE
 URL: https://github.com/zoonproject/zoon
