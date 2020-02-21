@@ -2,7 +2,7 @@ Package: zoon
 Type: Package
 Title: Reproducible, Accessible & Shareable Species Distribution Modelling
 Version: 0.6.5
-Date: 2012-02-10
+Date: 2020-02-21
 Authors@R: c(person("Tom", "August", role = c("aut", "cre"),
                     email = "tomaug@ceh.ac.uk"),
              person("Tim", "Lucas", role = "aut", comment = c(ORCID = "0000-0003-4694-8107")),
