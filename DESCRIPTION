@@ -14,7 +14,7 @@ Description: Reproducible and remixable species distribution modelling. The
     package reads user submitted modules from an online repository, runs full
     SDM workflows and returns output that is fully reproducible. For examples
     and detailed discussion refer to: N.Golding et al. (2017) The zoon r package for reproducible and
-    shareable species distribution modelling. Mehtods in Ecology and Evolution. 
+    shareable species distribution modelling. Methods in Ecology and Evolution. 
     <doi:10.1111/2041-210X.12858>.
 License: BSD_3_clause + file LICENSE
 Imports:
