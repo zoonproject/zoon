@@ -35,7 +35,7 @@ Depends:
 Suggests:
     knitr,
     maxlike,
-    SDMtools
+    SDMTools
 Additional_repositories:
     https://cran.r-project.org/src/contrib/Archive/SDMTools/
 VignetteBuilder: knitr

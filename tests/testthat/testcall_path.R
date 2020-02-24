@@ -491,8 +491,8 @@ test_that("Test call_path in a large number of variations", {
     )
   )
 
-  suppressWarnings({SDMtools_check <- requireNamespace('SDMtools', quietly = TRUE)})
-  if(!SDMtools_check) skip('Some tests require SDMtools - install it first')
+  suppressWarnings({SDMTools_check <- requireNamespace('SDMTools', quietly = TRUE)})
+  if(!SDMTools_check) skip('Some tests require SDMTools - install it first')
   
   CP_work4 <- workflow(
     occurrence = UKAnophelesPlumbeus,

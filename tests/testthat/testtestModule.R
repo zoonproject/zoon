@@ -25,9 +25,9 @@ test_that("repo modules pass", {
   expect_true(x <- zoon:::test_module(paste0(basepath,
                                              "UKAir.R")))
 
-  suppressWarnings({SDMtools_check <- requireNamespace('SDMtools', quietly = TRUE)})
+  suppressWarnings({SDMTools_check <- requireNamespace('SDMTools', quietly = TRUE)})
   
-  if(!SDMtools_check) skip(message = 'SDMtools required for some tests - please install first')
+  if(!SDMTools_check) skip(message = 'SDMTools required for some tests - please install first')
 
   # Occurrence PA
   expect_true(x <- zoon:::test_module(paste0(basepath,

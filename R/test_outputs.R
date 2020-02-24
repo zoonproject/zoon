@@ -170,8 +170,8 @@ test_occurrence_outputs <- function (roxy_parse, modulePath, en) {
                          "when chained in a workflow")
           )
           
-          SDMtools_check <- requireNamespace('SDMtools', quietly = TRUE)
-          if(SDMtools_check){
+          SDMTools_check <- requireNamespace('SDMTools', quietly = TRUE)
+          if(SDMTools_check){
             # test list + crossvalidation
             w <- tryCatchWorkflow(
               expr = {
@@ -260,8 +260,8 @@ test_occurrence_outputs <- function (roxy_parse, modulePath, en) {
                          "when chained in a workflow")
           )
           
-          SDMtools_check <- requireNamespace('SDMtools', quietly = TRUE)
-          if(SDMtools_check){
+          SDMTools_check <- requireNamespace('SDMTools', quietly = TRUE)
+          if(SDMTools_check){
             
             # test list + crossvalidation
             w <- tryCatchWorkflow(
@@ -992,8 +992,8 @@ test_model_outputs <- function (roxy_parse, modulePath, en) {
                 info = "The model module did not work in a list workflow"
               )
               
-              SDMtools_check <- requireNamespace('SDMtools', quietly = TRUE)
-              if(SDMtools_check){
+              SDMTools_check <- requireNamespace('SDMTools', quietly = TRUE)
+              if(SDMTools_check){
               
                 # crossvalidate
                 w <- tryCatchWorkflow(
@@ -1090,8 +1090,8 @@ test_model_outputs <- function (roxy_parse, modulePath, en) {
                 info = "The model module did not work in a list workflow"
               )
               
-              SDMtools_check <- requireNamespace('SDMtools', quietly = TRUE)
-              if(SDMtools_check){
+              SDMTools_check <- requireNamespace('SDMTools', quietly = TRUE)
+              if(SDMTools_check){
                 
                 # crossvalidate
                 w <- tryCatchWorkflow(

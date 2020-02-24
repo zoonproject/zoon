@@ -67,8 +67,8 @@ test_that("Basic ChangeWorkflow works", {
 
   
   # Change Process, model and output
-  suppressWarnings({SDMtools_check <- requireNamespace('SDMtools', quietly = TRUE)})
-  if(SDMtools_check){
+  suppressWarnings({SDMTools_check <- requireNamespace('SDMTools', quietly = TRUE)})
+  if(SDMTools_check){
     set.seed(1)
     w4 <- workflow(
       UKAnophelesPlumbeus,
@@ -127,8 +127,8 @@ test_that("Basic ChangeWorkflow works", {
 
   # Only change output
   # Change Process, model and output
-  suppressWarnings({SDMtools_check <- requireNamespace('SDMtools', quietly = TRUE)})
-  if(SDMtools_check){
+  suppressWarnings({SDMTools_check <- requireNamespace('SDMTools', quietly = TRUE)})
+  if(SDMTools_check){
     set.seed(1)
     w7a <- workflow(
       UKAnophelesPlumbeus,
