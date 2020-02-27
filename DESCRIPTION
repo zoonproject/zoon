@@ -2,7 +2,7 @@ Package: zoon
 Type: Package
 Title: Reproducible, Accessible & Shareable Species Distribution Modelling
 Version: 0.6.5
-Date: 2020-02-26
+Date: 2020-02-27
 Authors@R: c(person("Tom", "August", role = c("aut", "cre"),
                     email = "tomaug@ceh.ac.uk"),
              person("Tim", "Lucas", role = "aut", comment = c(ORCID = "0000-0003-4694-8107")),
@@ -10,15 +10,15 @@ Authors@R: c(person("Tom", "August", role = c("aut", "cre"),
              person("Emiel", "van Loon", role = "ctb"),
              person("Greg", "McInerny", role = "aut"))
 Maintainer: Tom August <tomaug@ceh.ac.uk>
-Description: Reproducible and remixable species distribution modelling. The
-    package reads user submitted modules from an online repository, runs full
-    species distribution modelling workflows and returns output that is fully
-    reproducible. For examples and detailed discussion refer to: N.Golding et
-    al. (2017) 'The zoon r package for reproducible and shareable species
-    distribution modelling'. Methods in Ecology and Evolution. 
-    <doi:10.1111/2041-210X.12858>. The package 'SDMTools' is used for 
-    testing and, though this package is archived, you can access it here
-    if needed: https://cran.r-project.org/src/contrib/Archive/SDMTools/
+Description: Reproducible and remixable species distribution modelling.
+    The package reads user submitted modules from an online repository, runs
+    full species distribution modelling workflows and returns output that is
+    fully reproducible. For examples and detailed discussion refer to: N.Golding
+    et al. (2017) 'The zoon r package for reproducible and shareable species
+    distribution modelling'. Methods in Ecology and Evolution.
+    <doi:10.1111/2041-210X.12858>. The package 'SDMTools' is used for testing
+    and, though this package is archived, you can access it here if 
+    needed, https://cran.r-project.org/src/contrib/Archive/SDMTools/. 
 License: BSD_3_clause + file LICENSE
 Imports:
     dismo,
