@@ -18,7 +18,7 @@ Description: Reproducible and remixable species distribution modelling.
     distribution modelling'. Methods in Ecology and Evolution.
     <doi:10.1111/2041-210X.12858>. The package 'SDMTools' is used for testing
     and, though this package is archived, you can access it here if 
-    needed, https://cran.r-project.org/src/contrib/Archive/SDMTools/. 
+    needed, <https://cran.r-project.org/src/contrib/Archive/SDMTools/>. 
 License: BSD_3_clause + file LICENSE
 Imports:
     dismo,
